@@ -1,0 +1,76 @@
+{
+  "scope": "SOURCE_CONSOLIDATION_AND_ISOLATED_ENGINEERING_VALIDATION_NOT_SCIENTIFIC_OR_PRODUCTION_ACCEPTANCE",
+  "engine_implementation_revision": "ed2f706bcf161de49346551cb7805f41ece6d401",
+  "plugin_repository_revision": "275264e9fde5d478f5827b17dbdbe1dc2b14ad43",
+  "canonical_families": 26,
+  "research_adapters": 48,
+  "registered_canonical_kinds": 55,
+  "verified_imported_files": 2472,
+  "complete_plugin_library_units": 93,
+  "terminal_integration_tests": 5,
+  "catalog_required_tests": 18,
+  "test_evidence_aggregator_self_tests": 5,
+  "clean_committed_gateway_cargo_check_exit": 0,
+  "catalog_ci": {
+    "conclusion": "success",
+    "headSha": "275264e9fde5d478f5827b17dbdbe1dc2b14ad43",
+    "status": "completed",
+    "url": "https://github.com/ZJ-2002/autonomics-plugins/actions/runs/38055524710"
+  },
+  "engine_ci_status_at_report": {
+    "conclusion": "",
+    "headSha": "ed2f706bcf161de49346551cb7805f41ece6d401",
+    "status": "in_progress",
+    "url": "https://github.com/ZJ-2002/autonomics/actions/runs/38055112616"
+  },
+  "isolated_installation_revision": "b1c0377b80cdadf5687afe2f2eaea5e6fb44d63c",
+  "later_plugin_repository_changes": [
+    "tools/run_checks.py"
+  ],
+  "plugin_source_bytes_unchanged_after_isolated_test": true,
+  "proof_bindings": [
+    {
+      "path": "results/cachexia-v4.1/monorepo-remote-install-v2-20261010/verification.json",
+      "sha256": "8939677f03f3255955a5ff3dd288f091c1a42ded373a31f3e43535bfbeff71e8"
+    },
+    {
+      "path": "results/cachexia-v4.1/monorepo-live-concurrent-install-v1-20261010/verification.json",
+      "sha256": "a1e20171f92fd02f0f6c0f6fbdefd38c7667367b69bde90bf33330961ae1a3cf"
+    },
+    {
+      "path": "results/cachexia-v4.1/monorepo-clean-committed-core-check-v1-20261010/clean-committed-cargo-gateway.execution.json",
+      "sha256": "c869b62f0ec4fa987743a47e2f38565a4d32ef944c61e14e9ba7b61eaa27b70f"
+    },
+    {
+      "path": "results/cachexia-v4.1/monorepo-publication-report-v1-20261010/catalog-ci-current/catalog-checks.json",
+      "sha256": "f6ea949d62d73ab15437e252bc3255301dc2dc515d5488882c651e3b6a72638c"
+    },
+    {
+      "path": "results/cachexia-v4.1/monorepo-sync-engine-v3-20261010/whole-container-plugin-units.stdout.txt",
+      "sha256": "05a89d1d43038e9a20a79d2a69e6f31de1f9cb7e1b55841f6bca5e84f3b4462a"
+    },
+    {
+      "path": "results/cachexia-v4.1/monorepo-native-probe-build-v2-20261010/terminal-integration-tests.stdout.txt",
+      "sha256": "bc450f10035f73e925d453875418e96ff8cafebc15825526b1fd39259de31724"
+    },
+    {
+      "path": "results/cachexia-v4.1/monorepo-sync-engine-v3-20261010/build.json",
+      "sha256": "cebdcffd1037fedde7f8bef0fa9229b013df5c33b1ded42f845a6d31e3a88feb"
+    },
+    {
+      "path": "results/cachexia-v4.1/monorepo-native-probe-build-v2-20261010/build.json",
+      "sha256": "1883737f2fd5b71971b7674df3749343758b5b332b18ed7c49fa1f9be398214f"
+    },
+    {
+      "path": "results/cachexia-v4.1/monorepo-catalog-negative-publication-v1-20261010/failure-evidence.json",
+      "sha256": "e924ca21eee5472bb083913943e85be8c11e89d02155b748550a4b0c15f731d3"
+    }
+  ],
+  "frozen_production_config_sha256": "64d7cf2a8d43b46be7cbca0acec37c8b0d39e59a616d637285f2f378cdff8427",
+  "production_changed": false,
+  "original_repositories_deleted_or_archived": false,
+  "original_19_crate_abi_not_relabelled": true,
+  "all_native_node_changes_published": false,
+  "scientific_certified": false,
+  "G0": false
+}

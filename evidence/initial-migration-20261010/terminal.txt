@@ -1,0 +1,13 @@
+[1m[92m   Compiling[0m container-plugin v0.1.0 (/home/runner/work/autonomics/autonomics/crates/container-plugin)
+[1m[92m    Finished[0m `test` profile [unoptimized] target(s) in 1m 36s
+[1m[92m     Running[0m tests/terminal_manifest.rs (target/debug/deps/terminal_manifest-f4c0b35b770e5912)
+
+running 5 tests
+test malformed_terminal_is_not_coerced ... ok
+test omitted_terminal_defaults_false_and_preserves_connectivity ... ok
+test terminal_declaration_builds_and_survives_clone ... ok
+test terminal_edge_is_rejected_before_execution ... ok
+test terminal_false_remains_nonterminal ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
