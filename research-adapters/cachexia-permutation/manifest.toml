@@ -1,0 +1,28 @@
+schema_version = 1
+plugin_name = "cachexia-permutation"
+[image]
+reference = "localhost/cachexia-permutation@sha256:5b87558f07b40777be22a204723f3dbbadf0e2905b852473dd4922419c37a079"
+tag = "scipy-1.18.1-numpy-2.5.3-pyarrow-25.0.1-official-proof"
+upstream = "Unmodified official PyPI wheels, all three scipy.stats.permutation_test null types; frozen explicit scalar statistics"
+license = "BSD-3-Clause"
+[[nodes]]
+kind = "cachexia_permutation_official"
+desc = "Official SciPy permutation test with complete null/object/RNG state and donor identity contracts."
+doc = "Two files: complete samples JSON and frozen hash/method/family/request JSON. Independent donor, paired sample-swap and paired pairings nulls, explicit exact/Monte-Carlo/official-auto mode, alternative, seed, precision and draw budget. Scalar 1D statistics use a closed explicit registry; not arbitrary SQL callbacks or full broadcasting API. Preserves full PermutationTestResult, every indexed null draw, before/after PCG64 state, warnings and complete source ledger. Missing values propagate, not omitted. Undeclared spatial/network/stratum/batch/cell exchangeability is blocked; global donor permutation is not their substitute. Immutable technical inputs only, no scientific exchangeability attestation, formal enablement, resident daemon or G0."
+timeout_secs = 600
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}]
+outputs = [{path="values.parquet",format="parquet"}, {path="state.pkl",format="pickle"}, {path="audit.json",format="json"}, {path="permutation.log",format="text"}, {path="input_ledger.tsv",format="tsv"}]
+[nodes.command]
+interpreter = "python"
+script_file = "scripts/permutation.py"
+[nodes.command.env]
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+PYTHONHASHSEED = "0"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"

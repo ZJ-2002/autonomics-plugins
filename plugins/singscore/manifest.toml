@@ -1,0 +1,49 @@
+schema_version = 1
+plugin_name = "singscore"
+
+# B-SPEC main score (v4.0 plan section 5). DEPLOY GATES (open): 1) image
+# digest pin after the ghcr push, 2) a frozen matrix-id gene set per
+# signature supplied by the study-plan mapping contract (this node maps
+# nothing), 3) daemon/deployed acceptance - until then the row stays
+# PENDING in the node acceptance matrix and z-mean is sensitivity only.
+[image]
+reference = "ghcr.io/zj-2002/singscore-official@sha256:04981a66d7c3fc7055a185a0102dc9f337dd63381b676681c08e52e8c22e2ca5"
+tag = "1.32.0"
+upstream = "official Bioconductor singscore 1.32.0 @ Bioc release 3.23 (rankGenes + simpleScore), R 4.6.1; support stack on the 2026-09-13 CRAN snapshot shared with the MRlap/TwoSampleMR family images"
+license = "GPL-3"
+
+[[nodes]]
+kind = "singscore_bspec"
+desc = "Runs official Bioconductor singscore per-sample scoring (B-SPEC main score) in an ephemeral OCI container."
+doc = """
+Three file inputs: port 0 expression matrix TSV (row names = gene ids in
+the frozen matrix-id space, columns = samples); port 1 gene set TSV
+(gene, direction in {up,down}); port 2 samples TSV (sample, group) used
+only to attach group labels to the output - the score never reads group.
+Calls rankGenes(tiesMethod = "average") - the frozen plan mandates the
+average-rank mode, which differs from the package min-tie default, so it
+is set explicitly and never inferred - then simpleScore(upSet, downSet),
+known-direction centered. No cross-subject ranking anywhere. Outputs: per-sample score TSV (sample,
+TotalScore, group), full rankData+scores RDS, run log. The node is
+parameter-free on purpose: G0 freezes the functions and defaults, and
+the node refuses gene ids missing from the matrix rows (mapping is the
+upstream study-plan contract, never invented here). Scores are NOT
+cell counts or absolute activity; comparability across platforms or
+backgrounds requires the separately frozen dataset-common background.
+"""
+timeout_secs = 1200
+artifact_prefix = "/artifacts/singscore_bspec"
+
+[nodes.ports]
+inputs = [{ type = "file" }, { type = "file" }, { type = "file" }]
+outputs = [
+  { path = "singscore_scores.tsv", format = "tsv" },
+  { path = "singscore.RDS", format = "r_rds" },
+  { path = "singscore.log", format = "singscore_log" }
+]
+
+
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/singscore.sh"
+

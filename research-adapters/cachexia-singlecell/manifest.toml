@@ -1,0 +1,77 @@
+schema_version = 1
+plugin_name = "cachexia-singlecell"
+
+[image]
+reference = "localhost/autonomics/single-cell-preprocessor@sha256:5069c3ffaac0b11dfe950c1cd026f4195317be47b529b730572d9e670ad0f59b"
+upstream = "Scanpy 1.11.3 / AnnData 0.11.4 / scipy 1.14.1 / numpy 2.1.3"
+license = "BSD-3-Clause"
+
+[[nodes]]
+kind = "cachexia_pseudobulk_counts"
+desc = "Frozen single-celltype donor-level raw-count pseudobulk"
+doc = "STAGED only. Explicit raw layer, donor/celltype/condition/library columns and frozen donor identities. Merge libraries within each donor; one explicitly selected cell type, no cell-level replicates or missing-label deletion. Metadata contains donor_id for downstream independent-unit checking. Low-cell/no-target donors remain in eligibility ledger. Bounded int32-compatible aggregate counts; no scientific qualification or G0."
+timeout_secs = 3600
+[nodes.ports]
+inputs = [{type="file",label="h5ad"}, {type="file",label="contract"}]
+outputs = [{path="counts.tsv",format="pseudobulk_counts"}, {path="samples.tsv",format="pseudobulk_samples"}, {path="donor_ledger.tsv",format="pseudobulk_donor_ledger"}, {path="cell_ledger.tsv",format="pseudobulk_cell_ledger"}, {path="audit.json",format="singlecell_audit_json"}]
+[nodes.params]
+layer = {type="string",doc="Explicit X or a frozen raw-count layer; no automatic fallback"}
+celltype = {type="string",doc="Exactly one frozen cell type per donor-level model"}
+min_cells = {type="int",min=1.0,doc="Frozen eligibility threshold; no default or adaptive merging"}
+chunk = {type="int",default=2000,min=1.0,doc="Cells per backed input block"}
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/singlecell.py"
+[nodes.command.env]
+CS_MODE = "pseudobulk"
+CS_LAYER = "{{ layer }}"
+CS_CELLTYPE = "{{ celltype }}"
+CS_MIN_CELLS = "{{ min_cells }}"
+CS_CHUNK = "{{ chunk }}"
+[nodes.resources]
+cpus = 1.0
+memory = "4Gi"
+
+[[nodes]]
+kind = "cachexia_h5ad_export"
+desc = "Lossless scoped H5AD nonzero coordinate export with complete axes"
+doc = "STAGED source/IO contract, not a statistical method. Explicit layer/hash/scale, finite exact float64 values, unique lexical cell/gene IDs. Backed X and layers accessed with h5py and AnnData sparse_dataset without full-layer fallback. Nonzero-only Parquet plus complete obs/var axes permits reconstruction of implicit zeros; missing coordinates are not biological missingness. No normalization, mapping, data authenticity certification or G0."
+timeout_secs = 3600
+[nodes.ports]
+inputs = [{type="file",label="h5ad"}, {type="file",label="contract"}]
+outputs = [{path="expression.parquet",format="h5ad_expression_long_parquet"}, {path="obs.tsv",format="h5ad_obs_table"}, {path="var.tsv",format="h5ad_var_table"}, {path="audit.json",format="singlecell_audit_json"}]
+[nodes.params]
+layer = {type="string",doc="Explicit X or layer name; no automatic fallback"}
+chunk = {type="int",default=2000,min=1.0,doc="Cells per backed read block"}
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/singlecell.py"
+[nodes.command.env]
+CS_MODE = "export"
+CS_LAYER = "{{ layer }}"
+CS_CHUNK = "{{ chunk }}"
+[nodes.resources]
+cpus = 1.0
+memory = "4Gi"
+
+[[nodes]]
+kind = "cachexia_h5ad_qc"
+desc = "Official Scanpy raw-count QC metrics with frozen sequential filters"
+doc = "STAGED Scanpy calculate_qc_metrics contract. Freeze raw layer, cell/gene thresholds and exact mt/rb IDs before results. Explicit zeros are eliminated, zero-total percentages stay missing, zero-total cells drop, gene detection is assessed after cell filtering. Output is counts-only AnnData with counts layer, obs/var, and audit ledgers, not an embedding-preserving rewrite. No automatic doublet/ambient-RNA correction or study-specific threshold approval."
+timeout_secs = 3600
+[nodes.ports]
+inputs = [{type="file",label="h5ad"}, {type="file",label="contract"}]
+outputs = [{path="qc.h5ad",format="h5ad"}, {path="cell_qc.tsv",format="singlecell_cell_qc_tsv"}, {path="gene_qc.tsv",format="singlecell_gene_qc_tsv"}, {path="audit.json",format="singlecell_audit_json"}]
+[nodes.params]
+layer = {type="string",doc="Explicit raw counts input layer"}
+chunk = {type="int",default=2000,min=1.0,doc="Cells per backed read block"}
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/singlecell.py"
+[nodes.command.env]
+CS_MODE = "qc"
+CS_LAYER = "{{ layer }}"
+CS_CHUNK = "{{ chunk }}"
+[nodes.resources]
+cpus = 1.0
+memory = "4Gi"

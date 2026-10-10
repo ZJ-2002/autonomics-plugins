@@ -1,0 +1,219 @@
+schema_version = 1
+plugin_name = "geo"
+
+[image]
+reference = "ghcr.io/zj-2002/biotools-py@sha256:7ad6aeafa87672699d28b61b6bed12fc81fcdbfc43222a0abf17e2d56fb806f5"
+tag = "v1"
+upstream = "NCBI GEO FTP mirror over HTTPS (ftp.ncbi.nlm.nih.gov)"
+license = "CC0-1.0 (GEO data)"
+
+# 说明：GEO/SRA 元数据下载家族。全部为零输入源节点（inputs = []），
+# 输出文件名固定，供 DAG 下游直接引用。原始 FASTQ 下载不在本家族范围
+# （需 sra-tools，体积与时长都不适合默认容器超时）；run-level 元数据
+# 与供者/run 映射由 sra_runinfo 覆盖，满足供者身份核验需求。
+
+[[nodes]]
+kind = "geo_series_matrix"
+desc = "Download GEO series matrix (expression matrix + sample metadata) for a GSE accession"
+doc = """
+按 GSE accession 从 NCBI 官方 HTTPS 镜像下载 series_matrix.txt.gz。
+输出：series_matrix.txt.gz（原始字节，未解压）+ geo_fetch.log
+（URL、HTTP 状态、字节数、下载文件的 sha256 —— 自带内容锚，可直接进运行账本）。
+输入构念：处理后的表达矩阵 + 样本表（如 GSE130563 等 §8.3 资源）。
+失败处理：accession 不匹配 GSE\\d+ → 退出 2；HTTP 重试 3 次仍失败或 gzip
+魔数不符 → 非零退出。解释边界：多平台 GSE 的 gz 内含多个 series 块，
+解析责任在下游节点。
+"""
+timeout_secs = 14400
+artifact_prefix = "/artifacts/geo_series_matrix"
+
+[nodes.ports]
+inputs = []
+outputs = [
+  { path = "series_matrix.txt.gz", format = "geo_series_matrix" },
+  { path = "geo_fetch.log", format = "geo_fetch_log" },
+]
+
+[nodes.params]
+accession = { type = "string", doc = "GEO series accession, e.g. GSE130563" }
+
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/geo_fetch.py"
+
+[nodes.command.env]
+GEO_ACCESSION = "{{ accession }}"
+GEO_MODE = "matrix"
+
+[nodes.resources]
+network = "egress"
+cpus = 1
+memory = "512m"
+pull_policy = "never"
+
+[[nodes]]
+kind = "geo_soft"
+desc = "Download GEO SOFT family file (full sample/series metadata) for a GSE accession"
+doc = """
+按 GSE accession 下载 family.soft.tgz（SOFT 格式全量元数据：样本属性、
+平台注释、submitter 提供的临床字段）。输出：family.soft.tgz + geo_fetch.log。
+用途：供者→样本映射、临床表型字段核验（FILE_VERIFIED 证据的一部分）。
+失败处理同 geo_series_matrix。解释边界：SOFT 里的 submitter 字段未经
+统一编码，字段语义核验在下游完成，本节点不解释内容。
+"""
+timeout_secs = 14400
+artifact_prefix = "/artifacts/geo_soft"
+
+[nodes.ports]
+inputs = []
+outputs = [
+  { path = "family.soft.tgz", format = "geo_soft" },
+  { path = "geo_fetch.log", format = "geo_fetch_log" },
+]
+
+[nodes.params]
+accession = { type = "string", doc = "GEO series accession, e.g. GSE130563" }
+
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/geo_fetch.py"
+
+[nodes.command.env]
+GEO_ACCESSION = "{{ accession }}"
+GEO_MODE = "soft"
+
+[nodes.resources]
+network = "egress"
+cpus = 1
+memory = "512m"
+pull_policy = "never"
+
+[[nodes]]
+kind = "sra_runinfo"
+desc = "Download SRA RunInfo table (run-level metadata) for a GEO/SRA accession"
+doc = """
+按 accession（GSE/SRP/SRX 均可）从 NCBI Run Selector 的公开端点拉取
+RunInfo TSV：每 run 一行，含 Run、SampleName、LibraryName、spots/bases、
+Platform 等。输出：runinfo.tsv + geo_fetch.log。
+用途：pooled 库供者身份审计（方案 §8.4：pooled 库的细胞数不增加生物学
+重复；run↔sample↔library 映射是核验起点）。
+失败处理：非 200 或空表 → 重试 3 次后非零退出。解释边界：RunInfo 的
+ biosample 映射不含供者临床信息，供者身份仍以 GEO/SOFT 与原文为准。
+"""
+timeout_secs = 3600
+artifact_prefix = "/artifacts/sra_runinfo"
+
+[nodes.ports]
+inputs = []
+outputs = [
+  { path = "runinfo.tsv", format = "sra_runinfo" },
+  { path = "geo_fetch.log", format = "geo_fetch_log" },
+]
+
+[nodes.params]
+accession = { type = "string", doc = "GSE / SRP / SRX / SRR accession" }
+
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/geo_fetch.py"
+
+[nodes.command.env]
+SRA_ACCESSION = "{{ accession }}"
+GEO_MODE = "runinfo"
+
+[nodes.resources]
+network = "egress"
+cpus = 1
+memory = "512m"
+pull_policy = "never"
+
+[[nodes]]
+kind = "geo_suppl"
+desc = "Download a named supplementary file from a GEO series (e.g. LINCS/CMap gctx on GSE92742)"
+doc = """
+按 GSE accession + suppl 目录下的确切文件名下载任意补充文件（原样字节，
+不解压）。用途：LINCS/CMap 参考谱（GSE92742_Broad_LINCS_Level5_COMPZ.
+MODZ_n473647x12328.gctx.gz 等）、gene_info/pert_info 映射表——方案 §18.2
+的参考数据入口。
+输出：与上游同名的文件 + geo_fetch.log（URL/sha256 自锚；GSE92742 还有
+官方 SHA512SUMS 可交叉核对）。
+失败处理：accession 不符 GSE\\d+、文件名含 / 或 .. → 退出 2；gzip 魔数
+不符（.gz 后缀时）→ 退出 3。解释边界：gctx 内部行标识符按上游发布口径
+（LINCS 用 Entrez ID，符号映射用同目录 gene_info 在下游完成），本节点
+只负责字节忠实 + 内容锚。
+"""
+timeout_secs = 28800
+artifact_prefix = "/artifacts/geo_suppl"
+
+[nodes.ports]
+inputs = []
+outputs = [
+  { path = "suppl_file", format = "geo_suppl" },
+  { path = "geo_fetch.log", format = "geo_fetch_log" },
+]
+
+[nodes.params]
+accession = { type = "string", doc = "GEO series accession, e.g. GSE92742" }
+suppl_file = { type = "string", doc = "exact filename under the series suppl/ directory" }
+
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/geo_fetch.py"
+
+[nodes.command.env]
+GEO_ACCESSION = "{{ accession }}"
+GEO_SUPPL_FILE = "{{ suppl_file }}"
+GEO_MODE = "suppl"
+
+[nodes.resources]
+network = "egress"
+cpus = 1
+memory = "1g"
+pull_policy = "never"
+
+[[nodes]]
+kind = "geo_suppl_list"
+desc = "List the supplementary-file directory of a GEO series (accession → file manifest)"
+doc = """
+按 GSE accession 抓取 suppl/ 目录的 Apache 列表页，输出确定性文件清单
+suppl_manifest.tsv（filename / approx_size_bytes / last_modified，按文件名
+排序）+ geo_fetch.log（含清单自身的 sha256 内容锚）。
+用途：accession → 精确文件名的清单解析——登记表只给 accession 时，
+先跑本节点拿到 suppl 文件名，再把确切文件名交给 geo_suppl 下载。
+完整性闸门：解析条目必须覆盖页面中全部裸文件名锚点；锚点集合由标准库
+HTML 解析器提取（兼容单引号/双引号/无引号与实体编码的 href，与行正则
+无共同盲区）；锚点多于解析结果（局部格式漂移会静默漏文件）或一条都
+解析不出（整页漂移）→ 退出 3，宁可不输出也不输出不完整清单。
+失败处理：accession 不符 GSE\\d+ → 退出 2；网络重试 3 次失败 → 退出 1；
+404（无 suppl 目录）→ 合法空态：空清单 + log 记 listing_status=404。
+解释边界：approx_size_bytes 是列表页人类可读标注的换算近似值（如
+2.5K → 2560；实测 cell_info.txt.gz 列表 2560 vs 实际下载 2528），只用于
+磁盘预算与清单粗核对，禁止直接作为 file_download 的 expected_bytes；
+字节的终裁以实际下载后的字节数与 sha256 为准。
+"""
+timeout_secs = 1800
+artifact_prefix = "/artifacts/geo_suppl_list"
+
+[nodes.ports]
+inputs = []
+outputs = [
+  { path = "suppl_manifest.tsv", format = "geo_suppl_manifest" },
+  { path = "geo_fetch.log", format = "geo_fetch_log" },
+]
+
+[nodes.params]
+accession = { type = "string", doc = "GEO series accession, e.g. GSE92742" }
+
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/geo_fetch.py"
+
+[nodes.command.env]
+GEO_ACCESSION = "{{ accession }}"
+GEO_MODE = "list"
+
+[nodes.resources]
+network = "egress"
+cpus = 1
+memory = "512m"
+pull_policy = "never"

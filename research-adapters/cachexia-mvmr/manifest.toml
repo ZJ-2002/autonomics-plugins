@@ -1,0 +1,43 @@
+schema_version = 1
+plugin_name = "cachexia-mvmr"
+
+[image]
+reference = "ghcr.io/zj-2002/mvmr@sha256:b7a098030b3380f96de8c9fde5017a00b870e59d8553090cf97b6b96919be6ea"
+tag = "0.4.8"
+upstream = "Official MVMR 0.4.8; adapter adds explicit covariance identity, never statistical reimplementation"
+license = "GPL-3.0-only"
+
+[[nodes]]
+kind = "cachexia_mvmr_gencov"
+desc = "Official MVMR with explicit, justified zero or per-SNP exposure covariance."
+doc = "Two files: instrument TSV (snp,beta_y,se_y plus exposure beta/SE columns) and covariance TSV (snp,exposure_i,exposure_j,covariance). All ordered pairs including SE-squared diagonal required in gencov mode. Exposure names are beta column names. Zero mode still requires an empty covariance TSV and an audited nonempty justification. COV-U fails closed. Outputs coefficients with conditional F, full official RDS, nonempty log. This adapter does not certify phenotype scale or scientific claims."
+timeout_secs = 900
+artifact_prefix = "/artifacts/cachexia_mvmr_gencov"
+
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+
+[nodes.ports]
+inputs = [{ type = "file" }, { type = "file" }]
+outputs = [
+  { path = "mvmr_coefficients.tsv", format = "tsv", label = "coefficients" },
+  { path = "mvmr.RDS", format = "r_rds", label = "result" },
+  { path = "mvmr.log", format = "text", label = "log" }
+]
+
+[nodes.params]
+beta_columns = { type = "string_array", min_len = 2, doc = "Exposure beta columns in frozen order" }
+se_columns = { type = "string_array", min_len = 2, doc = "Exposure SE columns in the same frozen order" }
+covariance_mode = { type = "string", doc = "gencov or justified_zero; no default" }
+covariance_justification = { type = "string", doc = "Frozen source/design evidence identity; required even for zero" }
+
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/mvmr.R"
+
+[nodes.command.env]
+MVMR_BETA_COLUMNS = "{{ beta_columns }}"
+MVMR_SE_COLUMNS = "{{ se_columns }}"
+MVMR_COVARIANCE_MODE = "{{ covariance_mode }}"
+MVMR_COVARIANCE_JUSTIFICATION = "{{ covariance_justification }}"

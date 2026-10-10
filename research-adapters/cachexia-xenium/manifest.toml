@@ -1,0 +1,27 @@
+schema_version = 1
+plugin_name = "cachexia-xenium"
+
+[image]
+reference = "ghcr.io/zj-2002/biotools-py@sha256:7ad6aeafa87672699d28b61b6bed12fc81fcdbfc43222a0abf17e2d56fb806f5"
+upstream = "10x Xenium XOA3.2/4.0 CSC format; h5py3.16.0/PyArrow25.0.1/NumPy2.4.6/SciPy1.17.1"
+license = "BSD-3-Clause"
+
+[[nodes]]
+kind = "cachexia_xenium_ingest"
+desc = "Lossless frozen Xenium CSC count ingestion with feature-type QC separation."
+doc = "Three immutable Files: H5, cells parquet/csv/csv.gz/tsv and exact JSON contract. Full original feature counts, target Gene Expression counts, full typed cells including nested metadata, feature ledger and identity audit. Physical count columns are f{original feature position}; names/IDs/types and quantitative eligibility remain in feature ledger, so duplicate symbols never overwrite features. Exact integer CSC decoding, explicit duplicate-position summation, no int32 wrap, no prefix-based control inference, no CSV NA/coercion of identity. No segmentation/requantification/annotation/donor inference/spatial-null qualification/production/G0. Statistical official layer N/A; engineering format proof only."
+timeout_secs = 3600
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}, {type="file"}]
+outputs = [{path="gene_counts.parquet",format="parquet"}, {path="cells.parquet",format="parquet"}, {path="features.parquet",format="parquet"}, {path="xenium.log",format="text"}, {path="all_feature_counts.parquet",format="parquet"}, {path="audit.json",format="json"}, {path="request_ledger.tsv",format="tsv"}, {path="source_matrix.h5",format="h5"}, {path="source_cells.bin",format="binary"}]
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/ingest.py"
+[nodes.command.env]
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"

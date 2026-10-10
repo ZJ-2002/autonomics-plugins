@@ -1,0 +1,94 @@
+schema_version = 1
+plugin_name = "mrlap"
+
+# WO-R-02 (2026-10-06): containerized official R MRlap. Image is digest-
+# pinned to the reference-BLAS rebuild pushed to
+# ghcr.io/ZJ-2002/mrlap-official (package visibility private — fine-
+# grained token cannot flip it; owner one-click, same debt class as the
+# 8 repushed org mirrors). The LD-score panel (22 per-chromosome
+# LD-score gzips + M_5_50 + w_hm3.noMHC.snplist, source tree
+# ~/tools/genetics/ldsc_assets, 211 MB, the seed1-acceptance content
+# identity) is published to ZJ-2002/catalog-mrlap-ldsc-eur-w-ld-hm3-no-
+# mhc and materialized in the local panel cache; the package repo's root
+# index.json is in registry form (a catalog-tool artifact also present on
+# legacy wjixiang bundles) and the CENTRAL registry index at
+# wjixiang/catalog-index needs a PR the token cannot open.
+[image]
+reference = "ghcr.io/zj-2002/mrlap-official@sha256:78f195b862a3b7c5f8d96a96576cfb2c66b08f9bd31a739da59a017726cd063d"
+tag = "0.0.3.3"
+upstream = "official R MRlap 0.0.3.3 @ n-mounier/MRlap commit 660f026864f8bfbbad5a8206bdff7d58f5d5d05b (RemoteSha recorded in the seed1 acceptance), GenomicSEM 0.0.5, TwoSampleMR 0.7.11 — an environment recorded independently from the twosamplemr family's 0.7.9 image; the two must never be cross-validated"
+license = "GPL-3"
+
+[[panels]]
+binding = "ldsc_assets"
+mount = "/panels/ldsc_assets"
+bundle = "ZJ-2002/catalog-mrlap-ldsc-eur-w-ld-hm3-no-mhc"   # published 2026-10-06; local materialization pending
+
+[[nodes]]
+kind = "mrlap_official"
+desc = "Runs official R MRlap (cross-trait LDSC -> IVW -> de-biasing correction) for one edge in an ephemeral OCI container."
+doc = """
+One DAG instance = one MRlap edge. Port 0 is the exposure GWAS sumstat
+TSV (MRlap inputGWAS layout), port 1 the outcome TSV, port 2 the
+instrument rsID list (one rsID per line). The node calls
+MRlap::MRlap(exposure, outcome, ld, hm3, do_pruning = FALSE,
+user_SNPsToKeep = <port 2>) with the LD-score directory and HM3 SNP list
+taken from the mounted catalog panel. Immediately before the call the
+script freezes RNGkind to Mersenne-Twister/Inversion/Rejection and runs
+set.seed(seed): MRlap's get_correction is a parametric rnorm/runif
+bootstrap (self-reported 8000/6000 sims, no seed argument), so without a
+seed the corrected SE/P are Monte-Carlo quantities. With the same seed
+and inputs the run is bit-for-bit reproducible, mirroring the frozen
+canonical procedure (per-edge set.seed before MRlap()). do_pruning=FALSE
+is FIXED by the contract — the official pruning branch is not exposed.
+Outputs: the one-row 17-field summary TSV (the exact column set of
+WOE4_mrlap_summary_seed1.tsv; absent quantities stay NA and are never
+coerced to 0), the full result RDS, the print(res) text, and the run
+log. MRlap standardizes input Z by Z/sqrt(N): effects and IV sets are
+NOT on the same convention as the twosamplemr family's conventional
+IVW columns — do not subtract or pick between them directly.
+"""
+timeout_secs = 1800
+artifact_prefix = "/artifacts/mrlap_official"
+
+# Task-level resource ceiling (WO step 5), set from measurement: the
+# 2026-10-06 container-mode three-edge run sampled the R process RSS at
+# 1 s and peaked at 1.9 GiB (PARITY PASS 51/51 on that same run), so the
+# 8 Gi budget target carries ~4x headroom. The earlier "whole machine
+# 10.2 GiB" figure is page-cache-inclusive sampling, not task RSS, and
+# must not be cited as a limit requirement.
+[nodes.resources]
+cpus = 2.0
+memory = "8Gi"
+network = "isolated"
+pull_policy = "missing"
+
+[nodes.ports]
+inputs = [{ type = "file" }, { type = "file" }, { type = "file" }]
+outputs = [
+  { path = "mrlap_summary.tsv", format = "tsv" },
+  { path = "mrlap.RDS", format = "r_rds" },
+  { path = "mrlap_result.txt", format = "txt" },
+  { path = "mrlap.log", format = "mrlap_log" },
+]
+
+[nodes.params]
+exposure = { type = "string", doc = "Trait label for the exposure side; stamped onto the summary edge column; cannot be empty" }
+outcome = { type = "string", doc = "Trait label for the outcome side; cannot be empty" }
+# Seed contract (canonical v2): MRlap() reads the global RNG; the script
+# kinds and seeds it immediately before the call. 1 by default — the value
+# the seed1 acceptance frozen run used per edge.
+seed = { type = "int", default = 1, min = 1.0, max = 2147483647.0, doc = "Integer passed to R's set.seed() immediately before MRlap(); governs the parametric bootstrap (corrected SE/P). 1 by default; must be in 1..2147483647" }
+ld_path = { type = "string", default = "/panels/ldsc_assets/eur_w_ld_chr", doc = "Container path of the LD-score directory (EUR w-ld); part of the frozen panel contract — override only against another catalog-registered panel" }
+hm3_path = { type = "string", default = "/panels/ldsc_assets/w_hm3.noMHC.snplist", doc = "Container path of the w_hm3 no-MHC SNP list; same freezing rule as ld_path" }
+
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/mrlap.sh"
+
+[nodes.command.env]
+MRLAP_EXPOSURE = "{{ exposure }}"
+MRLAP_OUTCOME = "{{ outcome }}"
+MRLAP_SEED = "{{ seed }}"
+MRLAP_LD_PATH = "{{ ld_path }}"
+MRLAP_HM3_PATH = "{{ hm3_path }}"

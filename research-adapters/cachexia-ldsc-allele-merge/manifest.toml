@@ -1,0 +1,28 @@
+schema_version = 1
+plugin_name = "cachexia-ldsc-allele-merge"
+[image]
+reference = "localhost/cachexia-ldsc-official@sha256:febf11d5ec554b53e2e022f26e55033233cb4692f40eb7d81cdaa7fe11d70999"
+tag = "CBIIT-LDSC-3.0.1-pristine-6c673952"
+upstream = "Unmodified CBIIT/ldsc@6c673952cee74bd5c57aef1555a03b1c015399a0 munge_sumstats.allele_merge"
+license = "GPL-3.0-only"
+[[nodes]]
+kind = "cachexia_ldsc_allele_merge_official"
+desc = "Explicit official allele-reference eligibility transport retaining every original SNP and missing row."
+doc = "Two standard LDSC tables plus mandatory frozen JSON. First trait supplies the declared canonical SNP/allele axis; official allele_merge marks incompatible or absent second-trait rows missing without aligning Z. Downstream pristine LDSC aligns eligible Z once. Full returned table/state, original universes and eligibility ledgers retained. This is explicit technical QC, not a replacement for MR harmonisation/EAF, scientific permission to filter, changing the study denominator, new evidence, deployment or G0."
+timeout_secs = 1800
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}, {type="file"}]
+outputs = [{path="aligned.tsv",format="tsv"}, {path="state.pkl",format="pickle"}, {path="audit.json",format="json"}, {path="allele-merge.log",format="text"}, {path="input_ledger.tsv",format="tsv"}, {path="family.tsv",format="tsv"}]
+[nodes.command]
+interpreter = "python"
+script_file = "scripts/allele_merge.py"
+[nodes.command.env]
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+LC_ALL = "C"
+[nodes.resources]
+cpus = 1.0
+memory = "4Gi"
+network = "isolated"
+pull_policy = "never"

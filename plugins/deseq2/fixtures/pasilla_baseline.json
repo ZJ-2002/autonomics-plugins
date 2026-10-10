@@ -1,0 +1,53 @@
+{
+  "schema_version": "1.0",
+  "description": "Two repeated local-image runs of the official DESeq2 pasilla baseline",
+  "engine": {
+    "r": "4.5.3",
+    "bioconductor": "3.22",
+    "deseq2": "1.50.2",
+    "local_image_id": "8a18867bc182173459e583e25fcb8f254a2c415ef9f5f7b4ea57024c6a60ff16",
+    "published_manifest_digest": "sha256:9bd9a2e95a59d7a1725351b99fe188a71202a68a7255830213fe39a226e7864f",
+    "apeglm": "1.32.0"
+  },
+  "analysis": {
+    "design": "~ type + condition",
+    "reference": "untreated",
+    "test": "treated",
+    "fit_type": "parametric",
+    "alpha": 0.1,
+    "genes": 14599,
+    "samples": 7,
+    "independent_filtering_retained": 8799,
+    "significant_at_alpha": 1330,
+    "up_at_alpha": 613,
+    "down_at_alpha": 717,
+    "lfc_shrink": "apeglm"
+  },
+  "output_sha256": {
+    "results.tsv": "c5cf5309b6f571d2f9a70e06fc5db1e2cf3df511399ccd6e754a82c5ccd249d4",
+    "normalized_counts.tsv": "31ce2f093de15e660a69b14e34fe01b3b8550a9e7eb806c526dea6742d1f4eae",
+    "size_factors.tsv": "ffa196522d61fce29263f0ace1269467f7d1ce0773b0b786cf30bd3b9a2e6fec",
+    "deseq2_dataset.rds": "93f7c4a12f614df26eff713811d9a367e53602012b8e568af439703654ce1d59",
+    "run_report.json": "f1d6ce5df6cdb0d2c9c3bc4c4305a2aa08b936a1f7d4147d21c4d8db1971accf"
+  },
+  "size_factors": {
+    "untreated1": 1.13826297659084,
+    "untreated2": 1.79300035535039,
+    "untreated3": 0.649547030603726,
+    "untreated4": 0.751689223426488,
+    "treated1": 1.63557509657607,
+    "treated2": 0.761269768042316,
+    "treated3": 0.832652635328833
+  },
+  "known_contrast_checks": {
+    "FBgn0003360": {
+      "log2_fold_change": -3.11894050870461,
+      "padj": 1.56535649684825e-177
+    },
+    "FBgn0261552": {
+      "description": "pasilla; treated knock-down is expected to be down-regulated",
+      "log2_fold_change": -1.84642335706769,
+      "padj": 1.62385615005662e-34
+    }
+  }
+}

@@ -1,0 +1,180 @@
+schema_version = 1
+plugin_name = "spatial"
+
+[image]
+reference = "ghcr.io/zj-2002/biotools-py@sha256:7ad6aeafa87672699d28b61b6bed12fc81fcdbfc43222a0abf17e2d56fb806f5"
+tag = "v1"
+upstream = "h5py + pyarrow + pyimzML + scikit-learn"
+license = "BSD-3-Clause"
+
+# 说明：空间组学家族（方案 §15.5 B-S）。覆盖 Xenium（10x 格式 h5 + cells 表）
+# 与 imzML 空间代谢两类的最小摄取与统计层。解释边界统一遵守 §15.5：
+# 独立单位是供者；器官、切片、像素嵌套；本家族节点全部为"切片内"统计，
+# 跨供者汇总与置换限制在下游/上游完成，节点不做跨供者推断。
+
+[[nodes]]
+kind = "xenium_ingest"
+desc = "Ingest a Xenium output bundle (cell_feature_matrix.h5 + cells table) into engine-readable tables"
+doc = """
+输入：Xenium cell_feature_matrix.h5（官方 10x CSC 布局：shape=(genes,cells)、
+indptr 按细胞列、barcodes 逐细胞，input0）+ cells 表（parquet/csv/tsv，
+input1；含 centroid 坐标等逐细胞元数据）。
+矩阵按 CSC 直读后转成 cells×genes；counts 行与 cells 行的关联来自
+/matrix/barcodes 与 cells 表 barcode 列（barcode_col，默认 cell_id）的
+严格对齐，不是行号——同长度不同顺序也对得上。
+输出三件：
+1) xenium_counts.parquet —— cells × genes 整数计数矩阵（行序随 cells 表）；
+2) xenium_cells.tsv —— cell_id 与全部非列表元数据列（含 x/y centroid，
+   donor/slice 等身份列原样保真）；
+3) xenium_gene_stats.tsv —— gene/total_counts/n_cells/probe_class，其中
+   probe_class 标注 NegControlCode、UnassignedCode、Deprecated 等背景探针——
+   这是 §15.5 的 panel 覆盖与背景探针核验起点。
+失败处理：h5 内无 /matrix 或无 barcodes、indptr 与官方 CSC 布局不符、
+cells 无 cell_id/坐标/barcode 列、h5 或 cells 侧 barcode 重复、
+两侧 barcode 集合不一致（缺失/多余）→ 退出 2。
+解释边界：计数是原始 UMI 聚合，不做分割/去卷积复算；负控探针不参与
+下游定量，只作 QC 参考。
+"""
+timeout_secs = 7200
+artifact_prefix = "/artifacts/xenium_ingest"
+
+[nodes.ports]
+inputs = [{ type = "file" }, { type = "file" }]
+outputs = [
+  { path = "xenium_counts.parquet", format = "xenium_counts" },
+  { path = "xenium_cells.tsv", format = "xenium_cells" },
+  { path = "xenium_gene_stats.tsv", format = "xenium_gene_stats" },
+  { path = "xenium_ingest.log", format = "xenium_log" },
+]
+
+[nodes.params]
+cells_format = { type = "string", default = "parquet", doc = "cells table format: parquet | csv | tsv" }
+x_col = { type = "string", default = "x_centroid", doc = "cells column for x coordinate" }
+y_col = { type = "string", default = "y_centroid", doc = "cells column for y coordinate" }
+barcode_col = { type = "string", default = "cell_id", doc = "cells column holding /matrix/barcodes values; strict barcode alignment (duplicates/mismatches are hard errors)" }
+
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/xenium_ingest.py"
+
+[nodes.command.env]
+XN_CELLS_FORMAT = "{{ cells_format }}"
+XN_X_COL = "{{ x_col }}"
+XN_Y_COL = "{{ y_col }}"
+XN_BARCODE_COL = "{{ barcode_col }}"
+
+[nodes.resources]
+network = "isolated"
+cpus = 4
+memory = "8g"
+pull_policy = "never"
+
+[[nodes]]
+kind = "spatial_nhood"
+desc = "Label-neighborhood enrichment on spatial coordinates with label permutation null (sparse, block-restricted option)"
+doc = """
+输入：细胞表 TSV（含坐标列与标签列——细胞类型注释或组织区域分区；
+可选块列 donor/slice/domain）。
+输出：nhood_enrichment.tsv（label_a/label_b/count/expected_mean/expected_sd/
+z/p_upper/p_lower）+ spatial_nhood.log。
+零模型口径（诚实化）：置换只打散标签、不动坐标与 kNN 图。全局置换
+（不给 block_column）是"全切片标签可交换"零假设——不保留标签的空间
+自相关，log 打显式 WARN；给 block_column（donor/slice/domain 列名）时
+**建图与置换都在块内**（fix-review R08：逐块建 kNN，合并多切片输入得
+到各切片内的图，不产生跨切片边；v2 只限制置换，两切片坐标贴近时
+k=1 的边全为跨切片）——置换只在块内交换，不跨块混合，块内标签组成
+不变（也不保留块内空间自相关，log 有注记）。块内细胞数 < k+1 时有效
+k 缩小并 WARN。经验 P=(b+1)/(B+1)。每对标签报告双侧两个方向。
+统计口径：kNN 图（n_neighbors 默认 6，不含自身）；计数是"标签对出现
+在无向邻接边的次数"，每边一次，同标签对角只计一次。
+实现：kNN 图与计数全部在 scipy.sparse/O(n·k) 边表上进行，无 n×n
+稠密分配（观测统计量与 P 公式与历史版本一致）。
+解释边界：这是切片内统计；供者是独立单位，跨供者家数汇总与家族错误率
+控制在下游节点。空间邻近支持相互作用可能性，不证明细胞迁移或通讯
+（§15.5 第 5 条）。
+失败处理：列缺失/标签全同 → 退出 2。
+"""
+timeout_secs = 7200
+artifact_prefix = "/artifacts/spatial_nhood"
+
+[nodes.ports]
+inputs = [{ type = "file" }]
+outputs = [
+  { path = "nhood_enrichment.tsv", format = "nhood_enrichment" },
+  { path = "spatial_nhood.log", format = "nhood_log" },
+]
+
+[nodes.params]
+x_col = { type = "string", default = "x_centroid", doc = "column with x coordinate" }
+y_col = { type = "string", default = "y_centroid", doc = "column with y coordinate" }
+label_col = { type = "string", default = "celltype", doc = "column with label (annotation/domain)" }
+n_neighbors = { type = "int", default = 6, min = 1.0, doc = "kNN neighbors per cell (excluding self)" }
+n_perm = { type = "int", default = 1000, min = 100.0, doc = "label permutation iterations; empirical p=(b+1)/(B+1)" }
+seed = { type = "int", default = 42, doc = "RNG seed" }
+block_column = { type = "string", optional = true, doc = "column (donor/slice/domain) restricting BOTH kNN graph building and label permutation to within-block; empty = global graph + global permutation with explicit WARN" }
+
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/spatial_nhood.py"
+
+[nodes.command.env]
+NH_X_COL = "{{ x_col }}"
+NH_Y_COL = "{{ y_col }}"
+NH_LABEL_COL = "{{ label_col }}"
+NH_K = "{{ n_neighbors }}"
+NH_PERM = "{{ n_perm }}"
+NH_SEED = "{{ seed }}"
+NH_BLOCK_COL = "{{ block_column }}"
+
+[nodes.resources]
+network = "isolated"
+cpus = 4
+memory = "8g"
+pull_policy = "never"
+
+[[nodes]]
+kind = "imzml_ingest"
+desc = "Ingest imzML+ibd spatial metabolomics into pixel TIC table and optional m/z window intensities"
+doc = """
+输入：预处理 imzML（input0）+ 配对 ibd（input1）。脚本先按内容特征区分
+两个文件并复制成同基名对，再交给 pyimzML 解析。
+输出：
+1) msi_pixels.tsv —— pixel_id/x/y/n_peaks/tic（逐像素总离子流）；
+2) msi_windows.tsv —— mz_windows 参数给定时，每窗口的 mean/max/检出像素数；
+   未给定时只含表头并在 log 说明（空表仍是合法输出，供 DAG 引用存在性）。
+参数 mz_windows 用 JSON 数组字符串，形如
+ '[{"label":"mLPC_184","lo":184.07,"hi":184.09},{"label":"heme_616","lo":616.1,"hi":616.3}]'。
+规则来源：方案 §15.5 第 3 条——先核验预处理、同位素/加合物与注释置信度；
+本节点不做注释，只按给定 m/z 窗取强度。解释边界：峰强度是测量信号，
+不等于通量/分泌率（§15.5 第 5 条）。像素嵌套于切片，切片嵌套于供者；
+跨器官相关仅在同一患者配对成立时在下游估计。
+失败处理：imzML/ibd 无法配对或解析异常 → 退出 2；窗口 JSON 非法 → 退出 2。
+注记：窗口输出的口径语义（mean/max/检出像素的窗边界含否等）经 2026-10
+审计列为范围外，本轮未改动。
+"""
+timeout_secs = 14400
+artifact_prefix = "/artifacts/imzml_ingest"
+
+[nodes.ports]
+inputs = [{ type = "file" }, { type = "file" }]
+outputs = [
+  { path = "msi_pixels.tsv", format = "msi_pixels" },
+  { path = "msi_windows.tsv", format = "msi_windows" },
+  { path = "imzml_ingest.log", format = "imzml_log" },
+]
+
+[nodes.params]
+mz_windows = { type = "string", optional = true, doc = "JSON array of {label,lo,hi} m/z windows; empty = TIC only" }
+
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/imzml_ingest.py"
+
+[nodes.command.env]
+MZ_WINDOWS_JSON = "{{ mz_windows }}"
+
+[nodes.resources]
+network = "isolated"
+cpus = 4
+memory = "8g"
+pull_policy = "never"

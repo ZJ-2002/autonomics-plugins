@@ -1,0 +1,57 @@
+schema_version = 1
+plugin_name = "cachexia-coloc"
+
+[image]
+reference = "ghcr.io/auto-nomics/autonomics/coloc@sha256:a2afe7aa83ae6f1ecb9573317aa022af4db0870771378c7fe90d295d70057322"
+tag = "5.2.3"
+upstream = "Official coloc 5.2.3 with susieR 0.14.2; distinct frozen stack, not the separately deployed susieR 0.16.6 stack"
+license = "GPL-3.0-or-later"
+
+[[nodes]]
+kind = "cachexia_coloc_susie"
+desc = "Official coloc::runsusie and coloc::coloc.susie with explicit signed LD identity."
+doc = "Four files: two variant tables (snp,beta,se) and two square signed LD TSVs (first column snp; remaining column names and row SNPs equal their respective variant order). Adapter never guesses allele flips. Frozen alignment_evidence must identify allele/build/ancestry QC. Each trait requires N. Priors p1=p2=1e-4, p12 from the three plan values. L=10 main, L=20 sensitivity; coverage=0.95. Outputs official summary including all H0-H4 per signal pair, full fits/purity/RDS and log. No credible sets returns an explicit NOT_ESTIMABLE row, never H4=0. Formal study eligibility is separate."
+timeout_secs = 1200
+artifact_prefix = "/artifacts/cachexia_coloc_susie"
+
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+
+[nodes.ports]
+inputs = [{ type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }]
+outputs = [
+  { path = "coloc_summary.tsv", format = "tsv", label = "summary" },
+  { path = "coloc.RDS", format = "r_rds", label = "result" },
+  { path = "coloc.log", format = "text", label = "log" }
+]
+
+[nodes.params]
+n1 = { type = "int", min = 3, doc = "Trait 1 frozen effective sample size" }
+n2 = { type = "int", min = 3, doc = "Trait 2 frozen effective sample size" }
+type1 = { type = "string", doc = "Frozen trait 1 type: quant or cc; no default" }
+type2 = { type = "string", doc = "Frozen trait 2 type: quant or cc; no default" }
+sd_y1 = { type = "number", optional = true, min = 0.0, doc = "Required known phenotype SD for quant trait 1; never silently assume 1" }
+sd_y2 = { type = "number", optional = true, min = 0.0, doc = "Required known phenotype SD for quant trait 2" }
+case_fraction1 = { type = "number", optional = true, min = 0.0, max = 1.0, doc = "Required case fraction for cc trait 1" }
+case_fraction2 = { type = "number", optional = true, min = 0.0, max = 1.0, doc = "Required case fraction for cc trait 2" }
+L = { type = "int", default = 10, min = 10, max = 20, doc = "10 main or 20 sensitivity; other values rejected" }
+p12 = { type = "number", default = 0.00001, min = 0.000001, max = 0.0001, doc = "Only plan values 1e-6,1e-5,1e-4" }
+alignment_evidence = { type = "string", doc = "Frozen evidence identity for effect-allele, build and ancestry alignment; required" }
+
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/coloc.R"
+
+[nodes.command.env]
+COLOC_N1 = "{{ n1 }}"
+COLOC_N2 = "{{ n2 }}"
+COLOC_TYPE1 = "{{ type1 }}"
+COLOC_TYPE2 = "{{ type2 }}"
+COLOC_SD_Y1 = "{{ sd_y1 }}"
+COLOC_SD_Y2 = "{{ sd_y2 }}"
+COLOC_CASE_FRACTION1 = "{{ case_fraction1 }}"
+COLOC_CASE_FRACTION2 = "{{ case_fraction2 }}"
+COLOC_L = "{{ L }}"
+COLOC_P12 = "{{ p12 }}"
+COLOC_ALIGNMENT_EVIDENCE = "{{ alignment_evidence }}"

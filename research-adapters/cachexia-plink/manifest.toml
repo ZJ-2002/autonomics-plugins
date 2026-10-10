@@ -1,0 +1,31 @@
+schema_version = 1
+plugin_name = "cachexia-plink"
+
+[image]
+reference = "ghcr.io/zj-2002/twosamplemr@sha256:4ffdb4669c558228a74895bf843bc723341e8837e7fdd367108654b5514e3f99"
+tag = "PLINK-2.0.0-a.6.26-official-release-binary"
+upstream = "chrchang/plink-ng v2.0.0-a.6.26 official plink2_linux_avx2.zip; binary sha256 6a783e2d5e331f5b1eb7dea9f5331490202053cb3ce217ce227a36171bdb2169"
+license = "GPL-3.0-only"
+
+[[panels]]
+binding = "plink_ref"
+mount = "/panels/plink_ref"
+bundle = "wjixiang/catalog-plink-ref-1000g-eur-binary"
+
+[[nodes]]
+kind = "cachexia_plink2_clump"
+desc = "Official PLINK2 clumping with explicit study rules, stable tie ordering and complete requested-IV audit."
+doc = "Four input files: summary statistics, frozen contract, active v4.1 rules and frozen panel manifest. Supports three declared layouts including explicit OpenGWAS CSV; preserves original P values, filters P strictly below the rule threshold and sorts extracted genotype variants by chromosome/position/ASCII ID before official clumping. All 66 panel files verified. No conventional-MR estimate, automatic proxies, variant/source/build eligibility or G0."
+timeout_secs = 1800
+artifact_prefix = "/artifacts/cachexia_plink2_clump"
+[nodes.ports]
+inputs = [{ type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }]
+outputs = [{ path = "indices.tsv", format = "tsv" }, { path = "clumps.tsv", format = "tsv" }, { path = "chromosomes.tsv", format = "tsv" }, { path = "official-artifacts.tar", format = "tar" }, { path = "plink2.log", format = "text" }, { path = "audit.json", format = "json" }, { path = "requested-variants.tsv", format = "tsv" }]
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/clump.R"
+[nodes.resources]
+cpus = 2.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"

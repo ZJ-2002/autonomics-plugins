@@ -1,0 +1,64 @@
+schema_version = 1
+plugin_name = "cachexia-regional"
+
+[image]
+reference = "ghcr.io/auto-nomics/autonomics/coloc@sha256:a2afe7aa83ae6f1ecb9573317aa022af4db0870771378c7fe90d295d70057322"
+tag = "coloc-5.2.3-susieR-0.14.2"
+upstream = "Official coloc 5.2.3 / susieR 0.14.2; not the distinct susieR 0.16.6 production stack"
+license = "GPL-3.0-or-later"
+
+[[nodes]]
+kind = "cachexia_susie_rss"
+desc = "Official standalone SuSiE RSS with explicit signed LD and frozen scale contract."
+doc = "Three files: variant TSV, signed LD TSV with snp row/column axes, and key/value contract TSV. Modes z or beta_se, known n, L=10/20 and coverage=.95. No identity LD fallback, LD download or guessed allele flips. Nonconverged fits are retained as diagnostics but do not publish analysis outputs. Full fit includes alpha, credible-set membership/coverage/purity and ELBO. Synthetic technical proof does not grant locus or ancestry qualification."
+timeout_secs = 1200
+artifact_prefix = "/artifacts/cachexia_susie_rss"
+
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+
+[nodes.ports]
+inputs = [{ type = "file" }, { type = "file" }, { type = "file" }]
+outputs = [
+  { path = "susie_rss.tsv", format = "tsv", label = "variants" },
+  { path = "credible_sets.tsv", format = "tsv", label = "credible_sets" },
+  { path = "susie_rss.RDS", format = "r_rds", label = "fit" },
+  { path = "regional.log", format = "text", label = "log" },
+  { path = "audit.tsv", format = "tsv", label = "audit" }
+]
+
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/regional.R"
+
+[nodes.command.env]
+REGIONAL_OPERATION = "susie"
+
+[[nodes]]
+kind = "cachexia_coloc_abf"
+desc = "Official coloc.abf under the single-causal-variant assumption, not coloc.susie."
+doc = "Three files: two snp/beta/se TSVs and key/value contract TSV with sample sizes, quant/cc type, known sdY or case fraction, signed-effect alignment attestation, file hashes and frozen priors. Requires exactly the same ordered SNP set; no silent intersection or MAF-derived SD guessing. Outputs full H0-H4, per-variant official results, full RDS and diagnostics. This single-signal sensitivity is not a substitute for the plan's multi-signal coloc.susie route or scientific eligibility."
+timeout_secs = 1200
+artifact_prefix = "/artifacts/cachexia_coloc_abf"
+
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+
+[nodes.ports]
+inputs = [{ type = "file" }, { type = "file" }, { type = "file" }]
+outputs = [
+  { path = "coloc_summary.tsv", format = "tsv", label = "summary" },
+  { path = "coloc_variants.tsv", format = "tsv", label = "variants" },
+  { path = "coloc_abf.RDS", format = "r_rds", label = "fit" },
+  { path = "regional.log", format = "text", label = "log" },
+  { path = "audit.tsv", format = "tsv", label = "audit" }
+]
+
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/regional.R"
+
+[nodes.command.env]
+REGIONAL_OPERATION = "abf"

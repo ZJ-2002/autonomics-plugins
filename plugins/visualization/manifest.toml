@@ -1,0 +1,66 @@
+schema_version = 1
+plugin_name = "visualization"
+
+[image]
+reference = "ghcr.io/auto-nomics/autonomics/visualization@sha256:ee9592b77bc5ea0cebfafafbe39550c377204019f451d7a37e13e4ce2e884f15"
+tag = "0.1.0"
+upstream = "rocker/r-ver 4.5.3 + arrow 23.0.1.2 + ggplot2 4.0.3"
+license = "GPL-3"
+
+# One node: the terminal-only ggplot2 renderer. The user's R script is NOT
+# a manifest param and NOT a [nodes.command.files] entry (that map is
+# manifest-static inline text); it flows exactly as in the legacy wrapper —
+# as an ordinary File on input port 1 (`r_script`), staged by
+# ContainerCommandNode and exposed to the container as AUTONOMICS_INPUT1.
+[[nodes]]
+kind = "visualization"
+desc = "Terminal-only renderer for plot-ready data and a constrained ggplot2 script."
+doc = """
+Terminal-only plot renderer in an isolated R/ggplot2 OCI container. Input
+port 0 (`data`) must already contain plot-ready data (`csv`, `tsv`,
+`parquet`, Arrow IPC stream, or Arrow IPC file; pick the encoding with
+data_format). Input port 1 (`r_script`) is a File holding a small R script
+that must assign the plot to a variable named `p` as a single ggplot2
+layer chain, e.g. `p <- ggplot2::ggplot(df, ggplot2::aes(x, y)) +
+ggplot2::geom_point()`. The script is sourced with the plot-ready data
+available as `df`; keep it to the plot expression — the render fails if
+`p` is missing. The node emits immutable `plot.png` and cannot have
+downstream DAG edges. The container runs with networking disabled, a
+read-only root filesystem, and CPU, memory, and PID limits.
+"""
+timeout_secs = 300
+artifact_prefix = "/artifacts/visualization_container"
+
+[nodes.ports]
+inputs = [
+  { type = "file", label = "data" },
+  { type = "file", label = "r_script" },
+]
+outputs = [{ path = "plot.png", format = "png" }]
+
+[nodes.params]
+# v0 has no enum param type, so the legacy snake_case VisualizationDataFormat
+# enum becomes a required string; the render script's `switch` keeps the
+# exact legacy dispatch and stops on unsupported values.
+data_format = { type = "string", doc = "Encoding of the port-0 data file: csv, tsv, parquet, arrow_stream, or arrow_file" }
+width = { type = "number", default = 8.0, exclusive_min = 0.0, doc = "Plot width in inches" }
+height = { type = "number", default = 6.0, exclusive_min = 0.0, doc = "Plot height in inches" }
+dpi = { type = "number", default = 150.0, exclusive_min = 0.0, doc = "Plot resolution in dots per inch" }
+
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/render.R.sh"
+
+[nodes.command.env]
+AUTONOMICS_VISUALIZATION_DATA_FORMAT = "{{ data_format }}"
+AUTONOMICS_VISUALIZATION_WIDTH = "{{ width }}"
+AUTONOMICS_VISUALIZATION_HEIGHT = "{{ height }}"
+AUTONOMICS_VISUALIZATION_DPI = "{{ dpi }}"
+
+# Hardened profile the legacy wrapper baked in: read_only_rootfs and the
+# isolated network stay at their defaults; cpus/memory/pids_limit replicate
+# the legacy DEFAULT_CPUS/DEFAULT_MEMORY/DEFAULT_PIDS_LIMIT.
+[nodes.resources]
+cpus = 2.0
+memory = "2Gi"
+pids_limit = 256

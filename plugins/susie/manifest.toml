@@ -1,0 +1,96 @@
+schema_version = 1
+plugin_name = "susie"
+
+[image]
+reference = "ghcr.io/zj-2002/susie@sha256:b1df377e428e6166cd8ac65ac3e131c46c3bb68f172969c0e0f910751792d87e"
+tag = "0.16.6"
+upstream = "susieR 0.16.6 @ ef213feed2cb82419677661a8c986e1504df2c73 (rocker/r-ver:4.5.1 base, gsa-mixer 2.2.1 libbgmg LD helper)"
+license = "BSD-3-Clause"
+
+# Signed-LD catalog panel shared with the mixer family (a different image);
+# each plugin binds its own panels. The mount path is load-bearing: the
+# runner queries /panels/mixer_ref/stage_flat/chr@.bim and
+# /panels/mixer_ref/ld_mixer/1000G.EUR.chr@.
+[[panels]]
+binding = "susie_ref"
+mount = "/panels/mixer_ref"
+bundle = "wjixiang/catalog-mixer-g1000-eur"
+
+# Baked-runner family: the image carries /opt/susie/bin/run_susie_rss.R, but
+# the live runner is scripts/run_susie_rss.R.sh (the baked runner adapted
+# verbatim), staged per run and executed as `Rscript /work/.autonomics/script`.
+# Every parameter travels through the SUSIE_* environment variables the legacy
+# wrapper's container_spec() set, so the R-level susieR::susie_rss() call is
+# token-identical.
+#
+# The legacy Rust validate() rules the v0 DSL cannot express as param bounds
+# (string membership for estimate_prior_method and z_method) are enforced by
+# the runner with the exact legacy error messages; the numeric and integer
+# bounds ARE expressed below and fail at compile time. The failure point for
+# membership moves from registry build to container start, exactly as in the
+# deseq2/visualization migrations.
+[[nodes]]
+kind = "susie_rss"
+desc = "Runs official susieR::susie_rss against the mixer signed-LD panel."
+doc = """
+Runs the official susieR 0.16.6 susie_rss(z, R, n, ...) implementation in an ephemeral OCI container.
+
+Input contract:
+- One File input, strictly tab-separated, with columns snp, chrom, z and optional n, a1, a2.
+- Produce it in a DAG with dataframe_to_file using format="tsv"; comma-separated input is parsed as one column and misleadingly fails with missing required columns.
+- All rows must use one chromosome. SNP must be a literal mixer BIM ID in GRCh37 chr:pos:allele1:allele2 form (for example, 21:36119111:G:T). rsIDs do not align. Supplying a1/a2 in either allele orientation is supported; otherwise they are inferred from the ID.
+- Keep SNP keys unique upstream. SuSiE-RSS is a single-locus model, so split large regions and consider r2_min>0 to sparsify LD.
+
+The node mounts the mixer.g1000_eur signed-LD catalog panel, aligns against its full per-chromosome BIM, and publishes immutable outputs under artifact_prefix/job-id: port 0 susie_rss.tsv (snp, pip, cs, alpha, mu, mu2, lbf), port 1 susie_rss.RDS (the official fit object), and port 2 susie_rss.log (variant count, iterations, convergence, and credible sets). In the TSV, cs=0 means no credible set and cs=k>=1 means membership in credible set k. The roughly 254-SNP .snps extraction lists in the panel are mixer leftovers and are not an alignment constraint.
+
+Defaults: l=10, estimate_prior_method=optim, estimate_residual_variance=false, estimate_prior_variance=true, coverage=0.95, min_abs_corr=0.5, scaled_prior_variance=0.2, z_method=wald, r2_min=0, check_null_threshold=0, max_iter=100, timeout_secs=1800, artifact_prefix=/artifacts/susie_rss_container."""
+timeout_secs = 1800
+artifact_prefix = "/artifacts/susie_rss_container"
+
+[nodes.ports]
+inputs = [{ type = "file" }]
+outputs = [
+  { path = "susie_rss.tsv", format = "susie_rss" },
+  { path = "susie_rss.RDS", format = "r_rds" },
+  { path = "susie_rss.log", format = "susie_rss_log" },
+]
+
+[nodes.params]
+l = { type = "int", default = 10, min = 1.0, doc = "Maximum number of non-zero effects (SuSiE L parameter)" }
+# v0 has no enum param type; the runner rejects values outside
+# optim/EM/em/simple with the legacy validate() message.
+estimate_prior_method = { type = "string", default = "optim", doc = "Prior-variance optimization method passed to susie_rss: optim, EM, or simple" }
+estimate_residual_variance = { type = "bool", default = false, doc = "Estimate residual variance each IBSS iteration" }
+estimate_prior_variance = { type = "bool", default = true, doc = "Estimate prior variance per effect" }
+coverage = { type = "number", default = 0.95, min = 0.0, max = 1.0, doc = "Coverage level for credible sets" }
+min_abs_corr = { type = "number", default = 0.5, min = 0.0, max = 1.0, doc = "Minimum absolute correlation for a SNP to join a credible set" }
+scaled_prior_variance = { type = "number", default = 0.2, exclusive_min = 0.0, doc = "Scaled prior variance (initial value when estimate_prior_variance is true)" }
+# v0 has no enum param type; the runner rejects values outside wald/score
+# with the legacy validate() message.
+z_method = { type = "string", default = "wald", doc = "z-score method passed to susie_rss: wald or score" }
+r2_min = { type = "number", default = 0.0, min = 0.0, max = 1.0, doc = "Minimum r-squared threshold for signed LD pairs queried from the panel" }
+n = { type = "number", optional = true, doc = "Sample size override; when omitted the n column of the input is used" }
+check_null_threshold = { type = "number", default = 0.0, doc = "Check-null threshold passed to susie_rss" }
+max_iter = { type = "int", default = 100, min = 1.0, doc = "Maximum number of IBSS iterations" }
+
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/run_susie_rss.R.sh"
+
+# Env keys are the legacy container_spec() contract byte-for-byte; the
+# runner reads each with Sys.getenv + a default, so an empty value
+# (optional-and-absent n) means "use the input column" exactly like the
+# legacy wrapper omitting SUSIE_N entirely.
+[nodes.command.env]
+SUSIE_L = "{{ l }}"
+SUSIE_ESTIMATE_PRIOR_METHOD = "{{ estimate_prior_method }}"
+SUSIE_ESTIMATE_RESIDUAL_VARIANCE = "{{ estimate_residual_variance }}"
+SUSIE_ESTIMATE_PRIOR_VARIANCE = "{{ estimate_prior_variance }}"
+SUSIE_COVERAGE = "{{ coverage }}"
+SUSIE_MIN_ABS_CORR = "{{ min_abs_corr }}"
+SUSIE_SCALED_PRIOR_VARIANCE = "{{ scaled_prior_variance }}"
+SUSIE_Z_METHOD = "{{ z_method }}"
+SUSIE_R2_MIN = "{{ r2_min }}"
+SUSIE_CHECK_NULL_THRESHOLD = "{{ check_null_threshold }}"
+SUSIE_MAX_ITER = "{{ max_iter }}"
+SUSIE_N = "{{ n }}"

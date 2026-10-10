@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+.env
+.env.*
+artifacts/
+.test-output/

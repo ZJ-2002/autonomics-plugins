@@ -1,0 +1,34 @@
+schema_version = 1
+plugin_name = "cachexia-wgcna"
+
+[image]
+reference = "localhost/cachexia-wgcna@sha256:017ccc15a033fd98f84b738c4a94c45607d358060eb5ee5bb091d3a0f8828ec9"
+tag = "WGCNA1.74-R4.5.3-frozen-source-closure"
+upstream = "Original CRAN WGCNA1.74 SHA2564f61e117;40 frozen source archives/R4.5.3/Bioc3.22;authenticated Ubuntu noble libuv1.48.0"
+license = "GPL-2.0-or-later"
+
+[[nodes]]
+kind = "cachexia_wgcna_official"
+desc = "Official frozen donor-profile WGCNA pipeline with actual multi-block TOM retention."
+doc = "Three immutable Files: gene-by-donor normalized expression TSV, aligned unique donor/tissue/group metadata TSV, mandatory35-key contract. Explicit hash/axes/scale/seed/fixed-or-official power/correlation/network/TOM/blocks/QC/family policy. No lowered power threshold, fallback to power1, missing-value zero-fill, expression name merge or cell pseudoreplication. Unmodified official goodSamplesGenes/pickSoftThreshold/blockwiseModules/adjacency/signedKME/labels2colors; actual saved TOM objects/files, complete original universe/QC/grey modules/eigengenes/membership/RNG/warnings and typed projection retained separately. Budget20-128 donors/10-1500 genes,technical or already-seen data only. Acceptance must come from sealed independent source/full-state/actual-port DAG evidence,not manifest existence. Not all WGCNA API/weighted/consensus/clinical covariate modeling, scientific donor/scale/eligibility/family approval, original old image certification,resident daemon/global quotas/persistent recovery or G0."
+timeout_secs = 900
+
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}, {type="file"}]
+outputs = [{path="values.tsv",format="tsv"}, {path="state.rds",format="rds"}, {path="audit.json",format="json"}, {path="wgcna.log",format="text"}, {path="genes.tsv",format="tsv"}, {path="samples.tsv",format="tsv"}, {path="official_products.tar.gz",format="gzip"}, {path="family.tsv",format="tsv"}]
+
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/wgcna.R"
+
+[nodes.command.env]
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+LC_ALL = "C"
+
+[nodes.resources]
+cpus = 1.0
+memory = "4Gi"
+network = "isolated"
+pull_policy = "never"

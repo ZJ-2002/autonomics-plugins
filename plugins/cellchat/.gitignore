@@ -1,0 +1,4 @@
+vendor/*.rds
+vendor/CellChat-*/
+fixtures/*.h5ad
+build-logs/

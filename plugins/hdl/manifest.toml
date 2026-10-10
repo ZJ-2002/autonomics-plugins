@@ -1,0 +1,134 @@
+schema_version = 1
+plugin_name = "hdl"
+
+[image]
+reference = "ghcr.io/auto-nomics/autonomics/hdl@sha256:cbce3f3e4037b8c53c59275240f4449f2041de39aa95a4b5d9e588b9a75b18ea"
+tag = "1.4.3"
+upstream = "official R HDL 1.4.3 @ e6b055d (zhenin/HDL, rocker/r-ver:4.5.1 base)"
+license = "GPL-3.0-or-later"
+
+# One shared UKB EUR panel for the whole family: the LD SVD payloads
+# (LD/*_LDSVD.rda plus LD/HDLL_LOC_snps.RData) and the BIM files that
+# HDL::HDL.L reads. Deliberately not the LAVA or generic 1000G PLINK
+# reference bundles; the legacy wrappers enforced the same separation.
+[[panels]]
+binding = "hdl_ref"
+mount = "/panels/hdl_ref"
+bundle = "wjixiang/catalog-hdl-ref-ukb-eur"
+
+[[nodes]]
+kind = "hdl_l"
+desc = "Runs the official HDL R package for one LD block in Podman."
+doc = """
+Runs official HDL-L (R HDL 1.4.3) for one chr/piece block in an ephemeral
+OCI container. Input port 0 and port 1 are the two GWAS summary Files in
+official HDL-L format; each must contain SNP, A1, A2, and N plus either Z
+or b and se. The node mounts the dedicated UKB EUR LD SVD/BIM panel from
+`hdl.ref.ukb_eur` and emits a flattened TSV, the raw official result as
+RDS, and the complete official log. The LAVA and generic 1000G PLINK
+panels are not interchangeable with this contract.
+"""
+timeout_secs = 1800
+artifact_prefix = "/artifacts/hdl_l"
+
+[nodes.ports]
+inputs = [{ type = "file" }, { type = "file" }]
+outputs = [
+  { path = "hdl_l.tsv", format = "hdl_l_result_tsv" },
+  { path = "hdl_l.RDS", format = "r_rds" },
+  { path = "hdl_l.log", format = "hdl_l_log" },
+]
+
+[nodes.params]
+chr = { type = "int", min = 1.0, max = 22.0, doc = "Official LD block chromosome, 1 through 22" }
+piece = { type = "int", exclusive_min = 0.0, doc = "Official one-based UKB LD block number" }
+trait1_name = { type = "string", doc = "Trait label for summary-stat input port 0" }
+trait2_name = { type = "string", doc = "Trait label for summary-stat input port 1" }
+n0 = { type = "number", default = 0.0, min = 0.0, doc = "Sample overlap between the two cohorts" }
+nref = { type = "number", default = 335272.0, exclusive_min = 0.0, doc = "LD-reference sample size" }
+eigen_cut = { type = "number", default = 0.99, min = 0.0, max = 1.0, doc = "Cumulative eigenvalue fraction retained by the official method" }
+alpha = { type = "number", default = 0.05, exclusive_min = 0.0, max = 1.0, doc = "Significance level for likelihood-based confidence intervals" }
+lim = { type = "number", default = 1.522997974471263e-8, exclusive_min = 0.0, doc = "Positive likelihood tolerance used by the official optimizer" }
+intercept_output = { type = "bool", default = false, doc = "Include the official intercept rows in the flattened TSV" }
+# DSL gap: the legacy spec used a closed Median/Min/Max enum, but the v0
+# param vocabulary has no enum type. The value travels verbatim through the
+# env var and scripts/hdl_l.R rejects anything outside median/min/max with
+# the legacy-shaped error, so the failure point moves from registry build
+# to container start (the established mrpresso/mvmr/deseq2 pattern).
+fill_missing_n = { type = "string", optional = true, doc = "Fill missing sample sizes instead of dropping those variants: median, min, or max; empty means drop those variants" }
+
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/hdl_l.R"
+
+[nodes.command.env]
+HDL_L_CHR = "{{ chr }}"
+HDL_L_PIECE = "{{ piece }}"
+HDL_L_TRAIT1_NAME = "{{ trait1_name }}"
+HDL_L_TRAIT2_NAME = "{{ trait2_name }}"
+HDL_L_N0 = "{{ n0 }}"
+HDL_L_NREF = "{{ nref }}"
+HDL_L_EIGEN_CUT = "{{ eigen_cut }}"
+HDL_L_ALPHA = "{{ alpha }}"
+HDL_L_LIM = "{{ lim }}"
+HDL_L_INTERCEPT_OUTPUT = "{{ intercept_output }}"
+HDL_L_FILL_MISSING_N = "{{ fill_missing_n }}"
+
+[[nodes]]
+kind = "hdl_l_scan"
+desc = "Runs official HDL-L across official UKB LD blocks in Podman."
+doc = """
+Runs official HDL-L scans over the UKB `chr`/`piece` blocks declared by
+`hdl.ref.ukb_eur`. Input port 0 and port 1 are two GWAS summary Files in
+official HDL-L format. All blocks on the selected chromosome run unless
+`pieces` selects a subset; failed blocks are logged and skipped while
+successful blocks are emitted as a combined TSV, an RDS list, and the
+complete official log. This node uses the exact same panel contract as
+`hdl_l`; LAVA and generic 1000G PLINK references are not accepted.
+"""
+timeout_secs = 86400
+artifact_prefix = "/artifacts/hdl_l_scan"
+
+[nodes.ports]
+inputs = [{ type = "file" }, { type = "file" }]
+outputs = [
+  { path = "hdl_l_scan.tsv", format = "hdl_l_scan_result_tsv" },
+  { path = "hdl_l_scan.RDS", format = "r_rds" },
+  { path = "hdl_l_scan.log", format = "hdl_l_scan_log" },
+]
+
+[nodes.params]
+chr = { type = "int", min = 1.0, max = 22.0, doc = "Official LD-block chromosome, 1 through 22" }
+# DSL gap: the legacy spec carried `pieces: Option<Vec<u32>>`, but the v0
+# param vocabulary has no integer-array type (only string_array, which the
+# env renderer space-joins). The blocks therefore travel as an array of
+# numeric strings and scripts/hdl_l_scan.R re-validates positivity,
+# integer shape, and duplicate-freedom with the legacy error messages.
+pieces = { type = "string_array", optional = true, min_len = 1, doc = "Optional subset of official one-based LD blocks on chr, e.g. [\"8\", \"9\"]; every block on chr runs when omitted" }
+trait1_name = { type = "string", doc = "Trait label for summary-stat input port 0" }
+trait2_name = { type = "string", doc = "Trait label for summary-stat input port 1" }
+n0 = { type = "number", default = 0.0, min = 0.0, doc = "Sample overlap between the two cohorts" }
+nref = { type = "number", default = 335272.0, exclusive_min = 0.0, doc = "LD-reference sample size" }
+eigen_cut = { type = "number", default = 0.99, min = 0.0, max = 1.0, doc = "Cumulative eigenvalue fraction retained by the official method" }
+alpha = { type = "number", default = 0.05, exclusive_min = 0.0, max = 1.0, doc = "Significance level for likelihood-based confidence intervals" }
+lim = { type = "number", default = 1.522997974471263e-8, exclusive_min = 0.0, doc = "Positive likelihood tolerance used by the official optimizer" }
+intercept_output = { type = "bool", default = false, doc = "Include the official intercept rows in the flattened TSV" }
+# Same enum-shaped DSL gap as the hdl_l node above.
+fill_missing_n = { type = "string", optional = true, doc = "Fill missing sample sizes instead of dropping those variants: median, min, or max; empty means drop those variants" }
+
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/hdl_l_scan.R"
+
+[nodes.command.env]
+HDL_L_SCAN_CHR = "{{ chr }}"
+HDL_L_SCAN_PIECES = "{{ pieces }}"
+HDL_L_SCAN_TRAIT1_NAME = "{{ trait1_name }}"
+HDL_L_SCAN_TRAIT2_NAME = "{{ trait2_name }}"
+HDL_L_SCAN_N0 = "{{ n0 }}"
+HDL_L_SCAN_NREF = "{{ nref }}"
+HDL_L_SCAN_EIGEN_CUT = "{{ eigen_cut }}"
+HDL_L_SCAN_ALPHA = "{{ alpha }}"
+HDL_L_SCAN_LIM = "{{ lim }}"
+HDL_L_SCAN_INTERCEPT_OUTPUT = "{{ intercept_output }}"
+HDL_L_SCAN_FILL_MISSING_N = "{{ fill_missing_n }}"

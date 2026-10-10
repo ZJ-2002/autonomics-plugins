@@ -1,0 +1,42 @@
+schema_version = 1
+plugin_name = "cachexia-ucell"
+
+[image]
+reference = "ghcr.io/zj-2002/cachexia-ucell-official@sha256:f5310020240016e9069783498aebbd1849c73c6ae4918058614803fe3b6bfca1"
+tag = "2.16.0"
+upstream = "Official UCell 2.16.0/Bioconductor 3.23; exact source archives in source-lock.json; registry authentication currently required"
+license = "GPL-3"
+
+[[nodes]]
+kind = "cachexia_ucell_official"
+desc = "Official R UCell, including signed signatures and explicit missing-gene semantics."
+doc = "Two files: finite nonnegative gene-by-cell TSV (first column gene, remaining unique cells) and signature/gene TSV. All identities read as exact strings, including numeric-looking genes and literal NA. Members retain official optional +/- suffixes; this node performs no mapping. maxRank/w_neg/missing_genes are explicit frozen inputs. Uses ScoreSignatures_UCell with average ties and SerialParam. Outputs cell scores TSV, official score RDS, nonempty log and method/input/output/parameter audit JSON. Undefined scores fail closed. Dense TSV interface is not large H5AD memory acceptance. Source publication and scoped technical evidence do not grant scientific certification or resident deployment. The pinned registry image currently requires authorized GHCR credentials."
+timeout_secs = 1200
+artifact_prefix = "/artifacts/cachexia_ucell_official"
+
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+
+[nodes.ports]
+inputs = [{ type = "file" }, { type = "file" }]
+outputs = [
+  { path = "ucell_scores.tsv", format = "tsv", label = "scores" },
+  { path = "ucell.RDS", format = "r_rds", label = "result" },
+  { path = "ucell.log", format = "text", label = "log" },
+  { path = "audit.json", format = "ucell_official_audit_json", label = "audit" }
+]
+
+[nodes.params]
+max_rank = { type = "int", min = 2, doc = "Frozen UCell maxRank; no default" }
+negative_weight = { type = "number", min = 0.0, doc = "Frozen official w_neg; no default" }
+missing_genes = { type = "string", doc = "Official impute or skip; not signature coverage qualification" }
+
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/ucell.R"
+
+[nodes.command.env]
+UCELL_MAX_RANK = "{{ max_rank }}"
+UCELL_NEGATIVE_WEIGHT = "{{ negative_weight }}"
+UCELL_MISSING_GENES = "{{ missing_genes }}"

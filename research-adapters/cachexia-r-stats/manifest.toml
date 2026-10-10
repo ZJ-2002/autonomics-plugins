@@ -1,0 +1,116 @@
+schema_version = 1
+plugin_name = "cachexia-r-stats"
+
+[image]
+reference = "ghcr.io/auto-nomics/autonomics/coloc@sha256:a2afe7aa83ae6f1ecb9573317aa022af4db0870771378c7fe90d295d70057322"
+tag = "R-4.5.1-stats-official"
+upstream = "R Core stats 4.5.1; this existing digest also contains coloc/susieR, unused by these nodes"
+license = "GPL-2.0-or-later"
+
+[[nodes]]
+kind = "cachexia_r_t_test"
+desc = "Official R t.test, complete pairs, Welch/pooled and directional confidence intervals."
+doc = "Data TSV with lexical row_id and x/y or explicit group labels plus a fully explicit key/value method/hash contract. One/wide/paired/groups modes. Full htest RDS, all vector estimates/parameters and typed infinity bounds preserved. Not donor qualification or research release."
+timeout_secs = 300
+artifact_prefix = "/artifacts/cachexia_r_t_test"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+[nodes.ports]
+inputs = [{ type = "file" }, { type = "file" }]
+outputs = [{ path = "statistics.tsv", format = "tsv" }, { path = "parameters.tsv", format = "tsv" }, { path = "statistics.RDS", format = "r_rds" }, { path = "statistics.log", format = "text" }, { path = "audit.tsv", format = "tsv" }]
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/statistics.R"
+[nodes.command.env]
+STATISTICS_OPERATION = "t"
+
+[[nodes]]
+kind = "cachexia_r_cor_test"
+desc = "Official Pearson CI, Spearman exact/AS89 and Kendall exact/tau-b."
+doc = "Complete row pairs; exact auto/true/false and continuity explicit. exact=true that would fall back on ties is blocked with warnings retained. Official auto fallback is recorded. RDS and typed CI/statistic/NULL parameter output; n=2 rank methods allowed by R."
+timeout_secs = 300
+artifact_prefix = "/artifacts/cachexia_r_cor_test"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+[nodes.ports]
+inputs = [{ type = "file" }, { type = "file" }]
+outputs = [{ path = "statistics.tsv", format = "tsv" }, { path = "parameters.tsv", format = "tsv" }, { path = "statistics.RDS", format = "r_rds" }, { path = "statistics.log", format = "text" }, { path = "audit.tsv", format = "tsv" }]
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/statistics.R"
+[nodes.command.env]
+STATISTICS_OPERATION = "cor"
+
+[[nodes]]
+kind = "cachexia_r_var_test"
+desc = "Official variance-ratio F test with both degrees of freedom and confidence interval."
+doc = "Wide independent samples or frozen ordered groups; ratio/alternative/conf_level explicit. Full denominator df and ratio interval are retained, unlike the native standard-row adapter. Missing rows follow official vector semantics, not donor pairing."
+timeout_secs = 300
+artifact_prefix = "/artifacts/cachexia_r_var_test"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+[nodes.ports]
+inputs = [{ type = "file" }, { type = "file" }]
+outputs = [{ path = "statistics.tsv", format = "tsv" }, { path = "parameters.tsv", format = "tsv" }, { path = "statistics.RDS", format = "r_rds" }, { path = "statistics.log", format = "text" }, { path = "audit.tsv", format = "tsv" }]
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/statistics.R"
+[nodes.command.env]
+STATISTICS_OPERATION = "var"
+
+[[nodes]]
+kind = "cachexia_r_wilcox_test"
+desc = "Official exact/asymptotic signed-rank and rank-sum with Hodges-Lehmann estimates and intervals."
+doc = "One/paired/wide/frozen groups; mu, alternative, exact auto/true/false, continuity, digits_rank, conf_int/conf_level and tol_root explicit. Requested exact=true cannot silently become approximate with ties/zeros. Auto follows frozen official R defaults and records warnings. No arbitrary Pratt/zsplit reinterpretation."
+timeout_secs = 300
+artifact_prefix = "/artifacts/cachexia_r_wilcox_test"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+[nodes.ports]
+inputs = [{ type = "file" }, { type = "file" }]
+outputs = [{ path = "statistics.tsv", format = "tsv" }, { path = "parameters.tsv", format = "tsv" }, { path = "statistics.RDS", format = "r_rds" }, { path = "statistics.log", format = "text" }, { path = "audit.tsv", format = "tsv" }]
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/statistics.R"
+[nodes.command.env]
+STATISTICS_OPERATION = "wilcox"
+
+[[nodes]]
+kind = "cachexia_r_prop_test"
+desc = "Official one/two/k-sample proportions with capped correction and official score intervals."
+doc = "Counts and totals, explicit p vector or NULL, alternative/correction/confidence and integer-count requirement. Official missing handling and effective alternative for k>2 are audited. Unestimable official NA remains a NOT_ESTIMABLE row, never p=0. Integer policy is a contract, not a claim R rejects fractions."
+timeout_secs = 300
+artifact_prefix = "/artifacts/cachexia_r_prop_test"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+[nodes.ports]
+inputs = [{ type = "file" }, { type = "file" }]
+outputs = [{ path = "statistics.tsv", format = "tsv" }, { path = "parameters.tsv", format = "tsv" }, { path = "statistics.RDS", format = "r_rds" }, { path = "statistics.log", format = "text" }, { path = "audit.tsv", format = "tsv" }]
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/statistics.R"
+[nodes.command.env]
+STATISTICS_OPERATION = "prop"
+
+[[nodes]]
+kind = "cachexia_r_p_adjust"
+desc = "Official p.adjust with frozen family n, row order, all missing rows and all seven methods."
+doc = "One p-value per lexical row_id; explicit method/n_total/alpha. All rows including failures are retained and n cannot shrink below raw rows. No family assembly or scientific eligibility is inferred. Full vector RDS and audit accompany every output."
+timeout_secs = 300
+artifact_prefix = "/artifacts/cachexia_r_p_adjust"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+[nodes.ports]
+inputs = [{ type = "file" }, { type = "file" }]
+outputs = [{ path = "statistics.tsv", format = "tsv" }, { path = "parameters.tsv", format = "tsv" }, { path = "statistics.RDS", format = "r_rds" }, { path = "statistics.log", format = "text" }, { path = "audit.tsv", format = "tsv" }]
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/statistics.R"
+[nodes.command.env]
+STATISTICS_OPERATION = "adjust"

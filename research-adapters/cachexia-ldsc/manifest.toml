@@ -1,0 +1,77 @@
+schema_version = 1
+plugin_name = "cachexia-ldsc"
+[image]
+reference = "localhost/cachexia-ldsc-official@sha256:febf11d5ec554b53e2e022f26e55033233cb4692f40eb7d81cdaa7fe11d70999"
+tag = "CBIIT-LDSC-3.0.1-pristine-6c673952"
+upstream = "Pristine CBIIT/ldsc@6c673952cee74bd5c57aef1555a03b1c015399a0; not the patched/refactored baked LDSC namespace"
+license = "GPL-3.0-only"
+[[panels]]
+binding = "ldsc_assets"
+mount = "/panels/ldsc_assets"
+bundle = "ZJ-2002/catalog-mrlap-ldsc-eur-w-ld-hm3-no-mhc"
+[[nodes]]
+kind = "cachexia_ldsc_h2_official"
+desc = "Pristine official SNP-block-jackknife heritability with frozen inputs and full returned state."
+doc = "GWAS and mandatory method/source/panel/input/hash JSON Files; no hidden method defaults or donor inference. Full official returned object, all state scalars, original source tables and complete source-ID ledger retained. Exact22-chromosome univariate EUR LD score and weight identities; not partitioned h2, liability scientific qualification, MRlap equivalence, current production deployment/global quotas/recovery or G0."
+timeout_secs = 1800
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}]
+outputs = [{path="values.tsv",format="tsv"}, {path="state.pkl",format="pickle"}, {path="audit.json",format="json"}, {path="ldsc.log",format="text"}, {path="input_ledger.tsv",format="tsv"}, {path="official_products.zip",format="zip"}, {path="family.tsv",format="tsv"}]
+[nodes.command]
+interpreter = "python"
+script_file = "scripts/ldsc.py"
+[nodes.command.env]
+CACHEXIA_LDSC_METHOD = "h2"
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+LC_ALL = "C"
+[nodes.resources]
+cpus = 1.0
+memory = "4Gi"
+network = "isolated"
+pull_policy = "never"
+[[nodes]]
+kind = "cachexia_ldsc_munge_official"
+desc = "Pristine official summary-statistics munging with exact CLI spelling, full unrounded returned table and actual rounded gzip product."
+doc = "Raw GWAS and mandatory scale/signed-stat/source/row/hash/options JSON Files. Official parser defines all supported switches; Boolean false omits a presence flag. No invented a1_is_a2 mapping. All original source rows remain recorded; original duplicates are not falsely assigned precise per-row survival from a shared SNP ID. Official unrounded returned state and actual rounded gzip/log products retained; not quality scientific signoff or G0."
+timeout_secs = 1800
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}]
+outputs = [{path="values.tsv",format="tsv"}, {path="state.pkl",format="pickle"}, {path="audit.json",format="json"}, {path="ldsc.log",format="text"}, {path="input_ledger.tsv",format="tsv"}, {path="official_products.zip",format="zip"}, {path="family.tsv",format="tsv"}]
+[nodes.command]
+interpreter = "python"
+script_file = "scripts/ldsc.py"
+[nodes.command.env]
+CACHEXIA_LDSC_METHOD = "munge"
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+LC_ALL = "C"
+[nodes.resources]
+cpus = 1.0
+memory = "4Gi"
+network = "isolated"
+pull_policy = "never"
+[[nodes]]
+kind = "cachexia_ldsc_rg_official"
+desc = "Pristine official two-trait genetic correlation retaining missing estimates and rejecting swallowed component failures."
+doc = "Two GWAS and mandatory SNP-block-jackknife method/source/panel/hash JSON Files. Full RG/Hsq/Gencov/jackknife state, all scalars and original/merged source tables retained. Invalid-allele failure in this frozen upstream remains a visible block, not a patched implementation claimed official or a conventional-IVW fallback. No new study/family release, MRlap equivalence, donor contrast, production/global resource/recovery or G0."
+timeout_secs = 1800
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}, {type="file"}]
+outputs = [{path="values.tsv",format="tsv"}, {path="state.pkl",format="pickle"}, {path="audit.json",format="json"}, {path="ldsc.log",format="text"}, {path="input_ledger.tsv",format="tsv"}, {path="official_products.zip",format="zip"}, {path="family.tsv",format="tsv"}]
+[nodes.command]
+interpreter = "python"
+script_file = "scripts/ldsc.py"
+[nodes.command.env]
+CACHEXIA_LDSC_METHOD = "rg"
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+LC_ALL = "C"
+[nodes.resources]
+cpus = 1.0
+memory = "4Gi"
+network = "isolated"
+pull_policy = "never"

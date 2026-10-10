@@ -1,0 +1,24 @@
+schema_version = 1
+plugin_name = "cachexia-sensitivity-typed-values"
+[image]
+reference = "localhost/autonomics/single-cell-preprocessor@sha256:5069c3ffaac0b11dfe950c1cd026f4195317be47b529b730572d9e670ad0f59b"
+tag = "pyarrow-25.0.1-typed-sensitivity-boundary"
+upstream = "PyArrow25.0.1 explicit schema engineering boundary"
+license = "Apache-2.0"
+[[nodes]]
+kind = "cachexia_sensitivity_values_to_parquet"
+desc = "Verified full sensitivity numeric fields with exact lexical coordinates to explicitly typed Parquet."
+doc = "Two files: complete numeric summary TSV and matching successful upstream audit. Four Parquet/audit/log/schema outputs. Retains string test/row/field/status axes, nullable float64 value and explicit NaN/Inf status. Explicit uint32 source_position must remain in materialized tables because native sinks need not preserve physical batch row order. All original coordinates and positions remain verifiable; no numerical transformation or scientific inference."
+timeout_secs = 600
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}]
+outputs = [{path="values.parquet",format="parquet"}, {path="typed_audit.json",format="json"}, {path="typed.log",format="text"}, {path="schema.json",format="json"}]
+[nodes.command]
+interpreter = "python"
+script_file = "scripts/typed_values.py"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"
+

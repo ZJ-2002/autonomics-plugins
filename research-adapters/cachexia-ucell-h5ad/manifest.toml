@@ -1,0 +1,54 @@
+schema_version = 1
+plugin_name = "cachexia-ucell-h5ad"
+
+[image]
+reference = "localhost/autonomics/single-cell-preprocessor@sha256:5069c3ffaac0b11dfe950c1cd026f4195317be47b529b730572d9e670ad0f59b"
+upstream = "AnnData 0.11.4 IO adapter; not a scoring implementation"
+license = "BSD-3-Clause"
+
+[[nodes]]
+kind = "cachexia_h5ad_ucell_prepare"
+desc = "Frozen H5AD layer to official UCell matrix/signature inputs"
+doc = "STAGED only. Explicit layer, scale, input/signature hashes, UCell parameters, output obs-column mapping and bounded dense allocation. Unique lexical axes; signed members preserved; no mapping or coverage qualification. Nonnegative finite float64-compatible domain; raw counts additionally int32-compatible. At least one present gene per program. Adds no normalization or scientific release."
+timeout_secs = 1200
+[nodes.ports]
+inputs = [{type="file",label="h5ad"}, {type="file",label="signatures"}, {type="file",label="contract"}]
+outputs = [{path="matrix.tsv",format="ucell_matrix_tsv"}, {path="signatures.tsv",format="ucell_signature_tsv"}, {path="handoff.json",format="ucell_handoff_json"}, {path="audit.json",format="ucell_bridge_audit_json"}]
+[nodes.params]
+layer = {type="string",doc="Explicit X or frozen layer; no fallback"}
+chunk = {type="int",min=1.0,doc="Frozen block size"}
+max_entries = {type="int",min=1.0,max=2000000.0,doc="Frozen dense-entry cap, not full-scale memory acceptance"}
+max_rank = {type="int",min=2.0,doc="Frozen official maxRank"}
+negative_weight = {type="number",min=0.0,doc="Frozen official w_neg"}
+missing_genes = {type="string",doc="Frozen official impute or skip"}
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/bridge.py"
+[nodes.command.env]
+UCELL_BRIDGE_MODE = "prepare"
+UB_LAYER = "{{ layer }}"
+UB_CHUNK = "{{ chunk }}"
+UB_MAX_ENTRIES = "{{ max_entries }}"
+UCELL_MAX_RANK = "{{ max_rank }}"
+UCELL_NEGATIVE_WEIGHT = "{{ negative_weight }}"
+UCELL_MISSING_GENES = "{{ missing_genes }}"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+
+[[nodes]]
+kind = "cachexia_h5ad_ucell_writeback"
+desc = "Verified official UCell scores to preserved H5AD obs"
+doc = "STAGED only. Original H5AD, score TSV, frozen handoff and official-node audit. Exact cell set, parameter/input/output hash linkage; explicit obs columns, collisions rejected. Reindex scores by lexical cell identity. Preserve X/layers/raw/obsm/varm/obsp/varp/obs/var/uns; add scores and reserved provenance only. Whole H5AD loaded; dense input cap does not certify total H5AD memory. Audit identity is not authentication of scientific provenance."
+timeout_secs = 1200
+[nodes.ports]
+inputs = [{type="file",label="h5ad"}, {type="file",label="scores"}, {type="file",label="handoff"}, {type="file",label="official_audit"}]
+outputs = [{path="scored.h5ad",format="h5ad"}, {path="scores.tsv",format="ucell_cell_scores_tsv"}, {path="audit.json",format="ucell_bridge_audit_json"}]
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/bridge.py"
+[nodes.command.env]
+UCELL_BRIDGE_MODE = "writeback"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"

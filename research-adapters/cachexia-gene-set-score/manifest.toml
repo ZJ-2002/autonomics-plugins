@@ -1,0 +1,39 @@
+schema_version = 1
+plugin_name = "cachexia-gene-set-score"
+
+[image]
+reference = "localhost/autonomics/single-cell-preprocessor@sha256:5069c3ffaac0b11dfe950c1cd026f4195317be47b529b730572d9e670ad0f59b"
+upstream = "Scanpy 1.11.3 / AnnData 0.11.4"
+license = "BSD-3-Clause"
+
+[[nodes]]
+kind = "gene_set_score"
+desc = "Official Scanpy expression-bin control scoring; not UCell or singscore."
+doc = "Isolated original-kind repair, not production registration. One H5AD File; output ports 0 H5AD and 1 JSON. Official raw-auto selection, ctrl_as_ref=true, n_bins=25, full selected-axis gene pool, no layer override or normalization. At least two distinct present genes per set, exact score names, collisions and duplicate JSON keys rejected. ctrl_size is the unchanged number sampled per expression bin, never silently clamped. Preserve AnnData content/storage; nonfinite official scores retained, undefined report statistics null with explicit counts. Descriptive only, not the primary B UCell/pseudobulk or B-SPEC singscore method. The unused CellTypist family panel is intentionally absent in this score-only manifest."
+timeout_secs = 3600
+artifact_prefix = "/artifacts/gene_set_score"
+[nodes.ports]
+inputs = [{type="file",label="h5ad"}]
+outputs = [{path="output.h5ad",format="h5ad"}, {path="report.json",format="single_cell_workflow_report_json"}]
+[nodes.params]
+gene_sets = {type="string",doc="Nonempty JSON object of score names to gene arrays; exact selected-axis IDs, no ortholog mapping"}
+ctrl_size = {type="int",default=50,min=1.0,doc="Official number of control genes sampled per expression bin"}
+random_state = {type="int",default=0,min=0.0,max=4294967295.0,doc="Frozen NumPy seed, reset for each official score_genes call"}
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/score_genes.py"
+[nodes.command.env]
+SC_P_JSON_GENE_SETS = "{{ gene_sets }}"
+SC_P_INT_CTRL_SIZE = "{{ ctrl_size }}"
+SC_P_INT_RANDOM_STATE = "{{ random_state }}"
+NUMBA_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+OPENBLAS_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+[nodes.resources]
+cpus = 2.0
+memory = "8Gi"
+pids_limit = 512
+shm_size = "1Gi"
+network = "isolated"
+pull_policy = "never"

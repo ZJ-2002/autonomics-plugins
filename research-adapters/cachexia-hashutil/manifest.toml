@@ -1,0 +1,32 @@
+schema_version = 1
+plugin_name = "cachexia-hashutil"
+
+[image]
+reference = "localhost/autonomics/biotools-py@sha256:ba0ad02ae1a92495fa8d498c5083471fcca38bff6b389a0bc9c3081b10eeef48"
+tag = "local-content-pinned-python-3.11.17-blake3-1.0.10"
+upstream = "Python hashlib sha256 and BLAKE3 Python binding"
+license = "MIT"
+
+[[nodes]]
+kind = "cachexia_file_hashes"
+desc = "Streaming content digests with strict parameters and retained failure diagnostics."
+doc = "Exactly one staged File per invocation. Multiple files require explicit DAG fan-out, not a FileSet port. Digests describe staged bytes, not source authenticity, expected-input verification, scientific eligibility or G0. Rejects empty/duplicate algorithms, invalid chunk size, wrong input count and observed file changes; an empty file is valid."
+timeout_secs = 3600
+artifact_prefix = "/artifacts/cachexia_file_hashes"
+[nodes.ports]
+inputs = [{ type = "file" }]
+outputs = [{ path = "hashes.tsv", format = "tsv" }, { path = "file_hashes.log", format = "text" }]
+[nodes.params]
+algos = { type = "string_array", default = ["sha256", "blake3"] }
+chunk_mb = { type = "int", default = 16, min = 1.0, max = 32.0 }
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/file_hashes.py"
+[nodes.command.env]
+HASHUTIL_ALGOS = "{{ algos }}"
+HASHUTIL_CHUNK_MB = "{{ chunk_mb }}"
+[nodes.resources]
+cpus = 1.0
+memory = "512m"
+network = "isolated"
+pull_policy = "never"

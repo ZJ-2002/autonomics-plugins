@@ -1,0 +1,51 @@
+schema_version = 1
+plugin_name = "hashutil"
+
+[image]
+reference = "ghcr.io/zj-2002/biotools-py@sha256:7ad6aeafa87672699d28b61b6bed12fc81fcdbfc43222a0abf17e2d56fb806f5"
+tag = "v1"
+upstream = "python:3.11-slim + blake3-py"
+license = "MIT"
+
+# 说明：本家族补齐引擎 FileRef 对本地文件只有 size+mtime 的缺口。
+# 引擎对上传到对象存储的输出自动记 sha256；但外部下载/宿主直放文件没有内容锚。
+# 本节点输出统一格式的哈希锚表，供 §26.1 运行账本（输入哈希/输出哈希）引用。
+
+[[nodes]]
+kind = "file_hashes"
+desc = "Compute content digests (sha256/blake3) and size for every staged input file"
+doc = """
+对全部输入文件（FileSet 也逐个枚举）计算内容哈希，输出锚表 TSV。
+列：file, algorithm, digest, size_bytes。
+用途：G0 资源核验的 FILE_VERIFIED 证据、运行账本的输入/输出哈希锚（方案 §26.1）。
+引擎 FileRef 对本地文件只记 size+mtime；内容指纹必须经本节点显式计算。
+参数 algos 支持 sha256 与 blake3（缺省两者都算）。blake3 与项目快照导出
+(artifacts/snapshot_export) 的锚表算法一致。
+"""
+timeout_secs = 3600
+artifact_prefix = "/artifacts/file_hashes"
+
+[nodes.ports]
+inputs = [{ type = "file" }]
+outputs = [
+  { path = "hashes.tsv", format = "hash_table" },
+  { path = "file_hashes.log", format = "hash_log" },
+]
+
+[nodes.params]
+algos = { type = "string_array", default = ["sha256", "blake3"], doc = "digest algorithms; supported: sha256, blake3" }
+chunk_mb = { type = "int", default = 16, min = 1.0, doc = "streaming read chunk size in MiB (memory bound)" }
+
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/file_hashes.py"
+
+[nodes.command.env]
+HASHUTIL_ALGOS = "{{ algos }}"
+HASHUTIL_CHUNK_MB = "{{ chunk_mb }}"
+
+[nodes.resources]
+network = "isolated"
+cpus = 2
+memory = "512m"
+pull_policy = "never"

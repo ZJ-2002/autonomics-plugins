@@ -1,0 +1,51 @@
+schema_version = 1
+plugin_name = "cachexia-sensitivity"
+[image]
+reference = "localhost/cachexia-sensitivity@sha256:598f27c5f379e51614631e8f8d92eb99b6e3e5fe33c0be1e30a081cdc2bb6bc4"
+tag = "EValue-4.1.4-metap-1.14-R-4.6.1-official-local-proof"
+upstream = "Unmodified official CRAN EValue 4.1.4 and metap 1.14; complete frozen dependencies including Bioconductor 3.23"
+license = "GPL-2.0-or-later"
+
+[[nodes]]
+kind = "cachexia_evalue_official"
+desc = "Official EValue RR/OR/HR/OLS/MD functions with full result and explicit effect-scale lineage."
+doc = "Two frozen effect/request files; all five official scalar effect measures, confidence limits/SE, true target, rare-outcome assumption and OLS contrast are explicit. Five outputs retain complete official matrix/classes, every numeric field including missing/NaN/Inf tags, original input, method arguments, messages, warnings and ledger. Strict identity/domain guards are an execution contract, not identical R API error behavior. No causal identification or scientific release."
+timeout_secs = 600
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}]
+outputs = [{path="values.tsv",format="tsv"}, {path="state.rds",format="rds"}, {path="audit.json",format="json"}, {path="sensitivity.log",format="text"}, {path="input_ledger.tsv",format="tsv"}]
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/sensitivity.R"
+[nodes.command.env]
+CACHEXIA_SENSITIVITY_OPERATION = "evalue"
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"
+
+[[nodes]]
+kind = "cachexia_combine_pvalues_official"
+desc = "Official metap Fisher/Stouffer/Tippett/Wilkinson including weighted/log-scale complete results."
+doc = "Frozen component TSV and explicit hash/family/method contract. Expected IDs, component states and scales cannot change; missing components propagate and invalid values are never silently omitted. Preserves complete unmodified official result including sorted validp, weight/matrix attributes, df/r/alpha/critp/log-p, messages and original identity ledger. Package recoding, component omission and weights omission block analysis with full failed object retained diagnostically. Auxiliary independent continuous-uniform omnibus only; maximump is NOT the plan primary max-P IUT. No choice among methods, family reduction, scientific enablement or G0."
+timeout_secs = 600
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}]
+outputs = [{path="values.tsv",format="tsv"}, {path="state.rds",format="rds"}, {path="audit.json",format="json"}, {path="sensitivity.log",format="text"}, {path="input_ledger.tsv",format="tsv"}]
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/sensitivity.R"
+[nodes.command.env]
+CACHEXIA_SENSITIVITY_OPERATION = "combine"
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"

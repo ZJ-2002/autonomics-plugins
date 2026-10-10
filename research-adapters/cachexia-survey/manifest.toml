@@ -1,0 +1,249 @@
+schema_version = 1
+plugin_name = "cachexia-survey"
+
+[image]
+reference = "localhost/cachexia-survey@sha256:8186f7fc9fa4a75023821b8f0f22634b82c2112916c426a20ee40075c4753243"
+tag = "survey-4.5-R-4.6.1-local-proof"
+upstream = "CRAN survey 4.5; frozen official source archive compiled without patches"
+license = "GPL-2.0-or-later"
+
+[[nodes]]
+kind = "cachexia_survey_bind_contract"
+desc = "Bind only an upstream immutable RDS content SHA256 into an otherwise frozen analysis contract."
+doc = "Two Files: complete technical survey state and explicit unresolved template. Refuses changed axes/scope/qualification/budgets, duplicate keys and literal-hash replacement; only input0_sha256 may change. Outputs resolved JSON, audit and log. No statistical computation or autonomous method choice."
+timeout_secs = 300
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}]
+outputs = [{path="resolved_contract.json",format="json"}, {path="bind_audit.json",format="json"}, {path="bind.log",format="text"}]
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/bind_contract.R"
+[nodes.command.env]
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"
+
+[[nodes]]
+kind = "cachexia_survey_design"
+desc = "Build a fully frozen official survey design, including stages, zero weights and domains."
+doc = "Two Files: fully typed lexical TSV and exact JSON parameters/hash/row axis. Five summary TSV/full state RDS/audit/log/complete row-ledger outputs. Frozen synthetic technical scope, not actual CHARLS/ELSA/NHANES eligibility, primary family or G0; never rebuild calibrated designs from updated weights alone."
+timeout_secs = 600
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}]
+outputs = [{path="summary.tsv",format="tsv"}, {path="state.rds",format="rds"}, {path="audit.json",format="json"}, {path="survey.log",format="text"}, {path="row_ledger.tsv",format="tsv"}]
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/survey.R"
+[nodes.command.env]
+CACHEXIA_SURVEY_MODE = "design"
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"
+
+[[nodes]]
+kind = "cachexia_svymean"
+desc = "Official design-based means, complete variance matrix and explicit confidence-interval df."
+doc = "Two Files: complete upstream official design state RDS and exact JSON parameters/hash/row axis. Five summary TSV/full state RDS/audit/log/complete row-ledger outputs. Frozen synthetic technical scope, not actual CHARLS/ELSA/NHANES eligibility, primary family or G0; never rebuild calibrated designs from updated weights alone."
+timeout_secs = 600
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}]
+outputs = [{path="summary.tsv",format="tsv"}, {path="state.rds",format="rds"}, {path="audit.json",format="json"}, {path="survey.log",format="text"}, {path="row_ledger.tsv",format="tsv"}]
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/survey.R"
+[nodes.command.env]
+CACHEXIA_SURVEY_MODE = "mean"
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"
+
+[[nodes]]
+kind = "cachexia_svyvar"
+desc = "Official survey variance/covariance estimates with complete uncertainty."
+doc = "Two Files: complete upstream official design state RDS and exact JSON parameters/hash/row axis. Five summary TSV/full state RDS/audit/log/complete row-ledger outputs. Frozen synthetic technical scope, not actual CHARLS/ELSA/NHANES eligibility, primary family or G0; never rebuild calibrated designs from updated weights alone."
+timeout_secs = 600
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}]
+outputs = [{path="summary.tsv",format="tsv"}, {path="state.rds",format="rds"}, {path="audit.json",format="json"}, {path="survey.log",format="text"}, {path="row_ledger.tsv",format="tsv"}]
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/survey.R"
+[nodes.command.env]
+CACHEXIA_SURVEY_MODE = "var"
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"
+
+[[nodes]]
+kind = "cachexia_svyquantile"
+desc = "Official survey quantiles with frozen quantile/interval rules."
+doc = "Two Files: complete upstream official design state RDS and exact JSON parameters/hash/row axis. Five summary TSV/full state RDS/audit/log/complete row-ledger outputs. Frozen synthetic technical scope, not actual CHARLS/ELSA/NHANES eligibility, primary family or G0; never rebuild calibrated designs from updated weights alone."
+timeout_secs = 600
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}]
+outputs = [{path="summary.tsv",format="tsv"}, {path="state.rds",format="rds"}, {path="audit.json",format="json"}, {path="survey.log",format="text"}, {path="row_ledger.tsv",format="tsv"}]
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/survey.R"
+[nodes.command.env]
+CACHEXIA_SURVEY_MODE = "quantile"
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"
+
+[[nodes]]
+kind = "cachexia_svyglm"
+desc = "Official design-weighted GLM and complete coefficients/variance/intervals."
+doc = "Two Files: complete upstream official design state RDS and exact JSON parameters/hash/row axis. Five summary TSV/full state RDS/audit/log/complete row-ledger outputs. Frozen synthetic technical scope, not actual CHARLS/ELSA/NHANES eligibility, primary family or G0; never rebuild calibrated designs from updated weights alone."
+timeout_secs = 600
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}]
+outputs = [{path="summary.tsv",format="tsv"}, {path="state.rds",format="rds"}, {path="audit.json",format="json"}, {path="survey.log",format="text"}, {path="row_ledger.tsv",format="tsv"}]
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/survey.R"
+[nodes.command.env]
+CACHEXIA_SURVEY_MODE = "glm"
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"
+
+[[nodes]]
+kind = "cachexia_svyttest"
+desc = "Official design-based one/two-sample two-sided zero-null t-test."
+doc = "Two Files: complete upstream official design state RDS and exact JSON parameters/hash/row axis. Five summary TSV/full state RDS/audit/log/complete row-ledger outputs. Frozen synthetic technical scope, not actual CHARLS/ELSA/NHANES eligibility, primary family or G0; never rebuild calibrated designs from updated weights alone."
+timeout_secs = 600
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}]
+outputs = [{path="summary.tsv",format="tsv"}, {path="state.rds",format="rds"}, {path="audit.json",format="json"}, {path="survey.log",format="text"}, {path="row_ledger.tsv",format="tsv"}]
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/survey.R"
+[nodes.command.env]
+CACHEXIA_SURVEY_MODE = "ttest"
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"
+
+[[nodes]]
+kind = "cachexia_post_stratify"
+desc = "Official postStratify retaining calibration state, not just weights."
+doc = "Two Files: complete upstream official design state RDS and exact JSON parameters/hash/row axis. Five summary TSV/full state RDS/audit/log/complete row-ledger outputs. Frozen synthetic technical scope, not actual CHARLS/ELSA/NHANES eligibility, primary family or G0; never rebuild calibrated designs from updated weights alone."
+timeout_secs = 600
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}]
+outputs = [{path="summary.tsv",format="tsv"}, {path="state.rds",format="rds"}, {path="audit.json",format="json"}, {path="survey.log",format="text"}, {path="row_ledger.tsv",format="tsv"}]
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/survey.R"
+[nodes.command.env]
+CACHEXIA_SURVEY_MODE = "post"
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"
+
+[[nodes]]
+kind = "cachexia_rake"
+desc = "Official multi-margin raking retaining the full survey design."
+doc = "Two Files: complete upstream official design state RDS and exact JSON parameters/hash/row axis. Five summary TSV/full state RDS/audit/log/complete row-ledger outputs. Frozen synthetic technical scope, not actual CHARLS/ELSA/NHANES eligibility, primary family or G0; never rebuild calibrated designs from updated weights alone."
+timeout_secs = 600
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}]
+outputs = [{path="summary.tsv",format="tsv"}, {path="state.rds",format="rds"}, {path="audit.json",format="json"}, {path="survey.log",format="text"}, {path="row_ledger.tsv",format="tsv"}]
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/survey.R"
+[nodes.command.env]
+CACHEXIA_SURVEY_MODE = "rake"
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"
+
+[[nodes]]
+kind = "cachexia_calibrate"
+desc = "Official named-total GREG calibration preserving variance information."
+doc = "Two Files: complete upstream official design state RDS and exact JSON parameters/hash/row axis. Five summary TSV/full state RDS/audit/log/complete row-ledger outputs. Frozen synthetic technical scope, not actual CHARLS/ELSA/NHANES eligibility, primary family or G0; never rebuild calibrated designs from updated weights alone."
+timeout_secs = 600
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}]
+outputs = [{path="summary.tsv",format="tsv"}, {path="state.rds",format="rds"}, {path="audit.json",format="json"}, {path="survey.log",format="text"}, {path="row_ledger.tsv",format="tsv"}]
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/survey.R"
+[nodes.command.env]
+CACHEXIA_SURVEY_MODE = "calibrate"
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"
+
+[[nodes]]
+kind = "cachexia_trim_weights"
+desc = "Official trimWeights with frozen bounds and complete design preservation."
+doc = "Two Files: complete upstream official design state RDS and exact JSON parameters/hash/row axis. Five summary TSV/full state RDS/audit/log/complete row-ledger outputs. Frozen synthetic technical scope, not actual CHARLS/ELSA/NHANES eligibility, primary family or G0; never rebuild calibrated designs from updated weights alone."
+timeout_secs = 600
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}]
+outputs = [{path="summary.tsv",format="tsv"}, {path="state.rds",format="rds"}, {path="audit.json",format="json"}, {path="survey.log",format="text"}, {path="row_ledger.tsv",format="tsv"}]
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/survey.R"
+[nodes.command.env]
+CACHEXIA_SURVEY_MODE = "trim"
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"

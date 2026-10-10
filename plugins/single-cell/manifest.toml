@@ -1,0 +1,538 @@
+schema_version = 1
+plugin_name = "single-cell"
+
+[image]
+reference = "ghcr.io/auto-nomics/autonomics/single-cell-preprocessor@sha256:c34c26428d13804c2528bc734805c1ccfe909353604ac08da0ce9c68890e7e18"
+tag = "0.2.1"
+upstream = "scverse Scanpy 1.11.3 pinned runtime; python 3.11.11-slim base @ sha256:e61d857ebc3825e2aa7a698e9d46d8108d5980cafeb5ab783121f7a5b13d8b0b"
+license = "BSD-3-Clause"
+
+# The CellTypist model bundle is a family-level panel: the v0 manifest DSL
+# has no per-node panels, so every node in this family resolves the binding
+# (the ldsc munge precedent, which also carries panels it does not read).
+# Only the celltypist node actually reads the mount, through the runner
+# shim, which injects the model file as the legacy AUTONOMICS_INPUT1 path.
+[[panels]]
+binding = "model"
+mount = "/panels/celltypist_model"
+bundle = "wjixiang/catalog-celltypist-models-pan-immune"
+
+# ---------------------------------------------------------------------------
+# Preprocessor: 10x MatrixMarket inspect/ingest. Baked-runner style: the
+# image carries /opt/autonomics/preprocess.py and the manifest passes the
+# contract through env, exactly like the legacy Rust wrapper did.
+# ---------------------------------------------------------------------------
+[[nodes]]
+kind = "single_cell_preprocessor"
+desc = "Inspects or ingests 10x MatrixMarket single-cell inputs with Scanpy."
+doc = """
+Input ports are the MatrixMarket matrix, barcodes, features, and cell
+metadata. The default inspect operation reads only the matrix header,
+validates companion-table alignment, and emits a JSON report plus a
+metadata-only H5AD. The ingest operation loads expression values in a
+pinned Scanpy image and emits a full H5AD. Both operations validate
+metadata-table alignment with barcodes. The network is disabled and
+the root filesystem is read-only.
+"""
+timeout_secs = 3600
+# The legacy wrapper defaulted to the suffixed spelling; kept byte-identical
+# so published artifact paths do not move for existing DAG consumers.
+artifact_prefix = "/artifacts/single_cell_preprocessor_container"
+
+[nodes.ports]
+inputs = [
+  { type = "file", label = "matrix_mtx" },
+  { type = "file", label = "barcodes_tsv" },
+  { type = "file", label = "features_tsv" },
+  { type = "file", label = "cell_metadata" },
+]
+outputs = [
+  { path = "preprocess_report.json", format = "single_cell_preprocess_report_json" },
+  { path = "preprocessed.h5ad", format = "h5ad" },
+]
+
+[nodes.params]
+operation = { type = "string", default = "inspect", doc = "Header-only inspect or full expression ingest: inspect or ingest" }
+min_genes = { type = "int", default = 0, min = 0.0, doc = "Ingest only: keep cells with at least this many detected genes (0 disables)" }
+min_cells = { type = "int", default = 0, min = 0.0, doc = "Ingest only: keep genes detected in at least this many cells (0 disables)" }
+normalize_total = { type = "bool", default = false, doc = "Ingest only: normalize counts to 10000 per cell and log1p, keeping raw counts in the counts layer" }
+metadata_separator = { type = "string", default = "auto", doc = "Cell metadata column separator: auto, tab, or comma" }
+
+[nodes.command]
+interpreter = "python"
+argv = ["/opt/autonomics/preprocess.py"]
+
+[nodes.command.env]
+AUTONOMICS_SINGLE_CELL_OPERATION = "{{ operation }}"
+AUTONOMICS_SINGLE_CELL_MIN_GENES = "{{ min_genes }}"
+AUTONOMICS_SINGLE_CELL_MIN_CELLS = "{{ min_cells }}"
+AUTONOMICS_SINGLE_CELL_NORMALIZE_TOTAL = "{{ normalize_total }}"
+AUTONOMICS_SINGLE_CELL_METADATA_SEP = "{{ metadata_separator }}"
+
+[nodes.resources]
+cpus = 2.0
+memory = "8Gi"
+pids_limit = 512
+shm_size = "1Gi"
+
+# ---------------------------------------------------------------------------
+# H5AD workflow family. All ten share one runner shim (scripts/
+# run_workflow.py) that rebuilds the legacy params.json from SC_P_ env
+# vars and execs /opt/autonomics/workflow.py baked into the image.
+# Param kinds: SC_P_<INT|NUM|BOOL|LST|JSON|STR>_<name>.
+# ---------------------------------------------------------------------------
+
+[[nodes]]
+kind = "h5ad_qc_filter"
+desc = "Filters cells and genes in an H5AD and emits a QC report."
+doc = """
+Input port 0 is H5AD. Output ports are output.h5ad then report.json.
+Computes per-cell gene/total counts and mitochondrial and ribosomal
+percentages, then filters cells and genes by the configured thresholds.
+The matrix remains opaque to the host and is processed only in the
+pinned Python image.
+"""
+timeout_secs = 3600
+artifact_prefix = "/artifacts/h5ad_qc_filter"
+
+[nodes.ports]
+inputs = [{ type = "file", label = "h5ad" }]
+outputs = [
+  { path = "output.h5ad", format = "h5ad" },
+  { path = "report.json", format = "single_cell_workflow_report_json" },
+]
+
+[nodes.params]
+min_genes = { type = "int", default = 0, min = 0.0, doc = "Keep cells with at least this many detected genes (0 disables)" }
+max_genes = { type = "int", default = 0, min = 0.0, doc = "Drop cells with more than this many detected genes (0 disables)" }
+min_cells = { type = "int", default = 0, min = 0.0, doc = "Keep genes detected in at least this many cells (0 disables)" }
+max_cells = { type = "int", default = 0, min = 0.0, doc = "Drop genes detected in more than this many cells (0 disables)" }
+max_pct_mt = { type = "number", default = 100.0, min = 0.0, max = 100.0, doc = "Drop cells whose mitochondrial percentage exceeds this value" }
+max_pct_rb = { type = "number", default = 100.0, min = 0.0, max = 100.0, doc = "Drop cells whose ribosomal percentage exceeds this value" }
+mt_gene_pattern = { type = "string", default = "^MT-", doc = "Regex selecting mitochondrial genes in var_names" }
+rb_gene_pattern = { type = "string", default = "^RPL|^RPS", doc = "Regex selecting ribosomal genes in var_names" }
+
+[nodes.command]
+interpreter = "python"
+script_file = "scripts/run_workflow.py"
+
+[nodes.command.env]
+AUTONOMICS_SINGLE_CELL_WORKFLOW = "qc_filter"
+AUTONOMICS_SINGLE_CELL_PARAMS = "/work/.autonomics/files/params.json"
+SC_P_INT_MIN_GENES = "{{ min_genes }}"
+SC_P_INT_MAX_GENES = "{{ max_genes }}"
+SC_P_INT_MIN_CELLS = "{{ min_cells }}"
+SC_P_INT_MAX_CELLS = "{{ max_cells }}"
+SC_P_NUM_MAX_PCT_MT = "{{ max_pct_mt }}"
+SC_P_NUM_MAX_PCT_RB = "{{ max_pct_rb }}"
+SC_P_STR_MT_GENE_PATTERN = "{{ mt_gene_pattern }}"
+SC_P_STR_RB_GENE_PATTERN = "{{ rb_gene_pattern }}"
+
+[nodes.resources]
+cpus = 2.0
+memory = "8Gi"
+pids_limit = 512
+shm_size = "1Gi"
+
+[[nodes]]
+kind = "h5ad_pca_neighbors_umap_leiden"
+desc = "Runs normalization/HVG/PCA plus neighbors, UMAP, and Leiden on an H5AD."
+doc = """
+Input port 0 is H5AD. Output ports are output.h5ad then report.json.
+If X_pca is absent, normalization, HVG selection, and PCA run before
+neighbors, UMAP, and Leiden; an existing X_pca is reused and must carry
+at least n_pcs components. Runs hot (4 CPUs, 16Gi memory) because the
+PCA and UMAP steps dominate single-node latency.
+"""
+timeout_secs = 7200
+artifact_prefix = "/artifacts/h5ad_pca_neighbors_umap_leiden"
+
+[nodes.ports]
+inputs = [{ type = "file", label = "h5ad" }]
+outputs = [
+  { path = "output.h5ad", format = "h5ad" },
+  { path = "report.json", format = "single_cell_workflow_report_json" },
+]
+
+[nodes.params]
+n_pcs = { type = "int", default = 30, min = 1.0, doc = "Number of principal components used for neighbors and UMAP" }
+n_neighbors = { type = "int", default = 15, min = 2.0, doc = "Neighbors graph size; must be smaller than the cell count" }
+n_top_genes = { type = "int", default = 2000, min = 1.0, doc = "HVG pool size when PCA must be computed" }
+resolution = { type = "number", default = 0.5, exclusive_min = 0.0, doc = "Leiden clustering resolution" }
+min_dist = { type = "number", default = 0.5, min = 0.0, exclusive_max = 1.0, doc = "UMAP minimum distance, in [0, 1)" }
+random_state = { type = "int", default = 0, doc = "Seed for PCA, neighbors, UMAP, and Leiden" }
+normalize = { type = "bool", default = true, doc = "Normalize total counts to 10000 before log1p/HVG/PCA" }
+log1p = { type = "bool", default = true, doc = "Apply log1p after normalization" }
+subset_hvg = { type = "bool", default = false, doc = "Subset the matrix to the HVG pool before PCA" }
+scale = { type = "bool", default = false, doc = "Scale to zero mean and unit variance (max value 10) before PCA" }
+
+[nodes.command]
+interpreter = "python"
+script_file = "scripts/run_workflow.py"
+
+[nodes.command.env]
+AUTONOMICS_SINGLE_CELL_WORKFLOW = "pca_neighbors_umap_leiden"
+AUTONOMICS_SINGLE_CELL_PARAMS = "/work/.autonomics/files/params.json"
+SC_P_INT_N_PCS = "{{ n_pcs }}"
+SC_P_INT_N_NEIGHBORS = "{{ n_neighbors }}"
+SC_P_INT_N_TOP_GENES = "{{ n_top_genes }}"
+SC_P_NUM_RESOLUTION = "{{ resolution }}"
+SC_P_NUM_MIN_DIST = "{{ min_dist }}"
+SC_P_INT_RANDOM_STATE = "{{ random_state }}"
+SC_P_BOOL_NORMALIZE = "{{ normalize }}"
+SC_P_BOOL_LOG1P = "{{ log1p }}"
+SC_P_BOOL_SUBSET_HVG = "{{ subset_hvg }}"
+SC_P_BOOL_SCALE = "{{ scale }}"
+
+[nodes.resources]
+cpus = 4.0
+memory = "16Gi"
+pids_limit = 512
+shm_size = "2Gi"
+
+[[nodes]]
+kind = "h5ad_celltypist_annotate"
+desc = "Annotates an H5AD with the catalog-backed CellTypist model."
+doc = """
+Input port 0 is H5AD. Output ports are output.h5ad then report.json.
+The CellTypist model comes from the published pan-immune catalog bundle
+mounted at /panels/celltypist_model; model_file selects the pickle
+within that bundle. obs gains celltypist_label and celltypist_conf_score.
+Network access is disabled.
+"""
+timeout_secs = 3600
+artifact_prefix = "/artifacts/h5ad_celltypist_annotate"
+
+[nodes.ports]
+inputs = [{ type = "file", label = "h5ad" }]
+outputs = [
+  { path = "output.h5ad", format = "h5ad" },
+  { path = "report.json", format = "single_cell_workflow_report_json" },
+]
+
+[nodes.params]
+majority_voting = { type = "bool", default = false, doc = "Run CellTypist majority-voting refinement over the over-clustering labels" }
+model_file = { type = "string", default = "Immune_All_Low.pkl", doc = "Model pickle name inside the published celltypist model bundle" }
+
+[nodes.command]
+interpreter = "python"
+script_file = "scripts/run_workflow.py"
+
+[nodes.command.env]
+AUTONOMICS_SINGLE_CELL_WORKFLOW = "celltypist_annotate"
+AUTONOMICS_SINGLE_CELL_PARAMS = "/work/.autonomics/files/params.json"
+SC_P_BOOL_MAJORITY_VOTING = "{{ majority_voting }}"
+SC_P_STR_MODEL_FILE = "{{ model_file }}"
+SC_MODEL_DIR = "/panels/celltypist_model"
+SC_MODEL_FILE = "{{ model_file }}"
+
+[nodes.resources]
+cpus = 2.0
+memory = "8Gi"
+pids_limit = 512
+shm_size = "1Gi"
+
+[[nodes]]
+kind = "h5ad_subset_by_obs"
+desc = "Subsets an H5AD by cell IDs read from a Parquet sidecar."
+doc = """
+Input ports are H5AD then selection Parquet. Output ports are output.h5ad
+then report.json. By default the Parquet cell_id column selects obs_names;
+join_column may name any obs column to match on instead.
+"""
+timeout_secs = 3600
+artifact_prefix = "/artifacts/h5ad_subset_by_obs"
+
+[nodes.ports]
+inputs = [
+  { type = "file", label = "h5ad" },
+  { type = "file", label = "selection_parquet" },
+]
+outputs = [
+  { path = "output.h5ad", format = "h5ad" },
+  { path = "report.json", format = "single_cell_workflow_report_json" },
+]
+
+[nodes.params]
+join_column = { type = "string", default = "cell_id", doc = "Parquet column selecting obs_names (cell_id) or another obs column to match on" }
+
+[nodes.command]
+interpreter = "python"
+script_file = "scripts/run_workflow.py"
+
+[nodes.command.env]
+AUTONOMICS_SINGLE_CELL_WORKFLOW = "subset_by_obs"
+AUTONOMICS_SINGLE_CELL_PARAMS = "/work/.autonomics/files/params.json"
+SC_P_STR_JOIN_COLUMN = "{{ join_column }}"
+
+[nodes.resources]
+cpus = 2.0
+memory = "8Gi"
+pids_limit = 512
+shm_size = "1Gi"
+
+[[nodes]]
+kind = "sc_dense_ingest"
+desc = "Ingests a dense CSV/TSV gene-by-cell or cell-by-gene count matrix into H5AD."
+doc = """
+Input port 0 is a CSV/TSV(.gz) count matrix. Output ports are output.h5ad
+then report.json. genes_by_cells expects genes in rows; cells_by_genes is
+transposed automatically. The legacy path parameter (ingest a host file
+without an input edge) has no manifest equivalent: stage the matrix
+through the input port instead.
+"""
+timeout_secs = 3600
+artifact_prefix = "/artifacts/sc_dense_ingest"
+
+[nodes.ports]
+inputs = [{ type = "file", label = "count_matrix" }]
+outputs = [
+  { path = "output.h5ad", format = "h5ad" },
+  { path = "report.json", format = "single_cell_workflow_report_json" },
+]
+
+[nodes.params]
+orientation = { type = "string", doc = "Matrix layout: genes_by_cells or cells_by_genes" }
+delimiter = { type = "string", default = "auto", doc = "Field separator: auto, tab, comma, semicolon, pipe, or any single character" }
+has_header = { type = "bool", default = true, doc = "First row is the gene/column header" }
+min_genes = { type = "int", default = 0, min = 0.0, doc = "Keep cells with at least this many detected genes (0 disables)" }
+min_cells = { type = "int", default = 0, min = 0.0, doc = "Keep genes detected in at least this many cells (0 disables)" }
+sample_label = { type = "string", optional = true, doc = "Optional constant written to the sample obs column" }
+condition_label = { type = "string", optional = true, doc = "Optional constant written to the condition obs column" }
+
+[nodes.command]
+interpreter = "python"
+script_file = "scripts/run_workflow.py"
+
+[nodes.command.env]
+AUTONOMICS_SINGLE_CELL_WORKFLOW = "dense_ingest"
+AUTONOMICS_SINGLE_CELL_PARAMS = "/work/.autonomics/files/params.json"
+SC_P_STR_ORIENTATION = "{{ orientation }}"
+SC_P_STR_DELIMITER = "{{ delimiter }}"
+SC_P_BOOL_HAS_HEADER = "{{ has_header }}"
+SC_P_INT_MIN_GENES = "{{ min_genes }}"
+SC_P_INT_MIN_CELLS = "{{ min_cells }}"
+SC_P_STR_SAMPLE_LABEL = "{{ sample_label }}"
+SC_P_STR_CONDITION_LABEL = "{{ condition_label }}"
+
+[nodes.resources]
+cpus = 2.0
+memory = "8Gi"
+pids_limit = 512
+shm_size = "1Gi"
+
+[[nodes]]
+kind = "h5ad_rank_genes_groups"
+desc = "Runs Scanpy rank_genes_groups and emits a tidy Parquet marker table."
+doc = """
+Input port 0 is H5AD. Outputs are rank_genes_groups.parquet, report.json,
+and output.h5ad with the Scanpy result stored in uns. method must be one
+of wilcoxon, t-test, t-test_overestim_var, or logreg (enforced inside the
+workflow runner, as in the legacy wrapper).
+"""
+timeout_secs = 3600
+artifact_prefix = "/artifacts/h5ad_rank_genes_groups"
+
+[nodes.ports]
+inputs = [{ type = "file", label = "h5ad" }]
+outputs = [
+  { path = "rank_genes_groups.parquet", format = "parquet" },
+  { path = "report.json", format = "single_cell_workflow_report_json" },
+  { path = "output.h5ad", format = "h5ad" },
+]
+
+[nodes.params]
+groupby = { type = "string", doc = "obs column holding the cluster labels to rank against" }
+method = { type = "string", default = "wilcoxon", doc = "Ranking method: wilcoxon, t-test, t-test_overestim_var, or logreg" }
+reference = { type = "string", default = "rest", doc = "Reference cluster label, or rest for all remaining cells" }
+n_genes = { type = "int", default = 100, min = 1.0, doc = "Markers per group to report" }
+
+[nodes.command]
+interpreter = "python"
+script_file = "scripts/run_workflow.py"
+
+[nodes.command.env]
+AUTONOMICS_SINGLE_CELL_WORKFLOW = "rank_genes_groups"
+AUTONOMICS_SINGLE_CELL_PARAMS = "/work/.autonomics/files/params.json"
+SC_P_STR_GROUPBY = "{{ groupby }}"
+SC_P_STR_METHOD = "{{ method }}"
+SC_P_STR_REFERENCE = "{{ reference }}"
+SC_P_INT_N_GENES = "{{ n_genes }}"
+
+[nodes.resources]
+cpus = 2.0
+memory = "8Gi"
+pids_limit = 512
+shm_size = "1Gi"
+
+[[nodes]]
+kind = "h5ad_cluster_mean_expression"
+desc = "Exports cluster-by-gene mean expression and optionally expression fractions."
+doc = """
+Input port 0 is H5AD. The single output is a long Parquet table with
+cluster, gene, mean_expression, and (default on) pct_expressed columns.
+genes selects var_names; leave it empty to score every gene. normalize
+must be cp10k or none (cp10k prefers the counts layer).
+"""
+timeout_secs = 3600
+artifact_prefix = "/artifacts/h5ad_cluster_mean_expression"
+
+[nodes.ports]
+inputs = [{ type = "file", label = "h5ad" }]
+outputs = [
+  { path = "cluster_mean_expression.parquet", format = "parquet" },
+]
+
+[nodes.params]
+groupby = { type = "string", doc = "obs column holding the cluster labels to average over" }
+genes = { type = "string_array", default = [], doc = "Gene symbols to report; empty means all var_names" }
+normalize = { type = "string", default = "cp10k", doc = "Input scaling: cp10k or none" }
+include_percent_expressed = { type = "bool", default = true, doc = "Add the fraction of cells in the cluster expressing each gene" }
+
+[nodes.command]
+interpreter = "python"
+script_file = "scripts/run_workflow.py"
+
+[nodes.command.env]
+AUTONOMICS_SINGLE_CELL_WORKFLOW = "cluster_mean_expression"
+AUTONOMICS_SINGLE_CELL_PARAMS = "/work/.autonomics/files/params.json"
+SC_P_STR_GROUPBY = "{{ groupby }}"
+SC_P_LST_GENES = "{{ genes }}"
+SC_P_STR_NORMALIZE = "{{ normalize }}"
+SC_P_BOOL_INCLUDE_PERCENT_EXPRESSED = "{{ include_percent_expressed }}"
+
+[nodes.resources]
+cpus = 2.0
+memory = "8Gi"
+pids_limit = 512
+shm_size = "1Gi"
+
+[[nodes]]
+kind = "gene_set_score"
+desc = "Scores per-cell gene sets with Scanpy score_genes."
+doc = """
+Input port 0 is H5AD. Output ports are output.h5ad then report.json; each
+score is added to obs using the configured gene-set key. gene_sets is a
+JSON object (passed as a string) mapping gene-set name to an array of gene
+symbols; every set needs at least two distinct genes on the selected raw
+axis when raw exists, otherwise var_names. Scanpy 1.11.3 parameters are
+explicit: ctrl_as_ref=true, n_bins=25, gene_pool=None, layer=None. ctrl_size
+is not clamped. Nonfinite official scores remain in H5AD; all-cell summary
+statistics become null and the report records NONFINITE_OFFICIAL_SCORES.
+"""
+timeout_secs = 3600
+artifact_prefix = "/artifacts/gene_set_score"
+
+[nodes.ports]
+inputs = [{ type = "file", label = "h5ad" }]
+outputs = [
+  { path = "output.h5ad", format = "h5ad" },
+  { path = "report.json", format = "single_cell_workflow_report_json" },
+]
+
+[nodes.params]
+gene_sets = { type = "string", doc = "JSON object mapping gene-set name to array of gene symbols, e.g. \"{\\\"cytotoxic\\\": [\\\"NKG7\\\", \\\"GNLY\\\"]}\"" }
+ctrl_size = { type = "int", default = 50, min = 1.0, doc = "Size of the random control pool per gene set" }
+random_state = { type = "int", default = 0, min = 0.0, max = 4294967295.0, doc = "NumPy RandomState seed for the control pool sampling" }
+
+[nodes.command]
+interpreter = "python"
+script_file = "scripts/score_genes.py"
+
+[nodes.command.env]
+SC_P_JSON_GENE_SETS = "{{ gene_sets }}"
+SC_P_INT_CTRL_SIZE = "{{ ctrl_size }}"
+SC_P_INT_RANDOM_STATE = "{{ random_state }}"
+
+[nodes.resources]
+cpus = 2.0
+memory = "8Gi"
+pids_limit = 512
+shm_size = "1Gi"
+
+[[nodes]]
+kind = "h5ad_marker_annotate"
+desc = "Annotates cells or clusters with cell-type labels from a marker-gene dictionary."
+doc = """
+Input port 0 is H5AD. Output ports are output.h5ad then report.json.
+marker_sets is a JSON object (passed as a string) mapping a cell-type
+label to its marker gene panel. Each set is scored per cell (mean marker
+expression after normalization; groupby averages over cluster members
+instead) and the best label wins: obs gains marker_label, marker_score,
+and marker_margin; labels whose best score is not above min_score fall
+back to unknown_label. normalize must be log_cp10k or none.
+"""
+timeout_secs = 3600
+artifact_prefix = "/artifacts/h5ad_marker_annotate"
+
+[nodes.ports]
+inputs = [{ type = "file", label = "h5ad" }]
+outputs = [
+  { path = "output.h5ad", format = "h5ad" },
+  { path = "report.json", format = "single_cell_workflow_report_json" },
+]
+
+[nodes.params]
+marker_sets = { type = "string", doc = "JSON object mapping cell-type label to marker gene array, e.g. \"{\\\"T cell\\\": [\\\"CD3D\\\", \\\"CD3E\\\"]}\"" }
+groupby = { type = "string", optional = true, doc = "Optional obs column (e.g. leiden): labels are decided per cluster and propagated to every cell" }
+normalize = { type = "string", default = "log_cp10k", doc = "Input scaling before scoring: log_cp10k or none" }
+min_score = { type = "number", default = 0.0, doc = "Best scores not strictly above this fall back to unknown_label" }
+unknown_label = { type = "string", default = "Unknown", doc = "Label assigned when no marker set wins" }
+
+[nodes.command]
+interpreter = "python"
+script_file = "scripts/run_workflow.py"
+
+[nodes.command.env]
+AUTONOMICS_SINGLE_CELL_WORKFLOW = "marker_annotate"
+AUTONOMICS_SINGLE_CELL_PARAMS = "/work/.autonomics/files/params.json"
+SC_P_JSON_MARKER_SETS = "{{ marker_sets }}"
+SC_P_STR_GROUPBY = "{{ groupby }}"
+SC_P_STR_NORMALIZE = "{{ normalize }}"
+SC_P_NUM_MIN_SCORE = "{{ min_score }}"
+SC_P_STR_UNKNOWN_LABEL = "{{ unknown_label }}"
+
+[nodes.resources]
+cpus = 2.0
+memory = "8Gi"
+pids_limit = 512
+shm_size = "1Gi"
+
+[[nodes]]
+kind = "h5ad_ucell_score"
+desc = "Scores per-cell gene sets with rank-based UCell statistics."
+doc = """
+Input port 0 is H5AD. Output ports are output.h5ad then report.json.
+gene_sets is a JSON object (passed as a string) mapping gene-set name to
+its signature genes; each gets a UCell rank-based score in obs: mean of
+margin/(margin+rank) over the signature (rank 1 = highest expression,
+margin = (n_genes - signature size)/2), bounded 0-1, library-size
+independent, computed on the raw matrix without normalization.
+"""
+timeout_secs = 3600
+artifact_prefix = "/artifacts/h5ad_ucell_score"
+
+[nodes.ports]
+inputs = [{ type = "file", label = "h5ad" }]
+outputs = [
+  { path = "output.h5ad", format = "h5ad" },
+  { path = "report.json", format = "single_cell_workflow_report_json" },
+]
+
+[nodes.params]
+gene_sets = { type = "string", doc = "JSON object mapping gene-set name to signature gene array, e.g. \"{\\\"cytotoxic\\\": [\\\"NKG7\\\", \\\"GNLY\\\"]}\"" }
+
+[nodes.command]
+interpreter = "python"
+script_file = "scripts/run_workflow.py"
+
+[nodes.command.env]
+AUTONOMICS_SINGLE_CELL_WORKFLOW = "ucell_score"
+AUTONOMICS_SINGLE_CELL_PARAMS = "/work/.autonomics/files/params.json"
+SC_P_JSON_GENE_SETS = "{{ gene_sets }}"
+
+[nodes.resources]
+cpus = 2.0
+memory = "8Gi"
+pids_limit = 512
+shm_size = "1Gi"

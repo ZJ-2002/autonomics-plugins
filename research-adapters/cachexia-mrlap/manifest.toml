@@ -1,0 +1,31 @@
+schema_version = 1
+plugin_name = "cachexia-mrlap"
+
+[image]
+reference = "ghcr.io/zj-2002/mrlap-official@sha256:78f195b862a3b7c5f8d96a96576cfb2c66b08f9bd31a739da59a017726cd063d"
+tag = "MRlap-0.0.3.3-frozen-reference-BLAS"
+upstream = "MRlap 660f026864f8bfbbad5a8206bdff7d58f5d5d05b; GenomicSEM da95d431a4709693d07eae55e172ade55526948b; TwoSampleMR d4df21929fdabeb2f89686ffaad0db5f56973d64"
+license = "GPL-3.0"
+
+[[panels]]
+binding = "ldsc_assets"
+mount = "/panels/ldsc_assets"
+bundle = "ZJ-2002/catalog-mrlap-ldsc-eur-w-ld-hm3-no-mhc"
+
+[[nodes]]
+kind = "cachexia_mrlap_official"
+desc = "Frozen official MRlap with fail-closed data/panel identities and no conventional-IVW fallback."
+doc = "Exposure GWAS, outcome GWAS, unique requested IV list and explicit frozen contract. Fixed do_pruning=FALSE canonical parameters, exact integer seed, three method package versions and content identity of all 49 panel-manifest files, including 45 required LD files. Preserves official RDS and complete requested/retained IV ledger. LEGACY_SEEN technical reproduction only; standardized MRlap and conventional IVW are different estimands."
+timeout_secs = 1800
+artifact_prefix = "/artifacts/cachexia_mrlap_official"
+[nodes.resources]
+cpus = 2.0
+memory = "8Gi"
+network = "isolated"
+pull_policy = "never"
+[nodes.ports]
+inputs = [{ type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }]
+outputs = [{ path = "mrlap_summary.tsv", format = "tsv" }, { path = "mrlap.RDS", format = "r_rds" }, { path = "mrlap_result.txt", format = "text" }, { path = "mrlap.log", format = "text" }, { path = "audit.tsv", format = "tsv" }, { path = "iv_retention.tsv", format = "tsv" }]
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/mrlap.R"

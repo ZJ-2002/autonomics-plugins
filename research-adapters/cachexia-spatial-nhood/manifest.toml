@@ -1,0 +1,48 @@
+schema_version = 1
+plugin_name = "cachexia-spatial-nhood"
+
+[image]
+reference = "ghcr.io/zj-2002/biotools-py@sha256:7ad6aeafa87672699d28b61b6bed12fc81fcdbfc43222a0abf17e2d56fb806f5"
+upstream = "scikit-learn1.9.1/NumPy2.4.6; custom label-exchange statistic, not Squidpy equivalence"
+license = "BSD-3-Clause"
+
+[[nodes]]
+kind = "spatial_nhood"
+desc = "Repaired legacy label-exchange neighborhood null; v4.1 spatial main analysis BLOCKED."
+doc = "One TSV File with finite x/y, exact lexical labels, optional block column. Two Files: complete unordered label-pair TSV and log. Uses official training-query self-excluding nearest-neighbor graph within each block, fixed graph and within-block label exchange. True unbiased null SD; degenerate z missing, never epsilon-fabricated. Incremental exact integer sums/squares, no B by L by L storage. No rows/levels/permutations dropped for budget. Label exchange does NOT preserve spatial autocorrelation; anatomy/density-preserving plan null remains TO_LOCK. analysis_role=B_SPATIAL_MAIN is refused before computation. This is not official Squidpy semantics or donor-level inference, not production registration or G0."
+timeout_secs = 7200
+artifact_prefix = "/artifacts/spatial_nhood"
+[nodes.ports]
+inputs = [{type="file"}]
+outputs = [{path="nhood_enrichment.tsv",format="nhood_enrichment"}, {path="spatial_nhood.log",format="nhood_log"}]
+[nodes.params]
+x_col = {type="string",default="x_centroid",doc="Exact coordinate column"}
+y_col = {type="string",default="y_centroid",doc="Exact coordinate column"}
+label_col = {type="string",default="celltype",doc="Exact lexical label column; literal NA and leading zeros preserved"}
+n_neighbors = {type="int",default=6,min=1.0,doc="Per-block neighbors excluding self; blocks smaller than k+1 explicitly reported"}
+n_perm = {type="int",default=1000,min=100.0,doc="Exact requested iterations, empirical tails (b+1)/(B+1)"}
+seed = {type="int",default=42,min=0.0,doc="Frozen NumPy default_rng seed"}
+block_column = {type="string",optional=true,doc="Exact column restricting graph AND label exchange; absent=global with explicit warning"}
+analysis_role = {type="string",default="legacy_label_exchange",doc="Only legacy_label_exchange; B_SPATIAL_MAIN refused until spatial structure-preserving null locked"}
+max_pair_entries = {type="int",default=4000000,min=1.0,doc="Budget guard on L squared, never changes the label or test universe"}
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/spatial_nhood.py"
+[nodes.command.env]
+NH_X_COL = "{{ x_col }}"
+NH_Y_COL = "{{ y_col }}"
+NH_LABEL_COL = "{{ label_col }}"
+NH_K = "{{ n_neighbors }}"
+NH_PERM = "{{ n_perm }}"
+NH_SEED = "{{ seed }}"
+NH_BLOCK_COL = "{{ block_column }}"
+NH_ANALYSIS_ROLE = "{{ analysis_role }}"
+NH_MAX_PAIR_ENTRIES = "{{ max_pair_entries }}"
+OMP_NUM_THREADS = "1"
+OPENBLAS_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+[nodes.resources]
+cpus = 2.0
+memory = "8Gi"
+network = "isolated"
+pull_policy = "never"

@@ -1,0 +1,30 @@
+schema_version = 1
+plugin_name = "cachexia-celltypist"
+
+[image]
+reference = "localhost/autonomics/single-cell-preprocessor@sha256:5069c3ffaac0b11dfe950c1cd026f4195317be47b529b730572d9e670ad0f59b"
+upstream = "CellTypist 1.7.1 / Pan Immune v2 / Scanpy 1.11.3 / AnnData 0.11.4"
+license = "MIT"
+
+[[nodes]]
+kind = "cachexia_h5ad_celltypist"
+desc = "Official CellTypist frozen pan-immune model inference with full scores and explicit annotation-only scope."
+doc = "Three Files: H5AD, authenticated original official Immune_All_Low/High v2 pickle, exact frozen JSON contract. Explicit log1p CP10k X/layer, full axes, model and input hashes, gene coverage, best/prob match and optional pre-frozen over-clusters. No implicit normalization/raw fallback, species mapping, automatic clustering, model subset/training, candidate-driven annotation, tissue eligibility or G0. Six ports preserve all decision/probability columns, official labels/confidence semantics and unrelated H5AD content. Invalid requests block with frozen ID retained."
+timeout_secs = 3600
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}, {type="file"}]
+outputs = [{path="result.parquet",format="parquet"}, {path="output.h5ad",format="h5ad"}, {path="audit.json",format="json"}, {path="celltypist.log",format="text"}, {path="genes.tsv",format="tsv"}, {path="request_ledger.tsv",format="tsv"}]
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/annotate.py"
+[nodes.command.env]
+NUMBA_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+OPENBLAS_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+CELLTYPIST_FOLDER = "/work/.celltypist"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"

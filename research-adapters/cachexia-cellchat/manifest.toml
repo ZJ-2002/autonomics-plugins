@@ -1,0 +1,28 @@
+schema_version = 1
+plugin_name = "cachexia-cellchat"
+[image]
+reference = "ghcr.io/zj-2002/cellchat@sha256:6fdc08a21395fd2710cb9ac0d632079adb1364ae621fc4f8f809f5b368d09f4b"
+tag = "CellChat-75253cd0-presto-b5df6ee6-frozen-contract"
+upstream = "Unmodified jinworks/CellChat 75253cd0c9e68410e6e721a6d3a0419a1d7e358f, embedded human/mouse DB and immunogenomics/presto b5df6ee6097eb62522f2e557aa93ac21bab2d05f"
+license = "GPL-3.0-only"
+[[nodes]]
+kind = "cachexia_cellchat_official"
+desc = "Official nonspatial CellChat candidate inference with explicit scale, identities and complete LR universe."
+doc = "H5AD plus frozen contract JSON, no parameter defaults or normalization heuristic. Human/mouse full/secreted DB, official triMean/raw.use pipeline, fixed explicit seed/nboot, one worker. Eight outputs retain all inferred LR probabilities/P values (not significant-only), full S4, complete DB/group-pair ledger including not-estimated combinations, cells/genes, RNG/warnings, audit/log. Cell-label bootstrap is NOT donor-level inference, circulation, cross-organ transport, causal evidence or G0. Spatial/pooled tissues and unknown scale rejected. Isolated research adapter; not resident deployment or certification of the original wrapper/full method domain."
+timeout_secs = 600
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}]
+outputs = [{path="values.tsv",format="tsv"}, {path="cellchat.rds",format="rds"}, {path="audit.json",format="json"}, {path="cellchat.log",format="text"}, {path="cells.tsv",format="tsv"}, {path="genes.tsv",format="tsv"}, {path="state.rds",format="rds"}, {path="family.tsv",format="tsv"}]
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/cellchat.R"
+[nodes.command.env]
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+LC_ALL = "C"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"

@@ -1,0 +1,49 @@
+schema_version = 1
+plugin_name = "cachexia-cmap"
+
+[image]
+reference = "ghcr.io/zj-2002/biotools-py@sha256:7ad6aeafa87672699d28b61b6bed12fc81fcdbfc43222a0abf17e2d56fb806f5"
+upstream = "SciPy1.17.1 Pearson/Spearman; custom rank reversal is NOT Broad WTCS/NCS/tau"
+license = "BSD-3-Clause"
+
+[[nodes]]
+kind = "cachexia_cmap_correlation"
+desc = "Frozen full-family query/reference Pearson or Spearman response comparison."
+doc = "Four immutable Files: query TSV, GCT1.2/GCTX (plain or gzip), all-signature metadata TSV, exact frozen JSON. Nine outputs retain all source inputs, query/reference values, metadata and whole frozen family including nonestimable signatures. Direct SciPy1.17.1 pearsonr/spearmanr, no native rewritten correlation; returned P is only gene-level diagnostic, not donor inference or treatment efficacy. Complete condition metadata must be frozen before execution. Not official Broad CMap WTCS/NCS/tau or automatic study release."
+timeout_secs = 3600
+[nodes.ports]
+inputs = [{type="file"},{type="file"},{type="file"},{type="file"}]
+outputs = [{path="scores.parquet",format="parquet"},{path="query.parquet",format="parquet"},{path="reference.parquet",format="parquet"},{path="metadata.parquet",format="parquet"},{path="audit.json",format="json"},{path="request_ledger.tsv",format="tsv"},{path="cmap.log",format="text"},{path="gene_ledger.parquet",format="parquet"},{path="source_inputs.zip",format="zip"}]
+[nodes.command]
+interpreter = "python3"
+script_file = "compare.py"
+[nodes.command.env]
+CMAP_CLASS = "correlation"
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"
+
+[[nodes]]
+kind = "cachexia_cmap_rank_reversal"
+desc = "Explicit frozen custom rank-reversal sensitivity, never official CMap scores."
+doc = "Same four inputs and nine outputs as correlation. Metric exploratory_rank_reversal only. Frozen up/down membership and legacy-double-argsort or explicit average-rank reference tie policy; no runtime top-N choice or hidden averaging. Constant or missing input rows retained as nonestimable. No p-values invented. Custom statistical official layer NOT_APPLICABLE; NOT WTCS/NCS/tau."
+timeout_secs = 3600
+[nodes.ports]
+inputs = [{type="file"},{type="file"},{type="file"},{type="file"}]
+outputs = [{path="scores.parquet",format="parquet"},{path="query.parquet",format="parquet"},{path="reference.parquet",format="parquet"},{path="metadata.parquet",format="parquet"},{path="audit.json",format="json"},{path="request_ledger.tsv",format="tsv"},{path="cmap.log",format="text"},{path="gene_ledger.parquet",format="parquet"},{path="source_inputs.zip",format="zip"}]
+[nodes.command]
+interpreter = "python3"
+script_file = "compare.py"
+[nodes.command.env]
+CMAP_CLASS = "rank"
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"

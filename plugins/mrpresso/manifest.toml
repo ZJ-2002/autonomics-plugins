@@ -1,0 +1,54 @@
+schema_version = 1
+plugin_name = "mrpresso"
+
+[image]
+reference = "ghcr.io/auto-nomics/autonomics/mrpresso@sha256:a3c46770506e07141dd89d3b805a3ec3d04b56367738b81917675c860ad7e2a4"
+tag = "1.0.0"
+upstream = "rondolab MR-PRESSO 1.0.0 @ 3e3c92d"
+license = "GPL-3"
+
+[[nodes]]
+kind = "mrpresso"
+desc = "Runs official MR-PRESSO in an ephemeral OCI container."
+doc = """
+Runs the official R MRPRESSO package. Input is one tab-separated File
+containing outcome effect/SE and at least one exposure effect/SE. The
+node emits the official result object as an RDS artifact and its
+printed representation as a log artifact. It executes the official
+package directly and does not reimplement any numerical logic.
+"""
+timeout_secs = 900
+artifact_prefix = "/artifacts/mrpresso"
+
+[nodes.ports]
+inputs = [{ type = "file" }]
+outputs = [
+  { path = "mrpresso.RDS", format = "r_rds" },
+  { path = "mrpresso.log", format = "mrpresso_log" },
+]
+
+[nodes.params]
+beta_outcome = { type = "string", doc = "Outcome beta-effect column name in the input table" }
+sd_outcome = { type = "string", doc = "Outcome standard-error column name in the input table" }
+beta_exposure = { type = "string_array", min_len = 1, doc = "Exposure beta-effect column names, one per exposure" }
+sd_exposure = { type = "string_array", min_len = 1, doc = "Exposure standard-error column names; same order and length as beta_exposure" }
+outlier_test = { type = "bool", default = false, doc = "Run the global heterogeneity (outlier) test" }
+distortion_test = { type = "bool", default = false, doc = "Run the balancing-test distortion correction" }
+signif_threshold = { type = "number", default = 0.05, min = 0.0, max = 1.0, doc = "Significance threshold for outlier detection" }
+nb_distribution = { type = "int", default = 1000, min = 1.0, doc = "Number of simulations for the global test null distribution" }
+seed = { type = "int", default = 123, doc = "Random seed fixed via set.seed before the run" }
+
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/mrpresso.R.sh"
+
+[nodes.command.env]
+MRPRESSO_BETA_OUTCOME = "{{ beta_outcome }}"
+MRPRESSO_BETA_EXPOSURE = "{{ beta_exposure }}"
+MRPRESSO_SD_OUTCOME = "{{ sd_outcome }}"
+MRPRESSO_SD_EXPOSURE = "{{ sd_exposure }}"
+MRPRESSO_OUTLIER_TEST = "{{ outlier_test }}"
+MRPRESSO_DISTORTION_TEST = "{{ distortion_test }}"
+MRPRESSO_SIGNIF_THRESHOLD = "{{ signif_threshold }}"
+MRPRESSO_NB_DISTRIBUTION = "{{ nb_distribution }}"
+MRPRESSO_SEED = "{{ seed }}"

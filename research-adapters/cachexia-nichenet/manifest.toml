@@ -1,0 +1,28 @@
+schema_version = 1
+plugin_name = "cachexia-nichenet"
+[image]
+reference = "ghcr.io/zj-2002/nichenetr@sha256:f0ee4a511531f91839d2d9d9cb83535bd7f7f6b12905e26635684f8a081f0c19"
+tag = "NicheNet2.2.0-f9906f3a-frozen-manual-profile"
+upstream = "Official nichenetr2.2.0@f9906f3a with complete DOI10.5281/zenodo.7074291 human nsga2r priors"
+license = "GPL-3.0-only"
+[[nodes]]
+kind = "cachexia_nichenet_official"
+desc = "Official frozen human NicheNet manual ligand activity with complete candidate and source ledgers."
+doc = "Three immutable Files: standard H5AD, one-symbol-per-line frozen geneset, mandatory JSON. Explicit axes/scale/sender/receiver/pct/background coverage/ranking/tie/alias policies; no clinical choices or cross-tissue pooling. Official single-ligand API and full priors are unchanged. All returned activity/target/receptor/top fields, complete state/RNG/warnings/full priors/source matrix and cell/gene/mapping/geneset/full ligand eligibility ledgers retained. No donor inference, circulating arrival, cross-organ transport, causal effect or G0. Bounded dense/sparse H5AD read proof; actual study inputs, full API, Seurat/spatial/multi-ligand modeling, production daemon/full-scale memory/global quotas/persistent recovery remain unqualified."
+timeout_secs = 900
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}, {type="file"}]
+outputs = [{path="values.tsv",format="tsv"}, {path="state.rds",format="rds"}, {path="audit.json",format="json"}, {path="nichenet.log",format="text"}, {path="cells.tsv",format="tsv"}, {path="genes.tsv",format="tsv"}, {path="geneset.tsv",format="tsv"}, {path="family.tsv",format="tsv"}]
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/h5ad_reader.R"
+[nodes.command.env]
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+LC_ALL = "C"
+[nodes.resources]
+cpus = 1.0
+memory = "4Gi"
+network = "isolated"
+pull_policy = "never"

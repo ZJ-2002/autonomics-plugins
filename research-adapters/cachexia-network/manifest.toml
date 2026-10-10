@@ -1,0 +1,63 @@
+schema_version = 1
+plugin_name = "cachexia-network"
+
+[image]
+reference = "ghcr.io/zj-2002/biotools-py@sha256:7ad6aeafa87672699d28b61b6bed12fc81fcdbfc43222a0abf17e2d56fb806f5"
+upstream = "networkx 3.6.1 / numpy 2.4.6 / scipy 1.17.1; distance reference emreg00/toolbox b662ce66f5e0825eadca02aeed8844a39de43b16"
+license = "MIT"
+
+[[nodes]]
+kind = "cachexia_network_distance"
+desc = "Scoped author-reference closest and pooled separation distances"
+doc = "STAGED only. Frozen connected unweighted physical graph + seed sets + hashed request with exact test IDs. Missing seeds preserve NOT_ESTIMABLE rows; no implicit LCC selection. Distance semantics only, no certification of the original Guney randomization or G0."
+timeout_secs = 600
+[nodes.ports]
+inputs = [{type="file", label="edges"}, {type="file", label="sets"}, {type="file", label="contract"}]
+outputs = [{path="distance.tsv", format="network_distance_tsv"}, {path="network_audit.json", format="network_audit_json"}]
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/network.py"
+[nodes.command.env]
+CN_MODE = "distance"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+
+[[nodes]]
+kind = "cachexia_network_null"
+desc = "Fail-closed degree/expression/detectability joint-stratified study null"
+doc = "STAGED custom study contract, NOT the official Guney degree-only random sampler. Freeze all joint strata, eligible IDs, seed exclusion, overlap, degree width, test IDs, B/seed and empirical-tail precision budgets before execution. Exact set-size quotas, no bin merging or precision-driven adaptive draws. Failure rows retain raw NA and adjustment placeholders 1; family correction and G0 not granted."
+timeout_secs = 3600
+[nodes.ports]
+inputs = [{type="file",label="edges"}, {type="file",label="sets"}, {type="file",label="background"}, {type="file",label="contract"}]
+outputs = [{path="null_results.tsv",format="network_null_results_tsv"}, {path="null_draws.tsv",format="network_null_draws_tsv"}, {path="matching_ledger.tsv",format="network_matching_tsv"}, {path="network_audit.json",format="network_audit_json"}]
+[nodes.params]
+n_random = {type="int", default=10000, min=10000.0, doc="Prelocked draws; JSON must match; never adapt after results"}
+seed = {type="int", min=0.0, max=2147483647.0, doc="Explicit frozen seed; no production default"}
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/network.py"
+[nodes.command.env]
+CN_MODE = "null"
+CN_N_RANDOM = "{{ n_random }}"
+CN_SEED = "{{ seed }}"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+
+[[nodes]]
+kind = "cachexia_string_physical_filter"
+desc = "Offline frozen STRING 12.0 physical combined-score filter retaining protein IDs"
+doc = "STAGED source/API contract, not a new statistical method. Inputs: frozen physical.links/info gzip files + exact source URL/hash/evidence policy request. Combined score on 0..1000, not effect size. Preserve STRING IDs; preferred-name collisions never become symbol-level edges. No automatic fetch, mapping, study qualification or provenance authentication; channel-specific restrictions require another qualified input."
+timeout_secs = 600
+[nodes.ports]
+inputs = [{type="file",label="physical_links_gz"}, {type="file",label="protein_info_gz"}, {type="file",label="contract"}]
+outputs = [{path="physical_edges.tsv",format="string_physical_edges_tsv"}, {path="protein_info.tsv",format="string_protein_info_tsv"}, {path="network_audit.json",format="network_audit_json"}]
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/network.py"
+[nodes.command.env]
+CN_MODE = "string_filter"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"

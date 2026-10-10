@@ -1,0 +1,88 @@
+schema_version = 1
+plugin_name = "cachexia-geo"
+
+[image]
+reference = "ghcr.io/zj-2002/biotools-py@sha256:7ad6aeafa87672699d28b61b6bed12fc81fcdbfc43222a0abf17e2d56fb806f5"
+tag = "pinned-python-3.11.17-requests-2.34.2"
+upstream = "NCBI GEO HTTPS files and documented SRA Database Backend runinfo CSV"
+license = "NCBI public resource transport; no statistical-package equivalence claim"
+
+[[nodes]]
+kind = "cachexia_geo_series_matrix"
+desc = "Fetch an explicitly frozen single-platform GEO series matrix with complete content verification."
+doc = "One frozen key/value request, including exact platform filename, source byte count and SHA256. Handles GSE<1000 directory and platform-specific files without selecting a platform. Validates full gzip CRC and requested series identity. Retains raw bytes, diagnostics and HTTP ledger; not normalization, biological eligibility, all-platform assembly or G0."
+timeout_secs = 14400
+artifact_prefix = "/artifacts/cachexia_geo_series_matrix"
+[nodes.ports]
+inputs = [{ type = "file" }]
+outputs = [{ path = "series_matrix.txt.gz", format = "geo_series_matrix" }, { path = "geo_fetch.log", format = "text" }, { path = "audit.json", format = "json" }, { path = "http_attempts.tsv", format = "tsv" }, { path = "raw_source.bin", format = "binary" }]
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/fetch.py"
+[nodes.command.env]
+CACHEXIA_GEO_MODE = "matrix"
+[nodes.resources]
+cpus = 1.0
+memory = "512m"
+network = "egress"
+pull_policy = "never"
+
+[[nodes]]
+kind = "cachexia_geo_soft"
+desc = "Fetch official GEO family.soft.gz with frozen content and series identity checks."
+doc = "One frozen key/value request. Fetches family.soft.gz, not nonexistent family.soft.tgz or XML tar. Verifies raw SHA256/size, entire gzip CRC and exactly one requested ^SERIES record. No clinical interpretation or automatic donor mapping. Five outputs retain payload, raw source, log, audit and HTTP attempts."
+timeout_secs = 14400
+artifact_prefix = "/artifacts/cachexia_geo_soft"
+[nodes.ports]
+inputs = [{ type = "file" }]
+outputs = [{ path = "family.soft.gz", format = "geo_soft" }, { path = "geo_fetch.log", format = "text" }, { path = "audit.json", format = "json" }, { path = "http_attempts.tsv", format = "tsv" }, { path = "raw_source.bin", format = "binary" }]
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/fetch.py"
+[nodes.command.env]
+CACHEXIA_GEO_MODE = "soft"
+[nodes.resources]
+cpus = 1.0
+memory = "512m"
+network = "egress"
+pull_policy = "never"
+
+[[nodes]]
+kind = "cachexia_geo_suppl"
+desc = "Fetch an exact GEO supplementary filename without transformation or unverified content."
+doc = "One frozen key/value request. Exact bare filename, mandatory source SHA256/bytes, bounded streaming and full gzip CRC when .gz. Opaque non-gzip bytes are not interpreted; excludes HTML responses. Does not enumerate the directory, infer filenames, approximate exact bytes, extract archives or certify LINCS/gene mapping."
+timeout_secs = 28800
+artifact_prefix = "/artifacts/cachexia_geo_suppl"
+[nodes.ports]
+inputs = [{ type = "file" }]
+outputs = [{ path = "suppl_file", format = "geo_suppl" }, { path = "geo_fetch.log", format = "text" }, { path = "audit.json", format = "json" }, { path = "http_attempts.tsv", format = "tsv" }, { path = "raw_source.bin", format = "binary" }]
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/fetch.py"
+[nodes.command.env]
+CACHEXIA_GEO_MODE = "suppl"
+[nodes.resources]
+cpus = 1.0
+memory = "512m"
+network = "egress"
+pull_policy = "never"
+
+[[nodes]]
+kind = "cachexia_sra_runinfo"
+desc = "Fetch documented SRA runinfo CSV and preserve every field in a validated TSV."
+doc = "One frozen key/value request: exact SRA accession or externally audited GSE-to-SRA link, expected raw bytes/SHA256, complete ordered header and run-ID set. Uses runinfo, not XML run_new. Preserves official CSV plus all TSV fields, rejects empty/malformed/duplicate/unexpected runs and any XML/HTML masquerade. SRA runs, samples and libraries are not clinical donors; no inferential independence or automatic GSE mapping."
+timeout_secs = 3600
+artifact_prefix = "/artifacts/cachexia_sra_runinfo"
+[nodes.ports]
+inputs = [{ type = "file" }]
+outputs = [{ path = "runinfo.tsv", format = "tsv" }, { path = "geo_fetch.log", format = "text" }, { path = "audit.json", format = "json" }, { path = "http_attempts.tsv", format = "tsv" }, { path = "raw_source.bin", format = "sra_runinfo_csv" }]
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/fetch.py"
+[nodes.command.env]
+CACHEXIA_GEO_MODE = "runinfo"
+[nodes.resources]
+cpus = 1.0
+memory = "512m"
+network = "egress"
+pull_policy = "never"

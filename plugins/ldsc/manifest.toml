@@ -1,0 +1,145 @@
+schema_version = 1
+plugin_name = "ldsc"
+
+[image]
+reference = "ghcr.io/zj-2002/ldsc@sha256:93b2542386a08df10402045b8036ff4da6733bea65324d50e326d035579d247a"
+tag = "3.0.1-allele-filter"
+upstream = "CBIIT LDSC continuation 3.0.1 @ 6c67395"
+license = "BSD-3-Clause"
+
+[[panels]]
+binding = "ref_ld"
+mount = "/panels/ref_ld"
+bundle = "wjixiang/catalog-ldsc-ref-ld-1000g-eur-basic"
+
+[[panels]]
+binding = "w_ld"
+mount = "/panels/w_ld"
+bundle = "wjixiang/catalog-ldsc-w-ld-1000g-eur-hm3-no-mhc"
+
+[[nodes]]
+kind = "ldsc_h2"
+desc = "Runs official LDSC 3.0.1 h2 on one GWAS sumstats file."
+doc = """
+Estimates SNP heritability with the official LDSC continuation build.
+The input is one tab-separated sumstats File with SNP, A1, A2, N, and Z
+columns; plain .tsv and gzip .sumstats.gz are both accepted (the script
+decompresses .gz inputs itself). Both required LD-score panels are bound
+through the catalog; the node emits the raw LDSC log as an immutable VFS
+artifact.
+"""
+timeout_secs = 900
+artifact_prefix = "/artifacts/ldsc_h2"
+
+[nodes.ports]
+inputs = [{ type = "file" }]
+outputs = [{ path = "ldsc_h2.log", format = "ldsc_log" }]
+
+[nodes.params]
+n_blocks = { type = "int", default = 200, min = 2.0, doc = "Block-jackknife block count" }
+intercept_h2 = { type = "number", optional = true, doc = "Constrained LD Score regression intercept" }
+chisq_max = { type = "number", optional = true, exclusive_min = 0.0, doc = "Chi-square outlier cutoff" }
+
+[nodes.command]
+interpreter = "sh"
+script_file = "scripts/h2.sh"
+
+[nodes.command.env]
+LDSC_N_BLOCKS = "{{ n_blocks }}"
+LDSC_INTERCEPT_H2 = "{{ intercept_h2 }}"
+LDSC_CHISQ_MAX = "{{ chisq_max }}"
+
+[[nodes]]
+kind = "ldsc_munge"
+desc = "Runs official LDSC 3.0.1 munge_sumstats on one GWAS sumstats file."
+doc = """
+Prepares a raw GWAS sumstats table for downstream LDSC analysis. The
+input is one tab-separated file (plain .tsv or gzip .sumstats.gz); the
+script decompresses .gz inputs itself. Each column-name override and the
+numeric thresholds and boolean flags all default to the official CLI's
+heuristics; empty strings mean "use the default".
+"""
+timeout_secs = 600
+artifact_prefix = "/artifacts/ldsc_munge"
+
+[nodes.ports]
+inputs = [{ type = "file" }]
+outputs = [
+  { path = "munged.sumstats.gz", format = "sumstats_gz" },
+  { path = "munge_sumstats.log", format = "ldsc_log" },
+]
+
+[nodes.params]
+snp = { type = "string", optional = true, doc = "Override SNP/rsID column name" }
+n_col = { type = "string", optional = true, doc = "Override total sample-size column name" }
+n_cas_col = { type = "string", optional = true, doc = "Override case-count column name" }
+n_con_col = { type = "string", optional = true, doc = "Override control-count column name" }
+a1 = { type = "string", optional = true, doc = "Override effect allele column name" }
+a2 = { type = "string", optional = true, doc = "Override other allele column name" }
+p = { type = "string", optional = true, doc = "Override p-value column name" }
+frq = { type = "string", optional = true, doc = "Override allele-frequency column name" }
+info = { type = "string", optional = true, doc = "Single INFO column filter" }
+info_list = { type = "string", optional = true, doc = "Comma-separated INFO columns to filter" }
+info_min = { type = "number", default = 0.9, doc = "Minimum INFO score" }
+maf_min = { type = "number", default = 0.01, doc = "Minimum MAF" }
+n_min = { type = "number", optional = true, doc = "Override minimum sample-size" }
+nstudy_min = { type = "number", optional = true, doc = "Minimum study count" }
+# fix-review R04 (2026-10-05): presence-semantics switches — type "flag",
+# not "bool". flag=false (or absent) renders an empty env value so
+# munge.sh's `[ -n "$LDSC_MUNGE_*" ]` omits the CLI switch; the old
+# "bool" typing rendered a non-empty "false" and appended e.g. --daner.
+daner = { type = "flag", optional = true, doc = "Parse Stephan Ripke daner format" }
+daner_n = { type = "flag", optional = true, doc = "Parse newer daner format with Nca/Nco" }
+a1_is_a2 = { type = "flag", optional = true, doc = "Treat A1 and A2 as identical" }
+
+[nodes.command]
+interpreter = "sh"
+script_file = "scripts/munge.sh"
+
+[nodes.command.env]
+LDSC_MUNGE_SNP = "{{ snp }}"
+LDSC_MUNGE_N_COL = "{{ n_col }}"
+LDSC_MUNGE_N_CAS_COL = "{{ n_cas_col }}"
+LDSC_MUNGE_N_CON_COL = "{{ n_con_col }}"
+LDSC_MUNGE_A1 = "{{ a1 }}"
+LDSC_MUNGE_A2 = "{{ a2 }}"
+LDSC_MUNGE_P = "{{ p }}"
+LDSC_MUNGE_FRQ = "{{ frq }}"
+LDSC_MUNGE_INFO = "{{ info }}"
+LDSC_MUNGE_INFO_LIST = "{{ info_list }}"
+LDSC_MUNGE_INFO_MIN = "{{ info_min }}"
+LDSC_MUNGE_MAF_MIN = "{{ maf_min }}"
+LDSC_MUNGE_N_MIN = "{{ n_min }}"
+LDSC_MUNGE_NSTUDY_MIN = "{{ nstudy_min }}"
+LDSC_MUNGE_DANER = "{{ daner }}"
+LDSC_MUNGE_DANER_N = "{{ daner_n }}"
+LDSC_MUNGE_A1_IS_A2 = "{{ a1_is_a2 }}"
+
+[[nodes]]
+kind = "ldsc_rg"
+desc = "Runs official LDSC 3.0.1 rg on two GWAS sumstats files."
+doc = """
+Estimates genetic correlation between two traits using the official LDSC
+continuation build. Inputs are two tab-separated sumstats files (plain
+.tsv or gzip .sumstats.gz); both decompressed by the script. Both required
+LD-score panels are bound through the catalog; the node emits the raw
+LDSC log as an immutable VFS artifact.
+"""
+timeout_secs = 1800
+artifact_prefix = "/artifacts/ldsc_rg"
+
+[nodes.ports]
+inputs = [{ type = "file" }, { type = "file" }]
+outputs = [{ path = "ldsc_rg.log", format = "ldsc_log" }]
+
+[nodes.params]
+n_blocks = { type = "int", default = 200, min = 2.0, doc = "Block-jackknife block count" }
+chisq_max = { type = "number", optional = true, exclusive_min = 0.0, doc = "Chi-square outlier cutoff" }
+
+[nodes.command]
+interpreter = "sh"
+script_file = "scripts/rg.sh"
+
+[nodes.command.env]
+LDSC_RG_N_BLOCKS = "{{ n_blocks }}"
+LDSC_RG_CHISQ_MAX = "{{ chisq_max }}"

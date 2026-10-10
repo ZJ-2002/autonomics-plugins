@@ -1,0 +1,48 @@
+schema_version = 1
+plugin_name = "cachexia-msigdb"
+
+[image]
+reference = "ghcr.io/zj-2002/biotools-py@sha256:7ad6aeafa87672699d28b61b6bed12fc81fcdbfc43222a0abf17e2d56fb806f5"
+tag = "pinned-python-3.11.17-requests-2.34.2"
+upstream = "GSEA-MSigDB official versioned GMT resources and GMT format documentation"
+license = "Reference-data transport and ASCII format adapter; not a statistical-package certification"
+
+[[nodes]]
+kind = "cachexia_msigdb_gmt"
+desc = "Retrieve a complete content-frozen official MSigDB collection and preserve ordered GMT memberships."
+doc = "One mandatory20-key frozen JSON including release/species/flavor/SHA/bytes/full ordered set axis and counts. Exact official HTTP200 identity retrieval, explicit retries/budgets, atomic complete output or retained failure diagnosis. Seven Files preserve raw GMT, complete memberships/metadata, source coordinates, request and HTTP evidence. No collection selection, ortholog mapping, member deduplication, expression scoring, scientific eligibility or G0."
+timeout_secs = 3600
+artifact_prefix = "/artifacts/cachexia_msigdb_gmt"
+[nodes.ports]
+inputs = [{ type = "file" }]
+outputs = [{ path = "memberships.tsv", format = "tsv" }, { path = "sets.tsv", format = "tsv" }, { path = "source.gmt", format = "gmt" }, { path = "audit.json", format = "json" }, { path = "msigdb.log", format = "text" }, { path = "http_attempts.tsv", format = "tsv" }, { path = "request_ledger.tsv", format = "tsv" }]
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/gmt.py"
+[nodes.command.env]
+CACHEXIA_GMT_MODE = "fetch"
+[nodes.resources]
+cpus = 1.0
+memory = "512m"
+network = "egress"
+pull_policy = "never"
+
+[[nodes]]
+kind = "cachexia_gmt_import"
+desc = "Parse an entire frozen ASCII GMT into complete ordered membership and set tables."
+doc = "Raw GMT and mandatory20-key frozen JSON are two File inputs. Complete SHA/bytes/set-axis/member-count verification and raw retention; literal NA/leading zeros/quotes, duplicate member occurrences and source coordinates preserved. Strict unique-set nonempty-record profile, LF/CRLF and unterminated final line. Offline parsing does not authenticate an official download or normalize symbols, map species, deduplicate or certify GSEA statistical methods."
+timeout_secs = 3600
+artifact_prefix = "/artifacts/cachexia_gmt_import"
+[nodes.ports]
+inputs = [{ type = "file" }, { type = "file" }]
+outputs = [{ path = "memberships.tsv", format = "tsv" }, { path = "sets.tsv", format = "tsv" }, { path = "source.gmt", format = "gmt" }, { path = "audit.json", format = "json" }, { path = "msigdb.log", format = "text" }, { path = "http_attempts.tsv", format = "tsv" }, { path = "request_ledger.tsv", format = "tsv" }]
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/gmt.py"
+[nodes.command.env]
+CACHEXIA_GMT_MODE = "parse"
+[nodes.resources]
+cpus = 1.0
+memory = "512m"
+network = "isolated"
+pull_policy = "never"

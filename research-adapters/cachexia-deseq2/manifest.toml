@@ -1,0 +1,74 @@
+schema_version = 1
+plugin_name = "cachexia-deseq2"
+
+[image]
+reference = "ghcr.io/zj-2002/deseq2@sha256:b89a390ff6dad2dfbc8999d169655a6f5e8368b9aa8bb52bbbc3ade518d88b55"
+tag = "1.50.2"
+upstream = "Bioconductor DESeq2 1.50.2 @ d90821a + apeglm 1.32.0 (Bioconductor release 3.22, rocker/r-ver:4.5.3 base)"
+license = "LGPL-3.0-or-later"
+
+[[nodes]]
+kind = "cachexia_deseq2_de"
+desc = "Runs official DESeq2 differential expression in an isolated container."
+doc = """
+STAGED technical-only wrapper; third port raw_integer_counts / independent-unit / exact formula / explicit covariate-type contract is required. Missing, transformed inputs, rank deficiency and repeated units are rejected. Scientific release/G0 are never granted; this is not a daemon registration.
+
+Differential-expression analysis of one raw bulk RNA-seq count matrix with
+the official R DESeq2 package; the negative-binomial model is never
+reimplemented. Inputs are two tab-separated Files and a JSON study contract: a count matrix whose
+first column is gene_id followed by one raw integer-count column per
+sample, and a sample-metadata table whose first column is sample_id plus a
+condition column holding exactly the two submitted levels and any
+covariate columns. The node fits `~ <covariates> + condition` with the
+condition factor ordered reference-before-test, estimates and tests the
+model, shrinks log2 fold changes with apeglm (posterior estimates; set
+lfc_shrink=none for raw MLE coefficients), and publishes the full result
+table, normalized counts, size factors, the fitted DESeqDataSet (RDS), and
+a run report with input/output checksums. No reference panel is required.
+"""
+timeout_secs = 3600
+artifact_prefix = "/artifacts/deseq2_de"
+
+[nodes.ports]
+inputs = [
+  { type = "file", label = "count_matrix" },
+  { type = "file", label = "sample_metadata" },
+  { type = "file", label = "study_contract" },
+]
+outputs = [
+  { path = "results.tsv", format = "deseq2_results_tsv" },
+  { path = "normalized_counts.tsv", format = "deseq2_normalized_counts_tsv" },
+  { path = "size_factors.tsv", format = "deseq2_size_factors_tsv" },
+  { path = "deseq2_dataset.rds", format = "r_rds" },
+  { path = "run_report.json", format = "deseq2_run_report_json" },
+]
+
+[nodes.params]
+seed = { type = "int", default = 1, min = 0.0, max = 2147483647.0, doc = "Frozen R RNG seed" }
+condition_reference = { type = "string", doc = "Reference condition level (e.g. untreated); must differ from condition_test" }
+condition_test = { type = "string", doc = "Test condition level (e.g. treated); must differ from condition_reference" }
+covariates = { type = "string", default = "", doc = "Comma-separated metadata covariate columns prepended to the design (e.g. type,batch); simple R identifiers, no duplicates, never sample_id or condition; empty means none" }
+fit_type = { type = "string", default = "parametric", doc = "DESeq2 dispersion-fit type passed to DESeq2::DESeq(): parametric, local, or mean" }
+lfc_shrink = { type = "string", default = "apeglm", doc = "log2FC shrinkage applied to the results table: apeglm (posterior estimates, default) or none (raw MLE coefficients)" }
+alpha = { type = "number", default = 0.1, exclusive_min = 0.0, exclusive_max = 1.0, doc = "Target FDR for independent filtering and significance reporting; strictly between 0 and 1" }
+threads = { type = "int", default = 1, min = 1.0, max = 1.0, doc = "Fixed at 1: the deterministic first contract forbids parallel execution" }
+
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/deseq2.R"
+
+[nodes.command.env]
+AUTONOMICS_COUNTS_SEED = "{{ seed }}"
+AUTONOMICS_DESEQ2_CONDITION_REFERENCE = "{{ condition_reference }}"
+AUTONOMICS_DESEQ2_CONDITION_TEST = "{{ condition_test }}"
+AUTONOMICS_DESEQ2_COVARIATES = "{{ covariates }}"
+AUTONOMICS_DESEQ2_FIT_TYPE = "{{ fit_type }}"
+AUTONOMICS_DESEQ2_LFC_SHRINK = "{{ lfc_shrink }}"
+AUTONOMICS_DESEQ2_ALPHA = "{{ alpha }}"
+AUTONOMICS_DESEQ2_THREADS = "{{ threads }}"
+
+[nodes.resources]
+cpus = 2.0
+memory = "4Gi"
+pids_limit = 256
+shm_size = "1Gi"

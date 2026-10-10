@@ -1,0 +1,24 @@
+schema_version = 1
+plugin_name = "cachexia-bulk-ols"
+
+[image]
+reference = "ghcr.io/zj-2002/biotools-py@sha256:7ad6aeafa87672699d28b61b6bed12fc81fcdbfc43222a0abf17e2d56fb806f5"
+tag = "v1"
+upstream = "Python standard-library study input adapter; NOT an official statistical method"
+license = "MIT"
+
+[[nodes]]
+kind = "cachexia_v41_bulk_ols_prepare"
+desc = "Validate normalized bulk expression and independent-unit contrast before condition-only OLS."
+doc = "Inputs: gene-by-sample TSV, sample metadata TSV, request JSON containing the full frozen contrast row and selected genes. Accepts only log2_normalized and expression ~ condition. Exact sample identities, unique declared independent units, frozen arm sizes, finite selected expression and positive residual df are required. Output long TSV with gene/sample/condition/expression plus audit JSON and log. Mapping/scoring, weights, covariates, counts, paired/repeated measurements and scientific eligibility are not inferred. LEGACY_SEEN is retained. One file success does not grant G0."
+timeout_secs = 120
+artifact_prefix = "/artifacts/cachexia_v41_bulk_ols_prepare"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+[nodes.ports]
+inputs = [{ type = "file" }, { type = "file" }, { type = "file" }]
+outputs = [{ path = "prepared.tsv", format = "tsv" }, { path = "audit.json", format = "json" }, { path = "prepare.log", format = "text" }]
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/bulk_ols.py"

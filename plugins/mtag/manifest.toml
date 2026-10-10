@@ -1,0 +1,71 @@
+schema_version = 1
+plugin_name = "mtag"
+
+[image]
+reference = "ghcr.io/zj-2002/mtag@sha256:d89f1e607804ec66a26f12151e6f6fcc495a1f67a077d9ac900085a9b77cb7e8"
+tag = "1.0.8"
+upstream = "JonJala MTAG 1.0.8 @ 9e17f3c"
+license = "GPL-3"
+
+[[panels]]
+binding = "ld_ref"
+mount = "/panels/ld_ref"
+bundle = "wjixiang/catalog-mtag-ld-ref-1000g-eur-w-ld"
+
+[[nodes]]
+kind = "mtag"
+desc = "Runs original MTAG 1.0.8 on two GWAS sumstats in an OCI container."
+doc = """
+Runs the official Python MTAG 1.0.8 implementation on two GWAS sumstats
+Files and emits multi-trait analysis results. Both inputs are
+tab-separated Files with lowercase snpid, a1, a2, freq, chr, bpos, n,
+z, and p columns; they pass straight through to the official tool, so
+plain TSV is expected and no gzip decompression is performed. The
+upstream 1000G EUR w-LD catalog panel MTAG expects for its
+single-prefix LDSC interface is bound through the catalog and mounted
+at /panels/ld_ref. The node emits both official trait result tables and
+the raw MTAG log as immutable VFS File artifacts. time_limit_hours and
+tol always apply; the six boolean flags are optional — omit one
+entirely to leave the corresponding official flag off. equal_h2
+requires perfect_gencov; the combination is rejected at compile time
+otherwise.
+"""
+timeout_secs = 3600
+artifact_prefix = "/artifacts/mtag"
+
+[nodes.ports]
+inputs = [{ type = "file" }, { type = "file" }]
+outputs = [
+  { path = "mtag_trait_1.txt", format = "mtag_results" },
+  { path = "mtag_trait_2.txt", format = "mtag_results" },
+  { path = "mtag.log", format = "mtag_log" },
+]
+
+[nodes.params]
+time_limit_hours = { type = "number", default = 1.0, exclusive_min = 0.0, doc = "MTAG genetic-covariance optimizer time limit in hours" }
+tol = { type = "number", default = 1e-6, exclusive_min = 0.0, doc = "Relative tolerance passed to the official optimizer" }
+# fix-review R04 (2026-10-05): the six optional official switches carry
+# PRESENCE semantics — type "flag", not "bool". flag=false (or absent)
+# renders an empty env value so h2.sh's `[ -n "$MTAG_*" ]` omits the CLI
+# switch; the old "bool" typing rendered a non-empty "false" and appended
+# e.g. --force even when the submitter said false.
+force = { type = "flag", optional = true, doc = "Continue when the official mean-chi-square guard rejects the inputs" }
+no_overlap = { type = "flag", optional = true, doc = "Assume no sample overlap across traits" }
+perfect_gencov = { type = "flag", optional = true, doc = "Assume perfect genetic covariance" }
+equal_h2 = { type = "flag", optional = true, requires = ["perfect_gencov"], doc = "Assume equal heritability across traits; requires perfect_gencov" }
+std_betas = { type = "flag", optional = true, doc = "Emit standardized official betas instead of unstandardized effects" }
+numerical_omega = { type = "flag", optional = true, doc = "Use the official numerical Omega estimator instead of GMM" }
+
+[nodes.command]
+interpreter = "sh"
+script_file = "scripts/h2.sh"
+
+[nodes.command.env]
+MTAG_TIME_LIMIT_HOURS = "{{ time_limit_hours }}"
+MTAG_TOL = "{{ tol }}"
+MTAG_FORCE = "{{ force }}"
+MTAG_NO_OVERLAP = "{{ no_overlap }}"
+MTAG_PERFECT_GENCOV = "{{ perfect_gencov }}"
+MTAG_EQUAL_H2 = "{{ equal_h2 }}"
+MTAG_STD_BETAS = "{{ std_betas }}"
+MTAG_NUMERICAL_OMEGA = "{{ numerical_omega }}"

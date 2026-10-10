@@ -1,0 +1,31 @@
+schema_version = 1
+plugin_name = "cachexia-cellphonedb"
+[image]
+reference = "ghcr.io/zj-2002/cellphonedb@sha256:faf639f2a6598c1df29a81854eb48c05bccd8127a8d7639c58cc3a4dbd004d19"
+tag = "CellPhoneDB-5.0.1-db-5.0.0-frozen-contract"
+upstream = "Official PyPI CellPhoneDB5.0.1, all package sources matched official wheel; curated human DB v5.0.0 at71ffa8a163389913907d40993bec2821a111f64d"
+license = "MIT"
+[[nodes]]
+kind = "cachexia_cellphonedb_official"
+desc = "Official CellPhoneDB statistical analysis with explicit scale, score policy, source identities and complete candidate ledger."
+doc = "H5AD plus frozen JSON; no analysis parameter defaults or silently dropped kwargs. Raw counts with scoring require explicit full-library cp10k/log1p preprocessing; log1p_cp10k passes through; raw inference alone without scoring is separately frozen. Official human hgnc_symbol/gene_name/ensembl IDs, one worker, explicit testing seed/iterations/threshold/precision/P cutoff. Full result/debug/RNG/warnings state and all original cells/genes, actual upstream files, complete DB/group-pair universe; unreturned and threshold-masked interactions remain explicit, not scientific P values invented. Cell-label shuffling is NOT donor inference, disease contrast, cross-organ transport or G0. No spatial/microenv/CellSign/subsampling/other methods qualification or production daemon certification."
+timeout_secs = 900
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}]
+outputs = [{path="values.tsv",format="tsv"}, {path="state.pkl",format="pickle"}, {path="audit.json",format="json"}, {path="cpdb.log",format="text"}, {path="cells.tsv",format="tsv"}, {path="genes.tsv",format="tsv"}, {path="family.tsv",format="tsv"}, {path="official_products.zip",format="zip"}]
+[nodes.command]
+interpreter = "python"
+script_file = "scripts/cpdb_driver.py"
+[nodes.command.env]
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+NUMBA_NUM_THREADS = "1"
+NUMBA_CACHE_DIR = "/tmp/cpdb-numba-cache"
+PYTHONDONTWRITEBYTECODE = "1"
+PYTHONHASHSEED = "0"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"

@@ -1,0 +1,27 @@
+schema_version = 1
+plugin_name = "cachexia-string"
+
+[image]
+reference = "ghcr.io/zj-2002/biotools-py@sha256:7ad6aeafa87672699d28b61b6bed12fc81fcdbfc43222a0abf17e2d56fb806f5"
+upstream = "STRING official organism-wide combined-score downloads and protein.info display-name metadata"
+license = "Reference-data adapter; STRING resources CC BY 4.0; no statistical-method certification"
+
+[[nodes]]
+kind = "cachexia_string_ppi"
+desc = "Download an entire content-frozen STRING organism network with lossless name mapping."
+doc = "One frozen JSON is a configuration input, not an offline network substitute. Actual official HTTPS downloads of whole functional or physical links and same-release protein.info. Full raw ordered links and complete info Parquet, thresholded preferred-name view with original protein IDs, canonical STRING-ID graph with duplicate multiplicity, collision ledger, exact gzip bytes, HTTP attempts, audit and request ledger. Preferred names are STRING display labels, NOT independently validated HGNC gene IDs; collisions never collapse protein identities. No query-subset API, automatic aliases, largest-component selection, seed qualification, expression matching, scientific release, resident daemon or G0."
+timeout_secs = 7200
+[nodes.ports]
+inputs = [{type="file"}]
+outputs = [{path="string_edges.parquet",format="parquet"}, {path="string_edges_raw.parquet",format="parquet"}, {path="string_gene_info.parquet",format="parquet"}, {path="string_id_graph.tsv",format="tsv"}, {path="mapping_collisions.tsv",format="tsv"}, {path="audit.json",format="json"}, {path="request_ledger.tsv",format="tsv"}, {path="http_attempts.tsv",format="tsv"}, {path="string_ppi.log",format="text"}, {path="source_links.txt.gz",format="gzip"}, {path="source_info.txt.gz",format="gzip"}]
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/string_ppi.py"
+[nodes.command.env]
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "egress"
+pull_policy = "never"

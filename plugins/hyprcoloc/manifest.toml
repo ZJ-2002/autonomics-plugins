@@ -1,0 +1,105 @@
+schema_version = 1
+plugin_name = "hyprcoloc"
+
+[image]
+reference = "ghcr.io/auto-nomics/autonomics/hyprcoloc@sha256:395a36903d3c3ed6c753aef85f5b0a57044f86968e4d79804e4cc85f36aa5617"
+tag = "0.0.2"
+upstream = "jrs95/hyprcoloc 0.0.2 @ 0348bbdd977be731d82e4efda115a9bed63cd44f (rocker/r-ver:4.5.1 base)"
+license = "GPL-3.0-only"
+
+# The legacy wrapper generated the R script in Rust (a string template with
+# conditional optional arguments). The plugin ships the equivalent script as
+# scripts/hyprcoloc_runner.R; every parameter travels through HYPRCOLOC_*
+# environment variables and the conditionals the v0 manifest DSL cannot
+# express (optional official arguments, cross-field trait validation, the
+# branch-and-bound threshold floors) live in the script with the legacy
+# error semantics. The failure point moves from registry build to container
+# start, exactly as in the deseq2/mrpresso/mvmr migrations.
+#
+# HYPRCOLOC_TRAITS encodes the legacy Vec<TraitSpec> as one
+# `name,beta,se,binary_outcome` row per trait in the official matrix column
+# order, rows joined by `;` (e.g. `ldl,beta_ldl,se_ldl,0;hdl,beta_hdl,se_hdl,1`).
+# Trait names and column names must not contain `,` or `;` — the same
+# serialized-string trade the deseq2 covariates and mvmr pcor migrations
+# made for list-valued params.
+
+[[nodes]]
+kind = "hyprcoloc"
+desc = "Runs official HyPrColoc in an ephemeral OCI container."
+doc = """
+Runs official R `hyprcoloc` 0.0.2 (Foley and Staley). The input is one
+SNP-aligned tab-separated File with beta and standard-error columns for
+each configured trait. The wrapper calls `hyprcoloc::hyprcoloc()` directly,
+publishes the official result table and full R result object, and emits an
+execution log. It does not reimplement any HyPrColoc numerical logic.
+"""
+timeout_secs = 900
+artifact_prefix = "/artifacts/hyprcoloc"
+
+[nodes.ports]
+inputs = [{ type = "file" }]
+outputs = [
+  { path = "hyprcoloc_results.tsv", format = "hyprcoloc_results_tsv" },
+  { path = "hyprcoloc.RDS", format = "r_rds" },
+  { path = "hyprcoloc.log", format = "hyprcoloc_log" },
+]
+
+[nodes.params]
+snp_column = { type = "string", doc = "Column containing SNP identifiers shared by all traits" }
+traits = { type = "string", doc = "Per-trait column mapping, one `name,beta,se,binary_outcome` row per trait in official matrix column order, rows joined by `;`; names and columns must not contain `,` or `;`" }
+trait_subset = { type = "string", default = "", doc = "Comma-joined subset of trait names passed to the official trait.subset argument; empty means all traits" }
+prior_1 = { type = "number", default = 0.0001, exclusive_min = 0.0, max = 1.0, doc = "Prior probability that a SNP is associated with one trait; in (0, 1]" }
+prior_c = { type = "number", default = 0.02, exclusive_min = 0.0, max = 1.0, doc = "Conditional prior probability of association with an additional trait; in (0, 1]" }
+prior_12 = { type = "number", optional = true, exclusive_min = 0.0, max = 1.0, doc = "COLOC-style prior for association with any two traits; in (0, 1] when provided" }
+reg_thresh = { type = "number", optional = true, exclusive_min = 0.0, max = 1.0, doc = "Regional association threshold; in (0, 1] when provided" }
+align_thresh = { type = "number", optional = true, exclusive_min = 0.0, max = 1.0, doc = "Causal-alignment threshold; in (0, 1] when provided" }
+uniform_priors = { type = "bool", default = false, doc = "Use conditionally uniform rather than variant-specific priors" }
+bb_alg = { type = "bool", default = true, doc = "Use the official branch-and-bound algorithm" }
+bb_selection = { type = "string", default = "regional", doc = "Branch-and-bound selection mode: regional or alignment" }
+reg_steps = { type = "int", default = 1, min = 1.0, doc = "Regional step parameter" }
+snpscores = { type = "bool", default = false, doc = "Retain official posterior SNP scores in the RDS artifact" }
+
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/hyprcoloc_runner.R"
+
+[nodes.command.env]
+HYPRCOLOC_SNP_COLUMN = "{{ snp_column }}"
+HYPRCOLOC_TRAITS = "{{ traits }}"
+HYPRCOLOC_TRAIT_SUBSET = "{{ trait_subset }}"
+HYPRCOLOC_PRIOR_1 = "{{ prior_1 }}"
+HYPRCOLOC_PRIOR_C = "{{ prior_c }}"
+HYPRCOLOC_PRIOR_12 = "{{ prior_12 }}"
+HYPRCOLOC_REG_THRESH = "{{ reg_thresh }}"
+HYPRCOLOC_ALIGN_THRESH = "{{ align_thresh }}"
+HYPRCOLOC_UNIFORM_PRIORS = "{{ uniform_priors }}"
+HYPRCOLOC_BB_ALG = "{{ bb_alg }}"
+HYPRCOLOC_BB_SELECTION = "{{ bb_selection }}"
+HYPRCOLOC_REG_STEPS = "{{ reg_steps }}"
+HYPRCOLOC_SNPSCORES = "{{ snpscores }}"
+
+# The legacy wrapper left every resource knob unset; omitting the resources
+# table keeps the hardened defaults (isolated network, read-only rootfs,
+# pull policy missing) with no cpu/memory limits, matching the legacy
+# container_spec exactly.
+
+[[nodes]]
+kind = "cachexia_hyprcoloc_official"
+desc = "Official HyPrColoc with explicit trait, overlap, correlation, LD and method contracts."
+doc = "Six ordered files: SNP/beta/SE table, trait mapping, hash/method contract, trait correlation, sample overlap, signed SNP LD. No implicit intersection, independence, missing-value removal or scientific release. Outputs complete typed official object, RDS, log, SNP ledger, audit and trait ledger. Regional-only and regional-sensitivity modes are explicitly not colocalization findings. Rejects the upstream 0.0.2 rapid-sensitivity snps.clc defect without silently replacing reg_steps. Not PP.H4, coloc.susie, signal-qualified three-trait bridge, family assembly, full-domain or resident-daemon certification."
+timeout_secs = 900
+artifact_prefix = "/artifacts/cachexia_hyprcoloc_official"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"
+[nodes.ports]
+inputs = [{ type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }]
+outputs = [{ path = "hyprcoloc_summary.tsv", format = "tsv" }, { path = "hyprcoloc.RDS", format = "r_rds" }, { path = "hyprcoloc.log", format = "text" }, { path = "snps.tsv", format = "tsv" }, { path = "audit.tsv", format = "tsv" }, { path = "traits.tsv", format = "tsv" }]
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/hyprcoloc.R"
+[nodes.command.env]
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"

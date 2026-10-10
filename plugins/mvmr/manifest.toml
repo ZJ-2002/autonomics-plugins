@@ -1,0 +1,71 @@
+schema_version = 1
+plugin_name = "mvmr"
+
+[image]
+reference = "ghcr.io/auto-nomics/autonomics/mvmr@sha256:ce9ad3f46cf8b74a95c194fe791b6a529d9168676c5d936a05ba440569260eb3"
+tag = "0.4.8"
+upstream = "WSpiller MVMR 0.4.8 @ bceaa38"
+license = "GPL-3.0-only"
+
+[[nodes]]
+kind = "mvmr"
+desc = "Runs official MVMR 0.4.8 multivariable MR on one instrument table."
+doc = """
+Runs the official R MVMR package on one tab-separated instrument File with
+outcome effect/SE columns (beta_yg, sebeta_yg) and one effect/SE column
+pair per exposure (beta_xg, sebeta_xg, exposure-ordered). label_column
+optionally names the instrument (rsID) column; table row names are used
+otherwise. Each diagnostic slot (strength, strhet, pleiotropy, qhet)
+carries the official MVMR result object when enabled and is omitted
+otherwise. pcor supplies a phenotypic exposure correlation matrix,
+serialized row-major with rows separated by ';' and entries by ','
+(example: 1,0.25;0.25,1); it must be square, symmetric and carry a unit
+diagonal, is converted to per-SNP covariances with MVMR::phenocov_mvmr,
+and qhet requires it. The node saves the official format_mvmr input and
+the selected result objects as an RDS artifact (mvmr.RDS) and emits their
+printed representation as a log artifact (mvmr.log). No numerical logic
+is reimplemented.
+"""
+timeout_secs = 900
+artifact_prefix = "/artifacts/mvmr"
+
+[nodes.ports]
+inputs = [{ type = "file" }]
+# Labels disambiguate the two outputs: both file stems are "mvmr", and the
+# manifest pipeline always names output ports (legacy ports were unlabeled).
+outputs = [
+  { path = "mvmr.RDS", format = "r_rds", label = "result" },
+  { path = "mvmr.log", format = "mvmr_log", label = "log" },
+]
+
+[nodes.params]
+beta_yg = { type = "string", doc = "Outcome (Y) effect-size column name" }
+sebeta_yg = { type = "string", doc = "Outcome (Y) standard-error column name" }
+beta_xg = { type = "string_array", min_len = 1, doc = "Exposure effect-size column names, one per exposure, exposure-ordered" }
+sebeta_xg = { type = "string_array", min_len = 1, doc = "Exposure standard-error column names, ordered like beta_xg" }
+label_column = { type = "string", optional = true, doc = "Instrument (rsID) column name; table row names when empty" }
+strength = { type = "bool", default = true, doc = "Include MVMR::strength_mvmr conditional F-statistic results" }
+strhet = { type = "bool", default = true, doc = "Include MVMR::strhet_mvmr heterogeneity results" }
+pleiotropy = { type = "bool", default = true, doc = "Include MVMR::pleiotropy_mvmr Q_j heterogeneity results" }
+qhet = { type = "bool", default = false, doc = "Include MVMR::qhet_mvmr results; requires pcor" }
+# DSL gap: the v0 param vocabulary has no number-matrix type, so the legacy
+# nested-array pcor travels as a serialized row-major string pending a
+# structured param type in container-plugin. The script validates shape,
+# finiteness, symmetry and unit diagonal exactly like the legacy wrapper.
+pcor = { type = "string", optional = true, doc = "Phenotypic exposure correlation matrix, row-major: rows separated by ';' and entries by ',' (example: 1,0.25;0.25,1); square, symmetric, unit diagonal; qhet requires it" }
+
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/mvmr.R"
+
+[nodes.command.env]
+MVMR_BETA_YG = "{{ beta_yg }}"
+MVMR_SEBETA_YG = "{{ sebeta_yg }}"
+MVMR_BETA_XG = "{{ beta_xg }}"
+MVMR_SEBETA_XG = "{{ sebeta_xg }}"
+MVMR_LABEL_COLUMN = "{{ label_column }}"
+MVMR_STRENGTH = "{{ strength }}"
+MVMR_STRHET = "{{ strhet }}"
+MVMR_PLEIOTROPY = "{{ pleiotropy }}"
+MVMR_QHET = "{{ qhet }}"
+MVMR_PCOR = "{{ pcor }}"

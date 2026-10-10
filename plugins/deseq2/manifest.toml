@@ -1,0 +1,99 @@
+schema_version = 1
+plugin_name = "deseq2"
+
+[image]
+reference = "ghcr.io/auto-nomics/autonomics/deseq2@sha256:9bd9a2e95a59d7a1725351b99fe188a71202a68a7255830213fe39a226e7864f"
+tag = "1.50.2"
+upstream = "Bioconductor DESeq2 1.50.2 @ d90821a + apeglm 1.32.0 (Bioconductor release 3.22, rocker/r-ver:4.5.3 base)"
+license = "LGPL-3.0-or-later"
+
+# Baked-runner family: the image carries /opt/autonomics/deseq2_runner.R and
+# every parameter travels through AUTONOMICS_DESEQ2_* environment variables,
+# so the command below is interpreter + fixed argv with no script.
+#
+# The legacy Rust validate() rules the v0 DSL cannot express are enforced by
+# the baked runner with the legacy error messages: condition_test differing
+# from condition_reference, covariates free of duplicates / reserved names
+# (sample_id, condition) / non-R-identifiers, fit_type membership, and the
+# rank-deficiency and data-shape checks. The failure point moves from
+# registry build to container start, exactly as in the mrpresso/mvmr
+# migrations.
+[[nodes]]
+kind = "deseq2_de"
+desc = "Runs official DESeq2 differential expression in an isolated container."
+doc = """
+Differential-expression analysis of one raw bulk RNA-seq count matrix with
+the official R DESeq2 package; the negative-binomial model is never
+reimplemented. Inputs are two tab-separated Files: a count matrix whose
+first column is gene_id followed by one raw integer-count column per
+sample, and a sample-metadata table whose first column is sample_id plus a
+condition column holding exactly the two submitted levels and any
+covariate columns. The node fits `~ <covariates> + condition` with the
+condition factor ordered reference-before-test, estimates and tests the
+model, shrinks log2 fold changes with apeglm (posterior estimates; set
+lfc_shrink=none for raw MLE coefficients), and publishes the full result
+table, normalized counts, size factors, the fitted DESeqDataSet (RDS), and
+a run report with input/output checksums. No reference panel is required.
+"""
+timeout_secs = 3600
+artifact_prefix = "/artifacts/deseq2_de"
+
+[nodes.ports]
+inputs = [
+  { type = "file", label = "count_matrix" },
+  { type = "file", label = "sample_metadata" },
+]
+outputs = [
+  { path = "results.tsv", format = "deseq2_results_tsv" },
+  { path = "normalized_counts.tsv", format = "deseq2_normalized_counts_tsv" },
+  { path = "size_factors.tsv", format = "deseq2_size_factors_tsv" },
+  { path = "deseq2_dataset.rds", format = "r_rds" },
+  { path = "run_report.json", format = "deseq2_run_report_json" },
+]
+
+[nodes.params]
+condition_reference = { type = "string", doc = "Reference condition level (e.g. untreated); must differ from condition_test" }
+condition_test = { type = "string", doc = "Test condition level (e.g. treated); must differ from condition_reference" }
+# DSL gap: the legacy spec carried covariates as a string array joined with
+# "," into AUTONOMICS_DESEQ2_COVARIATES, but the v0 env renderer space-joins
+# arrays while the baked runner splits that variable on commas
+# (strsplit(value, ",", fixed = TRUE)). The list therefore travels as a
+# comma-separated string — byte-identical env to the legacy join(",") for
+# every legacy-legal input — the same serialized-string pattern the mvmr
+# pcor migration used. The runner re-validates duplicates, reserved names,
+# and R-identifier shape.
+covariates = { type = "string", default = "", doc = "Comma-separated metadata covariate columns prepended to the design (e.g. type,batch); simple R identifiers, no duplicates, never sample_id or condition; empty means none" }
+# v0 has no enum param type; the runner rejects values outside
+# parametric/local/mean with the legacy message.
+fit_type = { type = "string", default = "parametric", doc = "DESeq2 dispersion-fit type passed to DESeq2::DESeq(): parametric, local, or mean" }
+# v0 has no enum param type; the runner rejects values outside apeglm/none.
+# apeglm is the DESeq2-recommended shrinkage and the analysis default:
+# log2FoldChange/lfcSE become posterior (shrunk) estimates while the Wald
+# test columns (stat/pvalue/padj) stay exact. `none` delivers raw MLE
+# coefficients. Deliberate behavior change vs the pre-apeglm image, which
+# always delivered MLE values.
+lfc_shrink = { type = "string", default = "apeglm", doc = "log2FC shrinkage applied to the results table: apeglm (posterior estimates, default) or none (raw MLE coefficients)" }
+alpha = { type = "number", default = 0.1, exclusive_min = 0.0, exclusive_max = 1.0, doc = "Target FDR for independent filtering and significance reporting; strictly between 0 and 1" }
+threads = { type = "int", default = 1, min = 1.0, max = 1.0, doc = "Fixed at 1: the deterministic first contract forbids parallel execution" }
+
+[nodes.command]
+interpreter = "Rscript"
+argv = ["--vanilla", "/opt/autonomics/deseq2_runner.R"]
+
+[nodes.command.env]
+AUTONOMICS_DESEQ2_CONDITION_REFERENCE = "{{ condition_reference }}"
+AUTONOMICS_DESEQ2_CONDITION_TEST = "{{ condition_test }}"
+AUTONOMICS_DESEQ2_COVARIATES = "{{ covariates }}"
+AUTONOMICS_DESEQ2_FIT_TYPE = "{{ fit_type }}"
+AUTONOMICS_DESEQ2_LFC_SHRINK = "{{ lfc_shrink }}"
+AUTONOMICS_DESEQ2_ALPHA = "{{ alpha }}"
+AUTONOMICS_DESEQ2_THREADS = "{{ threads }}"
+
+# Legacy DEFAULT_CPUS/MEMORY/PIDS_LIMIT/SHM_SIZE. network/read_only_rootfs/
+# pull_policy keep the hardened defaults (isolated, true, missing), which
+# match the legacy wrapper exactly.
+[nodes.resources]
+cpus = 2.0
+memory = "4Gi"
+pids_limit = 256
+shm_size = "1Gi"

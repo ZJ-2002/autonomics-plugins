@@ -1,0 +1,89 @@
+schema_version = 1
+plugin_name = "nichenetr"
+
+[image]
+# Tier-1 official stack: nichenetr v2.2.0 pinned at commit f9906f3a
+# (GPL-3.0-only; GitHub-only release, no CRAN/Bioc), with the Zenodo 7074291
+# human prior networks baked in and MD5-gated at build time. The image digest
+# pins the official algorithm AND the prior networks together; every run
+# writes nichenetr_provenance.json recording versions, prior MD5s and params.
+# Image build context: Dockerfile + install_packages.R + driver.R + vendor
+# priors in this repo; fixtures/ holds the offline e2e fixture whose planted
+# signal is seeded from the official prior itself.
+reference = "ghcr.io/zj-2002/nichenetr@sha256:f0ee4a511531f91839d2d9d9cb83535bd7f7f6b12905e26635684f8a081f0c19"
+tag = "v2.2.0-f9906f3a"
+upstream = "saeyslab/nichenetr v2.2.0 (commit f9906f3a, 2024-09-05, GPL-3.0-only); priors Zenodo record 7074291 (human nsga2r set); rocker/r-ver:4.4.1 base, CRAN deps from Posit PPM jammy binary snapshot 2024-10-01, Bioc 3.20 source for ComplexHeatmap/rhdf5"
+license = "GPL-3.0-only"
+
+[[nodes]]
+kind = "nichenetr_ligand_activity"
+desc = "Official NicheNet v2.2.0 ligand activity analysis: ranks sender ligands on a receiver gene set."
+doc = """
+Input port 0 is an expression H5AD (anndata; standard cells-x-genes or
+transposed storage, both auto-detected; count or normalized values).
+Input port 1 is a geneset file: one official gene symbol per line (a
+first column is taken if the file is multi-column).
+Runs the OFFICIAL nichenetr manual ligand-activity pipeline from a
+digest-pinned image whose human prior networks (ligand_target_matrix
+nsga2r, weighted_networks nsga2r, lr_network 21122021; Zenodo 7074291)
+are baked in, so the digest pins algorithm AND priors together. Every
+run writes nichenetr_provenance.json (package version, pinned commit,
+prior MD5s, parameters). Frozen parameterization, official manual
+pipeline (vignette 'ligand activity analysis', matrix + metadata path,
+no Seurat wrappers, no visualization): alias-to-symbol conversion,
+get_expressed_genes with pct=0.10, background = receiver expressed
+genes intersect prior targets, pairwise potential-ligand filter
+(ligand expressed in sender AND receptor expressed in receiver),
+predict_ligand_activities ranked by aupr_corrected (v2 convention;
+not the v1 pearson), top_n_ligands, get_weighted_ligand_target_links
+(n=200 targets per ligand) and get_weighted_ligand_receptor_links
+against weighted_networks lr_sig. There is no nnls/PPR algorithm
+parameter on this path (the NSGA2R ligand-target matrix is read
+as-is) and no prioritize_ligands export upstream. Human priors only
+in v1 (mouse priors are not baked in). The method is deterministic:
+no RNG is involved. License: GPL-3.0-only; the image carries the
+full GPL-3 text and this plugin repo is its corresponding source.
+The network is disabled during the run.
+"""
+timeout_secs = 14400
+artifact_prefix = "/artifacts/nichenetr_ligand_activity"
+
+[nodes.ports]
+inputs = [
+  { type = "file", label = "exprs_h5ad" },
+  { type = "file", label = "geneset" },
+]
+outputs = [
+  { path = "nichenetr_ligand_activities.csv", format = "nichenetr_table" },
+  { path = "nichenetr_ligand_target_links.csv", format = "nichenetr_table" },
+  { path = "nichenetr_ligand_receptor_links.csv", format = "nichenetr_table" },
+  { path = "nichenetr_top_ligands.csv", format = "nichenetr_table" },
+  { path = "nichenetr_provenance.json", format = "nichenetr_provenance_json" },
+]
+
+[nodes.params]
+sender = { type = "string", doc = "Sender cell type label (value of cluster_column); REQUIRED, no default" }
+receiver = { type = "string", doc = "Receiver cell type label (value of cluster_column); REQUIRED, no default" }
+cluster_column = { type = "string", default = "cluster", doc = "obs column holding cluster/cell-type labels" }
+top_n_ligands = { type = "int", default = 30, min = 1.0, max = 200.0, doc = "Number of top-ranked ligands kept for link extraction (official vignette default 30)" }
+n_targets = { type = "int", default = 200, min = 1.0, max = 1000.0, doc = "Top n prior targets considered per ligand in get_weighted_ligand_target_links" }
+pct = { type = "number", default = 0.1, min = 0.01, max = 1.0, doc = "Fraction of cluster cells expressing a gene for it to count as expressed (official default 0.10)" }
+
+[nodes.command]
+interpreter = "Rscript"
+argv = ["/opt/autonomics/driver.R"]
+
+[nodes.command.env]
+NNET_SENDER = "{{ sender }}"
+NNET_RECEIVER = "{{ receiver }}"
+NNET_CLUSTER_COLUMN = "{{ cluster_column }}"
+NNET_TOP_N_LIGANDS = "{{ top_n_ligands }}"
+NNET_N_TARGETS = "{{ n_targets }}"
+NNET_PCT = "{{ pct }}"
+
+[nodes.resources]
+network = "isolated"
+cpus = 4.0
+memory = "16Gi"
+pids_limit = 512
+shm_size = "1Gi"

@@ -1,0 +1,48 @@
+{
+  "prepared_utc": "2026-10-06T14:00:56.208006+00:00",
+  "base_image": "ghcr.io/zj-2002/singscore-official@sha256:04981a66d7c3fc7055a185a0102dc9f337dd63381b676681c08e52e8c22e2ca5",
+  "bioconductor_release": "3.23",
+  "official_index_sha256": "fe35d0e8348582a68ba785f3d21f11e085f27753a275ff38298f4508efc99f39",
+  "archives": [
+    {
+      "package": "assorthead",
+      "version": "1.6.3",
+      "url": "https://bioconductor.org/packages/3.23/bioc/src/contrib/assorthead_1.6.3.tar.gz",
+      "archive": "assorthead_1.6.3.tar.gz",
+      "sha256": "75c306bb609d43b9002db13f9129ca08e66de96f2d0117c1e0b2557e6b39016e",
+      "official_index_md5": "0900a80795ea2dbc2bdb97e85b80e693"
+    },
+    {
+      "package": "beachmat",
+      "version": "2.28.0",
+      "url": "https://bioconductor.org/packages/3.23/bioc/src/contrib/beachmat_2.28.0.tar.gz",
+      "archive": "beachmat_2.28.0.tar.gz",
+      "sha256": "2b320384995defad9929f26a81a3d152aec4e26ac3813833c591b33939c4453b",
+      "official_index_md5": "95f752d752ee270280043c81e0f2b38c"
+    },
+    {
+      "package": "BiocNeighbors",
+      "version": "2.6.0",
+      "url": "https://bioconductor.org/packages/3.23/bioc/src/contrib/BiocNeighbors_2.6.0.tar.gz",
+      "archive": "BiocNeighbors_2.6.0.tar.gz",
+      "sha256": "2a6dbae3f7877777730c4377eedfadfafbf597d5aef378a2eb8f3155c645f98d",
+      "official_index_md5": "3d66b0dd110d4e07dfa73c58c6969f1c"
+    },
+    {
+      "package": "SingleCellExperiment",
+      "version": "1.34.0",
+      "url": "https://bioconductor.org/packages/3.23/bioc/src/contrib/SingleCellExperiment_1.34.0.tar.gz",
+      "archive": "SingleCellExperiment_1.34.0.tar.gz",
+      "sha256": "08641f36f0cf6085cd91ac6087c1a5ff872bd0cf13bd1e354c5b6f2c47e44a91",
+      "official_index_md5": "d756b49f068e0aad987bf9720d40637b"
+    },
+    {
+      "package": "UCell",
+      "version": "2.16.0",
+      "url": "https://bioconductor.org/packages/3.23/bioc/src/contrib/UCell_2.16.0.tar.gz",
+      "archive": "UCell_2.16.0.tar.gz",
+      "sha256": "816526fc4fb2958ecac6432f8c574c2bd51a6ff2c179d6ec8d2d6bcb1e9f5c9c",
+      "official_index_md5": "a5527df722e0d4d7926047764917f99f"
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+schema_version = 1
+plugin_name = "cachexia-mrpresso"
+
+[image]
+reference = "ghcr.io/zj-2002/mrpresso@sha256:ab59edb4bf059317fdf2a0d6e1373a4ca83d9054fc084b2d2f0c2abcaeaf50d9"
+tag = "MRPRESSO-1.0-fixed-source"
+upstream = "rondolab/MR-PRESSO@3e3c92d7eda6dce0d1d66077373ec0f7ff4f7e87; actual R package Version is 1.0, not image label 1.0.0"
+license = "GPL-3.0"
+
+[[nodes]]
+kind = "cachexia_mrpresso_official"
+desc = "Official MR-PRESSO with explicit frozen parameters, no silent SNP loss and censor-preserving output."
+doc = "SNP-indexed already qualified beta/SE TSV and explicit key/value input-hash/method/seed contract. Rejects missing/nonfinite effects, nonpositive SE, zero first exposure, unsafe formula column names, singular leave-one-out designs, inadequate Monte Carlo resolution and incomplete flags. Preserves the entire official object, textual censored P, every SNP and warnings. Not primary IVW, MVMR eligibility, automatic removal, research family assembly or G0."
+timeout_secs = 1800
+artifact_prefix = "/artifacts/cachexia_mrpresso_official"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"
+[nodes.ports]
+inputs = [{ type = "file" }, { type = "file" }]
+outputs = [{ path = "mrpresso_summary.tsv", format = "tsv" }, { path = "mrpresso.RDS", format = "r_rds" }, { path = "mrpresso.log", format = "text" }, { path = "snps.tsv", format = "tsv" }, { path = "audit.tsv", format = "tsv" }]
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/mrpresso.R"

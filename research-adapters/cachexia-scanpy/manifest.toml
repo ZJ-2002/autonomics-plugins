@@ -1,0 +1,122 @@
+schema_version = 1
+plugin_name = "cachexia-scanpy"
+
+[image]
+reference = "localhost/autonomics/single-cell-preprocessor@sha256:5069c3ffaac0b11dfe950c1cd026f4195317be47b529b730572d9e670ad0f59b"
+upstream = "Scanpy 1.11.3 / AnnData 0.11.4 / numpy 2.1.3 / scipy 1.14.1"
+license = "BSD-3-Clause"
+
+[[nodes]]
+kind = "cachexia_sc_dense_ingest"
+desc = "Frozen explicit-axis matrix and cell metadata to AnnData without normalization."
+doc = "Three Files: lexical TSV matrix, exact JSON contract, complete cell metadata TSV. Explicit gene-by-cell or cell-by-gene orientation, frozen full axes/scale/hash; raw integer counts or finite nonnegative expression, never guessing counts from log2 bulk. Five result/H5AD/audit/log/gene-ledger ports. No normalization, donor qualification or G0."
+timeout_secs = 3600
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}, {type="file"}]
+outputs = [{path="result.parquet",format="parquet"}, {path="output.h5ad",format="h5ad"}, {path="audit.json",format="json"}, {path="scanpy.log",format="text"}, {path="gene_ledger.tsv",format="tsv"}]
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/workflow.py"
+[nodes.command.env]
+CACHEXIA_SCANPY_MODE = "ingest"
+NUMBA_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+OPENBLAS_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"
+
+[[nodes]]
+kind = "cachexia_h5ad_subset"
+desc = "Exact-cell-set AnnData slicing, preserving aligned input content."
+doc = "Three Files: H5AD, exact JSON contract and string cell_id Parquet selection. Every requested ID must exist and be unique; explicit input or selection order, no numeric ID coercion/drop_duplicates/unknown-cell deletion. Preserves X/layers/raw/obs/var/embeddings/aligned pairwise data according to official AnnData slicing; old graph submatrices are not newly inferred graphs."
+timeout_secs = 3600
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}, {type="file"}]
+outputs = [{path="result.parquet",format="parquet"}, {path="output.h5ad",format="h5ad"}, {path="audit.json",format="json"}, {path="scanpy.log",format="text"}, {path="gene_ledger.tsv",format="tsv"}]
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/workflow.py"
+[nodes.command.env]
+CACHEXIA_SCANPY_MODE = "subset"
+NUMBA_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+OPENBLAS_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"
+
+[[nodes]]
+kind = "cachexia_h5ad_embedding"
+desc = "Official frozen Scanpy HVG/PCA/neighbors/UMAP/Leiden with preserved raw counts."
+doc = "Two Files: H5AD and exact JSON contract. Explicit raw-count normalization/log or already-log1p layer, HVG flavor, scaling/centering, exact PCA count, neighbors/UMAP/Leiden parameters and seed; never reuse unqualified existing PCA or silently reduce requested dimensions. Preserves all genes with HVG mask, unrelated content and raw-count layer; model layer explicit. Annotation/visualization only, not integrated counts or donor-level inference."
+timeout_secs = 7200
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}]
+outputs = [{path="result.parquet",format="parquet"}, {path="output.h5ad",format="h5ad"}, {path="audit.json",format="json"}, {path="scanpy.log",format="text"}, {path="gene_ledger.tsv",format="tsv"}]
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/workflow.py"
+[nodes.command.env]
+CACHEXIA_SCANPY_MODE = "embedding"
+NUMBA_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+OPENBLAS_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"
+
+[[nodes]]
+kind = "cachexia_h5ad_rank_genes"
+desc = "Official Scanpy descriptive cell-level marker ranks with full numerical fields."
+doc = "Two Files: H5AD and frozen JSON contract. Explicit log1p layer, group universe, reference/method/correction/tie/rank parameters and logreg options. Full official uns object and score/logfoldchange/raw P/adjusted P preserved; official absent/NaN/Inf distinguished, no invented P for logreg. Never a replacement for donor pseudobulk or primary B family tests."
+timeout_secs = 3600
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}]
+outputs = [{path="result.parquet",format="parquet"}, {path="output.h5ad",format="h5ad"}, {path="audit.json",format="json"}, {path="scanpy.log",format="text"}, {path="gene_ledger.tsv",format="tsv"}]
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/workflow.py"
+[nodes.command.env]
+CACHEXIA_SCANPY_MODE = "rank"
+NUMBA_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+OPENBLAS_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"
+
+[[nodes]]
+kind = "cachexia_h5ad_cluster_means"
+desc = "Official Scanpy cluster means/nonzero counts with explicit full-library scale."
+doc = "Two Files: H5AD and frozen JSON contract. Exact groups and genes/layer; none or raw-count cp10k using all input genes for cell totals before gene selection. Sparse explicit zeros canonicalized; missing labels/invalid totals never become new groups. Complete mean/count_nonzero aggregate H5AD plus cluster-gene table, n_cells and percent expressed. Descriptive cells, not donors or biological presence proof."
+timeout_secs = 3600
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}]
+outputs = [{path="result.parquet",format="parquet"}, {path="output.h5ad",format="h5ad"}, {path="audit.json",format="json"}, {path="scanpy.log",format="text"}, {path="gene_ledger.tsv",format="tsv"}]
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/workflow.py"
+[nodes.command.env]
+CACHEXIA_SCANPY_MODE = "means"
+NUMBA_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+OPENBLAS_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"

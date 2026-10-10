@@ -1,0 +1,84 @@
+schema_version = 1
+plugin_name = "cellchat"
+
+[image]
+# Tier-1 official stack: jinworks/CellChat pinned at official main-branch
+# commit 75253cd0 (2026-03-04, v2.2.0.9001, includes the PR #438 bootstrap
+# parallel fix). The v2.1.2 CRAN/GitHub tag is deliberately NOT used: it
+# predates the fix and carries a parallel bug that makes >=40k-cell runs
+# 10-20x slower. CellChatDB (human/mouse, LazyData) is embedded in the
+# package, so the digest pins the algorithm AND the database together with
+# zero runtime downloads; every run writes cellchat_provenance.json
+# recording versions, DB versions, parameters and the normalization
+# decision. Image build context: Dockerfile + driver.R + vendored upstream
+# tarball in this repo (GPL-3 source provision), fixtures/ holds the offline
+# e2e fixture (real LR genes, planted signal).
+reference = "ghcr.io/zj-2002/cellchat@sha256:6fdc08a21395fd2710cb9ac0d632079adb1364ae621fc4f8f809f5b368d09f4b"
+tag = "2.2.0.9001-75253cd0"
+upstream = "jinworks/CellChat@75253cd0 (GPL-3) + immunogenomics/presto@b5df6ee6 (GPL-3, official do.fast Wilcoxon backend, vendored+NOT the CRAN PrestoDB client); CellChatDB embedded; rocker/r-ver:4.4.1 base (Ubuntu 22.04, R 4.4.1, PPM jammy binary snapshot 2026-10-01, Bioconductor 3.20)"
+license = "GPL-3.0-only"
+
+[[nodes]]
+kind = "cellchat_inference"
+desc = "Official CellChat communication-probability inference over ligand-receptor pairs, pathways and network centrality."
+doc = """
+Input port 0 is a normalized-data H5AD (the official CellChat input
+convention: genes x cells log-normalized matrix; raw integer counts are
+also accepted and get normalized in-container with the official formula
+log1p(t(t(X)/colSums(X))*10000) when normalized=auto detects them or
+normalized=raw is set explicitly). X is read SPARSELY (rhdf5 directly, CSR
+and CSC both handled — the driver never touches Python/reticulate); cluster labels come from the obs
+column cluster_column. Runs the FROZEN official pipeline from a
+digest-pinned image: createCellChat -> subsetData ->
+identifyOverExpressedGenes/Interactions -> computeCommunProb (triMean,
+raw.use=TRUE, seed.use=1L fixed, nboot permutations) ->
+filterCommunication(min.cells=10) -> computeCommunProbPathway(thresh=0.05)
+-> aggregateNet -> netAnalysis_computeCentrality. I/O translation only —
+no analysis decisions outside the official code; official outputs are
+written under fixed names plus cellchat_provenance.json and the full
+cellchat object as RDS. seed.use=1L is fixed for reproducible bootstrap
+p-values; nboot is capped at 500 because 1000 permutations on 50k cells
+scale to days. Visualization, perturbation, merging and spatial functions
+are intentionally excluded. The network is disabled during the run.
+"""
+timeout_secs = 86400
+artifact_prefix = "/artifacts/cellchat_inference"
+
+[nodes.ports]
+inputs = [{ type = "file", label = "expr_h5ad" }]
+outputs = [
+  { path = "cellchat_lr_pairs.csv", format = "cellchat_table" },
+  { path = "cellchat_pathway_probs.csv", format = "cellchat_table" },
+  { path = "cellchat_net_count.csv", format = "cellchat_matrix" },
+  { path = "cellchat_net_weight.csv", format = "cellchat_matrix" },
+  { path = "cellchat_centrality.csv", format = "cellchat_table" },
+  { path = "cellchat_object.rds", format = "cellchat_rds" },
+  { path = "cellchat_provenance.json", format = "cellchat_provenance_json" },
+]
+
+[nodes.params]
+cluster_column = { type = "string", default = "cluster", doc = "obs column holding cluster/cell-type labels" }
+species = { type = "string", default = "human", doc = "CellChatDB to use: human or mouse" }
+nboot = { type = "int", default = 100, min = 10.0, max = 500.0, doc = "Bootstrap permutations behind the empirical p-values in computeCommunProb (capped at 500: 1000 on 50k cells scales to days)" }
+workers = { type = "int", default = 4, min = 1.0, max = 32.0, doc = "future::plan multisession workers for the official parallel steps" }
+db_scope = { type = "string", default = "full", doc = "full CellChatDB, or secreted for subsetDB(search='Secreted Signaling', key='annotation')" }
+normalized = { type = "string", default = "auto", doc = "Input data state: auto (integer-count heuristic), raw (apply official log1p normalization), or lognorm (pass through)" }
+
+[nodes.command]
+interpreter = "Rscript"
+argv = ["/opt/autonomics/driver.R"]
+
+[nodes.command.env]
+CCHAT_CLUSTER_COLUMN = "{{ cluster_column }}"
+CCHAT_SPECIES = "{{ species }}"
+CCHAT_NBOOT = "{{ nboot }}"
+CCHAT_WORKERS = "{{ workers }}"
+CCHAT_DB_SCOPE = "{{ db_scope }}"
+CCHAT_NORMALIZED = "{{ normalized }}"
+
+[nodes.resources]
+network = "isolated"
+cpus = 8.0
+memory = "32Gi"
+pids_limit = 1024
+shm_size = "1Gi"

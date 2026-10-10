@@ -1,0 +1,70 @@
+schema_version = 1
+plugin_name = "cachexia-limma"
+
+[image]
+reference = "localhost/cachexia-limma@sha256:9f2926aac80ea63597d0fbcd640ecfa566e683d794842d9fb8cb6aa000acbe5c"
+tag = "1.0.1"
+upstream = "Official source archives limma 3.66.0 / edgeR 4.8.2 / statmod 1.5.2; pinned DESeq2 base R 4.5.3; offline local build, NOT published bulk-rnaseq image"
+license = "Artistic-2.0 OR GPL-2.0-or-later"
+
+
+[[nodes]]
+kind = "cachexia_limma_voom"
+desc = "Runs official limma + voom + eBayes in an isolated container."
+doc = """
+STAGED technical-only wrapper; third port raw_integer_counts / independent-unit / exact formula / explicit covariate-type contract is required. Missing, transformed inputs, rank deficiency and repeated units are rejected. Scientific release/G0 are never granted; this is not a daemon registration.
+
+Input ports are an integer count matrix, sample metadata, and a JSON study contract. The node
+constructs the requested design formula, applies TMM (or quantile)
+normalization, fits limma::voom + eBayes, optionally contrasts two outcome
+levels, and publishes the top table, voom weights, normalized expression,
+contrast summary and a run report. No reference panel is required.
+"""
+timeout_secs = 3600
+artifact_prefix = "/artifacts/limma_voom"
+
+[nodes.ports]
+inputs = [
+  { type = "file", label = "count_matrix" },
+  { type = "file", label = "sample_metadata" },
+  { type = "file", label = "study_contract" },
+]
+outputs = [
+  { path = "results.tsv", format = "limma_voom_results_tsv" },
+  { path = "voom_weights.tsv", format = "limma_voom_weights_tsv" },
+  { path = "normalized_expression.tsv", format = "limma_voom_normalized_tsv" },
+  { path = "contrast_summary.tsv", format = "limma_voom_contrast_summary_tsv" },
+  { path = "run_report.json", format = "limma_voom_run_report_json" },
+]
+
+[nodes.params]
+seed = { type = "int", default = 1, min = 0.0, max = 2147483647.0, doc = "Frozen R RNG seed" }
+outcome_var = { type = "string", doc = "Metadata column holding the outcome; required" }
+contrast_var = { type = "string", doc = "Contrast column; must equal outcome_var in the deterministic first contract" }
+contrast_levels = { type = "string", default = "", doc = "Comma-joined categorical levels as reference,test (e.g. ctrl,case); exactly two entries for categorical outcome, empty for continuous" }
+covariates = { type = "string", default = "", doc = "Comma-joined metadata covariate columns (e.g. batch,sex); simple R identifiers, no duplicates, never the outcome or sample_id; empty means none" }
+outcome_mode = { type = "string", default = "categorical", doc = "categorical or continuous" }
+normalization = { type = "string", default = "tmm", doc = "tmm, quantile, or none" }
+alpha = { type = "number", default = 0.05, exclusive_min = 0.0, exclusive_max = 1.0, doc = "Significance threshold for the top table; strictly between 0 and 1" }
+threads = { type = "int", default = 1, min = 1.0, max = 1.0, doc = "Fixed at 1: the deterministic first contract forbids parallel execution" }
+
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/limma.R"
+
+[nodes.command.env]
+AUTONOMICS_COUNTS_SEED = "{{ seed }}"
+AUTONOMICS_LIMMA_OUTCOME = "{{ outcome_var }}"
+AUTONOMICS_LIMMA_CONTRAST_VAR = "{{ contrast_var }}"
+AUTONOMICS_LIMMA_CONTRAST_LEVELS = "{{ contrast_levels }}"
+AUTONOMICS_LIMMA_COVARIATES = "{{ covariates }}"
+AUTONOMICS_LIMMA_OUTCOME_MODE = "{{ outcome_mode }}"
+AUTONOMICS_LIMMA_NORMALIZATION = "{{ normalization }}"
+AUTONOMICS_LIMMA_ALPHA = "{{ alpha }}"
+AUTONOMICS_LIMMA_THREADS = "{{ threads }}"
+
+[nodes.resources]
+cpus = 2.0
+memory = "6Gi"
+pids_limit = 256
+shm_size = "1Gi"

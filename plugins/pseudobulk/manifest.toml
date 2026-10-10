@@ -1,0 +1,128 @@
+schema_version = 1
+plugin_name = "pseudobulk"
+
+[image]
+reference = "ghcr.io/zj-2002/biotools-py@sha256:7ad6aeafa87672699d28b61b6bed12fc81fcdbfc43222a0abf17e2d56fb806f5"
+tag = "v1"
+upstream = "anndata 0.11 + scipy sparse"
+license = "BSD-3-Clause"
+
+# 说明：供者×细胞类型 pseudobulk 聚合（方案 §15.3 统计单位规则）。
+# 生物学单位是供者/动物；同一供者的多库、多批次不拆成独立重复。
+# 本节点是 scRNA → 供者层差异分析（DESeq2/limma 下游）之间的桥。
+
+[[nodes]]
+kind = "pseudobulk_counts"
+desc = "Aggregate single-cell h5ad into donor x celltype pseudobulk count matrix"
+doc = """
+输入：单细胞 h5ad（obs 含供者列与细胞类型列）。输出三件：
+1) pseudobulk_counts.tsv —— 基因 × 伪样本 计数矩阵（行=基因，列=伪样本 ID）。
+   schema=deseq2（默认）：首列 gene_id、伪样本 ID 列，表头直接对上
+   DESeq2/limma-voom；schema=legacy：首列 gene（2026-10-05 审计 F07 前的旧表头，
+   breaking change 见 README）；
+2) pseudobulk_samples.tsv —— schema=deseq2 首列 sample_id 并含 condition 列
+   （值取自 obs[condition_column]，组内恒定强制校验），后接 sample/celltype/
+   n_cells（供统计单位审计：每组独立供者数由此可查）；legacy 首列 pseudobulk_id、
+   无 condition；
+3) pseudobulk.log —— 层选择、校验结论（整数/非负/有限、核查条目数）、
+   id_encoding、剔除组与缺失标签剔除记录。
+规则来源：方案 §15.3——具有可识别生物学重复时用供者×细胞类型 pseudobulk；
+每组 1 个供者只描述、2 个低精度探索的判断在下游完成，本节点如实输出 n_cells。
+分组键是 (sample, celltype) 元组，不做字符串拼接——("a__b","c") 与
+("a","b__c") 是两组；不同元组拼出相同 ID 串时自动改百分号编码（id_encoding=percent）。
+失败处理：列名不存在/矩阵空/基因名重复/负值/非有限值 → 退出 2；矩阵非整数
+→ 默认退出 2（allow_non_integer=true 才按原值求和并 WARN，下游不得当原始
+计数建模）；obs 标签缺失（NaN/空白）→ 显式剔除进 log，全缺失才报错。
+min_cells 以下的组被剔除并记录；不自动合并小组。聚合保持稀疏，导出按基因
+分块稠密化，峰值内存与全量 toarray 脱钩。
+"""
+timeout_secs = 7200
+artifact_prefix = "/artifacts/pseudobulk_counts"
+
+[nodes.ports]
+inputs = [{ type = "file" }]
+outputs = [
+  { path = "pseudobulk_counts.tsv", format = "pseudobulk_counts" },
+  { path = "pseudobulk_samples.tsv", format = "pseudobulk_samples" },
+  { path = "pseudobulk.log", format = "pseudobulk_log" },
+]
+
+[nodes.params]
+sample_col = { type = "string", doc = "obs column holding donor/animal identity (biological unit)" }
+celltype_col = { type = "string", doc = "obs column holding cell type annotation" }
+min_cells = { type = "int", default = 10, min = 1, doc = "drop pseudobulk groups with fewer cells" }
+layer = { type = "string", optional = true, doc = "h5ad layer to aggregate; empty = .X" }
+schema = { type = "string", default = "deseq2", doc = "output headers: deseq2 (gene_id/sample_id/condition, DESeq2-ready) | legacy (pre-F07 gene/pseudobulk_id)" }
+allow_non_integer = { type = "bool", default = false, doc = "aggregate non-integer (e.g. normalised) layers as-is with a WARN instead of failing" }
+condition_column = { type = "string", optional = true, doc = "obs column holding the design condition; required by schema=deseq2, must be constant within each pseudobulk group" }
+id_schema = { type = "string", default = "sample__celltype", doc = "pseudobulk id pattern (informational; fixed join)" }
+
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/pseudobulk_counts.py"
+
+[nodes.command.env]
+PB_SAMPLE_COL = "{{ sample_col }}"
+PB_CELLTYPE_COL = "{{ celltype_col }}"
+PB_MIN_CELLS = "{{ min_cells }}"
+PB_LAYER = "{{ layer }}"
+PB_SCHEMA = "{{ schema }}"
+PB_ALLOW_NON_INTEGER = "{{ allow_non_integer }}"
+PB_CONDITION_COLUMN = "{{ condition_column }}"
+PB_ID_SCHEMA = "{{ id_schema }}"
+
+[nodes.resources]
+network = "isolated"
+cpus = 4
+memory = "8g"
+pull_policy = "never"
+
+[[nodes]]
+kind = "h5ad_export_matrix"
+desc = "Export the h5ad X layer to a long-format parquet plus obs/var tables"
+doc = """
+输入：任意 h5ad（引擎自产——X 为 lzf 压缩 CSR 组，h5py 原生识别 filter
+32000——或宿主/上游 anndata 写的均可）。输出四件：
+1) x_matrix.long.parquet —— cell_id/gene/value 三列长表，行组=chunk 个
+   细胞，zstd 压缩。SQL/DataFusion/parquet_sql 的直接输入；
+2) obs.tsv —— 细胞元数据表（首列 cell_id）；
+3) var.tsv —— 基因元数据表（首列 gene_id）；
+4) h5ad_export.log —— 层选择/形状/dtype/非零元数。
+规则来源：2026-10-04 节点审计——引擎原生 h5ad 工厂只有 obs 层，X 层无
+导出路径（此前只能宿主把 X 机械拷进 obs 绕行）；本节点补齐。
+backed='r' 按行块切片，内存有界。稀疏与 dense 矩阵都只导非零元
+（0=未表达，与缺失在下游不可区分，log 已注明）；值 cast float64
+（整数计数 ≤2^53 精确）。
+失败处理：文件非 h5ad/层不存在 → 退出 2。
+解释边界：纯忠实搬运，不归一化不过滤；X 的语义（原始计数 vs 标准化值）
+由上游决定，log 记录 dtype 供下游判断。
+"""
+timeout_secs = 7200
+artifact_prefix = "/artifacts/h5ad_export_matrix"
+
+[nodes.ports]
+inputs = [{ type = "file" }]
+outputs = [
+  { path = "x_matrix.long.parquet", format = "x_matrix_long_parquet" },
+  { path = "obs.tsv", format = "h5ad_obs_table" },
+  { path = "var.tsv", format = "h5ad_var_table" },
+  { path = "h5ad_export.log", format = "pseudobulk_log" },
+]
+
+[nodes.params]
+layer = { type = "string", default = "X", doc = "X or layers/<name>" }
+chunk = { type = "int", default = 2000, min = 100.0, doc = "cells per parquet row group" }
+
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/h5ad_export_matrix.py"
+
+[nodes.command.env]
+EXPORT_LAYER = "{{ layer }}"
+EXPORT_CHUNK = "{{ chunk }}"
+
+[nodes.resources]
+network = "isolated"
+cpus = 2
+memory = "8g"
+pull_policy = "never"

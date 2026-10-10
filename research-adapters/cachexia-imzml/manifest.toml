@@ -1,0 +1,27 @@
+schema_version = 1
+plugin_name = "cachexia-imzml"
+
+[image]
+reference = "ghcr.io/zj-2002/biotools-py@sha256:7ad6aeafa87672699d28b61b6bed12fc81fcdbfc43222a0abf17e2d56fb806f5"
+upstream = "imzML1.1 format; source-locked pyimzML1.5.5 reference; lossless compressed/float16 extensions"
+license = "Apache-2.0"
+
+[[nodes]]
+kind = "cachexia_imzml_ingest"
+desc = "Complete frozen imzML/ibd ingestion with UUID/checksum/offset guards and full spectra."
+doc = "Explicit replacement, not original imzml_ingest alias. Three Files: original imzML, original ibd, frozen JSON. Full original pixel/spectrum axes and x/y/z; original source bytes and raw typed spectra retained. Exact per-pixel/window integer sums are separately retained alongside float64 views, no intensity normalization or molecule annotation. Closed m/z windows, all-pixel means, strict >0 summed-signal detection, full requested windows including empty-hit rows. Repeated coordinates are not collapsed. Uncompressed arrays replay pyimzML1.5.5; zlib and float16 fix unsupported upstream decoding and are imzML-format extensions, not claimed pyimzML equality. Statistical layer N/A. No donor inference, spatial null, scientific qualification, resident daemon or G0."
+timeout_secs = 3600
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}, {type="file"}]
+outputs = [{path="pixels.parquet",format="parquet"}, {path="windows.parquet",format="parquet"}, {path="spectra.parquet",format="parquet"}, {path="pixel_windows.parquet",format="parquet"}, {path="audit.json",format="json"}, {path="request_ledger.tsv",format="tsv"}, {path="imzml.log",format="text"}, {path="source.imzML",format="imzml"}, {path="source.ibd",format="ibd"}]
+[nodes.command]
+interpreter = "python3"
+script_file = "ingest.py"
+[nodes.command.env]
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"
