@@ -1,0 +1,21 @@
+name: Plugin catalog evidence
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  catalog-evidence:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run all required catalog checks, reject missing or skipped cases
+        run: python -m tools.run_checks --output artifacts/catalog-checks.json
+      - name: Preserve evidence including failures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: catalog-evidence
+          path: artifacts/
+          if-no-files-found: error

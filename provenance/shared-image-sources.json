@@ -1,0 +1,23 @@
+{
+  "repository": "https://github.com/ZJ-2002/plugin-images.git",
+  "revision": "8e75ff5e91ec6c0e1e3f457cf69cf82717b68b8d",
+  "published_branch": "master",
+  "directory": "shared-image-sources",
+  "files": [
+    {
+      "path": "biotools-py/Dockerfile",
+      "sha256": "64d0a460b1a3bc690842fc114d451ad4ca54f881bb333b27c0f21de63df90063",
+      "bytes": 608,
+      "git_blob": "c6a657fbf371fa9725d5cf034488507ec6ae6cbe"
+    },
+    {
+      "path": "lme4-r/Dockerfile",
+      "sha256": "7eda58c74707a5e3fd72c6de07021e62d3fff19dfba3ea3cd45c3708828bd923",
+      "bytes": 505,
+      "git_blob": "51b7f29533200a1343e92f11dba03211035abffa"
+    }
+  ],
+  "images_rebuilt": false,
+  "scientific_certified": false,
+  "G0": false
+}

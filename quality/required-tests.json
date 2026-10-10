@@ -1,0 +1,23 @@
+{
+  "scope": "CATALOG_TESTS_NOT_SCIENTIFIC_CERTIFICATES",
+  "test_ids": [
+    "tests.test_catalog.CatalogTests.test_added_source_fails_lock",
+    "tests.test_catalog.CatalogTests.test_changed_source_fails_lock",
+    "tests.test_catalog.CatalogTests.test_duplicate_canonical_kind_fails",
+    "tests.test_catalog.CatalogTests.test_empty_catalog_is_not_pass",
+    "tests.test_catalog.CatalogTests.test_family_symlink_escape_fails",
+    "tests.test_catalog.CatalogTests.test_import_verification_checks_bytes",
+    "tests.test_catalog.CatalogTests.test_invalid_relative_paths_fail",
+    "tests.test_catalog.CatalogTests.test_inventory_has_no_scientific_admission",
+    "tests.test_catalog.CatalogTests.test_missing_script_fails",
+    "tests.test_catalog.CatalogTests.test_mutable_image_fails",
+    "tests.test_catalog.CatalogTests.test_output_traversal_fails",
+    "tests.test_catalog.CatalogTests.test_private_credential_file_fails",
+    "tests.test_catalog.CatalogTests.test_profile_rejects_unknown_or_repeated_families",
+    "tests.test_catalog.CatalogTests.test_profile_requires_full_pin",
+    "tests.test_catalog.CatalogTests.test_profile_roundtrips_subdir",
+    "tests.test_catalog.CatalogTests.test_research_overlap_is_not_auto_enabled",
+    "tests.test_catalog.CatalogTests.test_script_symlink_escape_fails",
+    "tests.test_catalog.CatalogTests.test_script_traversal_fails"
+  ]
+}
