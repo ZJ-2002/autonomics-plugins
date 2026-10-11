@@ -48,6 +48,20 @@
     "tests.test_frozen_genetic_transport.FrozenGeneticTransportTests.test_changed_manifest_does_not_silently_replace_image_or_interface",
     "tests.test_frozen_genetic_transport.FrozenGeneticTransportTests.test_source_lock_cannot_grant_scientific_permission_or_auto_enable",
     "tests.test_frozen_genetic_transport.FrozenGeneticTransportTests.test_manifest_program_set_must_be_complete_even_with_other_valid_sources",
-    "tests.test_frozen_genetic_transport.FrozenGeneticTransportTests.test_updated_local_sha_cannot_mislabel_changed_bytes_as_the_original_git_blob"
+    "tests.test_frozen_genetic_transport.FrozenGeneticTransportTests.test_updated_local_sha_cannot_mislabel_changed_bytes_as_the_original_git_blob",
+    "plugins.ldsc.tests.test_munge_entrypoint.MungeEntrypointTests.test_broken_gzip_refuses_without_invoking_method",
+    "plugins.ldsc.tests.test_munge_entrypoint.MungeEntrypointTests.test_every_manifest_environment_maps_to_exact_official_option",
+    "plugins.ldsc.tests.test_munge_entrypoint.MungeEntrypointTests.test_gzip_transport_uses_actual_input_and_creates_private_directory",
+    "plugins.ldsc.tests.test_munge_entrypoint.MungeEntrypointTests.test_input_required_and_summary_is_not_duplicated",
+    "plugins.ldsc.tests.test_munge_entrypoint.MungeEntrypointTests.test_official_failure_never_publishes_normal_result",
+    "plugins.ldsc.tests.test_munge_entrypoint.MungeEntrypointTests.test_presence_flags_and_explicit_false",
+    "plugins.ldsc.tests.test_munge_entrypoint.MungeEntrypointTests.test_unsupported_allele_option_and_malformed_presence_fail_before_command",
+    "plugins.ldsc.tests.test_munge_entrypoint.MungeEntrypointTests.test_values_remain_single_literal_arguments_without_shell_expansion",
+    "plugins.ldsc.tests.test_inference_entrypoint.InferenceEntrypointTests.test_actual_nonzero_method_exit_preserves_failure_diagnostics",
+    "plugins.ldsc.tests.test_inference_entrypoint.InferenceEntrypointTests.test_gzip_private_materialization_for_both_methods",
+    "plugins.ldsc.tests.test_inference_entrypoint.InferenceEntrypointTests.test_h2_actual_log_and_literal_optional_arguments",
+    "plugins.ldsc.tests.test_inference_entrypoint.InferenceEntrypointTests.test_missing_official_log_is_not_a_successful_empty_artifact",
+    "plugins.ldsc.tests.test_inference_entrypoint.InferenceEntrypointTests.test_rg_preserves_both_original_inputs_and_single_official_log",
+    "plugins.ldsc.tests.test_inference_entrypoint.InferenceEntrypointTests.test_swallowed_pair_failure_is_a_failed_method_with_diagnostic_log"
   ]
 }

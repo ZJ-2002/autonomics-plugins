@@ -90,7 +90,10 @@ nstudy_min = { type = "number", optional = true, doc = "Minimum study count" }
 # "bool" typing rendered a non-empty "false" and appended e.g. --daner.
 daner = { type = "flag", optional = true, doc = "Parse Stephan Ripke daner format" }
 daner_n = { type = "flag", optional = true, doc = "Parse newer daner format with Nca/Nco" }
-a1_is_a2 = { type = "flag", optional = true, doc = "Treat A1 and A2 as identical" }
+a1_is_a2 = { type = "flag", optional = true, doc = "Legacy unsupported option: true is explicitly rejected; never assume allele equivalence" }
+signed_sumstats = { type = "string", optional = true, doc = "Explicit official signed-statistic column and null value, e.g. Z,0 or OR,1" }
+a1_inc = { type = "flag", optional = true, doc = "Official convention: A1 is the increasing allele; independently review before use" }
+nstudy = { type = "string", optional = true, doc = "Explicit original study-count column" }
 
 [nodes.command]
 interpreter = "sh"
@@ -114,6 +117,9 @@ LDSC_MUNGE_NSTUDY_MIN = "{{ nstudy_min }}"
 LDSC_MUNGE_DANER = "{{ daner }}"
 LDSC_MUNGE_DANER_N = "{{ daner_n }}"
 LDSC_MUNGE_A1_IS_A2 = "{{ a1_is_a2 }}"
+LDSC_MUNGE_SIGNED_SUMSTATS = "{{ signed_sumstats }}"
+LDSC_MUNGE_A1_INC = "{{ a1_inc }}"
+LDSC_MUNGE_NSTUDY = "{{ nstudy }}"
 
 [[nodes]]
 kind = "ldsc_rg"

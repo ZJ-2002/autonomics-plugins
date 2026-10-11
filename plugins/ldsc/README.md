@@ -27,3 +27,45 @@ image, panels, outputs, resources, and env are equal; the script differs
 structurally (env-driven optional flags instead of Rust string building)
 but preserves the exact official invocation semantics, including gzip
 input handling.
+
+## Munging original input assurance (2026-10-12)
+
+`ldsc_munge` passes the actual source with `--sumstats` and transports the
+manifest's uppercase environment keys to exact official hyphenated options
+(`--N-col`, `--N-cas-col`, `--N-con-col`, `--n-min`, etc.). Values stay separate
+argv elements. The original `.log` is published once; separate process
+diagnostics are forwarded to the runtime stderr stream. Gzip inputs are
+materialized in the private workspace before the official reader.
+
+The source/sign convention can be explicitly specified with `signed_sumstats`
+(e.g. `Z,0`) or `a1_inc`; they require scientific review for each source. The
+legacy `a1_is_a2` field has no corresponding official parser option: a true
+request is rejected, preserving old spec parsing without inventing semantics.
+The original CLI splits header names on whitespace; literal argv transport
+does not make whitespace-bearing column headers scientifically supported.
+
+Eight required offline tests exercise every exposed argument, gzip, presence
+flags, failures and literal transport. Separate measured container evidence
+checks complete 1,000-SNP plain/gzip tables against direct official CLI output
+in the pinned image, including IDs, N and signed Z. It uses a private writable
+Podman root with a read-only additional image store, no network, and bounded
+CPU/memory. Run explicitly:
+
+```sh
+python -B plugins/ldsc/tests/run_munge_container_assurance.py \
+  --output /absolute/new-private-evidence-directory \
+  --shared-image-store /absolute/existing-image-store
+```
+
+Evidence: `evidence/canonical-ldsc-munge-original-input-v1-20261012.json`. This
+is scoped munging input/CLI parity using synthetic GWAS. It does not qualify
+h2/rg inference, complete LD panels, the full A_ARCH pipeline, G0 or formal
+research. Current h2/rg outputs remain formatted logs, not full-precision
+numeric result tables for confirmatory family correction.
+
+The h2/rg wrappers also publish the actual official `.log` instead of an
+empty stdout capture, create private gzip materialization directories, and
+keep optional arguments as separate argv elements. RG's known swallowed
+component-exception marker is converted to a failed node while retaining
+its diagnostic log. Six additional required offline wrapper tests cover
+these semantics; they are not h2/rg numerical method qualification.

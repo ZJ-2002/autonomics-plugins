@@ -1,33 +1,25 @@
 set -eu
-
-# Gzip inputs are decompressed into the private workspace so the official
-# LDSC reader sees a plain sumstats table (mirrors the legacy wrapper's
-# prepare_input helper).
-case "$AUTONOMICS_INPUT0" in
+INPUT=$AUTONOMICS_INPUT0
+case "$INPUT" in
   *.gz)
     INPUT="$AUTONOMICS_WORKDIR/.autonomics/input-0.tsv"
+    mkdir -p "$AUTONOMICS_WORKDIR/.autonomics"
     gzip -dc -- "$AUTONOMICS_INPUT0" > "$INPUT"
     ;;
-  *)
-    INPUT="$AUTONOMICS_INPUT0"
-    ;;
 esac
-
-# Optional flags travel as (possibly empty) env values; absence means the
-# official LDSC defaults apply.
-EXTRA=""
-if [ -n "$LDSC_INTERCEPT_H2" ]; then
-  EXTRA="$EXTRA --intercept-h2 $LDSC_INTERCEPT_H2"
+set --
+if [ -n "${LDSC_INTERCEPT_H2-}" ]; then set -- "$@" --intercept-h2 "$LDSC_INTERCEPT_H2"; fi
+if [ -n "${LDSC_CHISQ_MAX-}" ]; then set -- "$@" --chisq-max "$LDSC_CHISQ_MAX"; fi
+PREFIX="$AUTONOMICS_WORKDIR/ldsc_h2"
+if ldsc --h2 "$INPUT" --ref-ld-chr /panels/ref_ld/LDscore. \
+  --w-ld-chr /panels/w_ld/weights.hm3_noMHC. --n-blocks "$LDSC_N_BLOCKS" \
+  "$@" --out "$PREFIX" > "$AUTONOMICS_OUTPUT0" 2>&1; then
+  # This pinned image's INFO logger writes the official summary only to .log.
+  # Publish that log, preserving any separate process diagnostics in stderr.
+  if [ -s "$AUTONOMICS_OUTPUT0" ]; then cat "$AUTONOMICS_OUTPUT0" >&2; fi
+  cat "$PREFIX.log" > "$AUTONOMICS_OUTPUT0"
+else
+  status=$?
+  if [ -f "$PREFIX.log" ]; then cat "$PREFIX.log" >> "$AUTONOMICS_OUTPUT0"; fi
+  exit "$status"
 fi
-if [ -n "$LDSC_CHISQ_MAX" ]; then
-  EXTRA="$EXTRA --chisq-max $LDSC_CHISQ_MAX"
-fi
-
-ldsc \
-  --h2 "$INPUT" \
-  --ref-ld-chr /panels/ref_ld/LDscore. \
-  --w-ld-chr /panels/w_ld/weights.hm3_noMHC. \
-  --n-blocks "$LDSC_N_BLOCKS" \
-  $EXTRA \
-  --out "$AUTONOMICS_WORKDIR/ldsc_h2" \
-  > "$AUTONOMICS_OUTPUT0" 2>&1

@@ -1,0 +1,40 @@
+{
+  "status": "PASS",
+  "scope": "CANONICAL_MUNGE_ORIGINAL_INPUT_AND_ARGV_PARITY_ONLY",
+  "image_id": "f948044d1b50603dddb867104871c5671b43142b3a565d1d767b9c06d872899b",
+  "image_digest": "sha256:93b2542386a08df10402045b8036ff4da6733bea65324d50e326d035579d247a",
+  "checks": [
+    {
+      "input_transport": "tsv",
+      "original_rows": 1000,
+      "all_SNP_IDs_preserved": true,
+      "whole_decompressed_table_equals_direct_original_CLI": true,
+      "N_preserved": true,
+      "signed_Z_preserved": true,
+      "single_method_summary": true,
+      "source_sha256": "75abf8202d56d41f272e4d983042001fb75e215686a956cd10bd5786f73096f1",
+      "wrapper_sha256": "db217c54d672ace1a7e27746601ac303bed55c7981b56e4be548c13ac207432a",
+      "output_decompressed_sha256": "6da9dc20ff01f29881f05b738698138047a91159b958f0d049da2e431d5d43b5"
+    },
+    {
+      "input_transport": "tsv.gz",
+      "original_rows": 1000,
+      "all_SNP_IDs_preserved": true,
+      "whole_decompressed_table_equals_direct_original_CLI": true,
+      "N_preserved": true,
+      "signed_Z_preserved": true,
+      "single_method_summary": true,
+      "source_sha256": "164b02c9c574ffa4403d0d52f2ab6bfc2cf0c998a99c93bf3e43112d90089434",
+      "wrapper_sha256": "db217c54d672ace1a7e27746601ac303bed55c7981b56e4be548c13ac207432a",
+      "output_decompressed_sha256": "6da9dc20ff01f29881f05b738698138047a91159b958f0d049da2e431d5d43b5"
+    }
+  ],
+  "input_origin": "SYNTHETIC_TECHNICAL_ONLY",
+  "h2_qualified": false,
+  "rg_qualified": false,
+  "scientific_qualification": false,
+  "formal_authorized": false,
+  "plugin_manifest_sha256": "b4d5aa33236bc80ce7187eabc299636845c856576ef48fc08c7237cb41dfebb1",
+  "offline_required_contract_tests": 8,
+  "failed_attempt_retained": "Initial synthetic headers contained spaces; original upstream read_header splits on whitespace, so method correctly refused. Corrected test headers use supported nonstandard names; wrapper literal argv tests separately retain spaces/metacharacters. No upstream parser patched."
+}

@@ -910,8 +910,8 @@
         },
         {
           "path": "README.md",
-          "sha256": "dabfc095d69409e977c5dd2dd897362753b5c9fbc92c9e619b6b50199fdbb92b",
-          "bytes": 996,
+          "sha256": "560ba2232e624b953c7a1fa1e9e70b2b9d93be3452d76f93990f199f61f7d7af",
+          "bytes": 3347,
           "executable": false
         },
         {
@@ -7180,26 +7180,26 @@
         },
         {
           "path": "manifest.toml",
-          "sha256": "f497dff96bebad37ab0422a94657e0643280eae3f0e816fce1851666df36e592",
-          "bytes": 5721,
+          "sha256": "b4d5aa33236bc80ce7187eabc299636845c856576ef48fc08c7237cb41dfebb1",
+          "bytes": 6269,
           "executable": false
         },
         {
           "path": "scripts/h2.sh",
-          "sha256": "6ac9a48e708554eaecc1a4e11dc4c7101e18a10b98c55953f0325e876beb6b9b",
-          "bytes": 893,
+          "sha256": "24f74ef33cbeeb38242c4abfe06dd3d32b8c79f31677489d4e8dcdcbc1370d54",
+          "bytes": 1023,
           "executable": false
         },
         {
           "path": "scripts/munge.sh",
-          "sha256": "b2430f126c649f95334e0b9765a3692984ab9aaf026369ea3ebfd31d0ad81f62",
-          "bytes": 1585,
+          "sha256": "db217c54d672ace1a7e27746601ac303bed55c7981b56e4be548c13ac207432a",
+          "bytes": 2729,
           "executable": false
         },
         {
           "path": "scripts/rg.sh",
-          "sha256": "cfb2312ff4816ed6df13c24ca4635d4d3e7064a18a059a50c947ed17a0251501",
-          "bytes": 800,
+          "sha256": "d0d2b38fa99ec654f2506e305028b58145e5ce40cb216f474a90394389935f49",
+          "bytes": 1326,
           "executable": false
         },
         {
@@ -7212,6 +7212,24 @@
           "path": "test_ldsc_rg.sh",
           "sha256": "282d17e70b740fc6a8a8425a47ab06d2b8ea3101e253638dd08a736c87de87f6",
           "bytes": 2173,
+          "executable": false
+        },
+        {
+          "path": "tests/run_munge_container_assurance.py",
+          "sha256": "7bed738ad1c8a26374eaca5bf8c871a4b8e8f6b2926b7b11519558891e31f57a",
+          "bytes": 6960,
+          "executable": false
+        },
+        {
+          "path": "tests/test_inference_entrypoint.py",
+          "sha256": "148ad54a89302be45d97d67eda5186e78f93c0c7cd4c5d45f2316c34554f55cd",
+          "bytes": 4591,
+          "executable": false
+        },
+        {
+          "path": "tests/test_munge_entrypoint.py",
+          "sha256": "860143929e10d26c8927fc152501c1a7e1776893f22fa53c5af9b3a71bfcbfa9",
+          "bytes": 6038,
           "executable": false
         }
       ],
