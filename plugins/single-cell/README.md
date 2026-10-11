@@ -9,7 +9,7 @@ directory = one plugin family = one git-able unit, one image
 
 - `manifest.toml` — the eleven-node contract: params, ports, panel, image
   provenance
-- `scripts/run_workflow.py` — shared runner shim for seven H5AD nodes;
+- `scripts/run_workflow.py` — shared runner shim for six H5AD nodes;
   rebuilds the legacy `params.json` from `SC_P_*` env vars and execs the
   workflow runner baked into the image
 - `Dockerfile`, `.dockerignore`, `requirements.txt`, `preprocess.py`,
@@ -43,6 +43,43 @@ Every node runs isolated (no network) with a read-only root filesystem and
 `PullPolicy::Missing`, exactly like the legacy wrappers.
 
 ## Execution shape
+
+### CellTypist assurance candidate (2026-10-12)
+
+`h5ad_celltypist_annotate` injects tracked `scripts/celltypist_annotate.py`,
+not the broken baked branch that passed unsupported `overwrite=True` to
+CellTypist 1.7.1 `AnnotationResult.to_adata`. The two parameters, required
+H5AD input, two File outputs, panel, image and 2CPU/8Gi declaration remain
+unchanged. Only the two frozen Pan-immune v2 PKLs are supported; their
+primary-source hashes are verified before pickle deserialization. `Low`
+contains 98 finer classes; `High` contains 32 coarser classes.
+
+The official first-1000-cell X/raw selection is preserved, followed by full
+selected-matrix validation. Gene identifiers must already match model gene
+symbols; there is no inferred species/ortholog mapping or normalization.
+Partial-gene count totals differing from 10000 are reported, not silently
+repaired. Voting uses an existing `leiden` column or the official automatic
+over-clustering recipe. With at most 50 cells, the official voting skip is
+reported even if old voting annotations exist. Confidence follows the chosen
+prediction/voting label, not an unrelated maximum probability.
+
+All decision scores and independent per-class sigmoid values are retained as
+`obsm/celltypist_decision` and `obsm/celltypist_probability`; these are not
+softmax probabilities or calibrated probabilities of biological correctness.
+Overwritten annotation columns are listed. Unrelated AnnData/raw/layer/graph
+content is retained under the author object's semantics. Normal outputs are
+never overwritten; ordinary second-publication errors roll back, without
+claiming crash-atomicity or persistent resume.
+
+Run `test_celltypist_assurance.sh` with new `CELLTYPIST_EVIDENCE`, exact
+`CELLTYPIST_REFERENCE_LIBRARY` and frozen `CELLTYPIST_MODELS` paths.
+`CELLTYPIST_PBMC3K_FILE` optionally adds the author PBMC3k technical benchmark.
+Required comparisons/refusals cannot skip. Fresh author packages are imported
+outside the wrapper; affine logits and sigmoid values also have independent
+mathematical checks. Model domain calibration, reference/marker validation,
+study gene scale/species, donor independence, thresholds, full-scale or
+resident-daemon deployment, global resource/cache/recovery and G0 are not
+granted. No other family node gains new numeric certification from this repair.
 
 ### Embedding assurance candidate (2026-10-12)
 
@@ -151,7 +188,8 @@ The candidate requires fresh independent author-wheel comparison, actual
 baked-runner boundaries, original manifest compilation, isolated native DAG
 execution and requalification of the shared `gene_set_score` image identity.
 No complete-family, installed-daemon, full-scale, scientific or G0 acceptance
-is implied. Nine other H5AD workflow implementations remain unqualified.
+is implied. This preprocessor proof alone does not qualify other H5AD
+workflow implementations.
 
 Retained, mandatory local tests (no GitHub Actions credit required):
 
@@ -257,7 +295,8 @@ semantically. Deliberate deltas, all preserving runtime behaviour:
   (`wjixiang/catalog-celltypist-models-pan-immune` mounted at
   `/panels/celltypist_model`) instead of an optional second input port:
   the DSL cannot declare optional inputs or per-node data bundles. The
-  shim injects the mounted model as the legacy `AUTONOMICS_INPUT1`.
+  tracked annotation script reads the declared catalog directly, without an
+  undeclared `AUTONOMICS_INPUT1`.
   Dropped with it: `use_catalog_model` (always true now),
   `model_bundle` (fixed by the family panel), and `model_path` (arbitrary
   host paths cannot be staged by the manifest pipeline).

@@ -222,6 +222,15 @@ The CellTypist model comes from the published pan-immune catalog bundle
 mounted at /panels/celltypist_model; model_file selects the pickle
 within that bundle. obs gains celltypist_label and celltypist_conf_score.
 Network access is disabled.
+Uses the tracked script and two SHA256-verified official Pan-immune v2
+models only;no arbitrary model pickle or undeclared model input port.
+Official X/raw selection is recorded;all selected values and IDs are
+validated. No gene/species mapping or silent normalization is performed.
+Voting at <=50 cells is officially skipped and recorded separately.
+Confidence corresponds to the actual output label,not always the best-match
+maximum. Full class-aligned decision/probability matrices are retained in
+obsm. Sigmoid probabilities are not calibrated biological correctness.
+Existing output paths are refused. Study/reference eligibility is ungranted.
 """
 timeout_secs = 3600
 artifact_prefix = "/artifacts/h5ad_celltypist_annotate"
@@ -239,7 +248,7 @@ model_file = { type = "string", default = "Immune_All_Low.pkl", doc = "Model pic
 
 [nodes.command]
 interpreter = "python"
-script_file = "scripts/run_workflow.py"
+script_file = "scripts/celltypist_annotate.py"
 
 [nodes.command.env]
 AUTONOMICS_SINGLE_CELL_WORKFLOW = "celltypist_annotate"

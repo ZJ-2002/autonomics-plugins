@@ -14352,14 +14352,14 @@
         },
         {
           "path": "README.md",
-          "sha256": "528cde4a8c476f87b81e0b6661bf50b7784be85cf13dbf7ff07f55c2b586a605",
-          "bytes": 16327,
+          "sha256": "dc0552cbdf4d9645eece7e3abf3d5f0fa79d985eeff9ce810823f0b5baacbc65",
+          "bytes": 18718,
           "executable": false
         },
         {
           "path": "manifest.toml",
-          "sha256": "366dd7cd089c54fcca9a851f3d6a85aee1c348bfb23dd66315b1c1e053f8b5b7",
-          "bytes": 23779,
+          "sha256": "fa830426bbb2a38e056b425faddd9addabd61060c25bf2166a6664920d5e5e35",
+          "bytes": 24435,
           "executable": false
         },
         {
@@ -14372,6 +14372,12 @@
           "path": "requirements.txt",
           "sha256": "60becba211030aafc3fd6a900ae3eb72025755cfe0b53e2c585978001f20bb04",
           "bytes": 975,
+          "executable": false
+        },
+        {
+          "path": "scripts/celltypist_annotate.py",
+          "sha256": "dd95cdeb167a52c8ffbde69e212a6624a63660f7651b1da9d9c800f818855502",
+          "bytes": 11812,
           "executable": false
         },
         {
@@ -14396,6 +14402,12 @@
           "path": "scripts/score_genes.py",
           "sha256": "9cad19728810b8e9c9933fed33f556870419a985a12f1485ce61d4f4da8c58e8",
           "bytes": 4973,
+          "executable": false
+        },
+        {
+          "path": "test_celltypist_assurance.sh",
+          "sha256": "9826a462b1ccaee71a157bc4a0766d625bbbf514ac5e0418e061c9ff307422e3",
+          "bytes": 2636,
           "executable": false
         },
         {
@@ -14435,6 +14447,24 @@
           "executable": false
         },
         {
+          "path": "tests/celltypist_compare.py",
+          "sha256": "36b78b3cac34bee3a423a6036eecad443314910fd6ef7aaa1e70ce617fcea796",
+          "bytes": 4474,
+          "executable": false
+        },
+        {
+          "path": "tests/celltypist_fixtures.py",
+          "sha256": "0dd350599a7d310f7109d5426af6ef72d3f7c5bd5ada7eebe5ac4dfdeb814c31",
+          "bytes": 4018,
+          "executable": false
+        },
+        {
+          "path": "tests/celltypist_reference.py",
+          "sha256": "5bad92d4bb5b7886beadf8e24fb17c3ac69254c56fd471214feb4a9899852c2c",
+          "bytes": 3656,
+          "executable": false
+        },
+        {
           "path": "tests/embedding_compare.py",
           "sha256": "bbf6bdabc6652eba93d08dda4c67c4013e37e75230a0517a18195a6152adbd5b",
           "bytes": 6379,
@@ -14468,6 +14498,24 @@
           "path": "tests/qc_reference.py",
           "sha256": "49e44742c9697e3ad9df7f79b332f523b746c30db8c3d725a1f878d8ee3dd56b",
           "bytes": 2498,
+          "executable": false
+        },
+        {
+          "path": "tests/test_celltypist_boundaries.py",
+          "sha256": "4fe52e3fd016ebef27faa36ec9011ba563ca64644eb14e22e1da430cdef45b69",
+          "bytes": 5856,
+          "executable": false
+        },
+        {
+          "path": "tests/test_celltypist_comparison.py",
+          "sha256": "8721ebe258f3054b9deddf2e4f576e14c513db213ae221f321ec2297ce938f24",
+          "bytes": 2396,
+          "executable": false
+        },
+        {
+          "path": "tests/test_celltypist_container.py",
+          "sha256": "b9587ad56d9339eb1f888fc21904193644b4b6a0143884df148f62c94083893f",
+          "bytes": 4494,
           "executable": false
         },
         {

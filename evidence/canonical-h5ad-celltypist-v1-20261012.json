@@ -1,0 +1,135 @@
+{
+  "schema_version": "1.0",
+  "canonical_kind": "h5ad_celltypist_annotate",
+  "status": "PROVEN_SCOPED",
+  "provider": "Original single-cell family;not replacement adapter",
+  "role": "Official CellTypist logistic cell annotation and optional majority-voting refinement",
+  "inputs": [
+    "0:File H5AD;unique cells/genes;selected finite log1p expression;model-compatible gene symbols"
+  ],
+  "outputs": [
+    "0:output.h5ad with author labels,aligned confidence and full class matrices",
+    "1:report.json schema2.0 with model/input/output identity and eligibility boundaries"
+  ],
+  "parameters": [
+    "majority_voting",
+    "model_file"
+  ],
+  "resources_unchanged": {
+    "cpus": 2.0,
+    "memory": "8Gi",
+    "pids_limit": 512,
+    "shm_size": "1Gi"
+  },
+  "official": {
+    "CellTypist": "1.7.1",
+    "fresh_packages": 17,
+    "payloads_exact_including_native_binaries": 6225,
+    "independence": "Fresh independently imported official author packages outside node;independent affine logits and per-class sigmoid;shared frozen OS/CPU",
+    "models": {
+      "models": [
+        {
+          "file": "Immune_All_High.pkl",
+          "sha256": "a715fec36c2c421f7c4e31cf4cb4bea883eedab7fd7b20a4b76f091c22660448",
+          "fresh_official_service_matches_catalog_bytes": true
+        },
+        {
+          "file": "Immune_All_Low.pkl",
+          "sha256": "290874d35dac039d4c9218c343fde4aac1077709b72a331ce7266f6828c36502",
+          "fresh_official_service_matches_catalog_bytes": true
+        }
+      ],
+      "bundle_digest": "sha256:a5260755be97513698812a5739763ecaddb75a68b261c95209fdd874e4bfc35c",
+      "all_four_catalog_payloads_verified": true,
+      "before_any_unpickle": true,
+      "G0": false
+    },
+    "package_versions": {
+      "scanpy": "1.11.3",
+      "anndata": "0.11.4",
+      "scikit-learn": "1.9.1",
+      "umap-learn": "0.5.12",
+      "pynndescent": "0.6.0",
+      "igraph": "1.0.0",
+      "numpy": "2.1.3",
+      "scipy": "1.14.1",
+      "pandas": "2.2.3",
+      "h5py": "3.16.0",
+      "numba": "0.67.0",
+      "llvmlite": "0.49.0",
+      "joblib": "1.6.0",
+      "threadpoolctl": "3.6.0",
+      "texttable": "1.7.0",
+      "celltypist": "1.7.1",
+      "leidenalg": "0.12.0"
+    },
+    "primary_docs": [
+      "https://celltypist.readthedocs.io/en/latest/celltypist.annotate.html",
+      "https://celltypist.readthedocs.io/en/latest/celltypist.classifier.AnnotationResult.html"
+    ]
+  },
+  "implementation": {
+    "manifest_sha256": "sha256:fa830426bbb2a38e056b425faddd9addabd61060c25bf2166a6664920d5e5e35",
+    "script": "scripts/celltypist_annotate.py",
+    "script_sha256": "sha256:dd95cdeb167a52c8ffbde69e212a6624a63660f7651b1da9d9c800f818855502",
+    "image": "ghcr.io/zj-2002/single-cell-preprocessor@sha256:e2f9fcd5ccf9e97b0f0129466df5abb21ae47ed32f123f6953b79fd83d915e20",
+    "image_config_sha256": "3144c037c6da31b27ea8d240e4bf013c45258099f44242193946d209ab24dc7b",
+    "image_unchanged": true,
+    "package_visibility": "private;original authenticated scope,not anonymous installation"
+  },
+  "method_proof": {
+    "whole_author_cases": 22,
+    "finite_values_checked": 17505027,
+    "whole_HDF5_AnnData_raw_arrays_labels_probability_scores_confidence_and_report": true,
+    "integer_fields_exact": true,
+    "float_atol": 1e-12,
+    "float_rtol": 0,
+    "independent_affine_score_tolerance": {
+      "atol": 1e-10,
+      "rtol": 1e-12
+    },
+    "independent_sigmoid_tolerance": {
+      "atol": 1e-12,
+      "rtol": 0
+    },
+    "both_models_both_voting_modes": true,
+    "raw_fallback_partial_genes_sparse_and_axis_permutation": true,
+    "auto_existing_graph_auto_PCA_and_auto_no_graph": true,
+    "small_official_voting_skip_with_stale_annotations": true,
+    "voting_confidence_counterexample_cases": 3,
+    "author_PBMC_benchmark_not_qualified_study_cohort": true
+  },
+  "engineering_proof": {
+    "actual_original_baked_failures": 4,
+    "real_image_refusals": 26,
+    "comparison_mutants_refused": 3,
+    "mandatory_compiled_contract_tests": 6,
+    "mandatory_catalog_tests": 71,
+    "skips": 0,
+    "trusted_hash_before_unpickle": true,
+    "ordinary_second_link_failure_injected": true,
+    "crash_or_resume_claim": false
+  },
+  "isolated_DAG_proof": {
+    "original_canonical_kind": true,
+    "submissions": 12,
+    "successful_whole_author_replays": 8,
+    "specific_failures": 4,
+    "real_panel_two_ports_materialized_and_read": true,
+    "scope": "Sealed native component/SDK;not current whole engine/resident daemon"
+  },
+  "method_scope": "Frozen Pan-immune v2 Low98/High32 models;official first1000 X/raw selector followed by full selected matrix validation;best match;CPU;min_prop0;existing leiden or official automatic overclustering;official<=50 skip;chosen-label confidence;per-class sigmoid,not softmax. Model/gene scale/species and biological calibration require independent study qualification.",
+  "publication": "No overwrite;ordinary inode-specific rollback,not crash atomicity/persistent resume",
+  "plan_contract": "NOT_IMPLEMENTATION_LOCKED;NOT_GRANTED;study annotation/reference/marker calibration and gene species/scale/donor eligibility remain ungranted",
+  "remaining": [
+    "Other official models/options/future platforms and releases",
+    "Study annotation/reference/marker calibration and biological validation",
+    "Gene symbols/species/count scale/donor independence and thresholds",
+    "Current whole-engine/resident deployment/private anonymous install/full scale",
+    "Global quotas/cache/recovery/crash-atomic publication",
+    "Scientific signoff and G0"
+  ],
+  "proof_packet": "/home/zj-normal/Work/autonomics/results/cachexia-v4.3.2/canonical-h5ad-celltypist-v1-20261012",
+  "production_deployed": false,
+  "G0": false
+}
