@@ -1,0 +1,116 @@
+{
+  "schema_version": 1,
+  "source_repository": "https://github.com/ZJ-2002/autonomics",
+  "source_commit": "f5e3eeaee117241c92c30e48523ece6c20a2814e",
+  "source_family": "study_plugins/mvmr-joint-contract",
+  "transport_scope": "BYTE_EXACT_COMPLETE_METHOD_TRANSPORT_NOT_PRODUCER_OR_SCIENTIFIC_QUALIFICATION",
+  "scientific_authorization": false,
+  "auto_enable": false,
+  "imported_files": {
+    "README.md": {
+      "source_path": "study_plugins/mvmr-joint-contract/README.md",
+      "sha256": "0db954f8d1c9a290a8baa9b799292a9de466e6677be00b779416b5bd656ea6d4",
+      "bytes": 2334,
+      "git_blob": "433d9f909665b8c4eece7a6e3c30927a14beebb4",
+      "executable": false
+    },
+    "manifest.toml": {
+      "source_path": "study_plugins/mvmr-joint-contract/manifest.toml",
+      "sha256": "34b815a1da8bf3f21d618f812b208ba362c34db122b94b0162848667d5fa4aa9",
+      "bytes": 3597,
+      "git_blob": "fce470362ef5b13a71dd5b0362b8d07ff60e7c65",
+      "executable": false
+    },
+    "scripts/harmonise.R": {
+      "source_path": "study_plugins/mvmr-joint-contract/scripts/harmonise.R",
+      "sha256": "e6b1fd7189f48eccb698542f95675701ec88de635acff77418a0d062672e819f",
+      "bytes": 16118,
+      "git_blob": "c0b3d738fcb2f91c7608d9ce360fb516d093343a",
+      "executable": false
+    },
+    "scripts/joint-receipt.R": {
+      "source_path": "study_plugins/mvmr-joint-contract/scripts/joint-receipt.R",
+      "sha256": "6644bd6e492794ea2ecf26f1efc1c4ebf02a9e9777fdd39fcad4bb7b99c0bae7",
+      "bytes": 4124,
+      "git_blob": "5c5e21c2532214b44782c19aed40a5e85fe388e3",
+      "executable": false
+    },
+    "scripts/run-harmonise.sh": {
+      "source_path": "study_plugins/mvmr-joint-contract/scripts/run-harmonise.sh",
+      "sha256": "f21864ca2d9fc7cdb20283e8443f6f39a024b8a13cabe1b0eeeb6b446c737ecf",
+      "bytes": 34476,
+      "git_blob": "6f697c9b942f2310bf44bcdfa5577ed40d5db988",
+      "executable": true
+    },
+    "scripts/run-union.sh": {
+      "source_path": "study_plugins/mvmr-joint-contract/scripts/run-union.sh",
+      "sha256": "95b8ee4a6bde7e7895520d3c68de37f674f6b6bf07cde994a76c6fa46a32fced",
+      "bytes": 18242,
+      "git_blob": "534cc5cf144e55919fd5511310ea5e5fa1a1d867",
+      "executable": true
+    },
+    "scripts/union.R": {
+      "source_path": "study_plugins/mvmr-joint-contract/scripts/union.R",
+      "sha256": "c6b61125816fd0ce4e983a3ac38a9368ee910fa4dbfef5f27798ec8c1efced02",
+      "bytes": 11155,
+      "git_blob": "40f002c45541c46f269254fccc4828a9e5c30995",
+      "executable": false
+    }
+  },
+  "component_files": {
+    "scripts/build_mvmr_joint_wrappers.py": {
+      "source_path": "scripts/build_mvmr_joint_wrappers.py",
+      "sha256": "7ce6e045700e50d746d405e79d49689a66fc76282e93ef7f3e82a7aad25ff2f8",
+      "bytes": 2571,
+      "git_blob": "31ffee9c3607ec20aad99a6f87aad3e818d571c4",
+      "executable": false
+    },
+    "study_plugins/shared/gwas-normalization-receipt.R": {
+      "source_path": "study_plugins/shared/gwas-normalization-receipt.R",
+      "sha256": "2c0102e4524a99a86416126927a0826bb7c0c0b525fdbbce2e9183bb3f514c80",
+      "bytes": 6556,
+      "git_blob": "4aca08aab44a56b7ea94c2c5714f23ed4f5c35dd",
+      "executable": false
+    },
+    "study_plugins/clump-contract/scripts/clump.R": {
+      "source_path": "study_plugins/clump-contract/scripts/clump.R",
+      "sha256": "4cb77955c791b84678173b8c9087b6eb2649bde9a67f6e37d634a6a244e105e5",
+      "bytes": 20787,
+      "git_blob": "4694de55fd1f0392d130ba6fb81e1a7357400eb3",
+      "executable": false
+    },
+    "study_plugins/mvmr-joint-contract/scripts/union.R": {
+      "source_path": "study_plugins/mvmr-joint-contract/scripts/union.R",
+      "sha256": "c6b61125816fd0ce4e983a3ac38a9368ee910fa4dbfef5f27798ec8c1efced02",
+      "bytes": 11155,
+      "git_blob": "40f002c45541c46f269254fccc4828a9e5c30995",
+      "executable": false
+    },
+    "study_plugins/mvmr-joint-contract/scripts/harmonise.R": {
+      "source_path": "study_plugins/mvmr-joint-contract/scripts/harmonise.R",
+      "sha256": "e6b1fd7189f48eccb698542f95675701ec88de635acff77418a0d062672e819f",
+      "bytes": 16118,
+      "git_blob": "c0b3d738fcb2f91c7608d9ce360fb516d093343a",
+      "executable": false
+    },
+    "study_plugins/mvmr-joint-contract/scripts/joint-receipt.R": {
+      "source_path": "study_plugins/mvmr-joint-contract/scripts/joint-receipt.R",
+      "sha256": "6644bd6e492794ea2ecf26f1efc1c4ebf02a9e9777fdd39fcad4bb7b99c0bae7",
+      "bytes": 4124,
+      "git_blob": "5c5e21c2532214b44782c19aed40a5e85fe388e3",
+      "executable": false
+    }
+  },
+  "programs": {
+    "scripts/run-union.sh": {
+      "generator": "scripts/build_mvmr_joint_wrappers.py",
+      "function": "rendered",
+      "argument": "union"
+    },
+    "scripts/run-harmonise.sh": {
+      "generator": "scripts/build_mvmr_joint_wrappers.py",
+      "function": "rendered",
+      "argument": "harmonise"
+    }
+  }
+}

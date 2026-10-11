@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "source_repository": "https://github.com/ZJ-2002/autonomics",
+  "source_commit": "f5e3eeaee117241c92c30e48523ece6c20a2814e",
+  "source_family": "study_plugins/mvmr-covariance-contract",
+  "transport_scope": "BYTE_EXACT_COMPLETE_METHOD_TRANSPORT_NOT_PRODUCER_OR_SCIENTIFIC_QUALIFICATION",
+  "scientific_authorization": false,
+  "auto_enable": false,
+  "imported_files": {
+    "README.md": {
+      "source_path": "study_plugins/mvmr-covariance-contract/README.md",
+      "sha256": "89726d3d4c25f05d831a3c129f66bf99cd1847326e82258e1a65b8e479843bd2",
+      "bytes": 984,
+      "git_blob": "7d228f254b1a6b03e587f1cb4216e3d600cbc7a3",
+      "executable": false
+    },
+    "manifest.toml": {
+      "source_path": "study_plugins/mvmr-covariance-contract/manifest.toml",
+      "sha256": "1476b22d364b65c1cdd7bdebe11b6bbfd71a4a48fa661a2fcfbdd108540aaa9c",
+      "bytes": 1507,
+      "git_blob": "48df63b1f54cac91a572e7093457efdf4b6b6b1e",
+      "executable": false
+    },
+    "scripts/run-covariance.py": {
+      "source_path": "study_plugins/mvmr-covariance-contract/scripts/run-covariance.py",
+      "sha256": "d3646658176910f7075024539c81e6e1caf6814fbcaf172965469f0334d890c2",
+      "bytes": 30869,
+      "git_blob": "2f4430fa740c96cb4df3a6eac32eb600e802071e",
+      "executable": true
+    }
+  },
+  "component_files": {
+    "scripts/build_mvmr_covariance_wrapper.py": {
+      "source_path": "scripts/build_mvmr_covariance_wrapper.py",
+      "sha256": "cbad02c81db6f48fa7767f56e917f91b7f66bef9097cbf504199e71e0a735e12",
+      "bytes": 1260,
+      "git_blob": "3bcaface9d69436eea658ad0dded24cc41e49ba4",
+      "executable": false
+    },
+    "scripts/research_mvmr_covariance.py": {
+      "source_path": "scripts/research_mvmr_covariance.py",
+      "sha256": "85dce3f0b3c2cd0492de3e9de1ec458115a545b99357f06309a7ab3db608ebfc",
+      "bytes": 12728,
+      "git_blob": "9eb3a81be00ba3ed3300e9664293fd808c44337e",
+      "executable": false
+    },
+    "scripts/research_mvmr_covariance_node.py": {
+      "source_path": "scripts/research_mvmr_covariance_node.py",
+      "sha256": "61d8a3f81674deb9b1eedaadf2d4dced7248831e2a6dae38a015279528438988",
+      "bytes": 5211,
+      "git_blob": "2985e712df50077b8b8bd6e101b0bf3c50bb9b12",
+      "executable": false
+    }
+  },
+  "programs": {
+    "scripts/run-covariance.py": {
+      "generator": "scripts/build_mvmr_covariance_wrapper.py",
+      "function": "render",
+      "argument": null
+    }
+  }
+}

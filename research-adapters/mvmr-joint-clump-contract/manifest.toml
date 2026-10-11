@@ -1,0 +1,40 @@
+schema_version = 1
+plugin_name = "mvmr-joint-clump-contract"
+
+[image]
+reference = "ghcr.io/zj-2002/twosamplemr@sha256:4ffdb4669c558228a74895bf843bc723341e8837e7fdd367108654b5514e3f99"
+tag = "0.7.9-plink-a.6.26"
+upstream = "Official TwoSampleMR0.7.9/PLINK2-a.6.26 with separately frozen joint-input adapters"
+license = "GPL-3.0-or-later"
+
+[[panels]]
+binding = "plink_ref"
+mount = "/panels/plink_ref"
+bundle = "wjixiang/catalog-plink-ref-1000g-eur-binary"
+
+[[nodes]]
+kind = "mvmr_frozen_joint_clump"
+desc = "Joint exposure union clumping using the same frozen official phased-LD algorithm."
+doc = "Five File inputs: frozen clump config, actual exposure union, admitted panel manifest, same union receipt and original union recipe. Typed union receipts cannot impersonate GWAS normalization. Reuses the accepted single-exposure implementation with a fixed typed union validator, official phased LD matrix and strict greedy r2<.001/10Mb/P-chr-pos-ID ordering. All 66 reference files must bind; no outcome port, fallback or truncation. Five outputs: selected union, selection record, full QC, audit and original LD evidence tar. Formal source/producer and scientific qualifications remain mandatory."
+timeout_secs = 1800
+stage_in_mode = "copy"
+artifact_prefix = "/artifacts/mvmr_frozen_joint_clump"
+[nodes.resources]
+network = "isolated"
+read_only_rootfs = true
+pull_policy = "never"
+cpus = 2.0
+memory = "2Gi"
+pids_limit = 128
+[nodes.ports]
+inputs = [{ type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }]
+outputs = [{ path = "selected.tsv", format = "tsv" }, { path = "selection.json", format = "json" }, { path = "qc.tsv", format = "tsv" }, { path = "audit.json", format = "json" }, { path = "ld-evidence.tar", format = "tar" }]
+[nodes.command]
+interpreter = "sh"
+script_file = "scripts/run-clump.sh"
+[nodes.command.env]
+LC_ALL = "C"
+OMP_NUM_THREADS = "1"
+OPENBLAS_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+

@@ -1,0 +1,38 @@
+schema_version = 1
+plugin_name = "mr-sensitivity-contract"
+
+[image]
+reference = "ghcr.io/zj-2002/twosamplemr@sha256:4ffdb4669c558228a74895bf843bc723341e8837e7fdd367108654b5514e3f99"
+tag = "0.7.9"
+upstream = "Official MRCIEU/TwoSampleMR v0.7.9 at 3d119f20d6fc164b0c7f710f5590fee9580f2c7b"
+license = "MIT"
+
+# Candidate only. No production registration, method sign-off or study authority.
+[[nodes]]
+kind = "mr_frozen_supporting_sensitivity"
+desc = "Official weighted median, MR-Egger, heterogeneity and IVW leave-one-out over an actual frozen MR producer."
+doc = "Seven File inputs: frozen supporting recipe; actual parent MR configuration, harmonised table, complete exclusion ledger, estimates and audit; frozen applicability evidence. All four parent outputs must originate from one mr_frozen_harmonise_ivw node and parent config from its actual input0. Explicit QUALIFIED/NOT_QUALIFIED/UNRESOLVED applicability, seed, nboot=1000, software and warning policy are required. Retains fixed method rows and every retained instrument's leave-one-out row; NA never selects another primary P. Does not reharmonize, alter exposure selection, infer sample N, qualify assumptions, approve overlap or sign G0. Scientific and technical method acceptance remain separate prerequisites."
+timeout_secs = 900
+artifact_prefix = "/artifacts/mr_frozen_supporting_sensitivity"
+[nodes.resources]
+network = "isolated"
+read_only_rootfs = true
+pull_policy = "never"
+cpus = 2.0
+memory = "2Gi"
+pids_limit = 128
+[nodes.ports]
+inputs = [{ type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }]
+outputs = [
+  { path = "estimates.tsv", format = "tsv" },
+  { path = "heterogeneity.tsv", format = "tsv" },
+  { path = "leave-one-out.tsv", format = "tsv" },
+  { path = "audit.json", format = "json" },
+]
+[nodes.command]
+interpreter = "sh"
+script_file = "scripts/run-sensitivity.sh"
+[nodes.command.env]
+OMP_NUM_THREADS = "1"
+OPENBLAS_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"

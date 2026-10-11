@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "source_repository": "https://github.com/ZJ-2002/autonomics",
+  "source_commit": "f5e3eeaee117241c92c30e48523ece6c20a2814e",
+  "source_family": "study_plugins/mvmr-contract",
+  "transport_scope": "BYTE_EXACT_COMPLETE_METHOD_TRANSPORT_NOT_PRODUCER_OR_SCIENTIFIC_QUALIFICATION",
+  "scientific_authorization": false,
+  "auto_enable": false,
+  "imported_files": {
+    "README.md": {
+      "source_path": "study_plugins/mvmr-contract/README.md",
+      "sha256": "ec24a5b39918ca4bc0e2c5c839208d8b7b71648c10bd0ce25b4b1be8b28e3c6e",
+      "bytes": 1952,
+      "git_blob": "7dab9f3e97415ced81d452c2332a35facac59dc5",
+      "executable": false
+    },
+    "manifest.toml": {
+      "source_path": "study_plugins/mvmr-contract/manifest.toml",
+      "sha256": "4ce646b4bd6616b73946f3825adcad8e6df8b4ffb39957d8fe38d2e781d4bec5",
+      "bytes": 2035,
+      "git_blob": "af326bb088fb6c1c15d7c8196d899b7336193cc2",
+      "executable": false
+    },
+    "scripts/mvmr.R": {
+      "source_path": "study_plugins/mvmr-contract/scripts/mvmr.R",
+      "sha256": "d06d61f80765ee44d22d6acd4af96b71e516db3dc8f59df2a3d728495d0362de",
+      "bytes": 22436,
+      "git_blob": "bccaefed56fe1f59e6c0153a21dd6b4bebb2cdad",
+      "executable": false
+    },
+    "scripts/run-mvmr.sh": {
+      "source_path": "study_plugins/mvmr-contract/scripts/run-mvmr.sh",
+      "sha256": "36893cf22ee61180ce4e1f0f4e14a5a33ecea3146cc6878af2729755ea0467ca",
+      "bytes": 22881,
+      "git_blob": "72276bfa0f08fd7520fc5939d7bcfc296cc78cd8",
+      "executable": true
+    }
+  },
+  "component_files": {
+    "scripts/build_mvmr_contract_wrapper.py": {
+      "source_path": "scripts/build_mvmr_contract_wrapper.py",
+      "sha256": "ccb4494281b32ae9c4da122b0a89f8ad33b8d568c8a7126ed22072b1f8f9f52e",
+      "bytes": 1213,
+      "git_blob": "73db8848b0df69e2549358fc292bb8b30fca1424",
+      "executable": false
+    },
+    "study_plugins/mvmr-contract/scripts/mvmr.R": {
+      "source_path": "study_plugins/mvmr-contract/scripts/mvmr.R",
+      "sha256": "d06d61f80765ee44d22d6acd4af96b71e516db3dc8f59df2a3d728495d0362de",
+      "bytes": 22436,
+      "git_blob": "bccaefed56fe1f59e6c0153a21dd6b4bebb2cdad",
+      "executable": false
+    }
+  },
+  "programs": {
+    "scripts/run-mvmr.sh": {
+      "generator": "scripts/build_mvmr_contract_wrapper.py",
+      "function": "render",
+      "argument": null
+    }
+  }
+}

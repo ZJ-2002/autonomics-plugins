@@ -1,0 +1,39 @@
+schema_version = 1
+plugin_name = "mvmr-contract"
+
+[image]
+reference = "localhost/research-mvmr-contract-candidate@sha256:b23536cba6e5d078d33101c467dee3cd92b2c352e54eb5d26906e1f408f7a364"
+tag = "0.4.8-contract-candidate"
+upstream = "Official WSpiller/MVMR0.4.8 @ bceaa38088d093a5d30c713afb016e7fbc7ed2be, with fixed JSON/SHA dependencies"
+license = "GPL-3.0-only"
+
+# Candidate method only. Formal compiler/worker integration and actual joint
+# selection/harmonization/source qualification are independent outstanding work.
+[[nodes]]
+kind = "mvmr_frozen_two_exposure"
+desc = "Official frozen two-exposure MVMR with supplied SNP covariance and complete diagnostics."
+doc = "Seven File inputs: frozen method recipe; actual joint instrument table; covariance recipe, matrices and byte-bound preparation receipt; actual provenance evidence pack; joint input identity. Does not select/harmonize instruments, estimate covariance, assume zero, infer overlap or promote direct effects. Retains two coefficients and three diagnostics for weak/unresolved/empty/rank-deficient models, with NA and explicit reasons. Coefficients can remain available when covariance is unresolved; conditional F and pleiotropy are NOT_RUN. Dynamic A_SPECIFICITY_MVMR enumeration and actual producer/GA08/scientific qualification remain separate."
+timeout_secs = 900
+artifact_prefix = "/artifacts/mvmr_frozen_two_exposure"
+[nodes.resources]
+network = "isolated"
+read_only_rootfs = true
+pull_policy = "never"
+cpus = 2.0
+memory = "2Gi"
+pids_limit = 128
+[nodes.ports]
+inputs = [{ type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }]
+outputs = [
+  { path = "estimates.tsv", format = "tsv" },
+  { path = "diagnostics.tsv", format = "tsv" },
+  { path = "audit.json", format = "json" },
+  { path = "result.rds", format = "r_rds" },
+]
+[nodes.command]
+interpreter = "sh"
+script_file = "scripts/run-mvmr.sh"
+[nodes.command.env]
+OMP_NUM_THREADS = "1"
+OPENBLAS_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"

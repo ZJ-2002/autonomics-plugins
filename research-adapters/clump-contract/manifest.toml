@@ -1,0 +1,39 @@
+schema_version = 1
+plugin_name = "clump-contract"
+[image]
+reference = "ghcr.io/zj-2002/twosamplemr@sha256:4ffdb4669c558228a74895bf843bc723341e8837e7fdd367108654b5514e3f99"
+tag = "0.7.9-plink-a.6.26"
+upstream = "Official PLINK2 v2.0.0-a.6.26; binary SHA256 6a783e2d5e331f5b1eb7dea9f5331490202053cb3ce217ce227a36171bdb2169; separate frozen exposure-only adapter"
+license = "GPL-3.0-or-later"
+
+# This candidate supplies no G0, normalization or panel science approval.
+[[panels]]
+binding = "plink_ref"
+mount = "/panels/plink_ref"
+bundle = "wjixiang/catalog-plink-ref-1000g-eur-binary"
+
+[[nodes]]
+kind = "mr_frozen_exposure_clump"
+desc = "Official exposure-only phased PLINK LD with frozen greedy clumping, full-source QC and deterministic ties."
+doc = "Five inputs: frozen clumping config, actual normalized complete exposure TSV, original admitted panel manifest JSON, the same normalizer receipt, and its original frozen source recipe. Frozen recipe SHA and actual receipt/output hashes bind construct/build/ancestry; formal execution requires matching real normalizer producer ports. No outcome input exists. Streams full source QC and external duplicate-ID sorting; significance cutoff is strict P<5e-8. All 66 original BED/BIM/FAM files must match content identities and frozen ancestry/build. Official sorted PGEN fixes reference variant order before official phased LD matrix calculation. Frozen greedy P/chromosome/position/ASCII-ID selection compares official matrix values strictly at r2<.001 within 10Mb. Official clump is diagnostic only because its fast path disagrees at an independently constructed boundary. Matrix identities and values are checked; undefined LD blocks publication. Above 4096 available candidates per chromosome the whole node blocks, without truncation. Audit records matrix content hashes and diagnostic differences; P values are never perturbed. Missing reference variants remain in the full ledger. Empty selection is a terminal result, not permission to weaken thresholds. Five outputs: selected normalized exposure TSV, actual selection evidence, phase-labelled complete variant QC, execution/software/input audit, original official LD matrices and order tables in a deterministic tar archive. Requires independent signed normalization, panel/method and study approvals; candidate only."
+timeout_secs = 1800
+stage_in_mode = "copy"
+artifact_prefix = "/artifacts/mr_frozen_exposure_clump"
+[nodes.resources]
+network = "isolated"
+read_only_rootfs = true
+pull_policy = "never"
+cpus = 2.0
+memory = "2Gi"
+pids_limit = 128
+[nodes.ports]
+inputs = [{ type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }]
+outputs = [{ path = "selected.tsv", format = "tsv" }, { path = "selection.json", format = "json" }, { path = "qc.tsv", format = "tsv" }, { path = "audit.json", format = "json" }, { path = "ld-evidence.tar", format = "tar" }]
+[nodes.command]
+interpreter = "sh"
+script_file = "scripts/run-clump.sh"
+[nodes.command.env]
+LC_ALL = "C"
+OMP_NUM_THREADS = "1"
+OPENBLAS_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"

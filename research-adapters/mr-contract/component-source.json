@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "source_repository": "https://github.com/ZJ-2002/autonomics",
+  "source_commit": "f5e3eeaee117241c92c30e48523ece6c20a2814e",
+  "source_family": "study_plugins/mr-contract",
+  "transport_scope": "BYTE_EXACT_COMPLETE_METHOD_TRANSPORT_NOT_PRODUCER_OR_SCIENTIFIC_QUALIFICATION",
+  "scientific_authorization": false,
+  "auto_enable": false,
+  "imported_files": {
+    "README.md": {
+      "source_path": "study_plugins/mr-contract/README.md",
+      "sha256": "a6919b3fc5b13900b89d0a053044514005f8497b822e37178972fbb3f17f007d",
+      "bytes": 3397,
+      "git_blob": "d74e7e4420a788a74ae601ea781523e754c212bc",
+      "executable": false
+    },
+    "manifest.toml": {
+      "source_path": "study_plugins/mr-contract/manifest.toml",
+      "sha256": "7caa7c7fb6f3a5b9ebfa5d15b848fb4403b4cf5eb347a16e2aed5b43f15a8821",
+      "bytes": 2178,
+      "git_blob": "169faff990c3f0572715221c2228582ea043c05f",
+      "executable": false
+    },
+    "scripts/mr.R": {
+      "source_path": "study_plugins/mr-contract/scripts/mr.R",
+      "sha256": "b3b80cb5d1e246d3ef20f9891dce49b16627fa044bd4bf783a60ab28704bab79",
+      "bytes": 15590,
+      "git_blob": "e7c4847e1077f25f05b6f8b2dad9e3b0fb6918f0",
+      "executable": false
+    },
+    "scripts/run-mr.sh": {
+      "source_path": "study_plugins/mr-contract/scripts/run-mr.sh",
+      "sha256": "835cf78eebd26a8369930e3fd4ec17af2eee8146493bcdec90d8c9a5a2a39bf2",
+      "bytes": 22513,
+      "git_blob": "583cb183bd14291b97f9460d6fba9801a83de92b",
+      "executable": false
+    }
+  },
+  "component_files": {
+    "scripts/generate_mr_contract_wrapper.py": {
+      "source_path": "scripts/generate_mr_contract_wrapper.py",
+      "sha256": "4a080bcbd5c94b18f80510f7f9a02f259a663fd1e67a07ba0c025ec0e49b93da",
+      "bytes": 862,
+      "git_blob": "4721dde5c6e4b57cb23066de3c1c754143420cb5",
+      "executable": false
+    },
+    "study_plugins/shared/gwas-normalization-receipt.R": {
+      "source_path": "study_plugins/shared/gwas-normalization-receipt.R",
+      "sha256": "2c0102e4524a99a86416126927a0826bb7c0c0b525fdbbce2e9183bb3f514c80",
+      "bytes": 6556,
+      "git_blob": "4aca08aab44a56b7ea94c2c5714f23ed4f5c35dd",
+      "executable": false
+    },
+    "study_plugins/mr-contract/scripts/mr.R": {
+      "source_path": "study_plugins/mr-contract/scripts/mr.R",
+      "sha256": "b3b80cb5d1e246d3ef20f9891dce49b16627fa044bd4bf783a60ab28704bab79",
+      "bytes": 15590,
+      "git_blob": "e7c4847e1077f25f05b6f8b2dad9e3b0fb6918f0",
+      "executable": false
+    }
+  },
+  "programs": {
+    "scripts/run-mr.sh": {
+      "generator": "scripts/generate_mr_contract_wrapper.py",
+      "function": "rendered",
+      "argument": null
+    }
+  }
+}

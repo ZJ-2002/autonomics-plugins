@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "source_repository": "https://github.com/ZJ-2002/autonomics",
+  "source_commit": "f5e3eeaee117241c92c30e48523ece6c20a2814e",
+  "source_family": "study_plugins/mvmr-orientation-contract",
+  "transport_scope": "BYTE_EXACT_COMPLETE_METHOD_TRANSPORT_NOT_PRODUCER_OR_SCIENTIFIC_QUALIFICATION",
+  "scientific_authorization": false,
+  "auto_enable": false,
+  "imported_files": {
+    "README.md": {
+      "source_path": "study_plugins/mvmr-orientation-contract/README.md",
+      "sha256": "c6a2fc7c8dd49d44912fae98758c4bab682a300b9208c4c20a139dc8dd4651f2",
+      "bytes": 1482,
+      "git_blob": "fffec11509ce1d9bd2331d4f0af8f22451bf9c92",
+      "executable": false
+    },
+    "manifest.toml": {
+      "source_path": "study_plugins/mvmr-orientation-contract/manifest.toml",
+      "sha256": "daa2634a0ee0ea7e4f85cc604c56ba5cb5a09be982aef03c13490345609db7f4",
+      "bytes": 1758,
+      "git_blob": "a1bf4d765043b2a203ed8af96f6969bdbaf2e23b",
+      "executable": false
+    },
+    "scripts/run-orientation.py": {
+      "source_path": "study_plugins/mvmr-orientation-contract/scripts/run-orientation.py",
+      "sha256": "75ce91cde58b6cf90c9e9bcd0096330777d8caf4b7399681b945635438c57533",
+      "bytes": 43389,
+      "git_blob": "bd41f0ad1283748c16d35c8b596263f416cf5ec6",
+      "executable": true
+    }
+  },
+  "component_files": {
+    "scripts/build_mvmr_orientation_wrapper.py": {
+      "source_path": "scripts/build_mvmr_orientation_wrapper.py",
+      "sha256": "9b27a5453a8ce76606a8abc4206aa5051f909a352d0cd5f3639b232a71f72e3b",
+      "bytes": 1257,
+      "git_blob": "7eed85b35394fe9b303d3c25a14c71cabfd8b8a1",
+      "executable": false
+    },
+    "scripts/research_mvmr_covariance.py": {
+      "source_path": "scripts/research_mvmr_covariance.py",
+      "sha256": "85dce3f0b3c2cd0492de3e9de1ec458115a545b99357f06309a7ab3db608ebfc",
+      "bytes": 12728,
+      "git_blob": "9eb3a81be00ba3ed3300e9664293fd808c44337e",
+      "executable": false
+    },
+    "scripts/research_mvmr_covariance_orientation.py": {
+      "source_path": "scripts/research_mvmr_covariance_orientation.py",
+      "sha256": "3f88824367221013ef354273e98774ad0f406ae0df6327104859abc35369f43a",
+      "bytes": 17731,
+      "git_blob": "d74d6b05e6f385ad9feee245bcefa10f8c0bde19",
+      "executable": false
+    }
+  },
+  "programs": {
+    "scripts/run-orientation.py": {
+      "generator": "scripts/build_mvmr_orientation_wrapper.py",
+      "function": "render",
+      "argument": null
+    }
+  }
+}
