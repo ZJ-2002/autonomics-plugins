@@ -1,4 +1,4 @@
-"""Fail-closed v4.1 study guards, separate from official statistical algorithms."""
+"""Fail-closed registered study guards, separate from statistical algorithms."""
 
 from decimal import Decimal, InvalidOperation
 import math
@@ -294,13 +294,15 @@ def write_table(path, columns, rows):
 
 # Registered study protocols. The guards' consumed surface (planned counts,
 # primary P policy, instrument rules) is byte-identical between these two
-# contracts; only the governing identity differs. v4.0 is the frozen research
-# contract; v4.1 is an engineering reference and never a research contract.
+# historical designs; only the governing identity differs. v4.1 remains an
+# engineering reference. The user designated v4.2.1 as the final design on
+# 2026-10-07: its role permits preparation, never scientific authorization.
 # The active protocol is an explicit per-invocation governance decision,
 # never inferred from file layout or silently defaulted.
 PROTOCOLS = {
     "4.0": {"role": "RESEARCH_CONTRACT"},
     "4.1": {"role": "ENGINEERING_REFERENCE_NOT_A_RESEARCH_CONTRACT"},
+    "4.2.1": {"role": "RESEARCH_CONTRACT"},
 }
 
 

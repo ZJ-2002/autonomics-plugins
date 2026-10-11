@@ -1,0 +1,27 @@
+Contract adapter source synchronization, 2026-10-11
+
+The engine/reference repository acquired two changes after the initial
+monorepo migration. Copy the committed current bytes from
+ZJ-2002/autonomics main at 93aeedc83367c38a7f6a5279291562ff290f6da1:
+study_plugins/cachexia-contracts/manifest.toml
+study_plugins/cachexia-contracts/scripts/guards.py
+
+The manifest change originated at 334088cc2ecfadd1e2a97318b092d7f7279aa611.
+All five nodes declare isolated network, read-only rootfs, no image pull,
+and pids_limit=128, while existing CPU/memory declarations remain intact.
+The script adds the already committed explicit 4.2.1 protocol registration.
+It does not register v4.3.2, fill any frozen scientific configuration,
+choose overlap classes or grant scientific authorization.
+
+The historical provenance/source-index.json is not rewritten. The current
+catalog/release-lock.json is refreshed explicitly for these source changes
+and the additional six local protocol/isolation declaration tests.
+The six tests check declarations and existing protocol-selection behavior;
+they do not prove actual container enforcement or scientific equivalence.
+Catalog controls are also rerun locally before publication. No cloud CI
+execution, rebuilt image, production cutover or method requalification is
+implied by this source synchronization.
+
+Native Rust/SDK nodes belong in ZJ-2002/autonomics, not this plugin repository.
+Uncommitted engine files are not copied into this repository. Frozen plugin
+deployment configuration and daemon remain unchanged; G0 is not granted.

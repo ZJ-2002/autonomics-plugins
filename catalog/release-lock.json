@@ -14589,14 +14589,20 @@
       "files": [
         {
           "path": "manifest.toml",
-          "sha256": "0ec897cd3b173f0cc12f9c10fbf9e7673f89974aafaebbaff262751ec3afeae6",
-          "bytes": 6891,
+          "sha256": "d8e3204ac3ab65336b781e13be26a5f8275ba1e476fbedf7b0c994736a261613",
+          "bytes": 7311,
           "executable": false
         },
         {
           "path": "scripts/guards.py",
-          "sha256": "c9c4e080037d1724557c8e7a81af187c80a4144c5e484bce2c710659cc98226f",
-          "bytes": 24465,
+          "sha256": "f12dfbfc7ca168903f16efa1410399ea982521534a243dbc96dc365de79113ca",
+          "bytes": 24578,
+          "executable": false
+        },
+        {
+          "path": "tests/test_protocol.py",
+          "sha256": "d209dc9be0aa8c809cd06d5e4077e7783a85da5ab5685b7b7a4a1dc55ae38947",
+          "bytes": 2010,
           "executable": false
         }
       ],
