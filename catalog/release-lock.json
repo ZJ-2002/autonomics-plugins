@@ -7034,26 +7034,26 @@
         },
         {
           "path": "README.md",
-          "sha256": "a87c23e907cd01021aa18b115393ef31fc6e5533698473bc9ff77fc89fdaba5f",
-          "bytes": 3393,
+          "sha256": "6a7b3d41c31c05edcf52f9a76e743dbed5207c9866bb052a5d392b8603a1926e",
+          "bytes": 5344,
           "executable": false
         },
         {
           "path": "manifest.toml",
-          "sha256": "f8aa1babce1aa07189f88f9dface08b477d397f7fd0233a2cb36ddfcce73b097",
-          "bytes": 3651,
+          "sha256": "471c6042dbeb59a73019d0d21e84baa4337ecd5948c75bd545f5a74108764919",
+          "bytes": 4286,
           "executable": false
         },
         {
           "path": "scripts/lme4_fit.R",
-          "sha256": "ec05e89a6883a8b8956c57493448e200b75f4bbf401e592eb011af3f16525ca6",
-          "bytes": 6476,
+          "sha256": "52738b2439fdbb13fa3149d4bb06c4759a310b3f9fe41d1d8962c5b74e77e284",
+          "bytes": 8338,
           "executable": false
         },
         {
           "path": "tests/test_lme4_fit.R",
-          "sha256": "ce7a1a9bcc81b5b27b43c300bb9af15211443f82e3b40b3fbecdbd652b6d0dc8",
-          "bytes": 6515,
+          "sha256": "8f264d55219656f17414174aa2be6a182f09d1a56d5590be53c7f7e34e720f37",
+          "bytes": 8390,
           "executable": false
         }
       ],

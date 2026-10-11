@@ -1,15 +1,3 @@
-# 中文注释：普通 LMM/GLMM 拟合节点（lme4 插件家族）。
-# 输入构念：长表 TSV，一行一个观测；供者/动物/切片等分组因子是数据列。
-# 规则来源：方案 §16.1——重复测量用连续时间混合模型，保留信号×时间项；
-# 单独主效应只反映水平差异。统计口径：gaussian → lmerTest::lmer
-# （Satterthwaite/Kenward ddf，ddf 参数真正传入 summary 与 broom.mixed::tidy
-# ——2026-10-05 审计 F10：旧实现 kenward 只写标签未传参），其余 family →
-# glmer Wald z。ddf 取值白名单：satterthwaite|kenward（小样本终稿复核用 KR）。
-# 失败处理：公式或列缺失 → 退出 2；不收敛/奇异拟合不中止，输出仍写，
-# 但 lme4_model.txt 末尾的机器可读 status 块显式标记
-# （status: ok|singular|not-converged|not-converged+singular，含 converged/
-# singular_fit/optimizer_code/lme4_messages），不得当干净 RUN_PASS 解读
-# （解释边界：随机方差→0=不可识别，非无变异）。
 suppressPackageStartupMessages({
   library(lme4)
   library(lmerTest)
@@ -17,131 +5,150 @@ suppressPackageStartupMessages({
   library(data.table)
 })
 
-formula_str <- Sys.getenv("LME4_FORMULA")
-family_str  <- Sys.getenv("LME4_FAMILY", "gaussian")
-reml_flag   <- Sys.getenv("LME4_REML", "true") == "true"
-ddf_method  <- tolower(Sys.getenv("LME4_DDF", "satterthwaite"))
-nagq        <- as.integer(Sys.getenv("LME4_NAGQ", "1"))
-n_boot      <- as.integer(Sys.getenv("LME4_NBOOT", "0"))
-seed        <- as.integer(Sys.getenv("LME4_SEED", "42"))
+publish <- function(path, writer) {
+  if (file.exists(path)) stop(paste("output already exists:", path))
+  temporary <- tempfile(".lme4-", tmpdir = dirname(path))
+  on.exit(unlink(temporary))
+  writer(temporary)
+  if (!file.link(temporary, path)) stop(paste("cannot publish output:", path))
+}
 
-input_path  <- Sys.getenv("AUTONOMICS_INPUT0")
-out_fixed   <- Sys.getenv("AUTONOMICS_OUTPUT0")
-out_random  <- Sys.getenv("AUTONOMICS_OUTPUT1")
-out_model   <- Sys.getenv("AUTONOMICS_OUTPUT2")
-
-fail <- function(message) {
-  message(message)
+model_path <- Sys.getenv("AUTONOMICS_OUTPUT2")
+fail <- function(message_text) {
+  if (nzchar(model_path) && dir.exists(dirname(model_path)) && !file.exists(model_path)) {
+    try(publish(model_path, function(path) writeLines(c("status: failed", message_text), path)), silent = TRUE)
+  }
+  message(message_text)
   quit(status = 2)
 }
 
-if (nzchar(formula_str) == FALSE) fail("LME4_FORMULA is empty")
-if (!family_str %in% c("gaussian", "binomial", "poisson")) {
-  fail(paste("unsupported family:", family_str))
-}
-if (!ddf_method %in% c("satterthwaite", "kenward")) {
-  fail(paste("unsupported ddf:", ddf_method))
-}
-
-frame <- fread(input_path, sep = "\t", na.strings = c("NA", ""))
-parsed <- tryCatch(as.formula(formula_str), error = function(e) NULL)
-if (is.null(parsed)) fail(paste("cannot parse formula:", formula_str))
-needed <- all.vars(parsed)
-missing_cols <- setdiff(needed, names(frame))
-if (length(missing_cols) > 0) {
-  fail(paste("columns missing from input:", paste(missing_cols, collapse = ", ")))
+integer_setting <- function(name, default) {
+  value <- suppressWarnings(as.numeric(Sys.getenv(name, default)))
+  if (length(value) != 1L || !is.finite(value) || value < 0 ||
+      value > .Machine$integer.max || value != floor(value)) {
+    stop(paste(name, "must be a nonnegative integer"))
+  }
+  as.integer(value)
 }
 
-set.seed(seed)
-fit_info <- list()
-# 拟合期警告捕获：lmerTest/lme4 的部分不可信拟合提示（如 "eigenvalue close
-# to zero"）走 warnings() 而不进 optinfo，收敛门控必须一并收口（审计 F10）。
-fit_warn_msgs <- character(0)
-fit_with_warnings <- function(fit_call, label) {
-  withCallingHandlers(
-    tryCatch(fit_call, error = function(e) fail(paste(label, "failed:", conditionMessage(e)))),
-    warning = function(w) {
-      fit_warn_msgs <<- c(fit_warn_msgs, conditionMessage(w))
-      invokeRestart("muffleWarning")
-    }
+logical_setting <- function(name, default) {
+  value <- tolower(Sys.getenv(name, default))
+  if (!value %in% c("true", "false")) stop(paste(name, "must be true or false"))
+  value == "true"
+}
+
+run_model <- function() {
+  formula_text <- Sys.getenv("LME4_FORMULA")
+  family_text <- Sys.getenv("LME4_FAMILY", "gaussian")
+  reml <- logical_setting("LME4_REML", "true")
+  reliable_only <- logical_setting("LME4_RELIABLE_ONLY", "true")
+  ddf <- tolower(Sys.getenv("LME4_DDF", "satterthwaite"))
+  nagq <- integer_setting("LME4_NAGQ", "1")
+  n_boot <- integer_setting("LME4_NBOOT", "0")
+  seed <- integer_setting("LME4_SEED", "42")
+  input_path <- Sys.getenv("AUTONOMICS_INPUT0")
+  output_paths <- c(Sys.getenv("AUTONOMICS_OUTPUT0"), Sys.getenv("AUTONOMICS_OUTPUT1"), model_path)
+  if (any(!nzchar(output_paths)) || anyDuplicated(output_paths) ||
+      any(!dir.exists(dirname(output_paths)))) stop("three distinct output paths with existing parents are required")
+  if (any(file.exists(output_paths))) stop("output already exists; overwrite is forbidden")
+  if (!nzchar(formula_text)) stop("LME4_FORMULA is empty")
+  if (!family_text %in% c("gaussian", "binomial", "poisson")) stop("unsupported family")
+  if (!ddf %in% c("satterthwaite", "kenward")) stop("unsupported ddf")
+  if (family_text == "gaussian" && ddf == "kenward" && !reml) {
+    stop("Kenward-Roger's method is only available for REML model fits")
+  }
+  frame <- withCallingHandlers(
+    fread(input_path, sep = "\t", na.strings = c("NA", ""), keepLeadingZeros = TRUE),
+    warning = function(warning_value) stop(conditionMessage(warning_value))
   )
-}
-if (family_str == "gaussian") {
-  # lmerTest::lmer 本身返回 lmerModLmerTest；summary/tidy 的 ddf= 参数
-  # 是 Kenward-Roger/Satterthwaite 真正生效的唯一通道（审计 F10）。
-  ddf_arg <- if (ddf_method == "kenward") "Kenward-Roger" else "Satterthwaite"
-  fit <- fit_with_warnings(lmerTest::lmer(parsed, data = frame, REML = reml_flag), "lmer")
-  fit_info$ddf <- ddf_arg
-} else {
-  ddf_arg <- NA_character_
-  fit <- fit_with_warnings(
-    glmer(parsed, data = frame, family = family_str, nAGQ = nagq,
-          control = glmerControl(optimizer = "bobyqa")),
-    "glmer")
-  fit_info$ddf <- "wald-z"
+  if (!nrow(frame) || anyDuplicated(names(frame))) stop("input must have rows and unique column names")
+  parsed <- as.formula(formula_text)
+  needed <- all.vars(parsed)
+  if (length(setdiff(needed, names(frame)))) stop("columns missing from input")
+  if (anyNA(frame[, needed, with = FALSE])) stop("missing model values; silent row omission is forbidden")
+  for (column in needed) {
+    if (is.numeric(frame[[column]]) && any(!is.finite(frame[[column]]))) stop("nonfinite model values")
+  }
+  set.seed(seed)
+  fit_warnings <- character()
+  fitted <- withCallingHandlers({
+    if (family_text == "gaussian") {
+      lmerTest::lmer(parsed, data = frame, REML = reml, na.action = na.fail,
+                    control = lmerControl(check.rankX = "stop.deficient"))
+    } else {
+      glmer(parsed, data = frame, family = family_text, nAGQ = nagq, na.action = na.fail,
+            control = glmerControl(optimizer = "bobyqa", check.rankX = "stop.deficient"))
+    }
+  }, warning = function(warning_value) {
+    fit_warnings <<- c(fit_warnings, conditionMessage(warning_value))
+    invokeRestart("muffleWarning")
+  })
+  if (nobs(fitted) != nrow(frame)) stop("observation count changed during fitting")
+  optimizer_code <- as.integer(fitted@optinfo$conv$opt)
+  optimizer_messages <- fitted@optinfo$conv$lme4$messages
+  if (is.null(optimizer_messages)) optimizer_messages <- character()
+  convergence_messages <- c(optimizer_messages, fit_warnings)
+  convergence_messages <- convergence_messages[!grepl("boundary \\(singular\\) fit", convergence_messages)]
+  singular <- isSingular(fitted)
+  converged <- identical(optimizer_code, 0L) && !length(convergence_messages)
+  status <- if (!converged && singular) "not-converged+singular" else if (!converged) {
+    "not-converged"
+  } else if (singular) "singular" else "ok"
+  ddf_argument <- if (family_text != "gaussian") "wald-z" else if (ddf == "kenward") {
+    "Kenward-Roger"
+  } else "Satterthwaite"
+  fit_summary <- if (family_text == "gaussian") summary(fitted, ddf = ddf_argument) else summary(fitted)
+  model_text <- c(
+    capture.output(fit_summary), "", paste("formula:", formula_text),
+    sprintf("family: %s | ddf: %s (applied: %s) | REML: %s | nAGQ: %d | seed: %d",
+            family_text, ddf, ddf_argument, reml, nagq, seed),
+    sprintf("input_rows: %d", nrow(frame)), sprintf("n_obs: %d", nobs(fitted)),
+    paste("status:", status), paste("converged:", tolower(as.character(converged))),
+    paste("singular_fit:", tolower(as.character(singular))),
+    paste("optimizer_code:", paste(optimizer_code, collapse = ",")),
+    paste("lme4_messages:", if (length(optimizer_messages)) paste(optimizer_messages, collapse = " | ") else "none"),
+    paste("fit_warnings:", if (length(fit_warnings)) paste(fit_warnings, collapse = " | ") else "none"),
+    "random_effects_scale: sdcor",
+    if (singular) "NOTE singular fit: random-effect covariance is on a boundary; individual variances need not be zero. This does not prove biological absence of variation." else character(),
+    if (!converged) "NOTE not converged: estimates are diagnostic only, not a trustworthy optimum." else character()
+  )
+  if (reliable_only && status != "ok") {
+    publish(model_path, function(path) writeLines(c(model_text, "estimates_published: false"), path))
+    stop(paste("fit status:", status, "- estimate outputs refused"))
+  }
+  if (status != "ok") message(paste("fit status:", status, "- diagnostic outputs only"))
+  fixed <- if (family_text == "gaussian") {
+    broom.mixed::tidy(fitted, effects = "fixed", conf.int = TRUE, ddf.method = ddf_argument)
+  } else broom.mixed::tidy(fitted, effects = "fixed", conf.int = TRUE)
+  bootstrap <- NULL
+  if (n_boot > 0L) {
+    bootstrap <- lme4::bootMer(fitted, FUN = lme4::fixef, nsim = n_boot, seed = seed,
+                         type = "parametric", use.u = FALSE, parallel = "no", .progress = "none")
+    if (!identical(nrow(bootstrap$t), n_boot) || any(!is.finite(bootstrap$t)) ||
+        !isTRUE(attr(bootstrap, "bootFail") == 0L)) stop("bootstrap replicates failed; no incomplete interval published")
+    intervals <- t(apply(bootstrap$t, 2, quantile, probs = c(0.025, 0.975), type = 7))
+    term_indices <- match(fixed$term, names(bootstrap$t0))
+    if (anyNA(term_indices)) stop("bootstrap coefficient axes do not match fixed effects")
+    fixed$boot_low <- intervals[term_indices, 1]
+    fixed$boot_high <- intervals[term_indices, 2]
+    model_text <- c(model_text, sprintf("bootstrap_replicates: %d", n_boot),
+                    "bootstrap_method: parametric; use.u=false; percentile quantile type=7")
+  }
+  random <- broom.mixed::tidy(fitted, effects = "ran_pars", scales = "sdcor")
+  if (reliable_only && (any(!is.finite(unlist(fixed[vapply(fixed, is.numeric, logical(1))]))) ||
+                       any(!is.finite(random$estimate)))) stop("nonfinite estimate output refused")
+  published <- character()
+  completed <- FALSE
+  on.exit(if (!completed) unlink(published))
+  publish(output_paths[1], function(path) fwrite(fixed, path, sep = "\t"))
+  published <- c(published, output_paths[1])
+  publish(output_paths[2], function(path) fwrite(random, path, sep = "\t"))
+  published <- c(published, output_paths[2])
+  publish(output_paths[3], function(path) writeLines(c(model_text, "estimates_published: true",
+          paste("diagnostic_only:", tolower(as.character(status != "ok")))), path))
+  published <- c(published, output_paths[3])
+  completed <- TRUE
+  invisible(list(fit = fitted, fixed = fixed, random = random, bootstrap = bootstrap, frame = frame))
 }
 
-fixed <- if (family_str == "gaussian") {
-  broom.mixed::tidy(fit, effects = "fixed", conf.int = TRUE, ddf = ddf_arg)
-} else {
-  broom.mixed::tidy(fit, effects = "fixed", conf.int = TRUE)
-}
-if (n_boot > 0 && family_str == "gaussian") {
-  boot_fit <- bootMer(fit, FUN = fixef, nsim = n_boot, seed = seed, .progress = "none")
-  boot_ci <- t(apply(boot_fit$t, 2, quantile, probs = c(0.025, 0.975), na.rm = TRUE))
-  fixed$boot_low <- boot_ci[, 1]
-  fixed$boot_high <- boot_ci[, 2]
-  fit_info$bootstrap <- n_boot
-}
-fwrite(fixed, out_fixed, sep = "\t")
-
-random <- broom.mixed::tidy(fit, effects = "ran_pars")
-fwrite(random, out_random, sep = "\t")
-
-# 收敛门控结构化（审计 F10）：optimizer 退出码 + lme4 消息 + 拟合期警告 +
-# isSingular。"boundary (singular) fit" 是奇异性提示不是收敛失败，归 singular 通道。
-conv_code <- tryCatch(as.integer(fit@optinfo$conv$opt), error = function(e) NA_integer_)
-conv_msgs <- fit@optinfo$conv$lme4$messages
-if (is.null(conv_msgs)) conv_msgs <- character(0)
-conv_warn_msgs <- c(conv_msgs[!grepl("boundary \\(singular\\) fit", conv_msgs)],
-                    fit_warn_msgs[!grepl("boundary \\(singular\\) fit", fit_warn_msgs)])
-singular <- isSingular(fit)
-converged <- identical(conv_code, 0L) && length(conv_warn_msgs) == 0L
-
-status <- if (!converged && singular) {
-  "not-converged+singular"
-} else if (!converged) {
-  "not-converged"
-} else if (singular) {
-  "singular"
-} else {
-  "ok"
-}
-
-fit_summary <- if (family_str == "gaussian") {
-  summary(fit, ddf = ddf_arg)
-} else {
-  summary(fit)
-}
-
-model_text <- c(
-  capture.output(fit_summary),
-  "",
-  sprintf("formula: %s", formula_str),
-  sprintf("family: %s | ddf: %s (applied: %s) | REML: %s | nAGQ: %d | seed: %d",
-          family_str, ddf_method, fit_info$ddf, reml_flag, nagq, seed),
-  sprintf("n_obs: %d", nobs(fit)),
-  "## status (machine-readable; audit F10)",
-  sprintf("status: %s", status),
-  sprintf("converged: %s", tolower(as.character(converged))),
-  sprintf("singular_fit: %s", tolower(as.character(singular))),
-  sprintf("optimizer_code: %s", ifelse(is.na(conv_code), "NA", as.character(conv_code))),
-  if (length(conv_msgs) > 0) paste("lme4_messages:", paste(conv_msgs, collapse = " | ")) else "lme4_messages: none",
-  if (singular) "NOTE singular fit: a random-effect variance collapsed to ~0; that effect is not identifiable here - do not read as zero variation (plan §16.1)." else character(0),
-  if (!converged) "NOTE not converged: optimizer did not reach a trustworthy optimum; treat estimates as exploratory, re-fit with adjusted control/data before inference (plan §16.1)." else character(0)
-)
-writeLines(model_text, out_model)
-
-if (!converged || singular) {
-  message(sprintf("fit status: %s; outputs written but not a clean pass; see lme4_model.txt", status))
-}
+.lme4_result <- tryCatch(run_model(), error = function(error_value) fail(conditionMessage(error_value)))

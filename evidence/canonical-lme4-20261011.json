@@ -1,0 +1,113 @@
+{
+  "canonical_kind": "lme4_fit",
+  "family": "lme4",
+  "active_design": "v4.3.2",
+  "scope": "SCOPED_OFFICIAL_METHOD_INTERFACE_ISOLATED_DAG_NOT_SCIENTIFIC_ADMISSION",
+  "method": {
+    "calls": [
+      "lmerTest::lmer",
+      "lme4::glmer",
+      "broom.mixed::tidy",
+      "lme4::bootMer"
+    ],
+    "official_sources": [
+      {
+        "package": "lme4",
+        "version": "1.1-35.5",
+        "url": "https://cran.r-project.org/src/contrib/Archive/lme4/lme4_1.1-35.5.tar.gz",
+        "http_status": 200,
+        "bytes": 3300116,
+        "sha256": "7d6664db7ea96429562efe1058da58985d779d6fe79ec6f4e86ba68047135170"
+      },
+      {
+        "package": "pbkrtest",
+        "version": "0.5.3",
+        "url": "https://cran.r-project.org/src/contrib/Archive/pbkrtest/pbkrtest_0.5.3.tar.gz",
+        "http_status": 200,
+        "bytes": 59013,
+        "sha256": "b03e5156fef6a4a2ea67c1d15c051799e63acafef2f89962c580645266e6ba63"
+      },
+      {
+        "package": "lmerTest",
+        "version": "3.1-3",
+        "url": "https://cran.r-project.org/src/contrib/Archive/lmerTest/lmerTest_3.1-3.tar.gz",
+        "http_status": 200,
+        "bytes": 195633,
+        "sha256": "35aa75e9f5f2871398ff56a482b013e6828135ef04916ced7d1d7e35257ea8fd"
+      },
+      {
+        "package": "broom.mixed",
+        "version": "0.2.9.6",
+        "url": "https://cran.r-project.org/src/contrib/Archive/broom.mixed/broom.mixed_0.2.9.6.tar.gz",
+        "http_status": 200,
+        "bytes": 5147791,
+        "sha256": "f06bfd7ddec2db64ef53cfb02bcb2c0dc90ec3c27e41236c2930820a79e3988c"
+      }
+    ],
+    "fresh_lme4_Cplusplus_rebuilt": true,
+    "shared_dependencies_pinned_by_image": true,
+    "R_namespace_functions": 636,
+    "exact_function_matches": 632,
+    "four_build_time_nlme_copies_not_exposed_by_node": [
+      "lme4::fitted.lmList4",
+      "lme4::gsummary",
+      "lme4::predict.lmList4",
+      "lme4::residuals.lmList4"
+    ],
+    "whole_namespace_or_latest_full_domain_certified": false
+  },
+  "image_reference": "ghcr.io/zj-2002/lme4-r@sha256:084479ed5409c42fbbcf630ce44f06a35d0e47ae22e40b185fcd453aeb09f88c",
+  "manifest_sha256": "471c6042dbeb59a73019d0d21e84baa4337ecd5948c75bd545f5a74108764919",
+  "script_sha256": "52738b2439fdbb13fa3149d4bb06c4759a310b3f9fe41d1d8962c5b74e77e284",
+  "inputs": "one long-format TSV File; formula covariates, grouping IDs, and observation unit are explicit",
+  "outputs": [
+    "0 fixed effects TSV including ddf for LMM and optional percentile bootstrap",
+    "1 random parameters effect/group/term/estimate at sdcor scale, not variances",
+    "2 model summary/status/diagnostic log"
+  ],
+  "RDS_is_not_a_port": "test harness only; raw author/node models retained; canonical components compared, not environment/native pointers",
+  "method_proof": "PROVEN_SCOPED_FRESH_AUTHOR_SOURCE_REBUILD_SEPARATE_REFERENCE_SCRIPT_AND_PROCESS",
+  "interface_proof": "38_WRAPPER_CASES_30_ADDITIONAL_SELF_CONSISTENCY_CHECKS_NO_DEPENDENCY_SKIP",
+  "isolated_DAG_proof": "4_POSITIVE_5_TARGETED_NEGATIVE_TWO_NODE_NATIVE_DAGS",
+  "plan_contract": "TECHNICAL_FORMULA_AND_DATA_UNITS_ONLY_STUDY_QUALIFICATION_UNGRANTED",
+  "wrapper_cases": 38,
+  "wrapper_fresh_full_component_and_table_comparisons": 18,
+  "native_fresh_declared_table_comparisons": 4,
+  "successful_native_DAGs": 4,
+  "blocked_native_DAGs": 5,
+  "local_R_regression_checks": 30,
+  "catalog_cases": 48,
+  "tolerances": {
+    "absolute": 2e-07,
+    "relative": 2e-08,
+    "additional_log_P_check": true,
+    "axes_and_non_numeric_fields": "exact",
+    "seed_repeat": "three port bytes exact"
+  },
+  "verified_scope": [
+    "Gaussian ST/KR/ML; ML+KR correctly refused",
+    "random slopes and nested random intercepts",
+    "signal-by-condition interaction; leading-zero group identity",
+    "binomial and poisson nAGQ=0/1/5 scalar random intercept",
+    "LMM/GLMM parametric bootstrap computation; failed/nonfinite replicates refused",
+    "missing/rank-deficient/nonfinite/invalid-parameter inputs refused; existing result not overwritten",
+    "default singular/nonconvergence refusal; explicit diagnostic-only branch"
+  ],
+  "default_policy_change": "reliable_only=true now refuses estimate ports for singular/nonconverged fits; false requires diagnostic tag; no deployment changed",
+  "bootstrap_replicates_in_tests": "15 for computation parity, not coverage/production precision approval",
+  "run_report_output_content_hashes_complete": false,
+  "independent_materialized_output_SHA256_and_copy_verification": true,
+  "remaining": [
+    "Frozen exact formula, donor/covariate/time/contrast/data qualification and design software locks",
+    "Real longitudinal data and missingness/death/survey weighting method choice",
+    "Statistical calibration, cross-platform and full lme4 method domain",
+    "Resident daemon deployment, persistent cache/recovery and global resources",
+    "Atomic multi-port publication under process kill and independent scientific review"
+  ],
+  "historical_120_denominator_changed": false,
+  "original_kind_scope_updated": true,
+  "production_deployed": false,
+  "formal_research_release": "NOT_GRANTED",
+  "G0": false,
+  "evidence_packet": "/home/zj-normal/Work/autonomics/results/cachexia-v4.3.2/canonical-lme4-v1-20261011"
+}

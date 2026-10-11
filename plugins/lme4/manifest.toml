@@ -22,20 +22,24 @@ doc = """
    conf.low/conf.high（gaussian 用 lmerTest 的 Satterthwaite 或 Kenward-Roger
    ddf——ddf 参数真正传入 summary 与 tidy（2026-10-05 审计 F10 修复，此前
    kenward 只改标签未传参）；非 gaussian 为 Wald z）；
-2) lme4_random_effects.tsv —— group/name/variance/std.dev（VarCorr 口径）；
+2) lme4_random_effects.tsv —— effect/group/term/estimate，broom.mixed
+   ran_pars 的 sdcor 尺度（标准差/相关系数，不是 variance）；
 3) lme4_model.txt —— summary 全文、模型调用，以及末尾机器可读 status 块：
    status: ok|singular|not-converged|not-converged+singular，附 converged/
    singular_fit/optimizer_code/lme4_messages 四行（审计 F10 收敛门控；
-   非收敛时输出仍写但 status 显式标注，不得当干净 RUN_PASS 解读）。
+   默认 reliable_only=true 时奇异/非收敛退出 2，只保留诊断文本，拒绝估计表；
+   显式 false 仅允许 diagnostic_only=true 的诊断输出，不授予科研准入）。
 公式用 lme4 语法，例：weight_kg ~ days + (1 | subject_id)、
 value ~ time * group + (time | donor)。
 family=gaussian 走 lmer(REML 可选)；binomial/poisson 走 glmer(nAGQ 可调)。
 规则来源：方案 §16.1——重复数据保留信号×时间项；单独信号主效应通常只反映
-水平差异，不解释为变化速度。失败处理：公式/列名/ddf 取值错误 → 退出 2；
-拟合异常（不收敛/奇异）→ 不中止，全文记入 lme4_model.txt 且 status 块显式
-标注，由研究者决定弃用与否（解释边界：随机方差→0 表示该效应不可识别，
-不是无变异）。
-seed 供 bootstrap；n_boot>0 时追加 bootstrap 固定效应 CI 列（默认 0 不跑）。
+水平差异，不解释为变化速度。错误退出 2；输入缺失、非有限模型值、秩亏、
+非法布尔/整数参数均拒绝，不静默删供者/系数。奇异是协方差边界，不能
+推断每个随机效应的方差为零，也不能推断生物学上无变异。
+三端口禁止覆盖；同进程写入失败回滚本次估计表，不声称崩溃事务原子性。
+n_boot>0 对 LMM 和 GLMM 调用官方 bootMer，parametric、use.u=false、
+parallel=no、seed 显式；boot_low/high 为完整重复的 type=7 百分位数。
+任何失败/非有限 bootstrap 重复均拒绝，不用 na.rm 缩小分母。
 """
 timeout_secs = 7200
 artifact_prefix = "/artifacts/lme4_fit"
@@ -53,9 +57,10 @@ formula = { type = "string", doc = "lme4 formula, e.g. 'y ~ time + (1|subject)'"
 family = { type = "string", default = "gaussian", doc = "gaussian | binomial | poisson" }
 reml = { type = "bool", default = true, doc = "REML for lmer (ignored by glmer)" }
 ddf = { type = "string", default = "satterthwaite", doc = "satterthwaite | kenward (lmer only)" }
-nagq = { type = "int", default = 1, min = 1.0, doc = "glmer nAGQ points (1 = Laplace)" }
+nagq = { type = "int", default = 1, min = 0.0, doc = "glmer nAGQ points (0 = fast approximation, 1 = Laplace; >1 requires a scalar random effect)" }
 n_boot = { type = "int", default = 0, min = 0.0, doc = "parametric bootstrap iterations for fixed-effect CIs (0 = off)" }
-seed = { type = "int", default = 42, doc = "R RNG seed" }
+seed = { type = "int", default = 42, min = 0.0, doc = "R RNG seed" }
+reliable_only = { type = "bool", default = true, doc = "Refuse estimate outputs for singular or nonconverged fits; false is diagnostic-only" }
 
 [nodes.command]
 interpreter = "Rscript"
@@ -69,6 +74,7 @@ LME4_DDF = "{{ ddf }}"
 LME4_NAGQ = "{{ nagq }}"
 LME4_NBOOT = "{{ n_boot }}"
 LME4_SEED = "{{ seed }}"
+LME4_RELIABLE_ONLY = "{{ reliable_only }}"
 
 [nodes.resources]
 network = "isolated"

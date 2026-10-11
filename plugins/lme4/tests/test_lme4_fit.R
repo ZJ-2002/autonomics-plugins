@@ -30,14 +30,17 @@ check <- function(label, condition) {
   }
 }
 
-run_node <- function(input_csv, formula_str, ddf = "satterthwaite", family = "gaussian") {
-  out_fixed <- file.path(work, paste0("fixed_", ddf, "_", family, ".tsv"))
-  out_random <- file.path(work, paste0("random_", ddf, "_", family, ".tsv"))
-  out_model <- file.path(work, paste0("model_", ddf, "_", family, ".txt"))
+run_node <- function(input_csv, formula_str, ddf = "satterthwaite", family = "gaussian", reliable_only = TRUE) {
+  output_directory <- tempfile("case-", tmpdir = work)
+  dir.create(output_directory)
+  out_fixed <- file.path(output_directory, "fixed.tsv")
+  out_random <- file.path(output_directory, "random.tsv")
+  out_model <- file.path(output_directory, "model.txt")
   env <- paste(
     sprintf("LME4_FORMULA=%s", shQuote(formula_str)),
     sprintf("LME4_FAMILY=%s", shQuote(family)),
     "LME4_REML=true",
+    sprintf("LME4_RELIABLE_ONLY=%s", tolower(as.character(reliable_only))),
     sprintf("LME4_DDF=%s", shQuote(ddf)),
     "LME4_NAGQ=1", "LME4_NBOOT=0", "LME4_SEED=42",
     sprintf("AUTONOMICS_INPUT0=%s", shQuote(input_csv)),
@@ -93,9 +96,9 @@ check("ok run converged true singular false",
 set.seed(7)
 g <- rep(1:20, each = 5); x <- rep(rnorm(20), each = 5)
 singular_csv <- write_input(data.frame(y = 0.5 * x + rnorm(100), x = x, g = g), "singular.tsv")
-run_sg <- run_node(singular_csv, "y ~ x + (x | g)")
+run_sg <- run_node(singular_csv, "y ~ x + (x | g)", reliable_only = FALSE)
 model_sg <- paste(readLines(run_sg$model, warn = FALSE), collapse = "\n")
-check("singular run exits 0", run_sg$exit_code == 0)
+check("explicit singular diagnostic run exits 0", run_sg$exit_code == 0)
 check("singular status is singular",
       grepl("status: singular", model_sg) && !grepl("status: not-converged", model_sg))
 check("singular flags converged true singular_fit true",
@@ -107,7 +110,7 @@ check("singular run mentions status on stderr",
 
 # ---- fixture 3：不收敛（Response 放大 1e9 → lmerTest eigenvalue 警告）----
 nc_csv <- write_input(transform(lme4::sleepstudy, Reaction = Reaction * 1e9), "not_converged.tsv")
-run_nc <- run_node(nc_csv, "Reaction ~ Days + (Days | Subject)")
+run_nc <- run_node(nc_csv, "Reaction ~ Days + (Days | Subject)", reliable_only = FALSE)
 model_nc <- paste(readLines(run_nc$model, warn = FALSE), collapse = "\n")
 check("not-converged run exits 0 but is marked",
       run_nc$exit_code == 0 && grepl("status: not-converged", model_nc))
@@ -125,6 +128,30 @@ check("not-converged outputs still written",
 # ---- fixture 4：ddf 白名单 ----
 run_bad <- run_node(ok_csv, "Reaction ~ Days + (Days | Subject)", ddf = "bogus")
 check("invalid ddf exits 2", run_bad$exit_code == 2)
+
+run_singular_default <- run_node(singular_csv, "y ~ x + (x | g)")
+check("default singular fit refuses estimates", run_singular_default$exit_code == 2 &&
+      !file.exists(run_singular_default$fixed) && !file.exists(run_singular_default$random))
+check("default singular fit retains diagnostic", file.exists(run_singular_default$model))
+run_nonconverged_default <- run_node(nc_csv, "Reaction ~ Days + (Days | Subject)")
+check("default nonconverged fit refuses estimates", run_nonconverged_default$exit_code == 2 &&
+      !file.exists(run_nonconverged_default$fixed) && !file.exists(run_nonconverged_default$random))
+check("diagnostic mode is tagged", grepl("diagnostic_only: true", model_sg) &&
+      grepl("diagnostic_only: true", model_nc))
+missing_frame <- as.data.frame(lme4::sleepstudy)
+missing_frame$Reaction[1] <- NA
+missing_csv <- write_input(missing_frame, "missing.tsv")
+run_missing <- run_node(missing_csv, "Reaction ~ Days + (Days | Subject)")
+check("missing model observation is not silently dropped", run_missing$exit_code == 2 &&
+      grepl("silent row omission", run_missing$stderr) && !file.exists(run_missing$fixed))
+rank_frame <- as.data.frame(lme4::sleepstudy)
+rank_frame$duplicate <- 2 * rank_frame$Days
+rank_csv <- write_input(rank_frame, "rank.tsv")
+run_rank <- run_node(rank_csv, "Reaction ~ Days + duplicate + (Days | Subject)")
+check("rank-deficient coefficient is not silently dropped", run_rank$exit_code == 2 &&
+      grepl("rank deficient", run_rank$stderr) && !file.exists(run_rank$fixed))
+random_table <- fread(run_kr$random)
+check("random output has declared sdcor schema", identical(names(random_table), c("effect", "group", "term", "estimate")))
 
 if (length(failures)) {
   cat("\nFAILED:", paste(failures, collapse = ", "), "\n")
