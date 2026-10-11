@@ -1,0 +1,93 @@
+{
+  "kind": "coloc_abf",
+  "status": "PROVEN_SCOPED",
+  "method": "Official single-causal-variant coloc::coloc.abf",
+  "author_version": "coloc 5.2.3",
+  "not_latest_version": "Current author documentation is 6.0.1; no latest-version or variant-prior-weight equivalence is granted.",
+  "image_reference": "ghcr.io/auto-nomics/autonomics/coloc@sha256:a2afe7aa83ae6f1ecb9573317aa022af4db0870771378c7fe90d295d70057322",
+  "script_sha256": "c6ebb371a6966bf231627bec5a93a80d49852cb613d649ae01f44991c004eff3",
+  "manifest_sha256": "0cff9652c8fef3a326088387781934d6ef3c2f530770855e72ec981ae09ac8e6",
+  "original_upstream": {
+    "repository": "https://github.com/auto-nomics/coloc-plugin.git",
+    "revision": "39795c4cd91febb7ca0a3ff2bcdf449c75e09042",
+    "snapshot_files": {
+      "manifest.toml": "2acbd016fb665fc9f0519066ab4ef5cb5e0571042188976e68f6428e5a14ddf0",
+      "abf.R": "1cedd7e445aee7e7a4d3f2dbc8afee1f1e37deaa38de0e54ab93bc31810d5d49"
+    },
+    "deployed_canonical_provider_verified": false
+  },
+  "inputs": [
+    "One combined rectangular TSV File, literal per-trait SNP columns and explicit beta/varbeta or pvalue/MAF mappings"
+  ],
+  "outputs": [
+    "port 0: coloc_abf.RDS (r_rds), untouched complete author result",
+    "port 1: coloc_abf.log (coloc_abf_log), nonempty printed diagnostics"
+  ],
+  "official_meaning": "H0 neither trait, H1 only trait 1, H2 only trait 2, H3 distinct variants, H4 shared variant; SNP.PP.H4 is conditional on H4, not marginal probability or FDR.",
+  "scoped_author_proof": {
+    "original_ABF_wrapper_cases": 43,
+    "whole_author_RDS_identical": 19,
+    "targeted_refusals": 24,
+    "independent_reference": "Fresh SHA-locked CRAN source installed separately; datasets constructed as independent typed R literals; entire returned RDS identical including every intermediate SNP field, priors, row IDs, types and attributes.",
+    "coloc_namespace_function_definitions_match": 62,
+    "susieR_namespace_function_definitions_match": 99,
+    "exact_plan_p12_cases": [
+      1e-05,
+      1e-06,
+      0.0001
+    ]
+  },
+  "interface_proof": {
+    "compiled_migration_tests": 4,
+    "missing_plugin_dependency_skips": 0,
+    "same_original_one_input_two_output_contract": true
+  },
+  "isolated_DAG_proof": {
+    "submissions": 10,
+    "successful_executions": 6,
+    "targeted_refusals": 4,
+    "actual_run_reports": 8,
+    "preexecution_refusals": 2,
+    "topology": "2 nodes / 1 edge, except missing-edge 2/0",
+    "scope": "Sealed generic runner/container-plugin and immutable SDK, not resident daemon or whole current engine",
+    "output_report_content_hash_registration_proved": false,
+    "independent_materialized_output_hashes_verified": true
+  },
+  "shared_family_regression": {
+    "unchanged_coloc_susie_cases": 32,
+    "does_not_add_historical_function_slots": true
+  },
+  "supported_routes": [
+    "quant/quant, quant/cc, cc/cc beta/variance",
+    "pvalue/MAF/N approximation (case fraction for cc)",
+    "author sdY estimation from MAF/N",
+    "author reordered/partial SNP intersection",
+    "literal leading-zero and NA identifiers",
+    "explicit and zero priors, author prior adjustment, null signal and single-SNP H3=0"
+  ],
+  "repairs": [
+    "Restore canonical original ABF alongside signal-aware coloc_susie in unified family",
+    "Preserve literal identifiers and reject ambiguous headers, ragged rows or absent mappings",
+    "Reject non-finite inputs and invalid variances/scales/sample sizes/frequencies/priors",
+    "Refuse existing/aliased outputs and non-finite returned inference",
+    "Correct two defects introduced during repair: Sys.readlink NA guard and R partial $s matching to snp; failed attempts retained"
+  ],
+  "remaining": [
+    "Latest 6.x and full author API (variant-specific prior weights, positions, effect-prior override etc.) are not certified",
+    "Actual regional/gene/variant/build/ancestry/scale/cohort identity and scientific eligibility not qualified",
+    "Single causal variant assumption is not a substitute for multiple-signal coloc_susie or three-trait bridge",
+    "No empirical statistical calibration, full real regional study family or full scale/resource guarantee",
+    "No resident deployment, production image loading/output-hash registration/cache invalidation/global resource or persistent recovery proof",
+    "Original one-TSV interface requires complete per-trait rows; arbitrary differently sized author datasets are not represented with missing-value padding",
+    "Existing-output check is not an atomic multi-output publication or concurrent write lock"
+  ],
+  "full_original_method_domain": "NOT_CERTIFIED",
+  "active_design": "v4.3.2",
+  "design_implementation_status": "NOT_IMPLEMENTATION_LOCKED",
+  "formal_research_release": "NOT_GRANTED",
+  "production_deployed": false,
+  "B_S": "CONDITIONAL_NOT_READY",
+  "GS01": "OPEN",
+  "native_Rust_mrlap": "FORBIDDEN",
+  "G0": false
+}

@@ -1,0 +1,18 @@
+{
+  "canonical_directory": "plugins/coloc",
+  "kind": "coloc_abf",
+  "upstream_repository": "https://github.com/auto-nomics/coloc-plugin.git",
+  "upstream_revision": "39795c4cd91febb7ca0a3ff2bcdf449c75e09042",
+  "original_manifest_sha256": "2acbd016fb665fc9f0519066ab4ef5cb5e0571042188976e68f6428e5a14ddf0",
+  "original_script_path": "scripts/abf.sh",
+  "original_script_sha256": "1cedd7e445aee7e7a4d3f2dbc8afee1f1e37deaa38de0e54ab93bc31810d5d49",
+  "original_interpreter": "Rscript",
+  "current_script_path": "scripts/abf.R",
+  "preserved_contract": "One TSV File input, original flattened parameter names and defaults, full author RDS and log File outputs, digest-pinned coloc 5.2.3 image",
+  "changes": "Restore omitted canonical node; strict literal TSV parsing, numerical and output-safety validation; no replacement of the author coloc.abf calculation",
+  "initial_migration_source_index_rewritten": false,
+  "historical_research_adapter_preserved": true,
+  "production_deployed": false,
+  "scientific_release": "NOT_GRANTED",
+  "G0": false
+}

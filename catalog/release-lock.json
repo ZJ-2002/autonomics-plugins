@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "scope": "SOURCE_AND_INTERFACE_INVENTORY_NOT_METHOD_CERTIFICATION",
   "canonical_families": 27,
-  "canonical_kinds": 56,
+  "canonical_kinds": 57,
   "families": [
     {
       "directory": "plugins/cellchat",
@@ -179,14 +179,15 @@
       "directory": "plugins/coloc",
       "plugin_name": "coloc",
       "kinds": [
-        "coloc_susie"
+        "coloc_susie",
+        "coloc_abf"
       ],
       "image_reference": "ghcr.io/auto-nomics/autonomics/coloc@sha256:a2afe7aa83ae6f1ecb9573317aa022af4db0870771378c7fe90d295d70057322",
       "files": [
         {
           "path": "README.md",
-          "sha256": "084cb571962b926717c0b07085dc3f58e9f295ad3823d6026fdf9fe90ee428ad",
-          "bytes": 2924,
+          "sha256": "64a523e92393cc1d79a8226039b1012ac147ec7aa227a14308e6f8e77266d560",
+          "bytes": 6238,
           "executable": false
         },
         {
@@ -221,8 +222,14 @@
         },
         {
           "path": "manifest.toml",
-          "sha256": "f71baeaa0e6b0aed98977833c0812004661a185661f20528d323f8cb492d5189",
-          "bytes": 4859,
+          "sha256": "0cff9652c8fef3a326088387781934d6ef3c2f530770855e72ec981ae09ac8e6",
+          "bytes": 10028,
+          "executable": false
+        },
+        {
+          "path": "scripts/abf.R",
+          "sha256": "c6ebb371a6966bf231627bec5a93a80d49852cb613d649ae01f44991c004eff3",
+          "bytes": 11225,
           "executable": false
         },
         {
@@ -241,6 +248,18 @@
           "path": "tests/package_source_parity.R",
           "sha256": "d0ff900d9f89616f6f0098386c266c57045a2d8d8c4395191818d38d3a2f2577",
           "bytes": 1232,
+          "executable": false
+        },
+        {
+          "path": "tests/test_abf_boundaries.py",
+          "sha256": "f9e69a5732067422f2535742ec31f2bb8d66f2ed93e3eff8fdbba3e34b9b9c91",
+          "bytes": 2039,
+          "executable": false
+        },
+        {
+          "path": "tests/test_abf_contract.py",
+          "sha256": "5cf4de1c581003110521fea23b23b712e2dd17ae72370de2d24d757e7427ff59",
+          "bytes": 13306,
           "executable": false
         },
         {

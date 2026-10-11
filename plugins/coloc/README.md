@@ -1,4 +1,64 @@
-# Official signal-aware coloc
+# Official coloc: original ABF and signal-aware SuSiE
+
+## Original single-causal-variant ABF
+
+`coloc_abf` restores the original canonical interface alongside
+`coloc_susie`: one combined TSV File, flattened `dataset1_*` and
+`dataset2_*` mappings, and two File outputs (full author RDS and log).
+It calls `coloc::coloc.abf()` from the pinned coloc 5.2.3 stack; no
+numerical approximation or replacement implementation is introduced.
+Original wrapper provenance is recorded in
+`provenance/coloc-abf-original-source-20261011.json`.
+
+Use beta plus **variance of beta**, not SE, or the pvalue/MAF/N
+approximation. The latter requires the case fraction for case-control
+traits and loses information about imputation uncertainty. Quantitative
+traits without a supplied phenotype SD use the author's MAF/N-based
+SD estimation. SNPs are literal identifiers, including leading zeros and
+the string `NA`. Both datasets need complete rows in the single input
+table; differently sized datasets cannot be represented by missing-value
+padding. The author merges common SNPs, including reordered or partial
+overlap. This merge is not an allele/build/ancestry eligibility check.
+
+H0 means neither trait is associated; H1/H2 only trait 1/2; H3 distinct
+causal variants; H4 a shared causal variant. `SNP.PP.H4` is conditional
+on H4, not a marginal SNP probability or FDR. The single-causal-variant
+assumption is not a substitute for signal-aware colocalization and cannot
+establish a three-trait bridge from arbitrary pairwise results.
+
+Default priors are p1=p2=1e-4 and p12=1e-5. The exact v4.3.2 p12 grid
+1e-5/1e-6/1e-4 has synthetic numerical comparisons, not a frozen research
+family or scientific release. Author prior adjustment is retained.
+Duplicate headers, absent mappings, ragged rows, invalid or non-finite
+numbers and aliased/existing outputs are refused. The existence check
+is not an atomic multi-output transaction or a concurrent write lock.
+
+`evidence/canonical-coloc-abf-20261011.json` records 43 wrapper cases
+(19 complete independently constructed author-result comparisons and
+24 targeted refusals), four compiled original-interface tests without
+dependency skips, and ten isolated native DAG submissions (six successful
+executions, two execution failures and two preexecution refusals).
+The shared `coloc_susie` implementation also retains its 32 passing
+regression cases. These checks do not certify latest coloc 6.x, the full
+author API, statistical calibration, real regions, resource scale,
+resident deployment, cache invalidation, persistent recovery or G0.
+
+Reproduce ABF tests with a new evidence directory and the independently
+installed author library; absent dependencies fail rather than skip:
+
+    ABF_TEST_EVIDENCE=/fresh/abf-cases \
+    ABF_REFERENCE_LIBRARY=/proof/official-library \
+    python -m unittest discover -s plugins/coloc/tests -p 'test_abf_contract.py' -v
+
+    ABF_TEST_EVIDENCE=/fresh/abf-boundaries \
+    ABF_REFERENCE_LIBRARY=/proof/official-library \
+    python -m unittest discover -s plugins/coloc/tests -p 'test_abf_boundaries.py' -v
+
+Author documentation: https://chr1swallace.github.io/coloc/articles/a02_data.html
+and https://chr1swallace.github.io/coloc/reference/coloc.abf.html.
+Their current-version API is not a certification of this fixed 5.2.3 wrapper.
+
+## Signal-aware SuSiE
 
 `coloc_susie` is a general-purpose four-input node, not a cachexia-only
 method. It calls author `coloc::runsusie()` and `coloc::coloc.susie()`.
@@ -48,4 +108,4 @@ not a dependency skip:
     COLOC_TEST_EVIDENCE=/fresh/cases \
     COLOC_REFERENCE_LIBRARY=/proof/official-library \
     COLOC_AUTHOR_FIXTURE=/proof/author-fixtures \
-    python -m unittest discover -s plugins/coloc/tests -v
+    python -m unittest discover -s plugins/coloc/tests -p 'test_contract.py' -v

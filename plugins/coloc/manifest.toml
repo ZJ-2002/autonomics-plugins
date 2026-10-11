@@ -90,3 +90,89 @@ COLOC_P12 = "{{ p12 }}"
 COLOC_MAX_ITER = "{{ max_iter }}"
 COLOC_SEED = "{{ seed }}"
 COLOC_ALIGNMENT_EVIDENCE = "{{ alignment_evidence }}"
+
+[[nodes]]
+
+kind = "coloc_abf"
+desc = "Runs official coloc.abf in an ephemeral OCI container."
+doc = """
+Runs the official R coloc package (Wallace, CRAN 5.2.3). The input is
+one tab-separated File containing two GWAS summary-statistic datasets
+merged on SNP. Each dataset is described by a flattened column mapping
+(dataset1_* / dataset2_*): a required trait type (quant or cc) and SNP
+column, then either beta + varbeta columns (preferred) or a pvalues
+column (which additionally requires maf, n, and s for cc traits). The
+scalar fields n, s and sd_y are optional per-trait constants. Priors
+p1, p2 and p12 keep the coloc.abf defaults. The node emits the official
+result list as an RDS artifact plus a printed log; it executes the
+official package verbatim and does not reimplement any coloc numerical
+logic.
+TSV identifiers are preserved as literal strings (including leading zeros
+and the literal NA). Duplicate headers, missing mapped fields, malformed
+rows, non-finite numbers, non-positive variance/SD/N and invalid frequencies
+are rejected. The untouched author merge retains its common-SNP semantics;
+the result reports the common-SNP count. Existing outputs are refused,
+not overwritten. This is an early existence check, not transactional recovery.
+Single-causal-variant evidence does not replace signal-aware coloc_susie.
+Real regional identity and research eligibility require independent review.
+"""
+timeout_secs = 600
+artifact_prefix = "/artifacts/coloc_abf"
+
+[nodes.ports]
+inputs = [{ type = "file" }]
+outputs = [
+  { path = "coloc_abf.RDS", format = "r_rds" },
+  { path = "coloc_abf.log", format = "coloc_abf_log" },
+]
+
+[nodes.params]
+dataset1_type = { type = "string", doc = "Trait type for dataset 1: quant (quantitative) or cc (case-control)" }
+dataset1_snp = { type = "string", doc = "Column name for SNP identifiers of dataset 1" }
+dataset1_beta = { type = "string", optional = true, doc = "Column name for regression coefficients of dataset 1 (preferred path)" }
+dataset1_varbeta = { type = "string", optional = true, doc = "Column name for the variance of beta of dataset 1" }
+dataset1_pvalues = { type = "string", optional = true, doc = "Column name for p-values of dataset 1 (alternative to beta/varbeta)" }
+dataset1_maf = { type = "string", optional = true, doc = "Column name for minor allele frequency of dataset 1 (required with pvalues)" }
+dataset1_n = { type = "number", optional = true, doc = "Sample size of dataset 1 (scalar; required when using pvalues)" }
+dataset1_s = { type = "number", optional = true, doc = "Proportion of cases of dataset 1 (required for cc + pvalues)" }
+dataset1_sd_y = { type = "number", optional = true, doc = "Population SD of the trait of dataset 1 (quantitative, optional)" }
+dataset2_type = { type = "string", doc = "Trait type for dataset 2: quant (quantitative) or cc (case-control)" }
+dataset2_snp = { type = "string", doc = "Column name for SNP identifiers of dataset 2" }
+dataset2_beta = { type = "string", optional = true, doc = "Column name for regression coefficients of dataset 2 (preferred path)" }
+dataset2_varbeta = { type = "string", optional = true, doc = "Column name for the variance of beta of dataset 2" }
+dataset2_pvalues = { type = "string", optional = true, doc = "Column name for p-values of dataset 2 (alternative to beta/varbeta)" }
+dataset2_maf = { type = "string", optional = true, doc = "Column name for minor allele frequency of dataset 2 (required with pvalues)" }
+dataset2_n = { type = "number", optional = true, doc = "Sample size of dataset 2 (scalar; required when using pvalues)" }
+dataset2_s = { type = "number", optional = true, doc = "Proportion of cases of dataset 2 (required for cc + pvalues)" }
+dataset2_sd_y = { type = "number", optional = true, doc = "Population SD of the trait of dataset 2 (quantitative, optional)" }
+p1 = { type = "number", default = 0.0001, min = 0.0, max = 1.0, doc = "Prior probability that a SNP is associated with trait 1" }
+p2 = { type = "number", default = 0.0001, min = 0.0, max = 1.0, doc = "Prior probability that a SNP is associated with trait 2" }
+p12 = { type = "number", default = 0.00001, min = 0.0, max = 1.0, doc = "Prior probability that a SNP is associated with both traits" }
+
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/abf.R"
+
+[nodes.command.env]
+COLOC_DATASET1_TYPE = "{{ dataset1_type }}"
+COLOC_DATASET1_SNP = "{{ dataset1_snp }}"
+COLOC_DATASET1_BETA = "{{ dataset1_beta }}"
+COLOC_DATASET1_VARBETA = "{{ dataset1_varbeta }}"
+COLOC_DATASET1_PVALUES = "{{ dataset1_pvalues }}"
+COLOC_DATASET1_MAF = "{{ dataset1_maf }}"
+COLOC_DATASET1_N = "{{ dataset1_n }}"
+COLOC_DATASET1_S = "{{ dataset1_s }}"
+COLOC_DATASET1_SD_Y = "{{ dataset1_sd_y }}"
+COLOC_DATASET2_TYPE = "{{ dataset2_type }}"
+COLOC_DATASET2_SNP = "{{ dataset2_snp }}"
+COLOC_DATASET2_BETA = "{{ dataset2_beta }}"
+COLOC_DATASET2_VARBETA = "{{ dataset2_varbeta }}"
+COLOC_DATASET2_PVALUES = "{{ dataset2_pvalues }}"
+COLOC_DATASET2_MAF = "{{ dataset2_maf }}"
+COLOC_DATASET2_N = "{{ dataset2_n }}"
+COLOC_DATASET2_S = "{{ dataset2_s }}"
+COLOC_DATASET2_SD_Y = "{{ dataset2_sd_y }}"
+COLOC_P1 = "{{ p1 }}"
+COLOC_P2 = "{{ p2 }}"
+COLOC_P12 = "{{ p12 }}"
+

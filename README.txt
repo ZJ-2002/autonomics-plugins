@@ -4,7 +4,7 @@ Engine: https://github.com/ZJ-2002/autonomics
 Plugins: https://github.com/ZJ-2002/autonomics-plugins
 
 plugins/ contains 27 independently installable plugin families, including
-the general-purpose signal-aware coloc family. Its method evidence is
+the general-purpose original ABF and signal-aware coloc family. Its method evidence is
 scoped and does not grant formal research admission or deployment.
 research-adapters/ contains 49 opt-in research/reference adapters.
 The added cis-mr-declared adapter uses a measured local-only image and remains
@@ -82,7 +82,7 @@ reproduce each complete program in memory, without modifying any source.
 provenance/frozen-genetic-source-20261011.json records this new transport
 batch; the initial migration source-index remains historical and unchanged.
 
-Current canonical families remain 26/55 kinds. Research adapters are opt-in
+Current canonical families contain 27/57 kinds. Research adapters are opt-in
 (58 families after this import). The generic cachexia-mvmr adapter remains
 available under its original interface; the frozen two-exposure adapter has
 a different explicit node kind. Both need actual scientific/source admission.
