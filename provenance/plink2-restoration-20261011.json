@@ -1,0 +1,43 @@
+{
+  "canonical_directory": "plugins/plink2",
+  "kind": "plink2_clump",
+  "upstream_repository": "https://github.com/auto-nomics/plink2-plugin.git",
+  "upstream_revision": "a72fe6f6839a8c85137c69499d87a72b58bf0f61",
+  "unmodified_original_files": [
+    {
+      "path": "Dockerfile",
+      "bytes": 3162,
+      "sha256": "85553c4e60ce7f1343de7a83d0a7331d1ce44aa05e39dc94a84112df8135986f"
+    },
+    {
+      "path": "README.md",
+      "bytes": 2902,
+      "sha256": "d6dc8757ef7f340dd64fb5315d32a5b4295f9caca5c2011bede808db11459b5d"
+    },
+    {
+      "path": "fixtures/chr22.sumstats.tsv",
+      "bytes": 177,
+      "sha256": "2ccbb39d9c665e3f6e657effdded669fd5e8fe76a74353e671ea8cce604972b1"
+    },
+    {
+      "path": "manifest.toml",
+      "bytes": 3311,
+      "sha256": "2a7ba66937dda17d78f39ed5f36219adaba82c9a74ceacd3327f3df278e6f91e"
+    },
+    {
+      "path": "scripts/clump.sh",
+      "bytes": 1771,
+      "sha256": "219f3787c47c010168596d2b82147c20f06281846f4dbd063d0310f6516708d1"
+    },
+    {
+      "path": "test_plink2_clump.sh",
+      "bytes": 5094,
+      "sha256": "9518934ab9b0bdb51830da066d2b9e270aa88dc27b766334a28dfe572d16fca0"
+    }
+  ],
+  "preserved": "Original 1 File input/3 File outputs, kind, image, panel binding and method defaults",
+  "intentional_changes": "Rectangular single-header output, strict input/output/parameter guards, explicit CSV/gzip handling, unique staging, bounded binary resources, safe mandatory test CLI, corrected source label recipe",
+  "historical_initial_source_index_rewritten": false,
+  "production_deployed": false,
+  "G0": false
+}

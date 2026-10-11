@@ -1,0 +1,74 @@
+schema_version = 1
+plugin_name = "plink2"
+
+[image]
+reference = "ghcr.io/auto-nomics/autonomics/plink2@sha256:998315bf1c34c1c7ef276e93ca6c043dd1982c027c7264325505a9a0adc6d1d2"
+tag = "2.0.0-a.6.26"
+upstream = "official PLINK 2.0 alpha (plink2) v2.0.0-a.6.26 @ chrchang/plink-ng tag v2.0.0-a.6.26 (commit 504a7ee92ab454b44255faa259be8f7b7758d32f), asset plink2_linux_avx2.zip sha256:f578a450af382d7dd6665aecf0ca1d280971c2b3d5bb5556efbf9266c4c8da0f"
+license = "GPL-3.0-only"
+
+[[panels]]
+binding = "plink_ref"
+mount = "/panels/plink_ref"
+bundle = "wjixiang/catalog-plink-ref-1000g-eur-binary"
+
+[[nodes]]
+kind = "plink2_clump"
+desc = "Runs official PLINK2 --clump against 1000G EUR PLINK binary reference."
+doc = """
+Runs the official PLINK2 v2.0.0-a.6.26 binary in an ephemeral Podman
+container against the offline 1000G EUR Phase3 PLINK reference panel
+catalog package `catalog-plink-ref-1000g-eur-binary` (BED/BIM/FAM
+triplets per autosome, mounted at /panels/plink_ref). Input is one
+tab-separated sumstats File carrying at least an SNP column and a P
+column; the wrapper iterates over autosomes 1..=22 by default, or the
+single chromosome given in `chr`. The per-chromosome PLINK2 log is
+accumulated into one output log, the official `.clumps` tables are
+combined into one rectangular table with one SOURCE_CHR-prefixed header;
+empty results retain that header. Every chromosome processed is recorded
+as a chr/value marker row in the chromosomes output. CSV inputs are
+normalized explicitly; literal IDs and numeric P tokens are preserved,
+while empty ancillary cells become NA. Existing outputs are refused and
+analytic tables are written only after all chromosome runs succeed.
+Official haplotype-based r2, founder handling and inclusive P threshold
+semantics are retained. This does not enforce a study-specific strict
+P cutoff, input eligibility or scientific family ledger.
+This node is the offline-LD counterpart to the OpenGWAS `/ld/clump`
+endpoint used by the native `two_sample_mr` fallback node.
+"""
+timeout_secs = 1800
+artifact_prefix = "/artifacts/plink2_clump"
+
+[nodes.resources]
+cpus = 2.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "missing"
+
+[nodes.ports]
+inputs = [{ type = "file" }]
+outputs = [
+  { path = "plink2_clump.log", format = "plink2_clump_log" },
+  { path = "plink2_clump.clumps", format = "plink2_clumps" },
+  { path = "plink2_clump.chromosomes.tsv", format = "plink2_chromosomes" },
+]
+
+[nodes.params]
+clump_p1 = { type = "number", default = 5e-8, min = 0.0, max = 1.0, doc = "P-value threshold for index SNPs (PLINK2 --clump-p1); defaults to 5e-8, genome-wide significant" }
+clump_p2 = { type = "number", default = 1e-6, min = 0.0, max = 1.0, doc = "P-value threshold for variants listed in the SP2 column, not an independent instrument-selection threshold; must be >= clump_p1 under this node contract" }
+clump_r2 = { type = "number", default = 0.001, min = 0.0, exclusive_max = 0.9999999999999432, doc = "Haplotype-based LD r-squared threshold, nonnegative and below 1-2^-44 under the fixed official binary; not unphased genotype r2 or a genome-wide pairwise independence guarantee" }
+clump_kb = { type = "int", default = 10000, exclusive_min = 0.0, doc = "Maximum distance in kb for LD clumping (PLINK2 --clump-kb)" }
+chr = { type = "int", optional = true, min = 1.0, max = 22.0, doc = "Optional 1-based chromosome to clump (1..=22); omit to iterate over all autosomes" }
+input_format = { type = "string", default = "twosamplemr", doc = "Input report layout selecting the PLINK2 column selectors: `twosamplemr` (TwoSampleMR/OpenGWAS tab file with SNP and P columns) or `plink_assoc` (PLINK1-style CHROM/POS/SNP/P report) both map to --clump-id-field SNP --clump-p-field P; `ieu_open_gwas` (OpenGWAS ieu-b variant,pval CSV) maps to --clump-id-field variant --clump-p-field pval" }
+
+[nodes.command]
+interpreter = "sh"
+script_file = "scripts/clump.sh"
+
+[nodes.command.env]
+PLINK2_CLUMP_P1 = "{{ clump_p1 }}"
+PLINK2_CLUMP_P2 = "{{ clump_p2 }}"
+PLINK2_CLUMP_R2 = "{{ clump_r2 }}"
+PLINK2_CLUMP_KB = "{{ clump_kb }}"
+PLINK2_CLUMP_CHR = "{{ chr }}"
+PLINK2_CLUMP_INPUT_FORMAT = "{{ input_format }}"

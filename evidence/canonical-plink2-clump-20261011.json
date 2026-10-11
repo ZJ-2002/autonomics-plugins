@@ -1,0 +1,104 @@
+{
+  "kind": "plink2_clump",
+  "status": "PROVEN_SCOPED",
+  "author_version": "2.0.0-a.6.26",
+  "method": "Unmodified official PLINK2 --clump binary, default phased haplotype LD/founders, greedy inclusive-P index selection",
+  "image_reference": "ghcr.io/auto-nomics/autonomics/plink2@sha256:998315bf1c34c1c7ef276e93ca6c043dd1982c027c7264325505a9a0adc6d1d2",
+  "manifest_sha256": "2978b286ca3c5c654f411752c836147ffb7b793fbc8e067905145517a5bed8fb",
+  "script_sha256": "99a9c9abbc0136e5e23511d91a9115afac8d05ff2d04a154393ef810b9b0ece4",
+  "author_binary_identity": {
+    "url": "https://github.com/chrchang/plink-ng/releases/download/v2.0.0-a.6.26/plink2_linux_avx2.zip",
+    "release_tag_revision": "504a7ee92ab454b44255faa259be8f7b7758d32f",
+    "archive_sha256": "f578a450af382d7dd6665aecf0ca1d280971c2b3d5bb5556efbf9266c4c8da0f",
+    "binary_sha256": "6a783e2d5e331f5b1eb7dea9f5331490202053cb3ce217ce227a36171bdb2169",
+    "version_exit": 0,
+    "version": "PLINK v2.0.0-a.6.26LM AVX2 Intel (26 Oct 2025)",
+    "entire_installed_and_fresh_binary_bytes_match": true,
+    "G0": false
+  },
+  "official_method_proof": {
+    "author_cases": 26,
+    "raw_artifact_presence_and_byte_checks": 136,
+    "native_submissions": 15,
+    "native_successes": 8,
+    "execution_failures": 3,
+    "preexecution_refusals": 4,
+    "G0": false
+  },
+  "inputs": [
+    "port 0 rectangular SNP/P or variant/pval report File"
+  ],
+  "outputs": [
+    "port 0 diagnostics log",
+    "port 1 single-header SOURCE_CHR + official clump table",
+    "port 2 chr/value marker stream"
+  ],
+  "interface_change": "Port names unchanged; intentional single-header rectangular table and valid empty-table contract repair",
+  "engineering_proof": {
+    "actual_image_boundary_tests": 33,
+    "compiled_contract_tests": 4,
+    "mandatory_catalog_tests": 48,
+    "same_33_tests_through_published_CLI": true,
+    "skipped_dependencies_in_this_packet": 0
+  },
+  "isolated_DAG_proof": {
+    "submissions": 15,
+    "successes": 8,
+    "execution_failures": 3,
+    "preexecution_refusals": 4,
+    "reports": 11,
+    "topology": "2 nodes/1 edge",
+    "real_panel_case": "66 original payloads; all22; synthetic association P values",
+    "runner_scope": "Previously sealed native container component and immutable SDK, not current whole engine or resident daemon"
+  },
+  "official_parameter_source": {
+    "revision": "504a7ee92ab454b44255faa259be8f7b7758d32f",
+    "epsilon": "2^-44",
+    "exclusive_r2_maximum": 0.9999999999999432,
+    "definition_file": "include/plink2_string.h",
+    "definition_lines": [
+      74,
+      75
+    ],
+    "definition_sha256": "5b811d78cad48e60d3daf2c3949d3b430477afe694725c108eec28e625654a86",
+    "parameter_parser_file": "plink2.cc",
+    "parameter_parser_sha256": "a2a04f23636653bc0caa02f8e34d66c10905ca717010b98ee50b381d0de2a22f",
+    "parameter_parser_line": 4842,
+    "source_archive_sha256": "2cca35fb4e5ecce6fea1e3d1b8ebef9c34cab344de5a59486581047acc4c93c8"
+  },
+  "plan_contract": {
+    "archive": "/home/zj-normal/Downloads/BMC_v4.3.2_FULL_FIXED.zip",
+    "archive_sha256": "4c5af762ab1e9768a24b9446827ea367176a80407862cfc10ca09a95f44f1151",
+    "member": "BMC432/00_PLAN/BONE_MARROW_CACHEXIA_MASTER_PLAN_v4.3.2_ZH_FULL.md",
+    "line": 862,
+    "method_text": "复杂表型工具：P<5×10⁻⁸，祖源匹配 LD，r²<0.001、10 Mb 窗口；平局按 P、染色体、位置和变异 ID 决定。常规多工具主估计使用至少 3 个独立有效变异；1–2 个工具不从账本删除，作为有限工具估计报告，不能强行提供不适用的多效性诊断。",
+    "implementation_locked": false,
+    "strict_P_contract": "Generic original retains official inclusive P<=p1; strict P< must be independently applied upstream",
+    "tie_counterexample": "Equal P and position: fixture panel order chooses rs1003, while plan ASCII ID tie rule would choose rs1002. No silent reinterpretation of the official generic method.",
+    "study_specific_adapter": "Separate research-adapters/cachexia-plink has explicit preprocessing/tie/selected-LD contract; not substituted as original-node proof and not newly requalified here",
+    "ancestry_build_IV_and_family_eligibility": "NOT_GRANTED",
+    "G0": false
+  },
+  "failed_attempts_retained": [
+    "Original baseline:25 tests,24 assertion failures, not24 distinct defects",
+    "First official matrix stopped at author-invalid r2=1",
+    "Second23-case matrix valid numerics but harness suffix shadowed; superseded by final26-case matrix",
+    "First parameter probes used nonexistent relative input; not parameter refusal evidence; corrected probes retained"
+  ],
+  "limitations": [
+    "Not every author flag, version, LD representation, platform or reference",
+    "Native tie order and inclusive P do not implement the frozen study strict/tie contract",
+    "No independently granted actual ancestry/build/cohort/IV/family or scientific method qualification",
+    "No global resources, persistent recovery, clean remote installation, resident deployment or automatic output content-hash guarantee",
+    "Old immutable image source label wrong; new Dockerfile rebuild not certified",
+    "Raw missing-ID/clump artifacts retained in workspaces, not additional declared ports",
+    "Analytical publication is not a multi-file atomic transaction or concurrent-writer lock",
+    "Default Cargo migration tests can skip absent plugin; only explicit mandatory execution in this packet is proved"
+  ],
+  "production_deployed": false,
+  "scientific_release": "NOT_GRANTED",
+  "B_S": "CONDITIONAL_NOT_READY",
+  "GS01": "OPEN",
+  "native_Rust_mrlap": "FORBIDDEN",
+  "G0": false
+}

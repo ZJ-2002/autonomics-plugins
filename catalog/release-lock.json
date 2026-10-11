@@ -1,8 +1,8 @@
 {
   "schema_version": "1.0",
   "scope": "SOURCE_AND_INTERFACE_INVENTORY_NOT_METHOD_CERTIFICATION",
-  "canonical_families": 27,
-  "canonical_kinds": 57,
+  "canonical_families": 28,
+  "canonical_kinds": 58,
   "families": [
     {
       "directory": "plugins/cellchat",
@@ -13879,6 +13879,61 @@
           "sha256": "bfb41a1afd610f3f81b7e2412a8859dd4efbce44fc6c5bc378193659da908b2e",
           "bytes": 10022,
           "executable": true
+        }
+      ],
+      "source_inventory_only": true,
+      "scientific_certified": false,
+      "auto_enable": false
+    },
+    {
+      "directory": "plugins/plink2",
+      "plugin_name": "plink2",
+      "kinds": [
+        "plink2_clump"
+      ],
+      "image_reference": "ghcr.io/auto-nomics/autonomics/plink2@sha256:998315bf1c34c1c7ef276e93ca6c043dd1982c027c7264325505a9a0adc6d1d2",
+      "files": [
+        {
+          "path": "Dockerfile",
+          "sha256": "99f9ae705823c53f45479df3320899b688a17f4cd4f90f6fd7e3a362f0f34b36",
+          "bytes": 3226,
+          "executable": false
+        },
+        {
+          "path": "README.md",
+          "sha256": "0491d2acbf95c04538670614d97463e3d2e9cf1d7bb4119c085d1bb4e7abe595",
+          "bytes": 5544,
+          "executable": false
+        },
+        {
+          "path": "fixtures/chr22.sumstats.tsv",
+          "sha256": "2ccbb39d9c665e3f6e657effdded669fd5e8fe76a74353e671ea8cce604972b1",
+          "bytes": 177,
+          "executable": false
+        },
+        {
+          "path": "manifest.toml",
+          "sha256": "2978b286ca3c5c654f411752c836147ffb7b793fbc8e067905145517a5bed8fb",
+          "bytes": 4129,
+          "executable": false
+        },
+        {
+          "path": "scripts/clump.sh",
+          "sha256": "99a9c9abbc0136e5e23511d91a9115afac8d05ff2d04a154393ef810b9b0ece4",
+          "bytes": 8034,
+          "executable": false
+        },
+        {
+          "path": "test_plink2_clump.sh",
+          "sha256": "e2ba0cd59cd8e9e8e7d2bf28ded8ba598bd075697ff18eebbf7c719a606f2184",
+          "bytes": 588,
+          "executable": true
+        },
+        {
+          "path": "tests/test_boundaries.py",
+          "sha256": "fcb8b5d0097b8bce44947817201dbe0691cc6494ac6eb72fcbfa8ea1e26366da",
+          "bytes": 9661,
+          "executable": false
         }
       ],
       "source_inventory_only": true,
