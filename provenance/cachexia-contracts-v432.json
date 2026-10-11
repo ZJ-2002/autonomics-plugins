@@ -1,0 +1,25 @@
+{
+  "scope": "DERIVED_RULE_VERSION_ADAPTER_NOT_SCIENTIFIC_APPROVAL",
+  "parent_repository": "https://github.com/ZJ-2002/autonomics-plugins",
+  "parent_commit": "d5675a3b39913a4fdf045919c9d66811484d35c6",
+  "parent_directory": "research-adapters/cachexia-contracts",
+  "parent_current_files": {
+    "manifest.toml": "d8e3204ac3ab65336b781e13be26a5f8275ba1e476fbedf7b0c994736a261613",
+    "scripts/guards.py": "f12dfbfc7ca168903f16efa1410399ea982521534a243dbc96dc365de79113ca"
+  },
+  "derived_directory": "research-adapters/cachexia-contracts-v432",
+  "derived_files": {
+    "manifest.toml": "a3a6a61271c4d832dd9d749fa5b65724bd98f525acc27f40eb35097ded58e8f2",
+    "scripts/guards.py": "9063cc1640ebcefd7e2e80af6281d55740668cca651d22921dcb5edb15f01dc9",
+    "README.txt": "40cb52e08d4588256bdc8682f78c9bd805508200033648d5d093adff4bf949a7"
+  },
+  "original_import_provenance_preserved": true,
+  "transformations": [
+    "Add explicit 4.3.2 RESEARCH_CONTRACT version role; retains method code",
+    "Select 4.3.2 in four governed nodes; unchanged image/resources/kinds",
+    "Update version declaration documentation"
+  ],
+  "auto_enabled": false,
+  "scientific_certified": false,
+  "formal_authorization": false
+}

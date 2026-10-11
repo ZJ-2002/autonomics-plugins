@@ -1,0 +1,122 @@
+schema_version = 1
+plugin_name = "cachexia-contracts-v432"
+
+[image]
+reference = "ghcr.io/zj-2002/biotools-py@sha256:7ad6aeafa87672699d28b61b6bed12fc81fcdbfc43222a0abf17e2d56fb806f5"
+tag = "v1"
+upstream = "Python standard-library study-contract adapters; not official statistical algorithms"
+license = "MIT"
+
+[[nodes]]
+kind = "cachexia_v41_complete_family"
+desc = "Retain all frozen IDs and raw missingness; separate BH/BY accounting."
+doc = "Ports: governed execution rules JSON (rules version must equal the CACHEXIA_ACTIVE_PROTOCOL governance entry; registered: 4.0/4.2.1/4.3.2 research contract, 4.1 engineering reference), request JSON (family,id_column,results), frozen universe TSV. Results carry test_id/raw_p/status. IDs must belong to the registered family; missing tasks become NOT_RUN/raw P=NA, adjustment P=1. NOT_RUN/FAILED rows must not carry a P and keep the family INCOMPLETE (unqualified for completion or disclosure); NOT_ESTIMABLE is a completed scientific outcome. Family size must equal active planned_counts or new_supportive_planned_counts. Outputs full result TSV, config/denominator audit JSON and log. BH/BY are both shown; path primary remains BY. This does not freeze a template or grant scientific release."
+timeout_secs = 120
+artifact_prefix = "/artifacts/cachexia_v41_complete_family"
+[nodes.resources]
+network = "isolated"
+read_only_rootfs = true
+pull_policy = "never"
+pids_limit = 128
+cpus = 1.0
+memory = "1Gi"
+[nodes.ports]
+inputs = [{ type = "file" }, { type = "file" }, { type = "file" }]
+outputs = [{ path = "family.tsv", format = "tsv" }, { path = "audit.json", format = "json" }, { path = "guard.log", format = "text" }]
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/guards.py"
+[nodes.command.env]
+CACHEXIA_OPERATION = "family"
+CACHEXIA_ACTIVE_PROTOCOL = "4.3.2"
+
+[[nodes]]
+kind = "cachexia_v41_palindrome_filter"
+desc = "Apply additional plan EAF rules after official harmonization, never substitute harmonization."
+doc = "Ports: governed execution rules JSON (rules version must equal the CACHEXIA_ACTIVE_PROTOCOL governance entry), official harmonized snake_case TSV. Requires aligned effect/other alleles, both EAFs and official mr_keep. Keeps the closed 0.42-0.58 exclusion and decimal EAF difference <=0.10. Never rescues official excluded rows. Outputs eligible TSV, full per-variant audit JSON and log. Nonpalindromes still require the other frozen instrument QC; an empty eligible table is not an estimable MR."
+timeout_secs = 120
+artifact_prefix = "/artifacts/cachexia_v41_palindrome_filter"
+[nodes.resources]
+network = "isolated"
+read_only_rootfs = true
+pull_policy = "never"
+pids_limit = 128
+cpus = 1.0
+memory = "1Gi"
+[nodes.ports]
+inputs = [{ type = "file" }, { type = "file" }]
+outputs = [{ path = "eligible.tsv", format = "tsv" }, { path = "audit.json", format = "json" }, { path = "guard.log", format = "text" }]
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/guards.py"
+[nodes.command.env]
+CACHEXIA_OPERATION = "palindrome"
+CACHEXIA_ACTIVE_PROTOCOL = "4.3.2"
+
+[[nodes]]
+kind = "cachexia_v41_signature_eligibility"
+desc = "Retain original signed membership denominator and enforce frozen coverage."
+doc = "Ports: active B-SPEC config JSON, frozen mapped membership request JSON (members: original_id,direction,matrix_id), gene-by-sample expression TSV. Does not perform mapping. Original duplicates must agree; many-to-one mappings fail. Requires total coverage and nonempty-arm coverage >= config thresholds, measurable total >= members_min. Missing genes never become zero expression. Outputs eligible gene/direction TSV, complete missingness audit JSON and log; insufficient coverage fails the node with audit files retained. Input length normalization/background/donor qualification remain upstream."
+timeout_secs = 120
+artifact_prefix = "/artifacts/cachexia_v41_signature_eligibility"
+[nodes.resources]
+network = "isolated"
+read_only_rootfs = true
+pull_policy = "never"
+pids_limit = 128
+cpus = 1.0
+memory = "1Gi"
+[nodes.ports]
+inputs = [{ type = "file" }, { type = "file" }, { type = "file" }]
+outputs = [{ path = "members.tsv", format = "tsv" }, { path = "audit.json", format = "json" }, { path = "guard.log", format = "text" }]
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/guards.py"
+[nodes.command.env]
+CACHEXIA_OPERATION = "signature"
+
+[[nodes]]
+kind = "cachexia_v41_primary_p"
+desc = "Select the prespecified primary P without MRlap failure fallback or significance selection."
+doc = "Inputs: governed execution rules JSON (rules version must equal the CACHEXIA_ACTIVE_PROTOCOL governance entry), JSON decisions/results, full edge universe TSV. Decisions require edge_id, status, overlap_class and audited boolean usual_eligible/overlap_evidence/mrlap_eligible. Results carry edge_id/execution_status/ivw_p/mrlap_p with mandatory execution_status COMPLETED/FAILED/NOT_RUN: FAILED/NOT_RUN records must not carry a P, and a FROZEN edge without a result record stays NOT_RUN/PRIMARY_RESULT_RECORD_MISSING (execution fact), distinct from PRIMARY_RESULT_MISSING (completed run whose primary P is absent). Unfrozen decisions remain NOT_RUN with raw NA. FROZEN declarations are attestations only: upstream must verify their evidence; this node never grants G0. O1 missing/failed MRlap cannot fall back to IVW. Outputs full identity-preserving edge ledger, audit and log."
+timeout_secs = 120
+artifact_prefix = "/artifacts/cachexia_v41_primary_p"
+[nodes.resources]
+network = "isolated"
+read_only_rootfs = true
+pull_policy = "never"
+pids_limit = 128
+cpus = 1.0
+memory = "1Gi"
+[nodes.ports]
+inputs = [{ type = "file" }, { type = "file" }, { type = "file" }]
+outputs = [{ path = "primary.tsv", format = "tsv" }, { path = "audit.json", format = "json" }, { path = "guard.log", format = "text" }]
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/guards.py"
+[nodes.command.env]
+CACHEXIA_OPERATION = "primary"
+CACHEXIA_ACTIVE_PROTOCOL = "4.3.2"
+
+[[nodes]]
+kind = "cachexia_v41_path_ledger"
+desc = "Join registered construct-matched primary edges, strictly propagate missingness and retain full BY path families."
+doc = "Inputs: governed execution rules JSON (rules version must equal the CACHEXIA_ACTIVE_PROTOCOL governance entry), primary edge TSV, full frozen path universe TSV. Component edge IDs and X/M/Y identities must match. Each path uses max(primary_XM,primary_MY), never XY or a product P. Missing components remain raw NA and adjustment 1; component NOT_RUN/FAILED states propagate verbatim to the path (component_statuses) and keep the family INCOMPLETE, while NOT_ESTIMABLE is a completed scientific outcome. Outputs all 36 primary and 252 expanded paths with separate BY, audit and log; no formal mediation or biological release."
+timeout_secs = 120
+artifact_prefix = "/artifacts/cachexia_v41_path_ledger"
+[nodes.resources]
+network = "isolated"
+read_only_rootfs = true
+pull_policy = "never"
+pids_limit = 128
+cpus = 1.0
+memory = "1Gi"
+[nodes.ports]
+inputs = [{ type = "file" }, { type = "file" }, { type = "file" }]
+outputs = [{ path = "paths.tsv", format = "tsv" }, { path = "audit.json", format = "json" }, { path = "guard.log", format = "text" }]
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/guards.py"
+[nodes.command.env]
+CACHEXIA_OPERATION = "paths"
+CACHEXIA_ACTIVE_PROTOCOL = "4.3.2"

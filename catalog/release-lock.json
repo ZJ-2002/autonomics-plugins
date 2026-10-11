@@ -14611,6 +14611,41 @@
       "auto_enable": false
     },
     {
+      "directory": "research-adapters/cachexia-contracts-v432",
+      "plugin_name": "cachexia-contracts-v432",
+      "kinds": [
+        "cachexia_v41_complete_family",
+        "cachexia_v41_palindrome_filter",
+        "cachexia_v41_signature_eligibility",
+        "cachexia_v41_primary_p",
+        "cachexia_v41_path_ledger"
+      ],
+      "image_reference": "ghcr.io/zj-2002/biotools-py@sha256:7ad6aeafa87672699d28b61b6bed12fc81fcdbfc43222a0abf17e2d56fb806f5",
+      "files": [
+        {
+          "path": "README.txt",
+          "sha256": "40cb52e08d4588256bdc8682f78c9bd805508200033648d5d093adff4bf949a7",
+          "bytes": 1552,
+          "executable": false
+        },
+        {
+          "path": "manifest.toml",
+          "sha256": "a3a6a61271c4d832dd9d749fa5b65724bd98f525acc27f40eb35097ded58e8f2",
+          "bytes": 7336,
+          "executable": false
+        },
+        {
+          "path": "scripts/guards.py",
+          "sha256": "9063cc1640ebcefd7e2e80af6281d55740668cca651d22921dcb5edb15f01dc9",
+          "bytes": 24619,
+          "executable": false
+        }
+      ],
+      "source_inventory_only": true,
+      "scientific_certified": false,
+      "auto_enable": false
+    },
+    {
       "directory": "research-adapters/cachexia-deseq2",
       "plugin_name": "cachexia-deseq2",
       "kinds": [

@@ -22,6 +22,13 @@
     "tests.test_cis_adapter_assembly.CisAssemblyTests.test_component_mutation_refuses_before_any_generated_write",
     "tests.test_cis_adapter_assembly.CisAssemblyTests.test_missing_or_aliased_component_does_not_create_partial_program",
     "tests.test_cis_adapter_assembly.CisAssemblyTests.test_original_qualified_components_and_generated_entry_agree",
-    "tests.test_cis_adapter_assembly.CisAssemblyTests.test_runnable_script_cannot_diverge_from_unmodified_component_lock"
+    "tests.test_cis_adapter_assembly.CisAssemblyTests.test_runnable_script_cannot_diverge_from_unmodified_component_lock",
+    "tests.test_cachexia_v432_adapter.LatestContractTests.test_actual_cli_refuses_denominator_drift_missing_or_stale_protocol",
+    "tests.test_cachexia_v432_adapter.LatestContractTests.test_actual_cli_retains_full_denominator_and_no_scientific_permission",
+    "tests.test_cachexia_v432_adapter.LatestContractTests.test_exact_latest_role_and_both_version_mix_directions",
+    "tests.test_cachexia_v432_adapter.LatestContractTests.test_manifest_is_explicit_isolated_opt_in_with_unchanged_image",
+    "tests.test_cachexia_v432_adapter.LatestContractTests.test_original_method_bytes_have_only_declared_version_changes",
+    "tests.test_cachexia_v432_adapter.LatestContractTests.test_original_unified_adapter_is_unchanged",
+    "tests.test_cachexia_v432_adapter.LatestContractTests.test_ungoverned_and_unregistered_designs_stay_blocked"
   ]
 }
