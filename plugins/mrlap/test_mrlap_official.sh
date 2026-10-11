@@ -16,10 +16,15 @@ root=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 FEEDS=${MRLAP_FEEDS:-/home/zj-normal/.autonomics/data/artifacts/gwas_iv_audit/exec/mrlap_feeds}
 ASSETS=${MRLAP_LDSC_ASSETS:-/home/zj-normal/tools/genetics/ldsc_assets}
 REF=${MRLAP_REF:-/home/zj-normal/Work/autonomics/results/cachexia-v4/acceptance-mrlap-seed1-20261006/exec/WOE4_mrlap_summary_seed1.tsv}
-IMAGE=${MRLAP_IMAGE:-localhost/mrlap-official:0.0.3.3}
+IMAGE=${MRLAP_IMAGE:-$(python3 -c 'import pathlib,sys,tomllib; print(tomllib.loads(pathlib.Path(sys.argv[1]).read_text())["image"]["reference"])' "$root/manifest.toml")}
 RLIBS=${R_LIBS_USER:-/home/zj-normal/R/library}
-work=$(mktemp -d /tmp/mrlap-parity.XXXXXX)
-trap 'rm -rf "$work"' EXIT
+if [[ -n "${MRLAP_EVIDENCE:-}" ]]; then
+  mkdir "$MRLAP_EVIDENCE"
+  work=$(realpath "$MRLAP_EVIDENCE")
+else
+  work=$(mktemp -d /tmp/mrlap-parity.XXXXXX)
+fi
+echo "Evidence retained at: $work"
 
 # edge: exposure outcome ivlist labels
 edges=(
@@ -34,7 +39,7 @@ run_edge() { # $1=idx(0-based)
   mkdir -p "$out"
   read -r exp outc iv le lo <<< "${edges[$i]}"
   if [[ "${MRLAP_CONTAINER:-0}" == 1 ]]; then
-    podman run --rm --network=none \
+    podman run --rm --pull=never --network=none --cpus=2 --memory=8g \
       -v "$FEEDS":/work/feeds:ro \
       -v "$ASSETS":/panels/ldsc_assets:ro \
       -v "$root/scripts/mrlap.sh":/work/mrlap.sh:ro \
@@ -63,29 +68,4 @@ run_edge() { # $1=idx(0-based)
 
 run_edge 0; run_edge 1; run_edge 2
 
-python3 - "$REF" "$work" <<'PYEOF'
-import sys, csv
-ref_path, work = sys.argv[1], sys.argv[2]
-with open(ref_path) as f:
-    ref = list(csv.DictReader(f, delimiter="\t"))
-FIELDS = [k for k in ref[0].keys() if k != "edge"]
-TOL = 1e-12
-bad = 0
-for i, row in enumerate(ref):
-    with open(f"{work}/edge_{i}/summary.tsv") as f:
-        got = list(csv.DictReader(f, delimiter="\t"))[0]
-    for fld in FIELDS:
-        a, b = row[fld], got[fld]
-        if a == "NA" or b == "NA":
-            ok = (a == b)
-        else:
-            try:
-                ok = abs(float(a) - float(b)) <= TOL
-            except ValueError:
-                ok = a == b
-        if not ok:
-            print(f"FAIL edge{i} {fld}: ref={a} got={b}")
-            bad += 1
-print("PARITY PASS" if bad == 0 else f"PARITY FAIL ({bad} field(s))")
-sys.exit(1 if bad else 0)
-PYEOF
+python3 "$root/verify_summary.py" "$REF" "$work"

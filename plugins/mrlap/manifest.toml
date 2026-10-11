@@ -1,18 +1,6 @@
 schema_version = 1
 plugin_name = "mrlap"
 
-# WO-R-02 (2026-10-06): containerized official R MRlap. Image is digest-
-# pinned to the reference-BLAS rebuild pushed to
-# ghcr.io/ZJ-2002/mrlap-official (package visibility private — fine-
-# grained token cannot flip it; owner one-click, same debt class as the
-# 8 repushed org mirrors). The LD-score panel (22 per-chromosome
-# LD-score gzips + M_5_50 + w_hm3.noMHC.snplist, source tree
-# ~/tools/genetics/ldsc_assets, 211 MB, the seed1-acceptance content
-# identity) is published to ZJ-2002/catalog-mrlap-ldsc-eur-w-ld-hm3-no-
-# mhc and materialized in the local panel cache; the package repo's root
-# index.json is in registry form (a catalog-tool artifact also present on
-# legacy wjixiang bundles) and the CENTRAL registry index at
-# wjixiang/catalog-index needs a PR the token cannot open.
 [image]
 reference = "ghcr.io/zj-2002/mrlap-official@sha256:78f195b862a3b7c5f8d96a96576cfb2c66b08f9bd31a739da59a017726cd063d"
 tag = "0.0.3.3"
@@ -22,7 +10,7 @@ license = "GPL-3"
 [[panels]]
 binding = "ldsc_assets"
 mount = "/panels/ldsc_assets"
-bundle = "ZJ-2002/catalog-mrlap-ldsc-eur-w-ld-hm3-no-mhc"   # published 2026-10-06; local materialization pending
+bundle = "ZJ-2002/catalog-mrlap-ldsc-eur-w-ld-hm3-no-mhc"
 
 [[nodes]]
 kind = "mrlap_official"
@@ -51,12 +39,6 @@ IVW columns — do not subtract or pick between them directly.
 timeout_secs = 1800
 artifact_prefix = "/artifacts/mrlap_official"
 
-# Task-level resource ceiling (WO step 5), set from measurement: the
-# 2026-10-06 container-mode three-edge run sampled the R process RSS at
-# 1 s and peaked at 1.9 GiB (PARITY PASS 51/51 on that same run), so the
-# 8 Gi budget target carries ~4x headroom. The earlier "whole machine
-# 10.2 GiB" figure is page-cache-inclusive sampling, not task RSS, and
-# must not be cited as a limit requirement.
 [nodes.resources]
 cpus = 2.0
 memory = "8Gi"

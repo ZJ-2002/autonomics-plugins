@@ -25,12 +25,33 @@ rds_path  <- Sys.getenv("AUTONOMICS_OUTPUT1")
 txt_path  <- Sys.getenv("AUTONOMICS_OUTPUT2")
 log_path  <- Sys.getenv("AUTONOMICS_OUTPUT3")
 
+if (!all(nzchar(c(input_exp, input_out, input_iv, summary_path, rds_path, txt_path, log_path)))) {
+  stop("All declared input/output ports are required", call. = FALSE)
+}
+output_values <- c(summary_path, rds_path, txt_path, log_path)
+output_parents <- vapply(dirname(output_values), normalizePath, character(1), mustWork = TRUE)
+output_paths <- file.path(output_parents, basename(output_values))
+if (anyDuplicated(output_paths)) stop("Output paths must be distinct", call. = FALSE)
+link_targets <- Sys.readlink(output_paths)
+if (any(file.exists(output_paths)) || any(!is.na(link_targets) & nzchar(link_targets))) {
+  stop("Existing output must not be overwritten", call. = FALSE)
+}
+input_values <- c(input_exp, input_out, input_iv)
+if (any(!file_test("-f", input_values))) {
+  stop("Input files must exist and be regular files", call. = FALSE)
+}
+
 exp_label <- Sys.getenv("MRLAP_EXPOSURE")
 out_label <- Sys.getenv("MRLAP_OUTCOME")
 ld_path   <- Sys.getenv("MRLAP_LD_PATH", "/panels/ldsc_assets/eur_w_ld_chr")
 hm3_path  <- Sys.getenv("MRLAP_HM3_PATH", "/panels/ldsc_assets/w_hm3.noMHC.snplist")
 if (trimws(exp_label) == "") stop("exposure cannot be empty", call. = FALSE)
 if (trimws(out_label) == "") stop("outcome cannot be empty", call. = FALSE)
+if (any(grepl("[\t\r\n]", c(exp_label, out_label)))) {
+  stop("Trait labels must not contain TSV row or column separators", call. = FALSE)
+}
+if (!dir.exists(ld_path)) stop("LD directory must exist", call. = FALSE)
+if (!file.exists(hm3_path) || dir.exists(hm3_path)) stop("HM3 file must exist", call. = FALSE)
 
 # Seed contract mirrors the canonical v2 procedure and the twosamplemr
 # WO-R-03 fix: RNGkind frozen to Mersenne-Twister/Inversion/Rejection,
@@ -38,14 +59,22 @@ if (trimws(out_label) == "") stop("outcome cannot be empty", call. = FALSE)
 # rnorm/runif bootstrap (self-reported 8000/6000 sims, no seed argument),
 # so unseeded corrected_se/p are Monte-Carlo quantities.
 seed_raw <- Sys.getenv("MRLAP_SEED", "1")
-seed_int <- suppressWarnings(as.integer(seed_raw))
-if (is.na(seed_int) || seed_int < 1L || seed_int > 2147483647L) {
+seed_value <- suppressWarnings(as.numeric(seed_raw))
+if (!grepl("^[0-9]+$", seed_raw) || !is.finite(seed_value) || seed_value < 1 || seed_value > 2147483647) {
   stop(paste0("seed must be an integer in 1..2147483647, got `", seed_raw, "`"), call. = FALSE)
 }
+seed_int <- as.integer(seed_value)
 
-ivs <- readLines(input_iv)
-ivs <- ivs[nzchar(ivs)]
+ivs <- readLines(input_iv, warn = FALSE)
 if (length(ivs) == 0L) stop("instrument list is empty", call. = FALSE)
+if (any(!nzchar(ivs)) || any(grepl("[[:space:][:cntrl:]]", ivs))) {
+  stop("Invalid instrument identifiers", call. = FALSE)
+}
+if (anyDuplicated(ivs)) stop("Duplicate instrument identifiers", call. = FALSE)
+stopifnot(as.character(packageVersion("MRlap")) == "0.0.3.3")
+stopifnot(as.character(packageVersion("GenomicSEM")) == "0.0.5")
+stopifnot(as.character(packageVersion("TwoSampleMR")) == "0.7.11")
+loadNamespace("MRlap")
 
 sink(log_path, split = TRUE)
 cat("MRlap version:", as.character(packageVersion("MRlap")), "\n")
@@ -63,16 +92,26 @@ res <- MRlap::MRlap(exposure = input_exp, outcome = input_out,
                     ld = ld_path, hm3 = hm3_path,
                     do_pruning = FALSE, user_SNPsToKeep = ivs,
                     verbose = FALSE)
-saveRDS(res, rds_path)
-sink()
-sink(txt_path)
-print(res)
-sink()
-
+required_correction_fields <- c("observed_effect", "observed_effect_se", "corrected_effect",
+                                "corrected_effect_se", "corrected_effect_p")
+if (!is.list(res$MRcorrection) || !all(required_correction_fields %in% names(res$MRcorrection)) ||
+    any(!vapply(res$MRcorrection[required_correction_fields], function(value) {
+  is.numeric(value) && length(value) == 1L && is.finite(value)
+}, logical(1)))) stop("Official primary inference is non-estimable; no analytic output published", call. = FALSE)
+if (res$MRcorrection$observed_effect_se <= 0 || res$MRcorrection$corrected_effect_se <= 0 ||
+    res$MRcorrection$corrected_effect_p < 0 || res$MRcorrection$corrected_effect_p > 1) {
+  stop("Official primary inference has invalid SE or P; no analytic output published", call. = FALSE)
+}
 # Defensive summary builder: nested result objects, g() guards every
 # NULL/empty field to NA (the WOE4_mrlap_summary_fix.R lesson — never
 # coerce an absent quantity to 0, NA-vs-NA comparisons stay honest).
-g <- function(x) if (is.null(x) || length(x) == 0) NA else as.numeric(x)[1]
+g <- function(value) {
+  if (is.null(value) || length(value) == 0L) return(NA_real_)
+  if (!is.numeric(value) || length(value) != 1L || is.infinite(value) || is.nan(value)) {
+    stop("Summary fields must be numeric scalars or explicit missing values", call. = FALSE)
+  }
+  as.numeric(value)
+}
 mc <- res$MRcorrection
 ld <- res$LDSC
 s <- data.frame(
@@ -87,6 +126,11 @@ s <- data.frame(
   mr_corrected = g(mc$corrected_effect), mr_corrected_se = g(mc$corrected_effect_se),
   mr_corrected_p = g(mc$corrected_effect_p),
   egger_intercept_p = g(mc$egger_intercept_p))
+saveRDS(res, rds_path)
+sink()
+sink(txt_path)
+print(res)
+sink()
 write.table(s, summary_path, sep = "\t", row.names = FALSE, quote = FALSE)
 cat("\n== mrlap_official summary ==\n")
 print(s, digits = 10)

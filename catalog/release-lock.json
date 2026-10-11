@@ -7096,27 +7096,51 @@
         },
         {
           "path": "README.md",
-          "sha256": "dac34e4184f8396fb667d9acc5edf590a232859b3fb90249e09f565b68a42d84",
-          "bytes": 4494,
+          "sha256": "7e0a9bffe07c01768a2ba64eea0781dc5df80f19039956ce0512f8a2c1945396",
+          "bytes": 5258,
           "executable": false
         },
         {
           "path": "manifest.toml",
-          "sha256": "3c0f1316b06ba1fbf665eefee1143be7b45b9b4164071941f2cc058b6e01d87c",
-          "bytes": 5122,
+          "sha256": "8dcc2b973b844150f660b9fcd9209b564d4642f118ed716fc219cc4a072c81c6",
+          "bytes": 3868,
           "executable": false
         },
         {
           "path": "scripts/mrlap.sh",
-          "sha256": "39c1a8b24114166caf54dec932de1831b033f225ab730999948893873954908e",
-          "bytes": 4364,
+          "sha256": "16d4c48bb5724f597b23b0f4054689f871fb934f9cf56c1e6176a58256025dc6",
+          "bytes": 7041,
           "executable": false
         },
         {
           "path": "test_mrlap_official.sh",
-          "sha256": "8bc83eb2dbbdd1cd866ea9efba4d057aa3a558f2b0cc3bec5e9160073232d0e7",
-          "bytes": 3836,
+          "sha256": "f4787622465a537428f8e6aa7f15cef5614e8222e754181ee0bdc854e81c26a7",
+          "bytes": 3315,
           "executable": true
+        },
+        {
+          "path": "tests/test_boundaries.py",
+          "sha256": "ec594d495d41111c3dd934afdd6f684961446e9529cbb08bd31575022497173e",
+          "bytes": 7158,
+          "executable": false
+        },
+        {
+          "path": "tests/test_result_guards.R",
+          "sha256": "cd6d0c60b0691e7d761c1249b7c23a49966551e10744cf8ecfed958d57de5060",
+          "bytes": 2371,
+          "executable": false
+        },
+        {
+          "path": "tests/test_summary.py",
+          "sha256": "73a2ee7a82f5588145dac269bf01242ba7d8101852c4398c604337b975c13e31",
+          "bytes": 4298,
+          "executable": false
+        },
+        {
+          "path": "verify_summary.py",
+          "sha256": "f4abc3893e9bebd77a6065a72542f96037833f1dd0c5342feb64c5912b0190bb",
+          "bytes": 2711,
+          "executable": false
         }
       ],
       "source_inventory_only": true,

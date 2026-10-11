@@ -1,0 +1,121 @@
+{
+  "kind": "mrlap_official",
+  "status": "PROVEN_SCOPED",
+  "method": "Unmodified official R MRlap::MRlap",
+  "author_version": "0.0.3.3",
+  "image_reference": "ghcr.io/zj-2002/mrlap-official@sha256:78f195b862a3b7c5f8d96a96576cfb2c66b08f9bd31a739da59a017726cd063d",
+  "script_sha256": "16d4c48bb5724f597b23b0f4054689f871fb934f9cf56c1e6176a58256025dc6",
+  "manifest_sha256": "8dcc2b973b844150f660b9fcd9209b564d4642f118ed716fc219cc4a072c81c6",
+  "author_source_lock": [
+    {
+      "package": "GenomicSEM",
+      "url": "https://codeload.github.com/GenomicSEM/GenomicSEM/tar.gz/da95d431a4709693d07eae55e172ade55526948b",
+      "sha256": "cf5f1a7f2ba2fd74a586734fe2138c9f3d88d5a4a73319bb20b736501dbdcaaa",
+      "bytes": 3261351
+    },
+    {
+      "package": "TwoSampleMR",
+      "url": "https://codeload.github.com/MRCIEU/TwoSampleMR/tar.gz/d4df21929fdabeb2f89686ffaad0db5f56973d64",
+      "sha256": "a203d74170d58e9424fc21dd8d2dc00f9bc017ae90e4c75db136c26daddfda3a",
+      "bytes": 6040975
+    },
+    {
+      "package": "MRlap",
+      "url": "https://codeload.github.com/n-mounier/MRlap/tar.gz/660f026864f8bfbbad5a8206bdff7d58f5d5d05b",
+      "sha256": "42e74c0cd7b2dd071ef67fb8921bc2c1d8ace4bc8e5526c61feb8d8647c0a1cf",
+      "bytes": 129475982
+    }
+  ],
+  "inputs": [
+    "port 0 exposure GWAS TSV",
+    "port 1 outcome GWAS TSV",
+    "port 2 unique instrument rsID list"
+  ],
+  "outputs": [
+    "port 0 derived 17-field summary TSV",
+    "port 1 untouched complete author RDS",
+    "port 2 printed complete author result",
+    "port 3 run diagnostics log"
+  ],
+  "official_meaning": "Standardized Z/sqrt(N) effects; cross-trait LDSC and author overlap/bias correction, not conventional TwoSampleMR IVW scale or interchangeable main P selection.",
+  "fixed_method": {
+    "do_pruning": false,
+    "instrument_selection": "Explicit user_SNPsToKeep; no internal LD re-pruning",
+    "RNG": "Mersenne-Twister/Inversion/Rejection; seed immediately before author invocation after namespace loading",
+    "panel_digest": "sha256:c1bdd30eabb9d821fe06ff5647bf6a08f9db29f80223762cfc6b3eb285c6d065"
+  },
+  "official_proof": {
+    "direct_complete_author_RDS_byte_matches": 3,
+    "native_complete_staged_author_RDS_byte_matches": 5,
+    "distinct_fresh_staged_author_reference_executions": 4,
+    "same_seed_native_repeat_byte_match": true,
+    "different_seed_stochastic_correction_exercised": true,
+    "ignored_result_attributes": [],
+    "namespace_definition_matches": {
+      "MRlap": 5,
+      "GenomicSEM": 44,
+      "TwoSampleMR": 171
+    },
+    "frozen_summary_entries": 51,
+    "finite_comparisons": 48,
+    "explicit_missing_rg_se": 3,
+    "absolute_tolerance": 1e-12,
+    "retained_IV_counts": [
+      7,
+      7,
+      97
+    ],
+    "reference_scope": "Fresh SHA-locked unmodified source installations in the same fixed R/BLAS/support image, not independent platform"
+  },
+  "engineering_proof": {
+    "actual_image_boundary_cases": 22,
+    "summary_comparator_cases": 12,
+    "production_source_result_guard_checks": 21,
+    "compiled_mandatory_contract_tests": 3,
+    "shared_mandatory_catalog_tests": 48,
+    "skipped_dependencies": 0,
+    "original_input_output_ports_and_method_parameters_unchanged": true
+  },
+  "isolated_DAG_proof": {
+    "submissions": 10,
+    "successes": 5,
+    "execution_failures": 1,
+    "preexecution_refusals": 4,
+    "actual_reports": 6,
+    "successful_topology": "4 nodes / 3 edges",
+    "scope": "Sealed container-plugin/generic runner and immutable SDK, not current whole engine or resident daemon",
+    "actual_output_report_content_hash": null,
+    "independent_output_hashes_verified": true,
+    "task_state_root_is_default_and_task_manifests_retained": true
+  },
+  "repairs": [
+    "Require all ports, distinct nonexistent outputs, regular inputs and valid labels/assets",
+    "Reject fractional/exponent/invalid seeds rather than truncate",
+    "Reject empty/blank/duplicate instrument IDs rather than silently change the frozen list",
+    "Validate primary inference and scalar summary values before writing analytic outputs",
+    "Strict frozen comparison distinguishes 48 finite values from 3 explicitly missing rg_se entries",
+    "Retain CLI evidence on success/failure and select default image from manifest digest",
+    "Withdraw stale private-image/materialization/central-index and RSS-as-container claims"
+  ],
+  "plan_contract": "v4.3.2 lines 876-882 require pre-result O classification and fixed primary P source; O2 failure retains NA and full family correction placeholder P=1. This node emits an execution failure, not the entire study ledger adapter or scientific O classification.",
+  "remaining": [
+    "Full author API/pruning branch, all unknown inputs/platforms and latest-version equivalence not certified",
+    "ieugwasr 1.1.0 does not meet TwoSampleMR declared >=1.2.0; only this offline scoped route verified",
+    "Installed RemoteSha missing; fresh archive/namespace proofs are the source identity evidence",
+    "No ancestry/build/scale/cohort/overlap/model eligibility, statistical calibration or study family scientific admission",
+    "Existing-output refusal is not atomic multi-output publication or concurrent write protection",
+    "No clean public install, resident deployment, registered output content hashes, cache invalidation, global resources or persistent recovery proof",
+    "Legacy engine mrlap_e2e test still pins the standalone historical provider and is not evidence for this monorepo qualification"
+  ],
+  "real_inputs_previously_seen": true,
+  "independent_scientific_replication": false,
+  "full_original_method_domain": "NOT_CERTIFIED",
+  "active_design": "v4.3.2",
+  "design_implementation_status": "NOT_IMPLEMENTATION_LOCKED",
+  "formal_research_release": "NOT_GRANTED",
+  "production_deployed": false,
+  "B_S": "CONDITIONAL_NOT_READY",
+  "GS01": "OPEN",
+  "native_Rust_mrlap": "FORBIDDEN",
+  "G0": false
+}
