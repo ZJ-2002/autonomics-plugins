@@ -69,3 +69,21 @@ shared pinned checkout. Use a local path source for development.
 Deployment boundary: isolated native installation/loading evidence and
 reviewable proposed profiles are separate from production cutover. The frozen
 production configuration and running daemon have NOT been migrated.
+
+Frozen MR/MVMR adapters
+
+Eight opt-in families imported from engine commit f5e3eeae preserve their exact
+method/manifest bytes and complete standalone entry programs. Their full
+source components, SHA256 and Git blob IDs are in component-source.json.
+Run `python -B -m tools.check_frozen_genetic` to verify source identities and
+reproduce each complete program in memory, without modifying any source.
+provenance/frozen-genetic-source-20261011.json records this new transport
+batch; the initial migration source-index remains historical and unchanged.
+
+Current canonical families remain 26/55 kinds. Research adapters are opt-in
+(58 families after this import). The generic cachexia-mvmr adapter remains
+available under its original interface; the frozen two-exposure adapter has
+a different explicit node kind. Both need actual scientific/source admission.
+Localhost image pins require a separately verified image installation; the
+catalog does not promise remote pullability. The preview release retains its
+independently selected source snapshot. No live production profile is changed.

@@ -1,0 +1,38 @@
+schema_version = 1
+plugin_name = "mr-contract"
+
+[image]
+reference = "ghcr.io/zj-2002/twosamplemr@sha256:4ffdb4669c558228a74895bf843bc723341e8837e7fdd367108654b5514e3f99"
+tag = "0.7.9"
+upstream = "Official MRCIEU/TwoSampleMR v0.7.9 at 3d119f20d6fc164b0c7f710f5590fee9580f2c7b; separate frozen-contract adapter"
+license = "MIT"
+
+# Candidate, not production registration or scientific authorization.
+[[nodes]]
+kind = "mr_frozen_harmonise_ivw"
+desc = "Frozen exposure-only instruments, official harmonization and multiplicative random-effects IVW."
+doc = "Mandatory actual normalization receipt and original recipe inputs bind source construct/build/ancestry and exact payload SHA; formal runtime rejects static or mismatched producer lineage. Inputs: frozen v4.2.1 config; independently clumped normalized exposure SNP table; qualified direct-match outcome SNP table; exposure-only selection evidence. Exact raw SHA256, software/build/ancestry and full instrument identity are required. This adapter does not run or qualify clumping, normalize source GWAS, select a primary P from observed values, approve overlap or sign G0. Palindromic EAF bounds are inclusive; missing EAF and aligned frequency disagreement are audited. All instrument rows survive exclusion. Main analysis retains MHC/TERT, with both frozen leave-region-out sensitivities. Limited instruments remain support rows; O1/O2 never receive an IVW primary P. Separate signed method and study approvals remain mandatory."
+timeout_secs = 900
+artifact_prefix = "/artifacts/mr_frozen_harmonise_ivw"
+[nodes.resources]
+network = "isolated"
+read_only_rootfs = true
+pull_policy = "never"
+cpus = 2.0
+memory = "2Gi"
+pids_limit = 128
+[nodes.ports]
+inputs = [{ type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }]
+outputs = [
+  { path = "estimates.tsv", format = "tsv" },
+  { path = "harmonised.tsv", format = "tsv" },
+  { path = "variants.tsv", format = "tsv" },
+  { path = "audit.json", format = "json" },
+]
+[nodes.command]
+interpreter = "sh"
+script_file = "scripts/run-mr.sh"
+[nodes.command.env]
+OMP_NUM_THREADS = "1"
+OPENBLAS_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"

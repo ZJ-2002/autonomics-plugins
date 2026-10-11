@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "source_repository": "https://github.com/ZJ-2002/autonomics",
+  "source_commit": "f5e3eeaee117241c92c30e48523ece6c20a2814e",
+  "source_family": "study_plugins/clump-contract",
+  "transport_scope": "BYTE_EXACT_COMPLETE_METHOD_TRANSPORT_NOT_PRODUCER_OR_SCIENTIFIC_QUALIFICATION",
+  "scientific_authorization": false,
+  "auto_enable": false,
+  "imported_files": {
+    "README.md": {
+      "source_path": "study_plugins/clump-contract/README.md",
+      "sha256": "f8594166722ed96a0bcec5ce115fbb7aa012c0982033111ebde787e4d91839a2",
+      "bytes": 5034,
+      "git_blob": "3e5860453bd4456175d4927cd5febb9358bf7872",
+      "executable": false
+    },
+    "manifest.toml": {
+      "source_path": "study_plugins/clump-contract/manifest.toml",
+      "sha256": "267527b2588056dd99bb9ac4018a9223657b9fbd17f798c940d16df2254e7974",
+      "bytes": 3071,
+      "git_blob": "cc4452613172bebb4b600aec9770fe04f2a6f550",
+      "executable": false
+    },
+    "scripts/clump.R": {
+      "source_path": "study_plugins/clump-contract/scripts/clump.R",
+      "sha256": "4cb77955c791b84678173b8c9087b6eb2649bde9a67f6e37d634a6a244e105e5",
+      "bytes": 20787,
+      "git_blob": "4694de55fd1f0392d130ba6fb81e1a7357400eb3",
+      "executable": false
+    },
+    "scripts/run-clump.sh": {
+      "source_path": "study_plugins/clump-contract/scripts/run-clump.sh",
+      "sha256": "37b38f8c88b4738c23bdc333ca5a413cf753ab47650b2ba3c8c53b9b001111db",
+      "bytes": 27776,
+      "git_blob": "30cf453f1b9aeebfb496d2318caef778fd3b187c",
+      "executable": false
+    }
+  },
+  "component_files": {
+    "scripts/generate_clump_contract_wrapper.py": {
+      "source_path": "scripts/generate_clump_contract_wrapper.py",
+      "sha256": "4fabba0470ad51794644668661ab562beb41da8e194d51820f378afa2fc21ae0",
+      "bytes": 948,
+      "git_blob": "77a21e3423926cebb9c8d2874cf5d157885467d7",
+      "executable": false
+    },
+    "study_plugins/shared/gwas-normalization-receipt.R": {
+      "source_path": "study_plugins/shared/gwas-normalization-receipt.R",
+      "sha256": "2c0102e4524a99a86416126927a0826bb7c0c0b525fdbbce2e9183bb3f514c80",
+      "bytes": 6556,
+      "git_blob": "4aca08aab44a56b7ea94c2c5714f23ed4f5c35dd",
+      "executable": false
+    },
+    "study_plugins/clump-contract/scripts/clump.R": {
+      "source_path": "study_plugins/clump-contract/scripts/clump.R",
+      "sha256": "4cb77955c791b84678173b8c9087b6eb2649bde9a67f6e37d634a6a244e105e5",
+      "bytes": 20787,
+      "git_blob": "4694de55fd1f0392d130ba6fb81e1a7357400eb3",
+      "executable": false
+    }
+  },
+  "programs": {
+    "scripts/run-clump.sh": {
+      "generator": "scripts/generate_clump_contract_wrapper.py",
+      "function": "rendered",
+      "argument": null
+    }
+  }
+}

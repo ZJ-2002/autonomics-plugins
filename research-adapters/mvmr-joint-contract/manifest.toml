@@ -1,0 +1,58 @@
+schema_version = 1
+plugin_name = "mvmr-joint-contract"
+
+[image]
+reference = "ghcr.io/zj-2002/twosamplemr@sha256:4ffdb4669c558228a74895bf843bc723341e8837e7fdd367108654b5514e3f99"
+tag = "0.7.9-plink-a.6.26"
+upstream = "Official TwoSampleMR0.7.9/PLINK2-a.6.26 with separately frozen joint-input adapters"
+license = "GPL-3.0-or-later"
+
+[[nodes]]
+kind = "mvmr_frozen_exposure_union"
+desc = "Explicit exposure-only two-source instrument union, without outcome or LD selection."
+doc = "Seven File inputs: frozen union config, complete normalized exposure0/exposure1, normalizer0 receipt/recipe, normalizer1 receipt/recipe. The caller must preregister the supported any-exposure P<5e-8 union and min-exposure-P/registered-exposure-order anchor policy; this is not an implicit scientific decision supplied by the plan. Complete streamed source QC and duplicate identities are retained. Four outputs: nine-column union, typed union receipt, full QC and audit. No outcome input, effect/P of outcome, proxy, regional removal, threshold relaxation or scientific approval. Subsequent joint LD clumping remains required."
+timeout_secs = 900
+artifact_prefix = "/artifacts/mvmr_frozen_exposure_union"
+[nodes.resources]
+network = "isolated"
+read_only_rootfs = true
+pull_policy = "never"
+cpus = 2.0
+memory = "2Gi"
+pids_limit = 128
+[nodes.ports]
+inputs = [{ type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }]
+outputs = [{ path = "union.tsv", format = "tsv" }, { path = "union-receipt.json", format = "json" }, { path = "qc.tsv", format = "tsv" }, { path = "audit.json", format = "json" }]
+[nodes.command]
+interpreter = "sh"
+script_file = "scripts/run-union.sh"
+[nodes.command.env]
+LC_ALL = "C"
+OMP_NUM_THREADS = "1"
+OPENBLAS_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+
+[[nodes]]
+kind = "mvmr_frozen_joint_harmonise"
+desc = "Official joint allele alignment after frozen exposure-only union and LD selection."
+doc = "Twelve File inputs: frozen harmonization recipe, selected union, complete exposure0/exposure1/outcome, actual joint clump selection record, each of the three source normalizer receipt/recipe pairs. Original selection IDs never shrink because an exposure or outcome is missing; full exclusion/sign ledger survives. Streams full source identity checks and only selected rows enter official harmonise_data action2. Applies inclusive palindrome .42-.58, missing EAF and aligned difference>.10 exclusions. Output joint seven-column table, input identity, full variant/sign ledger and audit. No coefficient/P estimation, proxy or region filtering. Signed exposure transformations remain available for a separately qualified covariance orientation adapter; covariance is not assumed aligned or transformed here."
+timeout_secs = 900
+artifact_prefix = "/artifacts/mvmr_frozen_joint_harmonise"
+[nodes.resources]
+network = "isolated"
+read_only_rootfs = true
+pull_policy = "never"
+cpus = 2.0
+memory = "2Gi"
+pids_limit = 128
+[nodes.ports]
+inputs = [{ type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }]
+outputs = [{ path = "joint.tsv", format = "tsv" }, { path = "identity.json", format = "json" }, { path = "variants.tsv", format = "tsv" }, { path = "audit.json", format = "json" }]
+[nodes.command]
+interpreter = "sh"
+script_file = "scripts/run-harmonise.sh"
+[nodes.command.env]
+LC_ALL = "C"
+OMP_NUM_THREADS = "1"
+OPENBLAS_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"

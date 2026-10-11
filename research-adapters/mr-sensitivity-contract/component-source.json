@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "source_repository": "https://github.com/ZJ-2002/autonomics",
+  "source_commit": "f5e3eeaee117241c92c30e48523ece6c20a2814e",
+  "source_family": "study_plugins/mr-sensitivity-contract",
+  "transport_scope": "BYTE_EXACT_COMPLETE_METHOD_TRANSPORT_NOT_PRODUCER_OR_SCIENTIFIC_QUALIFICATION",
+  "scientific_authorization": false,
+  "auto_enable": false,
+  "imported_files": {
+    "README.md": {
+      "source_path": "study_plugins/mr-sensitivity-contract/README.md",
+      "sha256": "3ddce6d161d8cb99bad790dfac12815f830a574b0b96d418d4fe6d04c1375e42",
+      "bytes": 2412,
+      "git_blob": "abe8d025bd9f7ce2a72b56f8e9d4c9c12d9a69a0",
+      "executable": false
+    },
+    "manifest.toml": {
+      "source_path": "study_plugins/mr-sensitivity-contract/manifest.toml",
+      "sha256": "f6a1dfd2e31b827a00eafa4c861d02ba6466e36f5bccbafa8a413106df7d35f9",
+      "bytes": 2016,
+      "git_blob": "eba4787240c7be1bf093fc6ab87af7b2ddd8df9d",
+      "executable": false
+    },
+    "scripts/run-sensitivity.sh": {
+      "source_path": "study_plugins/mr-sensitivity-contract/scripts/run-sensitivity.sh",
+      "sha256": "4ee73d98dfbff95ebd4057fcbd4d05033b907b64d654fbedfa4313324cf5ac25",
+      "bytes": 37425,
+      "git_blob": "b4900354502d54922f56b393ea87e225c40b6a18",
+      "executable": true
+    },
+    "scripts/sensitivity.R": {
+      "source_path": "study_plugins/mr-sensitivity-contract/scripts/sensitivity.R",
+      "sha256": "cb371930278d1ce53c7d69104e99472d6a91aa2112df786195b8dc194617ac2a",
+      "bytes": 14972,
+      "git_blob": "dc42b8c305d0395e95da17a18bb3674b8e12123c",
+      "executable": false
+    }
+  },
+  "component_files": {
+    "scripts/build_mr_sensitivity_wrapper.py": {
+      "source_path": "scripts/build_mr_sensitivity_wrapper.py",
+      "sha256": "474a78abec6467b1d15be326792a93be0ffff88489656e21e30a0360c220af5f",
+      "bytes": 2103,
+      "git_blob": "dbd93bce123cb0ad8589139a6443f815139d4f10",
+      "executable": false
+    },
+    "study_plugins/shared/gwas-normalization-receipt.R": {
+      "source_path": "study_plugins/shared/gwas-normalization-receipt.R",
+      "sha256": "2c0102e4524a99a86416126927a0826bb7c0c0b525fdbbce2e9183bb3f514c80",
+      "bytes": 6556,
+      "git_blob": "4aca08aab44a56b7ea94c2c5714f23ed4f5c35dd",
+      "executable": false
+    },
+    "study_plugins/mr-contract/scripts/mr.R": {
+      "source_path": "study_plugins/mr-contract/scripts/mr.R",
+      "sha256": "b3b80cb5d1e246d3ef20f9891dce49b16627fa044bd4bf783a60ab28704bab79",
+      "bytes": 15590,
+      "git_blob": "e7c4847e1077f25f05b6f8b2dad9e3b0fb6918f0",
+      "executable": false
+    },
+    "study_plugins/mr-sensitivity-contract/scripts/sensitivity.R": {
+      "source_path": "study_plugins/mr-sensitivity-contract/scripts/sensitivity.R",
+      "sha256": "cb371930278d1ce53c7d69104e99472d6a91aa2112df786195b8dc194617ac2a",
+      "bytes": 14972,
+      "git_blob": "dc42b8c305d0395e95da17a18bb3674b8e12123c",
+      "executable": false
+    }
+  },
+  "programs": {
+    "scripts/run-sensitivity.sh": {
+      "generator": "scripts/build_mr_sensitivity_wrapper.py",
+      "function": "render",
+      "argument": null
+    }
+  }
+}

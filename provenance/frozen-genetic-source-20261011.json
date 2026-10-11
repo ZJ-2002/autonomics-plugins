@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "source_repository": "https://github.com/ZJ-2002/autonomics",
+  "source_commit": "f5e3eeaee117241c92c30e48523ece6c20a2814e",
+  "scope": "BYTE_EXACT_METHOD_SOURCE_AND_ASSEMBLY_TRANSPORT",
+  "families": [
+    {
+      "directory": "research-adapters/clump-contract",
+      "source_commit": "f5e3eeaee117241c92c30e48523ece6c20a2814e",
+      "source_lock_sha256": "735d2dfc955494ff1519f925d242b49a052ee3a637b49112ae28c0d5479a753a",
+      "image": "ghcr.io/zj-2002/twosamplemr@sha256:4ffdb4669c558228a74895bf843bc723341e8837e7fdd367108654b5514e3f99",
+      "actual_qualified_source_git_object_comparison": "PASS",
+      "auto_enable": false,
+      "scientific_authorization": false
+    },
+    {
+      "directory": "research-adapters/mr-contract",
+      "source_commit": "f5e3eeaee117241c92c30e48523ece6c20a2814e",
+      "source_lock_sha256": "c1b97a0306b28829d8cea4df064004d89b3f4b4a739cb52ff705da3213b4e4a8",
+      "image": "ghcr.io/zj-2002/twosamplemr@sha256:4ffdb4669c558228a74895bf843bc723341e8837e7fdd367108654b5514e3f99",
+      "actual_qualified_source_git_object_comparison": "PASS",
+      "auto_enable": false,
+      "scientific_authorization": false
+    },
+    {
+      "directory": "research-adapters/mr-sensitivity-contract",
+      "source_commit": "f5e3eeaee117241c92c30e48523ece6c20a2814e",
+      "source_lock_sha256": "a6723d6ac85ad86e0547b93f4db82323bec9075fd3beeae674804b03d233fce4",
+      "image": "ghcr.io/zj-2002/twosamplemr@sha256:4ffdb4669c558228a74895bf843bc723341e8837e7fdd367108654b5514e3f99",
+      "actual_qualified_source_git_object_comparison": "PASS",
+      "auto_enable": false,
+      "scientific_authorization": false
+    },
+    {
+      "directory": "research-adapters/mvmr-contract",
+      "source_commit": "f5e3eeaee117241c92c30e48523ece6c20a2814e",
+      "source_lock_sha256": "815a4cf5bed3b993f124d714e603ffd43112399f4b86c41c6c2ebb3e43f9736e",
+      "image": "localhost/research-mvmr-contract-candidate@sha256:b23536cba6e5d078d33101c467dee3cd92b2c352e54eb5d26906e1f408f7a364",
+      "actual_qualified_source_git_object_comparison": "PASS",
+      "auto_enable": false,
+      "scientific_authorization": false
+    },
+    {
+      "directory": "research-adapters/mvmr-covariance-contract",
+      "source_commit": "f5e3eeaee117241c92c30e48523ece6c20a2814e",
+      "source_lock_sha256": "7b38522579cab4d08231af2606cf56d64342ed784deac5b78aeb2477fe8ebbea",
+      "image": "localhost/autonomics/python-guard@sha256:d7d40ff1494750f26ded735e2551efb86d970355b805868b92ec9107b7ca7c68",
+      "actual_qualified_source_git_object_comparison": "PASS",
+      "auto_enable": false,
+      "scientific_authorization": false
+    },
+    {
+      "directory": "research-adapters/mvmr-joint-clump-contract",
+      "source_commit": "f5e3eeaee117241c92c30e48523ece6c20a2814e",
+      "source_lock_sha256": "7ee982fec1d87db70aaeaa99ebb507ad9a5dae84d43429384aafa188287294bc",
+      "image": "ghcr.io/zj-2002/twosamplemr@sha256:4ffdb4669c558228a74895bf843bc723341e8837e7fdd367108654b5514e3f99",
+      "actual_qualified_source_git_object_comparison": "PASS",
+      "auto_enable": false,
+      "scientific_authorization": false
+    },
+    {
+      "directory": "research-adapters/mvmr-joint-contract",
+      "source_commit": "f5e3eeaee117241c92c30e48523ece6c20a2814e",
+      "source_lock_sha256": "315e10bd07ee7d217c0505868875bce250d35646c738003d14c3292e6bace87d",
+      "image": "ghcr.io/zj-2002/twosamplemr@sha256:4ffdb4669c558228a74895bf843bc723341e8837e7fdd367108654b5514e3f99",
+      "actual_qualified_source_git_object_comparison": "PASS",
+      "auto_enable": false,
+      "scientific_authorization": false
+    },
+    {
+      "directory": "research-adapters/mvmr-orientation-contract",
+      "source_commit": "f5e3eeaee117241c92c30e48523ece6c20a2814e",
+      "source_lock_sha256": "6d8a372e76da580fb8b084fa68c2721ccd604f179d6b3c17effb4b8a47667a44",
+      "image": "localhost/autonomics/python-guard@sha256:d7d40ff1494750f26ded735e2551efb86d970355b805868b92ec9107b7ca7c68",
+      "actual_qualified_source_git_object_comparison": "PASS",
+      "auto_enable": false,
+      "scientific_authorization": false
+    }
+  ],
+  "original_import_index_rewritten": false,
+  "canonical_plugins_changed": false,
+  "existing_adapters_changed": false,
+  "numeric_method_tests_in_this_repository_run": false,
+  "actual_producer_chain_qualified": false,
+  "worker_qualified": false,
+  "image_availability_verified": false,
+  "production_deployed": false,
+  "scientific_authorization": false,
+  "source_engine_evidence": [
+    "docs/audits/research-execution-20261011/UPSTREAM_GENETIC_V432_BINDING.txt",
+    "docs/audits/research-execution-20261011/NATIVE_AND_OFFICIAL_MVMR_V432.txt",
+    "docs/audits/research-execution-20261011/MVMR_V432_PIPELINE_PREPARATION.txt"
+  ]
+}

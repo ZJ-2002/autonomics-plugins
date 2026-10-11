@@ -1,0 +1,29 @@
+schema_version = 1
+plugin_name = "mvmr-orientation-contract"
+
+[image]
+reference = "localhost/autonomics/python-guard@sha256:d7d40ff1494750f26ded735e2551efb86d970355b805868b92ec9107b7ca7c68"
+tag = "fixed-stdlib-candidate"
+upstream = "Python standard-library D Sigma D adapter; no covariance estimator"
+license = "MIT"
+
+[[nodes]]
+kind = "mvmr_frozen_covariance_orientation"
+desc = "Bind supplied source-effect covariance to actual joint allele directions."
+doc = "Nine File inputs: explicit frozen orientation recipe, actual joint table, full sign ledger, harmonization audit, joint identity, two complete normalized exposure files, supplied source covariance with allele axes, actual provenance pack. Two outputs: oriented matrix and byte-bound orientation receipt. Computes D Sigma D with the actual retained signs; requires exact SNP/exposure order, no projection or implicit zero. Validates both source and oriented covariance against actual SE, PSD and evidence bytes. Unknown provenance remains unresolved; grants no GA08 or scientific qualification. Formal producer topology and protected execution are not yet qualified."
+timeout_secs = 300
+stage_in_mode = "copy"
+artifact_prefix = "/artifacts/mvmr_frozen_covariance_orientation"
+[nodes.resources]
+network = "isolated"
+read_only_rootfs = true
+pull_policy = "never"
+cpus = 1.0
+memory = "512Mi"
+pids_limit = 64
+[nodes.ports]
+inputs = [{ type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }]
+outputs = [{ path = "oriented-covariance.json", format = "json" }, { path = "orientation.json", format = "json" }]
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/run-orientation.py"

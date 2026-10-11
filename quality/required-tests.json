@@ -38,6 +38,16 @@
     "tests.test_singscore_comparison.ComparisonTests.test_missing_sample_is_rejected",
     "tests.test_singscore_comparison.ComparisonTests.test_empty_tables_are_rejected",
     "tests.test_singscore_comparison.ComparisonTests.test_frozen_tolerance_is_not_relaxed",
-    "tests.test_singscore_comparison.ComparisonTests.test_empty_log_is_rejected"
+    "tests.test_singscore_comparison.ComparisonTests.test_empty_log_is_rejected",
+    "tests.test_frozen_genetic_transport.FrozenGeneticTransportTests.test_all_exact_methods_and_full_assembled_programs_are_present_without_writes",
+    "tests.test_frozen_genetic_transport.FrozenGeneticTransportTests.test_changed_component_refuses_before_any_output_write",
+    "tests.test_frozen_genetic_transport.FrozenGeneticTransportTests.test_missing_component_refuses_complete_program_transport",
+    "tests.test_frozen_genetic_transport.FrozenGeneticTransportTests.test_aliased_component_is_not_an_original_regular_source",
+    "tests.test_frozen_genetic_transport.FrozenGeneticTransportTests.test_extra_component_refuses_partial_universe_acceptance",
+    "tests.test_frozen_genetic_transport.FrozenGeneticTransportTests.test_changed_standalone_program_is_not_repaired_or_accepted",
+    "tests.test_frozen_genetic_transport.FrozenGeneticTransportTests.test_changed_manifest_does_not_silently_replace_image_or_interface",
+    "tests.test_frozen_genetic_transport.FrozenGeneticTransportTests.test_source_lock_cannot_grant_scientific_permission_or_auto_enable",
+    "tests.test_frozen_genetic_transport.FrozenGeneticTransportTests.test_manifest_program_set_must_be_complete_even_with_other_valid_sources",
+    "tests.test_frozen_genetic_transport.FrozenGeneticTransportTests.test_updated_local_sha_cannot_mislabel_changed_bytes_as_the_original_git_blob"
   ]
 }

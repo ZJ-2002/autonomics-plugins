@@ -15950,6 +15950,579 @@
       "auto_enable": false
     },
     {
+      "directory": "research-adapters/clump-contract",
+      "plugin_name": "clump-contract",
+      "kinds": [
+        "mr_frozen_exposure_clump"
+      ],
+      "image_reference": "ghcr.io/zj-2002/twosamplemr@sha256:4ffdb4669c558228a74895bf843bc723341e8837e7fdd367108654b5514e3f99",
+      "files": [
+        {
+          "path": "README.md",
+          "sha256": "f8594166722ed96a0bcec5ce115fbb7aa012c0982033111ebde787e4d91839a2",
+          "bytes": 5034,
+          "executable": false
+        },
+        {
+          "path": "SOURCE-README.txt",
+          "sha256": "30f9924325758f4f94ead79ede2f51d9b14a774bd274975913b65eec6137fffe",
+          "bytes": 1165,
+          "executable": false
+        },
+        {
+          "path": "component-source.json",
+          "sha256": "735d2dfc955494ff1519f925d242b49a052ee3a637b49112ae28c0d5479a753a",
+          "bytes": 2742,
+          "executable": false
+        },
+        {
+          "path": "components/scripts/generate_clump_contract_wrapper.py",
+          "sha256": "4fabba0470ad51794644668661ab562beb41da8e194d51820f378afa2fc21ae0",
+          "bytes": 948,
+          "executable": false
+        },
+        {
+          "path": "components/study_plugins/clump-contract/scripts/clump.R",
+          "sha256": "4cb77955c791b84678173b8c9087b6eb2649bde9a67f6e37d634a6a244e105e5",
+          "bytes": 20787,
+          "executable": false
+        },
+        {
+          "path": "components/study_plugins/shared/gwas-normalization-receipt.R",
+          "sha256": "2c0102e4524a99a86416126927a0826bb7c0c0b525fdbbce2e9183bb3f514c80",
+          "bytes": 6556,
+          "executable": false
+        },
+        {
+          "path": "manifest.toml",
+          "sha256": "267527b2588056dd99bb9ac4018a9223657b9fbd17f798c940d16df2254e7974",
+          "bytes": 3071,
+          "executable": false
+        },
+        {
+          "path": "scripts/clump.R",
+          "sha256": "4cb77955c791b84678173b8c9087b6eb2649bde9a67f6e37d634a6a244e105e5",
+          "bytes": 20787,
+          "executable": false
+        },
+        {
+          "path": "scripts/run-clump.sh",
+          "sha256": "37b38f8c88b4738c23bdc333ca5a413cf753ab47650b2ba3c8c53b9b001111db",
+          "bytes": 27776,
+          "executable": false
+        }
+      ],
+      "source_inventory_only": true,
+      "scientific_certified": false,
+      "auto_enable": false
+    },
+    {
+      "directory": "research-adapters/mr-contract",
+      "plugin_name": "mr-contract",
+      "kinds": [
+        "mr_frozen_harmonise_ivw"
+      ],
+      "image_reference": "ghcr.io/zj-2002/twosamplemr@sha256:4ffdb4669c558228a74895bf843bc723341e8837e7fdd367108654b5514e3f99",
+      "files": [
+        {
+          "path": "README.md",
+          "sha256": "a6919b3fc5b13900b89d0a053044514005f8497b822e37178972fbb3f17f007d",
+          "bytes": 3397,
+          "executable": false
+        },
+        {
+          "path": "SOURCE-README.txt",
+          "sha256": "30f9924325758f4f94ead79ede2f51d9b14a774bd274975913b65eec6137fffe",
+          "bytes": 1165,
+          "executable": false
+        },
+        {
+          "path": "component-source.json",
+          "sha256": "c1b97a0306b28829d8cea4df064004d89b3f4b4a739cb52ff705da3213b4e4a8",
+          "bytes": 2691,
+          "executable": false
+        },
+        {
+          "path": "components/scripts/generate_mr_contract_wrapper.py",
+          "sha256": "4a080bcbd5c94b18f80510f7f9a02f259a663fd1e67a07ba0c025ec0e49b93da",
+          "bytes": 862,
+          "executable": false
+        },
+        {
+          "path": "components/study_plugins/mr-contract/scripts/mr.R",
+          "sha256": "b3b80cb5d1e246d3ef20f9891dce49b16627fa044bd4bf783a60ab28704bab79",
+          "bytes": 15590,
+          "executable": false
+        },
+        {
+          "path": "components/study_plugins/shared/gwas-normalization-receipt.R",
+          "sha256": "2c0102e4524a99a86416126927a0826bb7c0c0b525fdbbce2e9183bb3f514c80",
+          "bytes": 6556,
+          "executable": false
+        },
+        {
+          "path": "manifest.toml",
+          "sha256": "7caa7c7fb6f3a5b9ebfa5d15b848fb4403b4cf5eb347a16e2aed5b43f15a8821",
+          "bytes": 2178,
+          "executable": false
+        },
+        {
+          "path": "scripts/mr.R",
+          "sha256": "b3b80cb5d1e246d3ef20f9891dce49b16627fa044bd4bf783a60ab28704bab79",
+          "bytes": 15590,
+          "executable": false
+        },
+        {
+          "path": "scripts/run-mr.sh",
+          "sha256": "835cf78eebd26a8369930e3fd4ec17af2eee8146493bcdec90d8c9a5a2a39bf2",
+          "bytes": 22513,
+          "executable": false
+        }
+      ],
+      "source_inventory_only": true,
+      "scientific_certified": false,
+      "auto_enable": false
+    },
+    {
+      "directory": "research-adapters/mr-sensitivity-contract",
+      "plugin_name": "mr-sensitivity-contract",
+      "kinds": [
+        "mr_frozen_supporting_sensitivity"
+      ],
+      "image_reference": "ghcr.io/zj-2002/twosamplemr@sha256:4ffdb4669c558228a74895bf843bc723341e8837e7fdd367108654b5514e3f99",
+      "files": [
+        {
+          "path": "README.md",
+          "sha256": "3ddce6d161d8cb99bad790dfac12815f830a574b0b96d418d4fe6d04c1375e42",
+          "bytes": 2412,
+          "executable": false
+        },
+        {
+          "path": "SOURCE-README.txt",
+          "sha256": "30f9924325758f4f94ead79ede2f51d9b14a774bd274975913b65eec6137fffe",
+          "bytes": 1165,
+          "executable": false
+        },
+        {
+          "path": "component-source.json",
+          "sha256": "a6723d6ac85ad86e0547b93f4db82323bec9075fd3beeae674804b03d233fce4",
+          "bytes": 3148,
+          "executable": false
+        },
+        {
+          "path": "components/scripts/build_mr_sensitivity_wrapper.py",
+          "sha256": "474a78abec6467b1d15be326792a93be0ffff88489656e21e30a0360c220af5f",
+          "bytes": 2103,
+          "executable": false
+        },
+        {
+          "path": "components/study_plugins/mr-contract/scripts/mr.R",
+          "sha256": "b3b80cb5d1e246d3ef20f9891dce49b16627fa044bd4bf783a60ab28704bab79",
+          "bytes": 15590,
+          "executable": false
+        },
+        {
+          "path": "components/study_plugins/mr-sensitivity-contract/scripts/sensitivity.R",
+          "sha256": "cb371930278d1ce53c7d69104e99472d6a91aa2112df786195b8dc194617ac2a",
+          "bytes": 14972,
+          "executable": false
+        },
+        {
+          "path": "components/study_plugins/shared/gwas-normalization-receipt.R",
+          "sha256": "2c0102e4524a99a86416126927a0826bb7c0c0b525fdbbce2e9183bb3f514c80",
+          "bytes": 6556,
+          "executable": false
+        },
+        {
+          "path": "manifest.toml",
+          "sha256": "f6a1dfd2e31b827a00eafa4c861d02ba6466e36f5bccbafa8a413106df7d35f9",
+          "bytes": 2016,
+          "executable": false
+        },
+        {
+          "path": "scripts/run-sensitivity.sh",
+          "sha256": "4ee73d98dfbff95ebd4057fcbd4d05033b907b64d654fbedfa4313324cf5ac25",
+          "bytes": 37425,
+          "executable": true
+        },
+        {
+          "path": "scripts/sensitivity.R",
+          "sha256": "cb371930278d1ce53c7d69104e99472d6a91aa2112df786195b8dc194617ac2a",
+          "bytes": 14972,
+          "executable": false
+        }
+      ],
+      "source_inventory_only": true,
+      "scientific_certified": false,
+      "auto_enable": false
+    },
+    {
+      "directory": "research-adapters/mvmr-contract",
+      "plugin_name": "mvmr-contract",
+      "kinds": [
+        "mvmr_frozen_two_exposure"
+      ],
+      "image_reference": "localhost/research-mvmr-contract-candidate@sha256:b23536cba6e5d078d33101c467dee3cd92b2c352e54eb5d26906e1f408f7a364",
+      "files": [
+        {
+          "path": "README.md",
+          "sha256": "ec24a5b39918ca4bc0e2c5c839208d8b7b71648c10bd0ce25b4b1be8b28e3c6e",
+          "bytes": 1952,
+          "executable": false
+        },
+        {
+          "path": "SOURCE-README.txt",
+          "sha256": "de638e90c092a7a336ccc2e63d29a840ea54c6b24845c4342a4de60f803c9280",
+          "bytes": 1180,
+          "executable": false
+        },
+        {
+          "path": "component-source.json",
+          "sha256": "815a4cf5bed3b993f124d714e603ffd43112399f4b86c41c6c2ebb3e43f9736e",
+          "bytes": 2381,
+          "executable": false
+        },
+        {
+          "path": "components/scripts/build_mvmr_contract_wrapper.py",
+          "sha256": "ccb4494281b32ae9c4da122b0a89f8ad33b8d568c8a7126ed22072b1f8f9f52e",
+          "bytes": 1213,
+          "executable": false
+        },
+        {
+          "path": "components/study_plugins/mvmr-contract/scripts/mvmr.R",
+          "sha256": "d06d61f80765ee44d22d6acd4af96b71e516db3dc8f59df2a3d728495d0362de",
+          "bytes": 22436,
+          "executable": false
+        },
+        {
+          "path": "manifest.toml",
+          "sha256": "4ce646b4bd6616b73946f3825adcad8e6df8b4ffb39957d8fe38d2e781d4bec5",
+          "bytes": 2035,
+          "executable": false
+        },
+        {
+          "path": "scripts/mvmr.R",
+          "sha256": "d06d61f80765ee44d22d6acd4af96b71e516db3dc8f59df2a3d728495d0362de",
+          "bytes": 22436,
+          "executable": false
+        },
+        {
+          "path": "scripts/run-mvmr.sh",
+          "sha256": "36893cf22ee61180ce4e1f0f4e14a5a33ecea3146cc6878af2729755ea0467ca",
+          "bytes": 22881,
+          "executable": true
+        }
+      ],
+      "source_inventory_only": true,
+      "scientific_certified": false,
+      "auto_enable": false
+    },
+    {
+      "directory": "research-adapters/mvmr-covariance-contract",
+      "plugin_name": "mvmr-covariance-contract",
+      "kinds": [
+        "mvmr_frozen_covariance_receipt"
+      ],
+      "image_reference": "localhost/autonomics/python-guard@sha256:d7d40ff1494750f26ded735e2551efb86d970355b805868b92ec9107b7ca7c68",
+      "files": [
+        {
+          "path": "README.md",
+          "sha256": "89726d3d4c25f05d831a3c129f66bf99cd1847326e82258e1a65b8e479843bd2",
+          "bytes": 984,
+          "executable": false
+        },
+        {
+          "path": "SOURCE-README.txt",
+          "sha256": "14cbac30dd0e378b667b6f23db283e460dd3c970ef74412d6877078d4d6136f7",
+          "bytes": 1171,
+          "executable": false
+        },
+        {
+          "path": "component-source.json",
+          "sha256": "7b38522579cab4d08231af2606cf56d64342ed784deac5b78aeb2477fe8ebbea",
+          "bytes": 2457,
+          "executable": false
+        },
+        {
+          "path": "components/scripts/build_mvmr_covariance_wrapper.py",
+          "sha256": "cbad02c81db6f48fa7767f56e917f91b7f66bef9097cbf504199e71e0a735e12",
+          "bytes": 1260,
+          "executable": false
+        },
+        {
+          "path": "components/scripts/research_mvmr_covariance.py",
+          "sha256": "85dce3f0b3c2cd0492de3e9de1ec458115a545b99357f06309a7ab3db608ebfc",
+          "bytes": 12728,
+          "executable": false
+        },
+        {
+          "path": "components/scripts/research_mvmr_covariance_node.py",
+          "sha256": "61d8a3f81674deb9b1eedaadf2d4dced7248831e2a6dae38a015279528438988",
+          "bytes": 5211,
+          "executable": false
+        },
+        {
+          "path": "manifest.toml",
+          "sha256": "1476b22d364b65c1cdd7bdebe11b6bbfd71a4a48fa661a2fcfbdd108540aaa9c",
+          "bytes": 1507,
+          "executable": false
+        },
+        {
+          "path": "scripts/run-covariance.py",
+          "sha256": "d3646658176910f7075024539c81e6e1caf6814fbcaf172965469f0334d890c2",
+          "bytes": 30869,
+          "executable": true
+        }
+      ],
+      "source_inventory_only": true,
+      "scientific_certified": false,
+      "auto_enable": false
+    },
+    {
+      "directory": "research-adapters/mvmr-joint-clump-contract",
+      "plugin_name": "mvmr-joint-clump-contract",
+      "kinds": [
+        "mvmr_frozen_joint_clump"
+      ],
+      "image_reference": "ghcr.io/zj-2002/twosamplemr@sha256:4ffdb4669c558228a74895bf843bc723341e8837e7fdd367108654b5514e3f99",
+      "files": [
+        {
+          "path": "README.md",
+          "sha256": "f69dd982efe0ff135099b0562954330e0c3427ece7f19743d89558b1184117e2",
+          "bytes": 592,
+          "executable": false
+        },
+        {
+          "path": "SOURCE-README.txt",
+          "sha256": "30f9924325758f4f94ead79ede2f51d9b14a774bd274975913b65eec6137fffe",
+          "bytes": 1165,
+          "executable": false
+        },
+        {
+          "path": "component-source.json",
+          "sha256": "7ee982fec1d87db70aaeaa99ebb507ad9a5dae84d43429384aafa188287294bc",
+          "bytes": 3500,
+          "executable": false
+        },
+        {
+          "path": "components/scripts/build_mvmr_joint_wrappers.py",
+          "sha256": "7ce6e045700e50d746d405e79d49689a66fc76282e93ef7f3e82a7aad25ff2f8",
+          "bytes": 2571,
+          "executable": false
+        },
+        {
+          "path": "components/study_plugins/clump-contract/scripts/clump.R",
+          "sha256": "4cb77955c791b84678173b8c9087b6eb2649bde9a67f6e37d634a6a244e105e5",
+          "bytes": 20787,
+          "executable": false
+        },
+        {
+          "path": "components/study_plugins/mvmr-joint-contract/scripts/harmonise.R",
+          "sha256": "e6b1fd7189f48eccb698542f95675701ec88de635acff77418a0d062672e819f",
+          "bytes": 16118,
+          "executable": false
+        },
+        {
+          "path": "components/study_plugins/mvmr-joint-contract/scripts/joint-receipt.R",
+          "sha256": "6644bd6e492794ea2ecf26f1efc1c4ebf02a9e9777fdd39fcad4bb7b99c0bae7",
+          "bytes": 4124,
+          "executable": false
+        },
+        {
+          "path": "components/study_plugins/mvmr-joint-contract/scripts/union.R",
+          "sha256": "c6b61125816fd0ce4e983a3ac38a9368ee910fa4dbfef5f27798ec8c1efced02",
+          "bytes": 11155,
+          "executable": false
+        },
+        {
+          "path": "components/study_plugins/shared/gwas-normalization-receipt.R",
+          "sha256": "2c0102e4524a99a86416126927a0826bb7c0c0b525fdbbce2e9183bb3f514c80",
+          "bytes": 6556,
+          "executable": false
+        },
+        {
+          "path": "manifest.toml",
+          "sha256": "1fcda1e677657b7d9bc0d791f610a9d8ddf1cd807592e2bb1701ac125359bfc7",
+          "bytes": 1943,
+          "executable": false
+        },
+        {
+          "path": "scripts/run-clump.sh",
+          "sha256": "861997e7cf07286408d30cfb03bb8130a82c88a7dee80dab213751c1a0d7ceaf",
+          "bytes": 43153,
+          "executable": true
+        }
+      ],
+      "source_inventory_only": true,
+      "scientific_certified": false,
+      "auto_enable": false
+    },
+    {
+      "directory": "research-adapters/mvmr-joint-contract",
+      "plugin_name": "mvmr-joint-contract",
+      "kinds": [
+        "mvmr_frozen_exposure_union",
+        "mvmr_frozen_joint_harmonise"
+      ],
+      "image_reference": "ghcr.io/zj-2002/twosamplemr@sha256:4ffdb4669c558228a74895bf843bc723341e8837e7fdd367108654b5514e3f99",
+      "files": [
+        {
+          "path": "README.md",
+          "sha256": "0db954f8d1c9a290a8baa9b799292a9de466e6677be00b779416b5bd656ea6d4",
+          "bytes": 2334,
+          "executable": false
+        },
+        {
+          "path": "SOURCE-README.txt",
+          "sha256": "30f9924325758f4f94ead79ede2f51d9b14a774bd274975913b65eec6137fffe",
+          "bytes": 1165,
+          "executable": false
+        },
+        {
+          "path": "component-source.json",
+          "sha256": "315e10bd07ee7d217c0505868875bce250d35646c738003d14c3292e6bace87d",
+          "bytes": 4877,
+          "executable": false
+        },
+        {
+          "path": "components/scripts/build_mvmr_joint_wrappers.py",
+          "sha256": "7ce6e045700e50d746d405e79d49689a66fc76282e93ef7f3e82a7aad25ff2f8",
+          "bytes": 2571,
+          "executable": false
+        },
+        {
+          "path": "components/study_plugins/clump-contract/scripts/clump.R",
+          "sha256": "4cb77955c791b84678173b8c9087b6eb2649bde9a67f6e37d634a6a244e105e5",
+          "bytes": 20787,
+          "executable": false
+        },
+        {
+          "path": "components/study_plugins/mvmr-joint-contract/scripts/harmonise.R",
+          "sha256": "e6b1fd7189f48eccb698542f95675701ec88de635acff77418a0d062672e819f",
+          "bytes": 16118,
+          "executable": false
+        },
+        {
+          "path": "components/study_plugins/mvmr-joint-contract/scripts/joint-receipt.R",
+          "sha256": "6644bd6e492794ea2ecf26f1efc1c4ebf02a9e9777fdd39fcad4bb7b99c0bae7",
+          "bytes": 4124,
+          "executable": false
+        },
+        {
+          "path": "components/study_plugins/mvmr-joint-contract/scripts/union.R",
+          "sha256": "c6b61125816fd0ce4e983a3ac38a9368ee910fa4dbfef5f27798ec8c1efced02",
+          "bytes": 11155,
+          "executable": false
+        },
+        {
+          "path": "components/study_plugins/shared/gwas-normalization-receipt.R",
+          "sha256": "2c0102e4524a99a86416126927a0826bb7c0c0b525fdbbce2e9183bb3f514c80",
+          "bytes": 6556,
+          "executable": false
+        },
+        {
+          "path": "manifest.toml",
+          "sha256": "34b815a1da8bf3f21d618f812b208ba362c34db122b94b0162848667d5fa4aa9",
+          "bytes": 3597,
+          "executable": false
+        },
+        {
+          "path": "scripts/harmonise.R",
+          "sha256": "e6b1fd7189f48eccb698542f95675701ec88de635acff77418a0d062672e819f",
+          "bytes": 16118,
+          "executable": false
+        },
+        {
+          "path": "scripts/joint-receipt.R",
+          "sha256": "6644bd6e492794ea2ecf26f1efc1c4ebf02a9e9777fdd39fcad4bb7b99c0bae7",
+          "bytes": 4124,
+          "executable": false
+        },
+        {
+          "path": "scripts/run-harmonise.sh",
+          "sha256": "f21864ca2d9fc7cdb20283e8443f6f39a024b8a13cabe1b0eeeb6b446c737ecf",
+          "bytes": 34476,
+          "executable": true
+        },
+        {
+          "path": "scripts/run-union.sh",
+          "sha256": "95b8ee4a6bde7e7895520d3c68de37f674f6b6bf07cde994a76c6fa46a32fced",
+          "bytes": 18242,
+          "executable": true
+        },
+        {
+          "path": "scripts/union.R",
+          "sha256": "c6b61125816fd0ce4e983a3ac38a9368ee910fa4dbfef5f27798ec8c1efced02",
+          "bytes": 11155,
+          "executable": false
+        }
+      ],
+      "source_inventory_only": true,
+      "scientific_certified": false,
+      "auto_enable": false
+    },
+    {
+      "directory": "research-adapters/mvmr-orientation-contract",
+      "plugin_name": "mvmr-orientation-contract",
+      "kinds": [
+        "mvmr_frozen_covariance_orientation"
+      ],
+      "image_reference": "localhost/autonomics/python-guard@sha256:d7d40ff1494750f26ded735e2551efb86d970355b805868b92ec9107b7ca7c68",
+      "files": [
+        {
+          "path": "README.md",
+          "sha256": "c6a2fc7c8dd49d44912fae98758c4bab682a300b9208c4c20a139dc8dd4651f2",
+          "bytes": 1482,
+          "executable": false
+        },
+        {
+          "path": "SOURCE-README.txt",
+          "sha256": "14cbac30dd0e378b667b6f23db283e460dd3c970ef74412d6877078d4d6136f7",
+          "bytes": 1171,
+          "executable": false
+        },
+        {
+          "path": "component-source.json",
+          "sha256": "6d8a372e76da580fb8b084fa68c2721ccd604f179d6b3c17effb4b8a47667a44",
+          "bytes": 2483,
+          "executable": false
+        },
+        {
+          "path": "components/scripts/build_mvmr_orientation_wrapper.py",
+          "sha256": "9b27a5453a8ce76606a8abc4206aa5051f909a352d0cd5f3639b232a71f72e3b",
+          "bytes": 1257,
+          "executable": false
+        },
+        {
+          "path": "components/scripts/research_mvmr_covariance.py",
+          "sha256": "85dce3f0b3c2cd0492de3e9de1ec458115a545b99357f06309a7ab3db608ebfc",
+          "bytes": 12728,
+          "executable": false
+        },
+        {
+          "path": "components/scripts/research_mvmr_covariance_orientation.py",
+          "sha256": "3f88824367221013ef354273e98774ad0f406ae0df6327104859abc35369f43a",
+          "bytes": 17731,
+          "executable": false
+        },
+        {
+          "path": "manifest.toml",
+          "sha256": "daa2634a0ee0ea7e4f85cc604c56ba5cb5a09be982aef03c13490345609db7f4",
+          "bytes": 1758,
+          "executable": false
+        },
+        {
+          "path": "scripts/run-orientation.py",
+          "sha256": "75ce91cde58b6cf90c9e9bcd0096330777d8caf4b7399681b945635438c57533",
+          "bytes": 43389,
+          "executable": true
+        }
+      ],
+      "source_inventory_only": true,
+      "scientific_certified": false,
+      "auto_enable": false
+    },
+    {
       "directory": "research-adapters/visualization",
       "plugin_name": "visualization",
       "kinds": [
