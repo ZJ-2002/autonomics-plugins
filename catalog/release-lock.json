@@ -14352,14 +14352,14 @@
         },
         {
           "path": "README.md",
-          "sha256": "64bc2f079c817fb09be5704c7d2af0efda0d1bb32ec08b9a9867cfec724c2f94",
-          "bytes": 14239,
+          "sha256": "528cde4a8c476f87b81e0b6661bf50b7784be85cf13dbf7ff07f55c2b586a605",
+          "bytes": 16327,
           "executable": false
         },
         {
           "path": "manifest.toml",
-          "sha256": "c3512e70d5cf255a3ac0efab15b577c588e71c97ce32627490351b87655e1e26",
-          "bytes": 23012,
+          "sha256": "366dd7cd089c54fcca9a851f3d6a85aee1c348bfb23dd66315b1c1e053f8b5b7",
+          "bytes": 23779,
           "executable": false
         },
         {
@@ -14372,6 +14372,12 @@
           "path": "requirements.txt",
           "sha256": "60becba211030aafc3fd6a900ae3eb72025755cfe0b53e2c585978001f20bb04",
           "bytes": 975,
+          "executable": false
+        },
+        {
+          "path": "scripts/embedding.py",
+          "sha256": "6b6fd77d1fee27c05901b3b64e9d8ad4aabe59498c23ae1cb901ed84dbd3a1c0",
+          "bytes": 11115,
           "executable": false
         },
         {
@@ -14390,6 +14396,12 @@
           "path": "scripts/score_genes.py",
           "sha256": "9cad19728810b8e9c9933fed33f556870419a985a12f1485ce61d4f4da8c58e8",
           "bytes": 4973,
+          "executable": false
+        },
+        {
+          "path": "test_embedding_assurance.sh",
+          "sha256": "4a608cb8990b7d11ed3759e2c7c8cb7fa98fc46c000174ec5395639d4f837319",
+          "bytes": 1929,
           "executable": false
         },
         {
@@ -14423,9 +14435,27 @@
           "executable": false
         },
         {
+          "path": "tests/embedding_compare.py",
+          "sha256": "bbf6bdabc6652eba93d08dda4c67c4013e37e75230a0517a18195a6152adbd5b",
+          "bytes": 6379,
+          "executable": false
+        },
+        {
+          "path": "tests/embedding_reference.py",
+          "sha256": "b7971589fed6ccba369b8bc16c4eb7426f1ec2a1a53d9f62441c1c73f3745e7a",
+          "bytes": 2650,
+          "executable": false
+        },
+        {
           "path": "tests/preprocess_reference.py",
           "sha256": "6c7c3f1ae1d25d010b39ff05d6d26abc400c2ec093d8ed7d3d1d352a3b7f5fdf",
           "bytes": 3262,
+          "executable": false
+        },
+        {
+          "path": "tests/profile_embedding_backend.py",
+          "sha256": "71a3f4afa68b7742d165f4fbbdc4d8191d6c37d04dfbfd58c994ec811176d8d5",
+          "bytes": 985,
           "executable": false
         },
         {
@@ -14438,6 +14468,18 @@
           "path": "tests/qc_reference.py",
           "sha256": "49e44742c9697e3ad9df7f79b332f523b746c30db8c3d725a1f878d8ee3dd56b",
           "bytes": 2498,
+          "executable": false
+        },
+        {
+          "path": "tests/test_embedding_boundaries.py",
+          "sha256": "5f6d6c62ae523b86113fc155919f09671111789376275511bc0537887b03fc55",
+          "bytes": 6038,
+          "executable": false
+        },
+        {
+          "path": "tests/test_embedding_container.py",
+          "sha256": "8069b0a0f817ce5554110e86a6abf35b1becdfc461b9cff961cf57d2add04f45",
+          "bytes": 8322,
           "executable": false
         },
         {

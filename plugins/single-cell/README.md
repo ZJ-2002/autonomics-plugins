@@ -9,7 +9,7 @@ directory = one plugin family = one git-able unit, one image
 
 - `manifest.toml` — the eleven-node contract: params, ports, panel, image
   provenance
-- `scripts/run_workflow.py` — shared runner shim for eight H5AD nodes;
+- `scripts/run_workflow.py` — shared runner shim for seven H5AD nodes;
   rebuilds the legacy `params.json` from `SC_P_*` env vars and execs the
   workflow runner baked into the image
 - `Dockerfile`, `.dockerignore`, `requirements.txt`, `preprocess.py`,
@@ -43,6 +43,40 @@ Every node runs isolated (no network) with a read-only root filesystem and
 `PullPolicy::Missing`, exactly like the legacy wrappers.
 
 ## Execution shape
+
+### Embedding assurance candidate (2026-10-12)
+
+`h5ad_pca_neighbors_umap_leiden` runs the tracked, injected
+`scripts/embedding.py`, not the legacy baked branch. Its canonical kind,
+ten parameters, two outputs, timeout and 4CPU/16Gi declaration remain
+unchanged. This resource ceiling is not a laptop budget or deployment approval.
+
+The recipe uses centered ARPACK PCA even when `scale=False`, then neighbors
+explicitly from the first requested `X_pca` components, spectral two-dimensional
+UMAP, and weighted undirected igraph Leiden with two iterations. `min_dist=0`
+is valid. Requested PCA width is never silently reduced. Seurat HVG operates
+on log-counts: newly normalized counts require `log1p=True`; with both
+preprocessing flags false the caller must qualify already-logarithmized counts.
+
+Existing `X_pca` skips normalization/HVG/scaling/PCA, even with no gene matrix.
+Its upstream method, cell origin and unused data are not scientifically
+qualified by this node. The report separates stored and used PC widths and
+records performed stages, full feature retention, package versions and hashes.
+Critical matrices must be finite; pre-existing opaque metadata follows AnnData.
+Single-thread author kernels and integer seeds in the author RNG domain make
+the frozen same-platform numerical comparison reproducible. This is not a
+cross-platform distributional guarantee or a reference cell-type calibration.
+
+The mandatory test entry is `test_embedding_assurance.sh`, with new
+`EMBEDDING_EVIDENCE` and exact `EMBEDDING_REFERENCE_LIBRARY` paths. It exercises
+both exact neighbors and a passively observed 9,000-cell PyNNDescent path.
+The driver optionally takes an explicit author PBMC3k raw benchmark; neither
+synthetic donors nor that benchmark are a qualified disease cohort.
+
+No resident deployment, study counts/species/donor independence, HVG/cluster
+threshold lock, statistical biological claim, global budget/cache/recovery or
+G0 is granted. Normal publication does not overwrite and rolls back a second
+link failure; this is not crash-atomic publication or persistent resume.
 
 ### QC assurance candidate (2026-10-12)
 

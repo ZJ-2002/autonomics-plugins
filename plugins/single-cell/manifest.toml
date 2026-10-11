@@ -156,6 +156,16 @@ If X_pca is absent, normalization, HVG selection, and PCA run before
 neighbors, UMAP, and Leiden; an existing X_pca is reused and must carry
 at least n_pcs components. Runs hot (4 CPUs, 16Gi memory) because the
 PCA and UMAP steps dominate single-node latency.
+The tracked embedding script uses centered ARPACK PCA independently of scale,
+explicit X_pca neighbors, spectral two-dimensional UMAP and weighted,
+undirected igraph Leiden (two iterations), with one-thread author kernels.
+Requested PCA width is never silently reduced. Seurat HVG requires log-counts:
+normalize=True/log1p=False is inadmissible when computing PCA. With both false,
+the caller must qualify already-logarithmized counts. Existing X_pca skips
+preprocessing; its first requested components are used even for small/zero
+gene axes or metadata-only H5AD. Reused upstream method/scale is not certified.
+min_dist=0 is supported. Existing output paths and invalid/nonfinite critical
+results are refused. No frozen cohort/threshold or scientific approval granted.
 """
 timeout_secs = 7200
 artifact_prefix = "/artifacts/h5ad_pca_neighbors_umap_leiden"
@@ -181,7 +191,7 @@ scale = { type = "bool", default = false, doc = "Scale to zero mean and unit var
 
 [nodes.command]
 interpreter = "python"
-script_file = "scripts/run_workflow.py"
+script_file = "scripts/embedding.py"
 
 [nodes.command.env]
 AUTONOMICS_SINGLE_CELL_WORKFLOW = "pca_neighbors_umap_leiden"
