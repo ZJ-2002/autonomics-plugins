@@ -14,9 +14,14 @@ statmod 1.5.2 and WGCNA 1.74; Bioconductor 3.22. See
 dependency census is retained in the image. Build dependencies use the
 declared frozen CRAN snapshot.
 
-The original image could not be pulled (`manifest unknown`); it is not
-certified. The repaired owned image has a separate immutable digest in
-`manifest.toml`.
+The historical upstream image could not be pulled during the limma review
+(`manifest unknown`); it is not certified. For WGCNA, the unchanged original
+runner was subsequently recovered and executed from the immutable owned
+1.0.3 image. Its actual counterexamples are retained separately. The repaired
+1.0.4 image has a separate immutable digest in `manifest.toml` and preserves
+the limma runner and package environment; twenty limma author cases were
+revalidated after this shared-image change. GHCR package visibility remains
+private: authenticated retrieval is verified, anonymous availability is not.
 
 The limma wrapper calls official `DGEList`, `filterByExpr`, optional
 `calcNormFactors(method="TMM")`, `voom`, `lmFit`, optional `contrasts.fit`,
@@ -83,9 +88,73 @@ skips missing dependencies. Failed runs preserve diagnostics.
 Independent official-package numerical comparisons and native DAG proofs
 are separate; smoke success alone does not certify all method branches.
 
-## WGCNA remains pending
+## WGCNA original-node repair and bounded qualification
 
-`wgcna_runner.R` is byte-for-byte restored original source. Package
-installation is not numerical or workflow acceptance. The historical
-manifest has one expression input, not its legacy optional metadata port.
-This limma repair provides no WGCNA certification or module release.
+The original `wgcna` kind, one File input and six File outputs are retained.
+Input 0 is a literal gene-by-sample TSV: `gene_id` followed by unique sample
+columns, finite continuous normalized expression, not a raw-count method.
+The runner cannot infer provenance, normalization, donor independence or
+study eligibility from numeric values. Metadata remains legacy direct-script
+behavior only, not a second declared DAG input. It requires an exact sample
+set, aligns to expression order and refuses eigengene column collisions.
+
+The original seven controls remain: signed/unsigned network, Pearson/bicor,
+minimum module size, deep split 0–4, merge cut height, target block size and
+threads. Integer controls now reject fractional or overflowing values.
+`max_block_size` is an official target, not a guaranteed memory ceiling.
+Additional explicit controls are `power=0`, `power_cutoff=0.85`,
+`max_p_outliers=1` and `seed=54321`. Positive `power` is an explicitly supplied
+fixed value; zero requests the official `powerEstimate`. Failure to estimate
+does not silently substitute threshold 0.8 or power 1. Failed official
+computation retains a separate diagnostic RDS and publishes no normal ports.
+Selecting a fixed power is a scientific decision outside this technical proof.
+
+The wrapper calls official `goodSamplesGenes`, `pickSoftThreshold`,
+`blockwiseModules`, `adjacency`, `signedKME` and `labels2colors`; statistical
+functions are not reimplemented. Correlation options are consistent across
+all stages. Official QC-excluded genes retain rows with true missing kME;
+grey/unassigned genes are not counted as assigned modules. R RNG kind and
+initial/terminal state are recorded.
+
+Wrapper choices are not all package defaults: network defaults to signed
+instead of unsigned, `minModuleSize=30`, `mergeCutHeight=0.25` instead of 0.15,
+`pamRespectsDendro=FALSE` instead of TRUE, numeric labels, powers 1–10 and
+12–30, and TOM type matching network type. These explicit choices are compared
+against the official package with identical arguments, not declared to be the
+only scientifically valid settings. The bicor default `maxPOutliers=1` is
+preserved for compatibility; the author FAQ recommends 0.05 or 0.1 in relevant
+settings. Study configuration must decide, not silently choose for significance.
+
+| Port | Output | Corrected meaning |
+| --- | --- | --- |
+| 0 | soft_threshold.tsv | Actual official fit indices and explicit chosen power |
+| 1 | adjacency_stats.tsv | Real within-block offdiagonal adjacency summaries and full-value hashes, not module sizes |
+| 2 | tom_stats.tsv | Per actual saved TOM block, real overlap summaries and full-value hashes, not guessed block counts or net object bytes |
+| 3 | modules.tsv | Complete original gene IDs, labels/colors, QC/grey status and official kME |
+| 4 | module_eigengenes.tsv | Original sample axis and official MEs; optional metadata is direct-script only |
+| 5 | run_report.json | Canonical identity, inputs/outputs, full axes, QC masks, actual block memberships, RNG, versions and boundary |
+
+The output formats retain their names, but adjacency/TOM column schemas are
+intentionally corrected. Consumers of the former erroneous tables must adapt.
+TOM summaries come from the actual saved official TOM used in clustering;
+temporary full TOM files are removed after publication. Summaries are
+within-block, not a claim to a full cross-block adjacency/TOM. All six output
+destinations must be absent, distinct and writable. Ordinary failures roll
+back this run's publication; SIGKILL, concurrent writers and multi-file atomic
+transactions remain unqualified.
+
+```bash
+WGCNA_EVIDENCE=/absolute/new/evidence-directory \
+WGCNA_REFERENCE_LIBRARY=/absolute/fresh-author-library bash test_wgcna.sh
+```
+
+The mandatory local suite uses the actual baked runner and a separately
+installed five-package author library. No missing dependencies, empty cases,
+or absent images count as PASS. Full numerical/reference and native-DAG
+evidence is indexed by `evidence/canonical-wgcna-v1-20261012.json`. Technical
+qualification is bounded; full WGCNA API, independent runtime, inferential
+calibration, real-study eligibility, full-scale resources and resident daemon
+deployment are not granted. Coexpression is not causality or trait testing.
+
+Author sources: [WGCNA manual](https://cran.r-project.org/web/packages/WGCNA/refman/WGCNA.html)
+and [author FAQ](https://edo98811.github.io/WGCNA_official_documentation/faq.html).

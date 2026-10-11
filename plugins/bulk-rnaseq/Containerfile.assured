@@ -1,0 +1,9 @@
+FROM ghcr.io/zj-2002/bulk-rnaseq-official@sha256:319f2cd767117d702d814675f8f3da16418c9525f175ab1aa509040ab662f86a
+USER root
+COPY wgcna_runner.R /opt/autonomics/wgcna_runner.R
+COPY limma_voom_runner.R /opt/autonomics/limma_voom_runner.R
+COPY Rscript-vanilla /opt/autonomics/Rscript-vanilla
+RUN chmod 0555 /opt/autonomics/wgcna_runner.R /opt/autonomics/limma_voom_runner.R /opt/autonomics/Rscript-vanilla \
+    && Rscript --vanilla -e 'stopifnot(as.character(getRversion()) == "4.5.3", as.character(packageVersion("WGCNA")) == "1.74", as.character(packageVersion("dynamicTreeCut")) == "1.63.1", as.character(packageVersion("limma")) == "3.66.0", as.character(packageVersion("edgeR")) == "4.8.2", as.character(packageVersion("statmod")) == "1.5.2"); parse("/opt/autonomics/wgcna_runner.R")'
+LABEL org.opencontainers.image.version="1.0.4" \
+      org.opencontainers.image.source="https://github.com/ZJ-2002/autonomics-plugins"

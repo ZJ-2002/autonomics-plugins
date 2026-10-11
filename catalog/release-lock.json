@@ -11,12 +11,18 @@
         "limma_voom",
         "wgcna"
       ],
-      "image_reference": "ghcr.io/zj-2002/bulk-rnaseq-official@sha256:319f2cd767117d702d814675f8f3da16418c9525f175ab1aa509040ab662f86a",
+      "image_reference": "ghcr.io/zj-2002/bulk-rnaseq-official@sha256:8b280a45781160f3dc1f5bfac90862b8a85d7d2bf1b89146e418658cca4ca85a",
       "files": [
         {
           "path": ".dockerignore",
           "sha256": "3e343a362179cf6c43da7538be1ffc82f06419ca85124bbc59e0ebc473eb6aa9",
           "bytes": 155,
+          "executable": false
+        },
+        {
+          "path": "Containerfile.assured",
+          "sha256": "e73494546e92fcc32515796c9d7c7eed50d33e308cca51374ee0fa0a454e30a8",
+          "bytes": 923,
           "executable": false
         },
         {
@@ -27,8 +33,8 @@
         },
         {
           "path": "README.md",
-          "sha256": "fe522f5a4c443353a80605929f7203fe94b1abcea0445f00f94c9a8ef329a07d",
-          "bytes": 4598,
+          "sha256": "c08c8f9600e50ee791944079c5f499d545e896c88c34e0f7a9ed3365558865ad",
+          "bytes": 9261,
           "executable": false
         },
         {
@@ -51,8 +57,8 @@
         },
         {
           "path": "manifest.toml",
-          "sha256": "7a872f8b0ed34515f7b568b29fd05dab79283a88994562cc746e5744198962aa",
-          "bytes": 6563,
+          "sha256": "10a86cf9ad37bc9ba03a757059d6b3084713f748ac959c53244a84a9b2dca038",
+          "bytes": 8153,
           "executable": false
         },
         {
@@ -92,15 +98,45 @@
           "executable": false
         },
         {
+          "path": "test_wgcna.sh",
+          "sha256": "633c051e6e013026948f4db428497679b7d3eef90215aae81f688e1cf746f6d0",
+          "bytes": 770,
+          "executable": false
+        },
+        {
+          "path": "tests/run_wgcna_official_matrix.py",
+          "sha256": "e9483d4f04a4190a33ad09d59203933cef1ead13e9ee22dedadba5a917eb1494",
+          "bytes": 6588,
+          "executable": false
+        },
+        {
           "path": "tests/test_limma_boundaries.py",
           "sha256": "4ccbad0203e0ae2a0c29ede94e793fb139bbc154f76132ef917192467a82d56a",
           "bytes": 17389,
           "executable": false
         },
         {
+          "path": "tests/test_wgcna_boundaries.py",
+          "sha256": "55f22a089026da2a63e40f57ae02e2c32c41a008514fd52bdf49d46cf3548f59",
+          "bytes": 10043,
+          "executable": false
+        },
+        {
+          "path": "tests/wgcna_compare_official.R",
+          "sha256": "fc5db0fec987666cb696ffec9022e923bca30b315fe9fc50a05090e8645e1127",
+          "bytes": 5911,
+          "executable": false
+        },
+        {
+          "path": "tests/wgcna_official_reference.R",
+          "sha256": "e10183f93b97ac9f8db4c15a896dcc956beef7f31bd7b3b6abcc181015dd3cd0",
+          "bytes": 3581,
+          "executable": false
+        },
+        {
           "path": "wgcna_runner.R",
-          "sha256": "26e440d682c5083237fb2235d165f3c0735f33cdbf586826ca0aab94f767f819",
-          "bytes": 10140,
+          "sha256": "d68f919893ef4cada6b09c0a267aabde68360d413ba7000f3728d10b66d960b5",
+          "bytes": 17483,
           "executable": false
         }
       ],

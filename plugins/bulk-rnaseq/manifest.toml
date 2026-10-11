@@ -2,8 +2,8 @@ schema_version = 1
 plugin_name = "bulk-rnaseq"
 
 [image]
-reference = "ghcr.io/zj-2002/bulk-rnaseq-official@sha256:319f2cd767117d702d814675f8f3da16418c9525f175ab1aa509040ab662f86a"
-tag = "1.0.3"
+reference = "ghcr.io/zj-2002/bulk-rnaseq-official@sha256:8b280a45781160f3dc1f5bfac90862b8a85d7d2bf1b89146e418658cca4ca85a"
+tag = "1.0.4"
 upstream = "SHA-locked author sources: limma 3.66.0, edgeR 4.8.2, statmod 1.5.2, WGCNA 1.74; R 4.5.3; owned digest-pinned DESeq2 base; WGCNA installation is not method certification"
 license = "Artistic-2.0 OR GPL-2.0-or-later"
 
@@ -72,20 +72,27 @@ shm_size = "1Gi"
 
 [[nodes]]
 kind = "wgcna"
-desc = "Preserved legacy WGCNA wrapper; method acceptance remains pending."
+desc = "Official WGCNA blockwise coexpression with truthful adjacency, TOM and QC ledgers."
 doc = """
 Input port 0 is a gene-by-sample expression matrix (genes as rows, samples
 as columns, gene_id as the first column). The legacy wrapper accepted an
 optional second sample-metadata input, but the v0 DSL has no optional-port
 flag, so only the wired expression input is declared; the baked runner
 treats a missing AUTONOMICS_INPUT1 as no metadata and publishes eigengenes
-without covariate columns. The node performs the soft-threshold scan,
-builds the signed adjacency / TOM via WGCNA::blockwiseModules, applies
-dynamic tree cut + merge, computes kME per gene, and emits module
-assignments, module eigengenes, soft-threshold statistics and a run report.
-This restored source and installed package have not been granted numerical
-or workflow acceptance by the limma_voom proof. Do not infer certification
-from this shared image or node registration.
+without covariate columns. Input values must be finite continuous normalized
+expression; the runner cannot infer or approve the scale from numeric values.
+Official goodSamplesGenes exclusions are recorded without losing gene IDs.
+The default power=0 uses the official powerEstimate at power_cutoff and fails
+without a silent fallback if unavailable. Positive power is an explicitly
+supplied fixed value, not a study-approved choice. Signed/unsigned networks
+and Pearson/bicor use consistent correlation settings throughout the scan,
+adjacency, blockwiseModules and kME. Adjacency and TOM summaries describe
+actual within-block offdiagonal similarities, not module sizes or guessed
+block counts. TOM values are loaded from actual official saved TOMs. All six
+outputs are required and existing outputs are rejected. Ordinary failures
+roll back publication; multi-file atomicity and concurrent writers are not
+certified. Coexpression is not causality, trait testing, or scientific release.
+Numerical and DAG qualification of this repaired revision remains pending.
 """
 timeout_secs = 7200
 artifact_prefix = "/artifacts/wgcna"
@@ -104,15 +111,19 @@ outputs = [
 [nodes.params]
 network_type = { type = "string", default = "signed", doc = "signed or unsigned" }
 cor = { type = "string", default = "pearson", doc = "pearson or bicor" }
-min_module_size = { type = "int", default = 30, min = 5.0, doc = "Minimum module size for the dynamic tree cut" }
+min_module_size = { type = "int", default = 30, min = 5.0, max = 2147483647.0, doc = "Minimum module size for the dynamic tree cut" }
 deep_split = { type = "int", default = 2, min = 0.0, max = 4.0, doc = "Pectinate-tree split sensitivity passed to blockwiseModules" }
 merge_threshold = { type = "number", default = 0.25, exclusive_min = 0.0, exclusive_max = 1.0, doc = "Eigengene merge cut height; strictly between 0 and 1" }
-max_block_size = { type = "int", default = 5000, min = 500.0, doc = "Upper bound on genes per block; keeps memory bounded" }
-threads = { type = "int", default = 1, min = 1.0, doc = "WGCNA worker threads; 1 disables parallel blinding" }
+max_block_size = { type = "int", default = 5000, min = 500.0, max = 2147483647.0, doc = "Official target block size, not a strict mathematical or memory ceiling" }
+threads = { type = "int", default = 1, min = 1.0, max = 2147483647.0, doc = "WGCNA worker threads; 1 disables parallel computation; not a global resource budget" }
+power = { type = "number", default = 0.0, min = 0.0, max = 30.0, doc = "0 uses official automatic power estimation; positive value is an explicit fixed power, never an automatic fallback" }
+power_cutoff = { type = "number", default = 0.85, exclusive_min = 0.0, exclusive_max = 1.0, doc = "Official pickSoftThreshold RsquaredCut" }
+max_p_outliers = { type = "number", default = 1.0, min = 0.0, max = 1.0, doc = "Official bicor maxPOutliers, consistently used throughout; 1 preserves the author default, not the FAQ recommendation of 0.05 or 0.1" }
+seed = { type = "int", default = 54321, min = 0.0, max = 2147483647.0, doc = "Official blockwise preclustering seed; R RNG kind also recorded" }
 
 [nodes.command]
-interpreter = "Rscript"
-argv = ["--vanilla", "/opt/autonomics/wgcna_runner.R"]
+interpreter = "/opt/autonomics/Rscript-vanilla"
+script_file = "wgcna_runner.R"
 
 [nodes.command.env]
 AUTONOMICS_WGCNA_NETWORK_TYPE = "{{ network_type }}"
@@ -122,6 +133,10 @@ AUTONOMICS_WGCNA_DEEP_SPLIT = "{{ deep_split }}"
 AUTONOMICS_WGCNA_MERGE_THRESHOLD = "{{ merge_threshold }}"
 AUTONOMICS_WGCNA_MAX_BLOCK_SIZE = "{{ max_block_size }}"
 AUTONOMICS_WGCNA_THREADS = "{{ threads }}"
+AUTONOMICS_WGCNA_POWER = "{{ power }}"
+AUTONOMICS_WGCNA_POWER_CUTOFF = "{{ power_cutoff }}"
+AUTONOMICS_WGCNA_MAX_P_OUTLIERS = "{{ max_p_outliers }}"
+AUTONOMICS_WGCNA_SEED = "{{ seed }}"
 
 [nodes.resources]
 cpus = 4.0

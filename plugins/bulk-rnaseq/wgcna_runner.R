@@ -1,288 +1,280 @@
 #!/usr/bin/env Rscript
-# Whole-pipeline WGCNA contract.
-#
-# Consumes a single expression matrix (genes x samples, samples are columns)
-# plus an optional sample metadata file with covariate metadata that is
-# preserved alongside the module eigengenes.
-#
-# Outputs:
-#   soft_threshold.tsv   power scan and chosen beta
-#   adjacency_stats.tsv  sparse adjacency summary (mean / non-zero counts)
-#   tom_stats.tsv        summary of the topological overlap matrix
-#   modules.tsv          gene -> module assignment with kME values
-#   module_eigengenes.tsv module eigengenes matrix
-#   run_report.json      contract report with package versions
-
-options(stringsAsFactors = FALSE, digits = 15)
+options(stringsAsFactors = FALSE, digits = 17)
 
 required_env <- function(name) {
   value <- Sys.getenv(name)
-  if (!nzchar(value)) {
-    stop(sprintf("missing required environment variable: %s", name), call. = FALSE)
-  }
+  if (!nzchar(value)) stop(paste("missing required environment variable:", name), call. = FALSE)
   value
 }
 
-required_env("AUTONOMICS_INPUT0")
-
-expr_path <- Sys.getenv("AUTONOMICS_INPUT0")
-metadata_path <- Sys.getenv("AUTONOMICS_INPUT1")
-soft_threshold_path <- Sys.getenv("AUTONOMICS_OUTPUT0")
-adjacency_stats_path <- Sys.getenv("AUTONOMICS_OUTPUT1")
-tom_stats_path <- Sys.getenv("AUTONOMICS_OUTPUT2")
-modules_path <- Sys.getenv("AUTONOMICS_OUTPUT3")
-eigengenes_path <- Sys.getenv("AUTONOMICS_OUTPUT4")
-report_path <- Sys.getenv("AUTONOMICS_OUTPUT5")
-
-network_type <- Sys.getenv("AUTONOMICS_WGCNA_NETWORK_TYPE", "signed")
-cor_fn <- Sys.getenv("AUTONOMICS_WGCNA_COR", "pearson")
-min_module_size <- as.integer(Sys.getenv("AUTONOMICS_WGCNA_MIN_MODULE_SIZE", "30"))
-deep_split <- as.integer(Sys.getenv("AUTONOMICS_WGCNA_DEEP_SPLIT", "2"))
-merge_threshold <- as.numeric(Sys.getenv("AUTONOMICS_WGCNA_MERGE_THRESHOLD", "0.25"))
-max_block_size <- as.integer(Sys.getenv("AUTONOMICS_WGCNA_MAX_BLOCK_SIZE", "5000"))
-threads <- as.integer(Sys.getenv("AUTONOMICS_WGCNA_THREADS", "1"))
-
-if (!network_type %in% c("signed", "unsigned")) {
-  stop("network_type must be signed or unsigned", call. = FALSE)
-}
-if (!cor_fn %in% c("pearson", "bicor")) {
-  stop("cor must be pearson or bicor", call. = FALSE)
-}
-if (is.na(min_module_size) || min_module_size < 5) {
-  stop("min_module_size must be at least 5", call. = FALSE)
-}
-if (is.na(deep_split) || deep_split < 0 || deep_split > 4) {
-  stop("deep_split must be between 0 and 4", call. = FALSE)
-}
-if (is.na(merge_threshold) || merge_threshold <= 0 || merge_threshold >= 1) {
-  stop("merge_threshold must lie strictly between 0 and 1", call. = FALSE)
-}
-if (is.na(max_block_size) || max_block_size < 500) {
-  stop("max_block_size must be at least 500", call. = FALSE)
-}
-if (is.na(threads) || threads < 1) {
-  stop("threads must be a positive integer", call. = FALSE)
-}
-
-expr_frame <- read.delim(
-  expr_path,
-  check.names = FALSE,
-  stringsAsFactors = FALSE,
-  na.strings = "NA"
-)
-if (ncol(expr_frame) < 2 || !identical(colnames(expr_frame)[[1]], "gene_id")) {
-  stop("expression matrix must start with gene_id followed by sample columns", call. = FALSE)
-}
-if (anyDuplicated(colnames(expr_frame))) {
-  stop("expression matrix column names must be unique", call. = FALSE)
-}
-gene_ids <- expr_frame[[1]]
-if (anyNA(gene_ids) || !all(nzchar(gene_ids))) {
-  stop("gene_id cannot be empty", call. = FALSE)
-}
-if (anyDuplicated(gene_ids)) {
-  stop("gene_id values must be unique", call. = FALSE)
-}
-sample_ids <- colnames(expr_frame)[-1]
-expr <- as.matrix(expr_frame[, -1, drop = FALSE])
-mode(expr) <- "numeric"
-rownames(expr) <- gene_ids
-colnames(expr) <- sample_ids
-if (any(!is.finite(expr))) {
-  stop("expression matrix contains non-finite values", call. = FALSE)
-}
-if (anyNA(expr)) {
-  expr[is.na(expr)] <- 0
-}
-
-sample_metadata <- NULL
-if (nzchar(metadata_path)) {
-  md <- read.delim(
-    metadata_path,
-    check.names = FALSE,
-    stringsAsFactors = FALSE,
-    na.strings = "NA"
-  )
-  if (!identical(colnames(md)[[1]], "sample_id")) {
-    stop("metadata must start with sample_id", call. = FALSE)
+scalar_number <- function(name, default, lower, upper, integer = FALSE, exclusive = FALSE) {
+  token <- Sys.getenv(name, default)
+  pattern <- "^[+]?(?:[0-9]+(?:[.][0-9]*)?|[.][0-9]+)(?:[eE][+-]?[0-9]+)?$"
+  value <- suppressWarnings(as.numeric(token))
+  if (!grepl(pattern, token, perl = TRUE) || !is.finite(value) ||
+      value < lower || value > upper || (exclusive && (value == lower || value == upper)) ||
+      (integer && (value != floor(value) || !grepl("^[+]?[0-9]+$", token)))) {
+    stop(paste("invalid scalar parameter:", name), call. = FALSE)
   }
-  if (any(!sample_ids %in% md[[1]])) {
-    stop("expression samples must all appear in metadata", call. = FALSE)
+  if (integer) as.integer(value) else value
+}
+
+read_literal_tsv <- function(filename) {
+  if (!file.exists(filename) || dir.exists(filename) ||
+      system2("/usr/bin/test", c("-f", shQuote(filename)), stdout = FALSE, stderr = FALSE) != 0L) {
+    stop("input must be an existing regular file", call. = FALSE)
   }
-  rownames(md) <- md[[1]]
-  sample_metadata <- md[sample_ids, , drop = FALSE]
+  connection <- file(filename, open = "rb")
+  on.exit(close(connection), add = TRUE)
+  repeat {
+    block <- readBin(connection, what = "raw", n = 1024L * 1024L)
+    if (!length(block)) break
+    if (any(block == as.raw(0))) stop("input must not contain embedded NUL bytes", call. = FALSE)
+  }
+  lines <- sub("\r$", "", readLines(filename, warn = FALSE))
+  if (length(lines) < 2L || any(!nzchar(lines))) {
+    stop("input must contain a header and nonempty data rows", call. = FALSE)
+  }
+  fields <- lapply(lines, function(line) {
+    tokens <- strsplit(paste0(line, "\t__END__"), "\t", fixed = TRUE)[[1]]
+    tokens[-length(tokens)]
+  })
+  header <- fields[[1]]
+  if (any(grepl("[[:cntrl:]]", unlist(fields, use.names = FALSE)))) {
+    stop("input fields must not contain control characters", call. = FALSE)
+  }
+  if (any(!nzchar(header)) || anyDuplicated(header)) stop("input headers must be nonempty and unique", call. = FALSE)
+  if (any(lengths(fields) != length(header))) stop("input rows must match the header width", call. = FALSE)
+  frame <- as.data.frame(do.call(rbind, fields[-1]), check.names = FALSE, stringsAsFactors = FALSE)
+  colnames(frame) <- header
+  frame
 }
 
-if (!requireNamespace("WGCNA", quietly = TRUE)) stop("WGCNA is required", call. = FALSE)
-if (!requireNamespace("dynamicTreeCut", quietly = TRUE)) stop("dynamicTreeCut is required", call. = FALSE)
-suppressPackageStartupMessages(library(WGCNA))
-
-if (threads >= 2) {
-  WGCNA::enableWGCNAThreads(nThreads = threads)
-} else {
-  WGCNA::disableWGCNAThreads()
+summary_values <- function(values) {
+  if (any(!is.finite(values))) stop("official network contains nonfinite similarities", call. = FALSE)
+  list(edges = length(values), nonzero_edges = sum(values != 0),
+       mean = if (length(values)) mean(values) else NA_real_,
+       median = if (length(values)) median(values) else NA_real_,
+       minimum = if (length(values)) min(values) else NA_real_,
+       maximum = if (length(values)) max(values) else NA_real_)
 }
 
-powers <- c(1:10, seq(12, 30, by = 2))
-cor_name <- if (identical(cor_fn, "bicor")) "bicor" else "cor"
-cor_type_name <- if (identical(cor_fn, "bicor")) "bicor" else "pearson"
-sft <- WGCNA::pickSoftThreshold(
-  t(expr),
-  powerVector = powers,
-  networkType = network_type,
-  corFnc = cor_name,
-  verbose = 0
-)
-fit_indices <- sft$fitIndices
-if (is.null(fit_indices) || nrow(fit_indices) == 0) {
-  stop("soft-threshold scan returned no fit indices", call. = FALSE)
+main <- function() {
+  expr_path <- required_env("AUTONOMICS_INPUT0")
+  metadata_path <- Sys.getenv("AUTONOMICS_INPUT1")
+  outputs <- vapply(0:5, function(port) required_env(paste0("AUTONOMICS_OUTPUT", port)), character(1))
+  output_links <- Sys.readlink(outputs)
+  if (any(file.exists(outputs)) || any(!is.na(output_links) & nzchar(output_links))) {
+    stop("existing outputs must not be overwritten", call. = FALSE)
+  }
+  identities <- vapply(outputs, function(filename) {
+    if (!dir.exists(dirname(filename))) stop("output parent must be an existing directory", call. = FALSE)
+    file.path(normalizePath(dirname(filename), mustWork = TRUE), basename(filename))
+  }, character(1))
+  if (anyDuplicated(identities)) stop("output paths must be distinct", call. = FALSE)
+  if (any(file.access(dirname(outputs), 2L) != 0L)) stop("output parents must be writable", call. = FALSE)
+
+  network_type <- Sys.getenv("AUTONOMICS_WGCNA_NETWORK_TYPE", "signed")
+  cor_type <- Sys.getenv("AUTONOMICS_WGCNA_COR", "pearson")
+  if (!network_type %in% c("signed", "unsigned")) stop("network_type must be signed or unsigned", call. = FALSE)
+  if (!cor_type %in% c("pearson", "bicor")) stop("cor must be pearson or bicor", call. = FALSE)
+  min_module_size <- scalar_number("AUTONOMICS_WGCNA_MIN_MODULE_SIZE", "30", 5, .Machine$integer.max, TRUE)
+  deep_split <- scalar_number("AUTONOMICS_WGCNA_DEEP_SPLIT", "2", 0, 4, TRUE)
+  merge_threshold <- scalar_number("AUTONOMICS_WGCNA_MERGE_THRESHOLD", "0.25", 0, 1, exclusive = TRUE)
+  max_block_size <- scalar_number("AUTONOMICS_WGCNA_MAX_BLOCK_SIZE", "5000", 500, .Machine$integer.max, TRUE)
+  threads <- scalar_number("AUTONOMICS_WGCNA_THREADS", "1", 1, .Machine$integer.max, TRUE)
+  fixed_power <- scalar_number("AUTONOMICS_WGCNA_POWER", "0", 0, 30)
+  power_cutoff <- scalar_number("AUTONOMICS_WGCNA_POWER_CUTOFF", "0.85", 0, 1, exclusive = TRUE)
+  max_p_outliers <- scalar_number("AUTONOMICS_WGCNA_MAX_P_OUTLIERS", "1", 0, 1)
+  seed <- scalar_number("AUTONOMICS_WGCNA_SEED", "54321", 0, .Machine$integer.max, TRUE)
+
+  raw <- read_literal_tsv(expr_path)
+  if (ncol(raw) < 2L || names(raw)[[1]] != "gene_id") {
+    stop("expression matrix must start with gene_id followed by sample columns", call. = FALSE)
+  }
+  gene_ids <- raw[[1]]
+  sample_ids <- names(raw)[-1]
+  if (any(!nzchar(gene_ids)) || anyDuplicated(gene_ids)) stop("gene_id must be nonempty and unique", call. = FALSE)
+  tokens <- as.matrix(raw[, -1, drop = FALSE])
+  pattern <- "^[+-]?(?:[0-9]+(?:[.][0-9]*)?|[.][0-9]+)(?:[eE][+-]?[0-9]+)?$"
+  if (any(!grepl(pattern, tokens, perl = TRUE))) stop("expression values must be finite numeric tokens", call. = FALSE)
+  expression <- matrix(suppressWarnings(as.numeric(tokens)), nrow = nrow(raw))
+  if (any(!is.finite(expression))) stop("expression values must be finite", call. = FALSE)
+  dimnames(expression) <- list(gene_ids, sample_ids)
+  datExpr <- t(expression)
+
+  metadata <- NULL
+  if (nzchar(metadata_path)) {
+    metadata <- read_literal_tsv(metadata_path)
+    if (names(metadata)[[1]] != "sample_id" || any(!nzchar(metadata[[1]])) ||
+        anyDuplicated(metadata[[1]]) || !setequal(metadata[[1]], sample_ids)) {
+      stop("metadata must start with unique sample_id covering exactly the expression samples", call. = FALSE)
+    }
+    metadata <- metadata[match(sample_ids, metadata[[1]]), , drop = FALSE]
+  }
+
+  suppressPackageStartupMessages(library(WGCNA))
+  if (threads > 1L) WGCNA::enableWGCNAThreads(nThreads = threads) else WGCNA::disableWGCNAThreads()
+  RNGkind("Mersenne-Twister", "Inversion", "Rejection")
+  set.seed(seed)
+  rng_before <- .Random.seed
+  stage <- tempfile(pattern = "wgcna-publication-")
+  if (!dir.create(stage, mode = "0700")) stop("cannot create private staging", call. = FALSE)
+  staged_outputs <- file.path(stage, paste0("port", 0:5))
+  published <- character()
+  complete <- FALSE
+  on.exit({
+    if (!complete && length(published)) unlink(published)
+    unlink(stage, recursive = TRUE)
+  }, add = TRUE)
+  state <- new.env(parent = emptyenv())
+  state$warnings <- character()
+  state$analysis <- list(network_type = network_type, cor = cor_type, min_module_size = min_module_size,
+    deep_split = deep_split, merge_threshold = merge_threshold, max_block_size = max_block_size,
+    threads = threads, requested_power = fixed_power, power_cutoff = power_cutoff,
+    max_p_outliers = max_p_outliers, seed = seed)
+  tryCatch(withCallingHandlers({
+    quality <- WGCNA::goodSamplesGenes(datExpr, verbose = 0)
+    state$quality <- quality
+    filtered <- datExpr[quality$goodSamples, quality$goodGenes, drop = FALSE]
+    cor_function <- if (cor_type == "bicor") "bicor" else "cor"
+    cor_options <- list(use = "p")
+    cor_options_text <- "use = 'p'"
+    if (cor_type == "bicor") {
+      cor_options <- c(cor_options, list(maxPOutliers = max_p_outliers, pearsonFallback = "individual"))
+      cor_options_text <- paste0("use = 'p', maxPOutliers = ", sprintf("%.17g", max_p_outliers),
+                                ", pearsonFallback = 'individual'")
+    }
+    powers <- c(1:10, seq(12, 30, by = 2))
+    scan <- WGCNA::pickSoftThreshold(filtered, powerVector = powers, RsquaredCut = power_cutoff,
+      networkType = network_type, corFnc = cor_function, corOptions = cor_options, verbose = 0)
+    state$soft_threshold <- scan
+    chosen_power <- if (fixed_power > 0) fixed_power else scan$powerEstimate
+    if (length(chosen_power) != 1L || !is.finite(chosen_power)) {
+      stop("official powerEstimate is unavailable; no automatic fallback is permitted", call. = FALSE)
+    }
+    state$analysis$chosen_power <- chosen_power
+    state$analysis$power_source <- if (fixed_power > 0) "EXPLICIT_FIXED_POWER" else "OFFICIAL_PICK_SOFT_THRESHOLD"
+    fit <- scan$fitIndices
+    if (is.null(fit) || !nrow(fit)) stop("official power scan returned no fit indices", call. = FALSE)
+    soft <- data.frame(power = fit$Power, scale_free_R2 = fit$SFT.R.sq, slope = fit$slope,
+      truncated_R2 = fit$truncated.R.sq, mean_connectivity = fit$mean.k,
+      median_connectivity = fit$median.k, max_connectivity = fit$max.k,
+      chosen_power = chosen_power, network_type = network_type, cor = cor_type)
+    write.table(soft, staged_outputs[[1]], sep = "\t", quote = FALSE, row.names = FALSE, na = "NA")
+    network <- WGCNA::blockwiseModules(datExpr, power = chosen_power, networkType = network_type,
+      corType = cor_type, maxPOutliers = max_p_outliers, pearsonFallback = "individual",
+      TOMType = network_type, TOMDenom = "min", deepSplit = deep_split, minModuleSize = min_module_size,
+      mergeCutHeight = merge_threshold, maxBlockSize = max_block_size, pamRespectsDendro = FALSE,
+      numericLabels = TRUE, saveTOMs = TRUE, saveTOMFileBase = file.path(stage, "actual-TOM"),
+      randomSeed = seed, nThreads = threads, verbose = 0, checkMissingData = TRUE)
+    if (!identical(network$goodGenes, quality$goodGenes) || !identical(network$goodSamples, quality$goodSamples) ||
+        length(network$colors) != length(gene_ids) || !length(network$blockGenes) ||
+        length(network$TOMFiles) != length(network$blockGenes) || !isTRUE(network$MEsOK)) {
+      stop("official network axes, QC or TOM outputs are inconsistent", call. = FALSE)
+    }
+    state$network <- network[setdiff(names(network), "TOMFiles")]
+    adjacency_rows <- list()
+    tom_rows <- list()
+    block_identities <- list()
+    for (block_index in seq_along(network$blockGenes)) {
+      positions <- network$blockGenes[[block_index]]
+      block_expr <- datExpr[quality$goodSamples, positions, drop = FALSE]
+      adjacency <- WGCNA::adjacency(block_expr, type = network_type, power = chosen_power,
+        corFnc = cor_function, corOptions = cor_options)
+      adjacent_summary <- summary_values(adjacency[lower.tri(adjacency)])
+      adjacency_rows[[block_index]] <- data.frame(block = block_index, genes = length(positions),
+        as.data.frame(adjacent_summary), diagonal_min = min(diag(adjacency)),
+        diagonal_max = max(diag(adjacency)), mean_connectivity = mean(rowSums(adjacency) - diag(adjacency)),
+        values_sha256 = digest::digest(as.numeric(adjacency), algo = "sha256"),
+        network_type = network_type, cor = cor_type, power = chosen_power)
+      tom_environment <- new.env(parent = emptyenv())
+      objects <- load(network$TOMFiles[[block_index]], envir = tom_environment)
+      if (!identical(objects, "TOM") || !inherits(tom_environment$TOM, "dist") ||
+          attr(tom_environment$TOM, "Size") != length(positions)) {
+        stop("actual official TOM is absent or has the wrong block dimension", call. = FALSE)
+      }
+      tom_values <- as.numeric(tom_environment$TOM)
+      if (length(tom_values) != length(positions) * (length(positions) - 1) / 2) {
+        stop("actual official TOM has an inconsistent edge count", call. = FALSE)
+      }
+      tom_rows[[block_index]] <- data.frame(block = block_index, genes = length(positions),
+        as.data.frame(summary_values(tom_values)), serialized_bytes = file.info(network$TOMFiles[[block_index]])$size,
+        values_sha256 = digest::digest(tom_values, algo = "sha256"),
+        network_type = network_type, cor = cor_type, power = chosen_power)
+      block_identities[[block_index]] <- list(block = block_index, original_gene_positions = positions,
+                                             gene_ids = gene_ids[positions])
+    }
+    write.table(do.call(rbind, adjacency_rows), staged_outputs[[2]], sep = "\t", quote = FALSE, row.names = FALSE, na = "NA")
+    write.table(do.call(rbind, tom_rows), staged_outputs[[3]], sep = "\t", quote = FALSE, row.names = FALSE, na = "NA")
+    eigengenes <- network$MEs
+    if (is.null(rownames(eigengenes)) || !identical(rownames(eigengenes), sample_ids)) {
+      stop("official eigengene sample axis differs from the original input", call. = FALSE)
+    }
+    kme <- WGCNA::signedKME(filtered, eigengenes[quality$goodSamples, , drop = FALSE],
+      outputColumnName = "kME", corFnc = cor_function, corOptions = cor_options_text)
+    all_kme <- matrix(NA_real_, nrow = length(gene_ids), ncol = ncol(kme),
+                      dimnames = list(gene_ids, names(kme)))
+    all_kme[quality$goodGenes, ] <- as.matrix(kme)
+    labels <- network$colors
+    assignments <- data.frame(gene_id = gene_ids, module_label = labels,
+      module_color = WGCNA::labels2colors(labels),
+      gene_status = ifelse(!quality$goodGenes, "OFFICIAL_QC_EXCLUDED",
+                           ifelse(labels == 0, "UNASSIGNED_GREY", "ASSIGNED_MODULE")),
+      all_kme, check.names = FALSE)
+    write.table(assignments, staged_outputs[[4]], sep = "\t", quote = FALSE, row.names = FALSE, na = "NA")
+    eigengene_frame <- data.frame(sample_id = sample_ids, eigengenes, check.names = FALSE)
+    if (!is.null(metadata)) {
+      columns <- setdiff(names(metadata), "sample_id")
+      if (any(columns %in% names(eigengene_frame))) stop("metadata columns collide with eigengenes", call. = FALSE)
+      eigengene_frame <- cbind(eigengene_frame, metadata[, columns, drop = FALSE])
+    }
+    write.table(eigengene_frame, staged_outputs[[5]], sep = "\t", quote = FALSE, row.names = FALSE, na = "NA")
+    packages <- c("WGCNA", "dynamicTreeCut", "fastcluster", "impute", "preprocessCore")
+    report <- list(schema_version = "2.0", node = "wgcna", technical_execution = "COMPLETE",
+      scientific_release = "NOT_GRANTED", analysis = state$analysis,
+      engine = list(versions = as.list(setNames(vapply(packages, function(package) as.character(packageVersion(package)),
+                                                   character(1)), packages)), r_version = as.character(getRversion())),
+      method = list(powers = powers, checkMissingData = TRUE, pamRespectsDendro = FALSE, numericLabels = TRUE,
+                    TOMType = network_type, TOMDenom = "min", pearsonFallback = "individual",
+                    blockwiseOtherArguments = "official WGCNA 1.74 defaults"),
+      rng = list(kind = RNGkind(), before = rng_before, after = .Random.seed), warnings = state$warnings,
+      inputs = list(expression_matrix = list(path = basename(expr_path), md5 = unname(tools::md5sum(expr_path))),
+        sample_metadata = if (nzchar(metadata_path)) list(path = basename(metadata_path),
+          md5 = unname(tools::md5sum(metadata_path)), contract = "LEGACY_DIRECT_SCRIPT_ONLY_NOT_A_DECLARED_DAG_PORT") else NULL),
+      qc = list(all_original_gene_ids = gene_ids, all_original_sample_ids = sample_ids,
+        goodGenes = quality$goodGenes, goodSamples = quality$goodSamples,
+        excluded_gene_ids = gene_ids[!quality$goodGenes], excluded_sample_ids = sample_ids[!quality$goodSamples]),
+      blocks = block_identities, network_semantics_sha256 = digest::digest(state$network, algo = "sha256"),
+      dimensions = list(genes = length(gene_ids), samples = length(sample_ids), good_genes = sum(quality$goodGenes),
+        good_samples = sum(quality$goodSamples), blocks = length(network$blockGenes),
+        assigned_modules = length(setdiff(unique(labels), 0L)), grey_genes = sum(labels == 0)),
+      output_semantics = list(adjacency = "WITHIN_ACTUAL_BLOCK_OFFDIAGONAL_ADJACENCY_NOT_MODULE_SIZE",
+        TOM = "ACTUAL_TOM_USED_BY_OFFICIAL_BLOCKWISE_CLUSTERING_OFFDIAGONAL_DIST",
+        scope = "COEXPRESSION_NOT_CAUSALITY_OR_TRAIT_ASSOCIATION", input_scale = "NOT_INFERRED_FROM_NUMBERS",
+        publication = "ORDINARY_FAILURE_ROLLBACK_NOT_MULTI_FILE_ATOMIC_OR_CONCURRENT_WRITER_CERTIFICATION"),
+      outputs = lapply(seq_len(5), function(index) list(port = index - 1L,
+        path = basename(outputs[[index]]), md5 = unname(tools::md5sum(staged_outputs[[index]])))))
+    jsonlite::write_json(report, staged_outputs[[6]], auto_unbox = TRUE, pretty = TRUE, digits = NA, na = "null", null = "null")
+    for (index in seq_along(outputs)) {
+      link <- Sys.readlink(outputs[[index]])
+      if (file.exists(outputs[[index]]) || (!is.na(link) && nzchar(link)) ||
+          !file.copy(staged_outputs[[index]], outputs[[index]], overwrite = FALSE)) {
+        stop("cannot publish without overwriting an existing output", call. = FALSE)
+      }
+      published <- c(published, outputs[[index]])
+    }
+    complete <- TRUE
+  }, warning = function(condition) {
+    state$warnings <- c(state$warnings, conditionMessage(condition))
+  }), error = function(condition) {
+    diagnostic <- tempfile("wgcna-failure-", tmpdir = dirname(outputs[[6]]), fileext = ".rds")
+    saveRDS(list(error = conditionMessage(condition), state = as.list(state), scientific_release = "NOT_GRANTED"),
+            diagnostic, version = 3)
+    message("failed official computation retained in ", diagnostic)
+    stop(condition)
+  })
+  cat("wgcna complete; technical execution is not scientific release\n")
 }
-chosen_power <- sft$powerEstimate
-if (is.na(chosen_power)) {
-  eligible <- which(fit_indices$SFT.R.sq >= 0.8)
-  chosen_power <- if (length(eligible)) min(powers[eligible]) else powers[1]
-}
-soft_frame <- data.frame(
-  power = fit_indices$Power,
-  scale_free_R2 = fit_indices$SFT.R.sq,
-  slope = fit_indices$slope,
-  truncated_R2 = fit_indices$truncated.R.sq,
-  mean_connectivity = fit_indices$mean.k,
-  median_connectivity = fit_indices$median.k,
-  max_connectivity = fit_indices$max.k,
-  chosen_power = as.integer(chosen_power),
-  network_type = network_type,
-  cor = cor_fn
-)
-write.table(soft_frame, soft_threshold_path, sep = "\t", quote = FALSE, row.names = FALSE)
 
-# Block-wise network construction keeps memory bounded for large cohorts.
-# WGCNA's blockwiseModules handles TOM internally and never materializes
-# the full TOM as a dense dataframe.
-net <- WGCNA::blockwiseModules(
-  t(expr),
-  power = chosen_power,
-  networkType = network_type,
-  corType = cor_type_name,
-  TOMType = if (identical(network_type, "signed")) "signed" else "unsigned",
-  deepSplit = deep_split,
-  minModuleSize = min_module_size,
-  mergeCutHeight = merge_threshold,
-  maxBlockSize = max_block_size,
-  pamRespectsDendro = FALSE,
-  numericLabels = TRUE,
-  saveTOMs = FALSE,
-  verbose = 0,
-  checkMissingData = FALSE
-)
-
-module_labels <- net$colors
-module_size <- table(module_labels)
-module_table <- data.frame(
-  module_label = names(module_size),
-  module_size = as.integer(module_size),
-  stringsAsFactors = FALSE
-)
-write.table(module_table, adjacency_stats_path, sep = "\t", quote = FALSE, row.names = FALSE)
-
-# Compute only the diagonals of the TOM per block for the run report.
-# The full TOM is intentionally not persisted to disk.
-if (length(net$TOMFiles) > 0) {
-  tom_size_bytes <- sum(file.info(net$TOMFiles)$size, na.rm = TRUE)
-  tom_blocks <- length(net$TOMFiles)
-} else {
-  internal_object_bytes <- as.numeric(object.size(net))
-  tom_blocks <- 1L
-}
-tom_stats <- data.frame(
-  blocks = tom_blocks,
-  internal_object_bytes = internal_object_bytes,
-  network_type = network_type,
-  cor = cor_fn,
-  power = chosen_power,
-  stringsAsFactors = FALSE
-)
-write.table(tom_stats, tom_stats_path, sep = "\t", quote = FALSE, row.names = FALSE)
-
-module_assignment <- data.frame(
-  gene_id = rownames(expr),
-  module_label = module_labels,
-  module_color = WGCNA::labels2colors(module_labels),
-  stringsAsFactors = FALSE
-)
-write.table(module_assignment, modules_path, sep = "\t", quote = FALSE, row.names = FALSE)
-
-eigengenes <- net$MEs
-eigengenes_frame <- data.frame(
-  sample_id = rownames(eigengenes),
-  eigengenes,
-  check.names = FALSE,
-  stringsAsFactors = FALSE
-)
-if (!is.null(sample_metadata)) {
-  metadata_columns <- sample_metadata[
-    rownames(eigengenes),
-    setdiff(colnames(sample_metadata), "sample_id"),
-    drop = FALSE
-  ]
-  eigengenes_frame <- cbind(eigengenes_frame, metadata_columns)
-}
-write.table(eigengenes_frame, eigengenes_path, sep = "\t", quote = FALSE, row.names = FALSE)
-
-# kME per gene per module: correlation between expression and module eigengene.
-kme_list <- WGCNA::signedKME(t(expr), datME = eigengenes, outputColumnName = "kME", corFnc = cor_name)
-modules_full <- cbind(module_assignment, kme_list)
-write.table(modules_full, modules_path, sep = "\t", quote = FALSE, row.names = FALSE)
-
-file_checksum <- function(path) unname(tools::md5sum(path))
-
-report <- list(
-  schema_version = "1.0",
-  node = "wgcna_container",
-  analysis = list(
-    network_type = network_type,
-    cor = cor_fn,
-    min_module_size = min_module_size,
-    deep_split = deep_split,
-    merge_threshold = merge_threshold,
-    max_block_size = max_block_size,
-    threads = threads,
-    chosen_power = chosen_power
-  ),
-  engine = list(
-    package = c("WGCNA", "dynamicTreeCut"),
-    versions = list(
-      WGCNA = as.character(packageVersion("WGCNA")),
-      dynamicTreeCut = as.character(packageVersion("dynamicTreeCut"))
-    ),
-    r_version = paste(R.version$major, R.version$minor, sep = ".")
-  ),
-  inputs = list(
-    expression_matrix = list(path = basename(expr_path), md5 = file_checksum(expr_path)),
-    sample_metadata = if (nzchar(metadata_path)) list(path = basename(metadata_path), md5 = file_checksum(metadata_path)) else NULL
-  ),
-  dimensions = list(
-    genes = nrow(expr),
-    samples = ncol(expr),
-    modules = length(unique(module_labels)),
-    modules_after_merge = length(unique(module_labels)),
-    largest_module = if (nrow(module_table)) max(module_table$module_size) else 0
-  ),
-  outputs = list(
-    soft_threshold = list(path = basename(soft_threshold_path), md5 = file_checksum(soft_threshold_path)),
-    adjacency_stats = list(path = basename(adjacency_stats_path), md5 = file_checksum(adjacency_stats_path)),
-    tom_stats = list(path = basename(tom_stats_path), md5 = file_checksum(tom_stats_path)),
-    modules = list(path = basename(modules_path), md5 = file_checksum(modules_path)),
-    eigengenes = list(path = basename(eigengenes_path), md5 = file_checksum(eigengenes_path))
-  )
-)
-jsonlite::write_json(
-  report,
-  report_path,
-  pretty = TRUE,
-  auto_unbox = TRUE,
-  digits = 15,
-  na = "null"
-)
-
-cat("wgcna complete: ", length(unique(module_labels)), " modules over ", nrow(expr), " genes\n", sep = "")
+main()
