@@ -15,20 +15,23 @@ license = "BSD-3-Clause"
 binding = "susie_ref"
 mount = "/panels/mixer_ref"
 bundle = "wjixiang/catalog-mixer-g1000-eur"
+when = { param = "ld_source", equals = "mixer" }
 
 [[nodes]]
 kind = "susie_rss"
-desc = "Runs official susieR::susie_rss against the mixer signed-LD panel."
+desc = "Runs official susieR::susie_rss with explicit complete signed LD or the legacy mixer panel."
 doc = """
 Runs the official susieR 0.16.6 susie_rss(z, R, n, ...) implementation in an ephemeral OCI container.
 
 Input contract:
 - One File input, strictly tab-separated, with columns snp, chrom, z and optional n, a1, a2.
 - Produce it in a DAG with dataframe_to_file using format="tsv"; comma-separated input is parsed as one column and misleadingly fails with missing required columns.
-- All rows must use one autosomal chromosome. SNP must be a literal mixer BIM ID in GRCh37 chr:pos:allele1:allele2 form. rsIDs do not align. Optional a1/a2 specify the z-score effect/other alleles; without them, the ID's first allele is the effect allele. Exact reversals are aligned to BIM columns 5/6, not to the ID's allele order; strand inference is unsupported.
+- All rows must use one autosomal chromosome. SNP must use literal chr:pos:allele1:allele2 IDs, matching the declared reference genome. The default mixer reference uses GRCh37 and requires exact BIM IDs; no rsID conversion or genome-build inference occurs. Optional a1/a2 specify the z-score effect/other alleles; without them, the ID's first allele is the effect allele. The default route aligns exact reversals to BIM columns 5/6, not the ID's allele order; strand inference is unsupported.
 - SNP keys must be unique. n must be constant and greater than one; an override must agree with the column. The reference must explicitly contain every off-diagonal pair for the selected locus. Sparse missing entries are unknown, never assumed zero. Non-PSD LD and nonconverged fits fail without publishing TSV/RDS; the default 50-SNP fixture currently fails this panel-completeness requirement.
 
-The node mounts the mixer.g1000_eur signed-LD catalog panel and retains three declared ports: TSV, untouched official RDS fit, and diagnostic log. TSV columns are snp, pip, cs, alpha, mu, mu2, lbf, cs_all. cs is the last credible-set list index containing the SNP (zero if absent); cs_all preserves every list index separated by semicolons. alpha is the maximum single-effect assignment probability; mu/mu2/lbf are from that effect, not total posterior coefficients. The RDS is authoritative for all effects and named credible sets. Existing paths are never overwritten; two result files are not a transactional crash-recovery protocol.
+Set ld_source=input for a complete signed matrix in the same TSV: ld_a1/ld_a2 declare its counting alleles; ld_n is a constant integer reference sample count greater than one. Columns ld:<SNP> must exactly follow the ordered SNP rows and contain all finite signed correlations. r-squared, sparse omissions, reordering, allele guessing and PSD repair are unsupported. The input matrix must be symmetric with unit diagonal within 1e-10 and minimum eigenvalue >= -1e-10 * SNP count. This route mounts no mixer panel and has no panel fallback. It requires an engine supporting conditional panel bindings. ld_role=in_sample additionally requires known GWAS n equal to ld_n, but equal counts do not prove the same individuals; scientific approval remains separate. Residual variance estimation is allowed only for explicit input LD declared in_sample.
+
+The default ld_source=mixer mounts the mixer.g1000_eur signed-LD catalog panel. Both routes retain three declared ports: TSV, untouched official RDS fit, and diagnostic log. TSV columns are snp, pip, cs, alpha, mu, mu2, lbf, cs_all. cs is the last credible-set list index containing the SNP (zero if absent); cs_all preserves every list index separated by semicolons. alpha is the maximum single-effect assignment probability; mu/mu2/lbf are from that effect, not total posterior coefficients. The RDS is authoritative for all effects and named credible sets. Existing paths are never overwritten; two result files are not a transactional crash-recovery protocol.
 
 Defaults: l=10, estimate_prior_method=optim, estimate_residual_variance=false, estimate_prior_variance=true, coverage=0.95, min_abs_corr=0.5, scaled_prior_variance=0.2, z_method=wald, r2_min=0, check_null_threshold=0, max_iter=100, timeout_secs=1800, artifact_prefix=/artifacts/susie_rss_container."""
 timeout_secs = 1800
@@ -45,7 +48,7 @@ outputs = [
 [nodes.params]
 l = { type = "int", default = 10, min = 1.0, doc = "Maximum number of non-zero effects (SuSiE L parameter)" }
 estimate_prior_method = { type = "string", default = "optim", doc = "Prior-variance optimization method passed to susie_rss: optim, EM, or simple" }
-estimate_residual_variance = { type = "bool", default = false, doc = "Only false is supported with this external-reference LD route; true is rejected" }
+estimate_residual_variance = { type = "bool", default = false, doc = "True requires explicit complete input LD declared in_sample; external reference and mixer routes reject it" }
 estimate_prior_variance = { type = "bool", default = true, doc = "Estimate prior variance per effect" }
 coverage = { type = "number", default = 0.95, min = 0.0, max = 1.0, doc = "Coverage level for credible sets" }
 min_abs_corr = { type = "number", default = 0.5, min = 0.0, max = 1.0, doc = "Official credible-set purity filter, not a per-SNP inclusion threshold" }
@@ -58,6 +61,8 @@ n = { type = "number", optional = true, doc = "Sample size override; when omitte
 check_null_threshold = { type = "number", default = 0.0, doc = "Check-null threshold passed to susie_rss" }
 max_iter = { type = "int", default = 100, min = 1.0, doc = "Maximum number of IBSS iterations" }
 seed = { type = "int", default = 1, min = 0.0, max = 2147483647.0, doc = "R seed set immediately before the official fit, including any random credible-set purity sampling" }
+ld_source = { type = "string", default = "mixer", doc = "mixer: conditional catalog panel; input: complete signed LD columns in the same TSV, no catalog panel lookup or fallback" }
+ld_role = { type = "string", default = "external", doc = "external or in_sample; in_sample requires explicit input LD and is a declaration, not scientific approval" }
 
 [nodes.resources]
 cpus = 2.0
@@ -83,3 +88,5 @@ SUSIE_CHECK_NULL_THRESHOLD = "{{ check_null_threshold }}"
 SUSIE_MAX_ITER = "{{ max_iter }}"
 SUSIE_N = "{{ n }}"
 SUSIE_SEED = "{{ seed }}"
+SUSIE_LD_SOURCE = "{{ ld_source }}"
+SUSIE_LD_ROLE = "{{ ld_role }}"

@@ -14170,8 +14170,8 @@
         },
         {
           "path": "README.md",
-          "sha256": "d00045e6cce5ff5893e69583e4282fcc84d1d792d6dc2c0e3b572c08100b1014",
-          "bytes": 4105,
+          "sha256": "edde57c02d011af9103c6027448ba53134a48e2334edab0d8664c7b77b80ad51",
+          "bytes": 6779,
           "executable": false
         },
         {
@@ -14181,9 +14181,21 @@
           "executable": false
         },
         {
+          "path": "fixtures/complete_ld_50.provenance.json",
+          "sha256": "30eff5cd0282a6c4602479eea4d0971c02497be77288476665e8df5ae004caf9",
+          "bytes": 1788,
+          "executable": false
+        },
+        {
+          "path": "fixtures/complete_ld_50.tsv",
+          "sha256": "51dce7755c6ea37b5f9130e45bc86951ad6477b0c7d5bcf5a06ecbdd29494a83",
+          "bytes": 54583,
+          "executable": false
+        },
+        {
           "path": "manifest.toml",
-          "sha256": "00a403f2cb26ca2da2b7e575c1efa6aa117cbcf1346871d015bab99d3056279c",
-          "bytes": 5737,
+          "sha256": "a6cc84c36c1f234cc0b331de939ed22992f2fe598f13fe685e1dcd7e006821d1",
+          "bytes": 7254,
           "executable": false
         },
         {
@@ -14194,8 +14206,8 @@
         },
         {
           "path": "scripts/run_susie_rss.R.sh",
-          "sha256": "1616e40551507b88473fa5aa5f6ccaf53e7b948885945c4c2146ebfb08d81043",
-          "bytes": 13884,
+          "sha256": "e99787726c4f923071245ed971a4960c7be77de9aa1e3a411350d0ba74587953",
+          "bytes": 16788,
           "executable": false
         },
         {
@@ -14206,9 +14218,15 @@
         },
         {
           "path": "test_susie_rss.sh",
-          "sha256": "416eab149f4a800156a459725c08f3a71396faeeb665f0546ab736ecbdeb1e77",
-          "bytes": 583,
+          "sha256": "212115e05acf5acf9aadbf0316b7bd9e0feb79507c7884dca43d07bfb689b92b",
+          "bytes": 615,
           "executable": true
+        },
+        {
+          "path": "tests/dense_reference.R",
+          "sha256": "5210f2d33254b110595344860be9cc3ba0fe3599993b978e878a2cfd24392eb5",
+          "bytes": 3792,
+          "executable": false
         },
         {
           "path": "tests/official_reference.R",
@@ -14218,8 +14236,14 @@
         },
         {
           "path": "tests/test_contract.py",
-          "sha256": "1300008552e891d0b23339314e50bcbaa12db727372bca44d88341610f61f70c",
-          "bytes": 11088,
+          "sha256": "bccb8679c6972a21238ff0fe0a7d8f355fdb14ba0eb69e3eb08fb4a51ff8a03b",
+          "bytes": 11170,
+          "executable": false
+        },
+        {
+          "path": "tests/test_dense_contract.py",
+          "sha256": "9617e8fc5aa9209dc99061c6a148960e1367df09f21f66fddd79ec6c6a578334",
+          "bytes": 11751,
           "executable": false
         }
       ],

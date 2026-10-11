@@ -1,0 +1,42 @@
+{
+  "manifest_sha256": "fe6a3d9717ea70714dcf1c8c9d15b2790501f030a93283042adebab3e8f1ed2b",
+  "chr21_files": [
+    {
+      "path": "/home/zj-normal/.autonomics/panels/wjixiang/catalog-plink-ref-1000g-eur-binary@sha256:9f483fd11fbb2e73a97ab1af172e45e569c7b8ed7edec5572e35a2b3fa614b21/1000G.EUR.QC.21.bed",
+      "sha256": "2d6c3f5308be8a79958661051ec09c68ac480902fc3ef7aaad4066f03cad6ed6",
+      "size": 17061579
+    },
+    {
+      "path": "/home/zj-normal/.autonomics/panels/wjixiang/catalog-plink-ref-1000g-eur-binary@sha256:9f483fd11fbb2e73a97ab1af172e45e569c7b8ed7edec5572e35a2b3fa614b21/1000G.EUR.QC.21.bim",
+      "sha256": "8cc4a0aba441a2a5173ac8f48aed11926c038afb394098cad872572d1f9f93d8",
+      "size": 5081850
+    },
+    {
+      "path": "/home/zj-normal/.autonomics/panels/wjixiang/catalog-plink-ref-1000g-eur-binary@sha256:9f483fd11fbb2e73a97ab1af172e45e569c7b8ed7edec5572e35a2b3fa614b21/1000G.EUR.QC.21.fam",
+      "sha256": "a9d7b791e70aec4903a62d11c44d2a9c7fc9104351523c090c6c7f32dbd0c1ce",
+      "size": 12225
+    }
+  ],
+  "other_chromosomes_verified": false,
+  "PLINK_binary_sha256": "03ed6dd8882fddee7a89396c59ea56e4b17bbc4411d3049910e5d713fc8a135f",
+  "PLINK_version": "1.90b7.2 64-bit (11 Dec 2023)",
+  "G0": false,
+  "LD_parity": {
+    "PLINK_version": "1.90b7.2",
+    "reference_variants": 50,
+    "founders": 489,
+    "pairwise_values": 2500,
+    "missing_genotype_count": 0,
+    "predeclared_absolute_tolerance": 1e-12,
+    "relative_tolerance": 0,
+    "max_absolute_difference": 1.2989609388114332e-14,
+    "reference_genotypes_count_BIM_A1": true,
+    "scientific_reference_approval": false,
+    "G0": false
+  },
+  "GWAS_scores_synthetic": true,
+  "z_definition": "4 R[:,0]+3 R[:,10]",
+  "GWAS_N": 503,
+  "LD_N": 489,
+  "reference_scientifically_approved": false
+}

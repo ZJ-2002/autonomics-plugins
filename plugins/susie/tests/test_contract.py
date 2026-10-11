@@ -29,7 +29,7 @@ def execute(case, name, command):
     (case / f"{name}.stderr.txt").write_bytes(result.stderr)
     (case / f"{name}.execution.json").write_text(json.dumps({"command": command, "exit": result.returncode,
                                                            "elapsed_seconds": time.monotonic() - started,
-                                                           "scope": "ACTUAL_DECLARED_PORTS_PINNED_OCI_REAL_CHR21_PANEL_NOT_PRODUCTION",
+                                                           "scope": "ACTUAL_DECLARED_PORTS_PINNED_OCI_TECHNICAL_FIXTURE_NOT_PRODUCTION",
                                                            "G0": False}, indent=2) + "\n")
     return result
 
@@ -56,11 +56,12 @@ class SusieContract(unittest.TestCase):
     def command(self):
         command = ["podman", "run", "--rm", "--pull=never", "--network=none", "--cpus=2", "--memory=2g",
                    "--entrypoint", "Rscript", "--mount", f"type=bind,src={SCRIPT},dst=/runner.R,ro=true",
-                   "--mount", f"type=bind,src={PANEL},dst=/panels/mixer_ref,ro=true",
                    "--mount", f"type=bind,src={self.case},dst=/case",
                    "-e", "AUTONOMICS_INPUT0=/case/input.tsv", "-e", "AUTONOMICS_WORKDIR=/case/work",
                    "-e", "AUTONOMICS_OUTPUT0=/case/output/fit.tsv", "-e", "AUTONOMICS_OUTPUT1=/case/output/fit.RDS",
                    "-e", "AUTONOMICS_OUTPUT2=/case/output/fit.log"]
+        if self.parameters.get("SUSIE_LD_SOURCE", "mixer") == "mixer":
+            command.extend(["--mount", f"type=bind,src={PANEL},dst=/panels/mixer_ref,ro=true"])
         for name, value in self.parameters.items():
             command.extend(["-e", f"{name}={value}"])
         return command + [IMAGE, "/runner.R"]

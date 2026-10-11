@@ -9,4 +9,4 @@ command -v podman >/dev/null
 [[ "$SUSIE_TEST_EVIDENCE" = /* && "$SUSIE_REFERENCE_LIBRARY" = /* ]]
 [[ -f "$SUSIE_REFERENCE_LIBRARY/susieR/DESCRIPTION" ]]
 podman image exists ghcr.io/zj-2002/susie@sha256:b1df377e428e6166cd8ac65ac3e131c46c3bb68f172969c0e0f910751792d87e
-python3 "$root/tests/test_contract.py"
+python3 -m unittest discover -s "$root/tests" -p 'test*contract.py' -v

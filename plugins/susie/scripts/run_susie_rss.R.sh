@@ -67,6 +67,15 @@ run <- function(output_paths) {
   aligned <- allele_a1 == reference_a1 & allele_a2 == reference_a2
   reversed <- allele_a1 == reference_a2 & allele_a2 == reference_a1
   if (any(!aligned & !reversed)) stop("a1/a2 must match the literal BIM-ID alleles or their exact reversal; strand inference is unsupported")
+  ld_source <- env_string("SUSIE_LD_SOURCE", "mixer")
+  ld_role <- env_string("SUSIE_LD_ROLE", "external")
+  if (!ld_source %in% c("mixer", "input")) stop("ld_source must be mixer or input")
+  if (!ld_role %in% c("external", "in_sample")) stop("ld_role must be external or in_sample")
+  if (ld_source == "mixer") {
+  if (ld_role != "external") stop("the mixer panel is external reference LD")
+  if (any(startsWith(names(sumstats), "ld:")) || any(c("ld_a1", "ld_a2") %in% names(sumstats))) {
+    stop("explicit LD columns require ld_source=input; supplied LD is never silently ignored")
+  }
   bim_path <- paste0("/panels/mixer_ref/stage_flat/chr", chrom, ".bim")
   bim <- read.table(bim_path, header = FALSE, colClasses = "character", quote = "", comment.char = "")
   if (ncol(bim) != 6L) stop("signed-LD BIM must have exactly six columns")
@@ -84,6 +93,14 @@ run <- function(output_paths) {
     stop("signed-LD BIM coordinates or allele pairs disagree with literal SNP IDs")
   }
   orientation <- ifelse(allele_a1 == panel_a1, 1, -1)
+  } else {
+    if (!all(c("ld_a1", "ld_a2") %in% names(sumstats))) stop("explicit LD requires ld_a1 and ld_a2 counting alleles")
+    if (any(!((sumstats$ld_a1 == reference_a1 & sumstats$ld_a2 == reference_a2) |
+              (sumstats$ld_a1 == reference_a2 & sumstats$ld_a2 == reference_a1)))) {
+      stop("explicit LD counting alleles must match the literal SNP allele pair or its exact reversal")
+    }
+    orientation <- ifelse(allele_a1 == sumstats$ld_a1, 1, -1)
+  }
   z_scores <- numeric_column(sumstats$z, "z")
   n_value <- NULL
   if ("n" %in% names(sumstats)) {
@@ -97,24 +114,38 @@ run <- function(output_paths) {
     if (!is.null(n_value) && override_n != n_value) stop("SUSIE_N disagrees with the input n column")
     n_value <- override_n
   }
+  if (ld_source == "input") {
+    if (!"ld_n" %in% names(sumstats)) stop("explicit LD requires its measured ld_n sample count")
+    ld_sample_count <- numeric_column(sumstats$ld_n, "ld_n")
+    if (length(unique(ld_sample_count)) != 1L || ld_sample_count[1L] <= 1 ||
+        any(ld_sample_count != floor(ld_sample_count))) stop("ld_n must be a constant integer greater than one")
+    if (ld_role == "in_sample" && (is.null(n_value) || n_value != ld_sample_count[1L])) {
+      stop("in_sample LD requires known GWAS n equal to ld_n; matching counts do not prove matching individuals")
+    }
+  }
   effects <- as.integer(env_number("SUSIE_L", 10, lower = 1, integer = TRUE))
   prior_method <- env_string("SUSIE_ESTIMATE_PRIOR_METHOD", "optim")
   if (!prior_method %in% c("optim", "EM", "simple")) stop("estimate_prior_method must be one of: optim, EM, simple")
   z_method <- env_string("SUSIE_Z_METHOD", "wald")
   if (!z_method %in% c("wald", "score")) stop("z_method must be one of: wald, score")
   residual_variance <- env_logical("SUSIE_ESTIMATE_RESIDUAL_VARIANCE", FALSE)
-  if (residual_variance) stop("estimate_residual_variance=true requires an in-sample LD route; this node uses external reference LD")
+  if (residual_variance && (ld_source != "input" || ld_role != "in_sample")) {
+    stop("estimate_residual_variance=true requires an in-sample LD route: explicit input LD declared in_sample; the declaration is not scientific qualification")
+  }
   prior_variance <- env_logical("SUSIE_ESTIMATE_PRIOR_VARIANCE", TRUE)
   coverage <- env_number("SUSIE_COVERAGE", 0.95, lower = 0, upper = 1)
   min_abs_corr <- env_number("SUSIE_MIN_ABS_CORR", 0.5, lower = 0, upper = 1)
   scaled_prior_variance <- env_number("SUSIE_SCALED_PRIOR_VARIANCE", 0.2, lower = 0)
   if (scaled_prior_variance <= 0) stop("scaled_prior_variance must be positive")
   r2_min <- env_number("SUSIE_R2_MIN", 0, lower = 0, upper = 1)
+  if (ld_source == "input" && r2_min != 0) stop("r2_min must be zero for explicit complete LD; sparsification is unsupported")
   null_threshold <- env_number("SUSIE_CHECK_NULL_THRESHOLD", 0)
   max_iter <- as.integer(env_number("SUSIE_MAX_ITER", 100, lower = 1, integer = TRUE))
   seed <- as.integer(env_number("SUSIE_SEED", 1, lower = 0, upper = .Machine$integer.max, integer = TRUE))
   workdir <- Sys.getenv("AUTONOMICS_WORKDIR")
   if (!nzchar(workdir)) stop("AUTONOMICS_WORKDIR is required")
+  variant_count <- length(snps)
+  if (ld_source == "mixer") {
   query_path <- file.path(workdir, ".autonomics", "susie_query.tsv")
   dir.create(dirname(query_path), recursive = TRUE, showWarnings = FALSE)
   write.table(data.frame(SNP = snps, A1 = panel_a1, A2 = panel_a2,
@@ -135,7 +166,6 @@ run <- function(output_paths) {
   matched <- sub("^#matched\t", "", grep("^#matched\t", raw_pairs, value = TRUE))
   if (anyDuplicated(matched) || !setequal(snps, matched)) stop("signed-LD reference did not match the exact input SNP set")
   pair_rows <- raw_pairs[!grepl("^#", raw_pairs) & nzchar(raw_pairs)]
-  variant_count <- length(snps)
   ld_matrix <- diag(variant_count)
   dimnames(ld_matrix) <- list(snps, snps)
   observed <- matrix(FALSE, nrow = variant_count, ncol = variant_count)
@@ -162,17 +192,32 @@ run <- function(output_paths) {
     }
   }
   if (any(!observed)) stop("signed-LD panel omits variant pairs; absent sparse entries cannot be treated as zero correlations")
+  } else {
+    expected_columns <- paste0("ld:", snps)
+    matrix_columns <- names(sumstats)[startsWith(names(sumstats), "ld:")]
+    if (!identical(matrix_columns, expected_columns)) {
+      stop("explicit LD columns must exactly match the ordered SNP rows with ld: prefixes; no intersection or reordering is performed")
+    }
+    ld_matrix <- do.call(cbind, lapply(matrix_columns, function(column) numeric_column(sumstats[[column]], column)))
+    dimnames(ld_matrix) <- list(snps, snps)
+  }
+  if (any(!is.finite(ld_matrix)) || any(abs(ld_matrix) > 1) ||
+      any(abs(diag(ld_matrix) - 1) > 1e-10) || max(abs(ld_matrix - t(ld_matrix))) > 1e-10) {
+    stop("signed LD must be finite, symmetric, bounded by one, and have unit diagonal; no normalization or repair is performed")
+  }
   eigenvalues <- eigen(ld_matrix, symmetric = TRUE, only.values = TRUE)$values
-  if (min(eigenvalues) < -1e-6 * variant_count) stop("signed-LD matrix is not positive semidefinite; no automatic repair is performed")
+  eigen_tolerance <- if (ld_source == "mixer") 1e-6 else 1e-10
+  if (min(eigenvalues) < -eigen_tolerance * variant_count) stop("signed-LD matrix is not positive semidefinite; no automatic repair is performed")
   ld_matrix <- ld_matrix * tcrossprod(orientation)
   set.seed(seed)
   fit <- susieR::susie_rss(z = z_scores, R = ld_matrix, n = n_value, L = effects,
                          scaled_prior_variance = scaled_prior_variance,
-                         estimate_residual_variance = FALSE, estimate_prior_variance = prior_variance,
+                         estimate_residual_variance = residual_variance, estimate_prior_variance = prior_variance,
                          estimate_prior_method = prior_method, z_method = z_method,
                          check_null_threshold = null_threshold, coverage = coverage,
                          min_abs_corr = min_abs_corr, max_iter = max_iter)
-  cat("## susieR susie_rss 0.16.6\nvariants:", variant_count, "\nniter:", fit$niter,
+  cat("## susieR susie_rss 0.16.6\nLD source:", ld_source, "\nLD role:", ld_role,
+      "\nLD role is an input declaration, not scientific approval\nvariants:", variant_count, "\nniter:", fit$niter,
       "\nconverged:", isTRUE(fit$converged), "\nseed:", seed, "\n")
   if (!isTRUE(fit$converged)) stop("official SuSiE fit did not converge; result outputs are not published")
   pip <- susieR::susie_get_pip(fit)

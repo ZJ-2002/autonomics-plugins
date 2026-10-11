@@ -1,0 +1,62 @@
+{
+  "original_kind": "susie_rss",
+  "active_design": "v4.3.2",
+  "scope": "BOUNDED_ORIGINAL_OFFICIAL_METHOD_ENGINEERING_AND_ISOLATED_DAG_NOT_STUDY_APPROVAL",
+  "official_version": "susieR 0.16.6",
+  "official_source_commit": "ef213feed2cb82419677661a8c986e1504df2c73",
+  "image_reference": "ghcr.io/zj-2002/susie@sha256:b1df377e428e6166cd8ac65ac3e131c46c3bb68f172969c0e0f910751792d87e",
+  "live_manifest_sha256": "a6cc84c36c1f234cc0b331de939ed22992f2fe598f13fe685e1dcd7e006821d1",
+  "live_script_sha256": "e99787726c4f923071245ed971a4960c7be77de9aa1e3a411350d0ba74587953",
+  "inputs": "One rectangular TSV: snp/chrom/z, optional n/a1/a2; input-LD route adds ld_a1/ld_a2/ld_n and complete ordered ld:<SNP> columns",
+  "outputs": [
+    "0 TSV: SNP/PIP/last-list-CS-index/max-alpha/selected-effect-mu-mu2-lbf/all-list-CS-indices",
+    "1 untouched full official RDS fit",
+    "2 diagnostic log"
+  ],
+  "wrapper_cases": 60,
+  "manifest_and_loader_cases": 15,
+  "whole_container_plugin_unit_cases": 111,
+  "catalog_cases": 48,
+  "wrapper_whole_official_objects": 16,
+  "native_DAG_whole_official_objects": 5,
+  "independent_official_nonconvergence_case": 1,
+  "native_positive_DAGs": 5,
+  "native_targeted_negative_DAGs": 6,
+  "numeric_tolerance": {
+    "whole_object_R_all_equal": 1e-12,
+    "check_attributes": true,
+    "LD_absolute": 1e-12,
+    "LD_relative": 0
+  },
+  "LD_provider_independence": {
+    "PLINK_version": "1.90b7.2",
+    "reference_variants": 50,
+    "founders": 489,
+    "pairwise_values": 2500,
+    "missing_genotype_count": 0,
+    "predeclared_absolute_tolerance": 1e-12,
+    "relative_tolerance": 0,
+    "max_absolute_difference": 1.2989609388114332e-14,
+    "reference_genotypes_count_BIM_A1": true,
+    "scientific_reference_approval": false,
+    "G0": false
+  },
+  "dense_proof_scope": "Complete 50-SNP real chr21 signed reference LD with synthetic z; additionally synthetic 128-person same-cohort residual-estimation case",
+  "conditional_panel_proof": "Explicit input-LD DAG builds with empty bundle registry and has no mounted-panel fingerprint; default mixer still rejects an absent bundle",
+  "default_iteration_boundary": "L20 EM strong fixture is refused at unchanged max_iter=100; separately explicit max_iter=1000 converges at 310 and matches the fresh official package",
+  "historical_default_50_SNP_fixture": "NOT_READY_UNCHANGED_SPARSE_PANEL; only 7/50 match alternate QC binary reference; no silent replacement or dropping",
+  "remaining": [
+    "Actual study input/reference/participant/covariate/ancestry/genome-build qualification and implementation locks",
+    "General method domain, other chromosomes and full-scale statistical calibration/resources",
+    "Resident daemon admission/deployment, actual cache invalidation/resume and global quota",
+    "Independent scientific review and formal release"
+  ],
+  "production_deployed": false,
+  "formal_research_release": "NOT_GRANTED",
+  "G0": false,
+  "evidence_packet": "/home/zj-normal/Work/autonomics/results/cachexia-v4.3.2/canonical-susie-dense-v1-20261011",
+  "prior_author_source_library_packet": "/home/zj-normal/Work/autonomics/results/cachexia-v4.3.2/canonical-susie-v1-20261011",
+  "prior_author_source_library_packet_seal_sha256": "02c711b63d45a906e5f0a0c9efce4b9b1bd1a241815239a4f275ec4a3bdf3e2b",
+  "intermediate_failed_attempts_preserved": true,
+  "isolated_test_storage": "Temporary own Podman store copied from the same digest; host store failed ENOSPC; no production storage cleanup or scientific config change"
+}

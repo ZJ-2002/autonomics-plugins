@@ -31,13 +31,45 @@ repair or automatic dropping occurs. The committed 50-SNP fixture has
 missing pairs and a minimum eigenvalue near -0.223 when absent entries
 are incorrectly zero-filled: it now fails instead of publishing results.
 This repair does not make the sparse panel suitable for general regional
-fine mapping. A scientifically qualified dense-LD route remains required.
+fine mapping. The original 50-SNP fixture remains rejected; the separate
+complete-matrix fixture is not a replacement study input.
 
-Because this is external-reference LD, residual-variance estimation is
-rejected; an approved in-sample route must be verified separately. The
+For the default external-reference route, residual-variance estimation is
+rejected. The
 wrapper fixes the R seed immediately before the official call and rejects
 nonconverged or invalid fit summaries. These are runtime safeguards, not
 proof of the scientific validity of a locus or reference population.
+
+## Complete signed-LD input route
+
+With `ld_source="input"`, the same single TSV additionally contains
+`ld_a1`, `ld_a2`, constant integer `ld_n > 1`, and one `ld:<SNP>` column
+for every SNP row, in exactly the same order. Rows and matrix columns are
+not intersected, dropped or reordered. The matrix describes signed
+correlation of the declared counting alleles, not r-squared. Orientation
+to the effect alleles is explicit. Finite correlations, range [-1,1],
+symmetry and unit diagonal (absolute tolerance `1e-10`), and positive
+semidefiniteness (`minimum eigenvalue >= -1e-10 * SNP count`) are checked.
+No missing-pair zero filling, matrix repair or normalization occurs.
+`r2_min` must be zero. Explicit LD supplied to the default mixer route is
+rejected rather than ignored.
+
+This opt-in route requires the engine's conditional `panels.when` support.
+It declares no mixer bundle requirement, mount or fallback. Existing
+engines that reject this field need a coordinated source upgrade; these
+source changes do not update or restart any deployed daemon.
+
+`ld_role` defaults to `external`. `in_sample` requires the input route
+and known GWAS sample size equal to `ld_n`; only then can
+`estimate_residual_variance=true` reach the author implementation. Equal
+counts are not proof of identical participants, covariate adjustment,
+ancestry or genome build. These remain research qualification duties.
+
+`fixtures/complete_ld_50.tsv` uses the first 50 QC variants in a fixed
+chr21 interval, complete signed PLINK LD from 489 reference founders,
+and synthetic z scores. Its provenance records file hashes and an
+independent BED-decoding correlation check. It is a technical test,
+not real GWAS evidence or approval to change a study reference.
 
 ## Outputs
 
@@ -73,5 +105,18 @@ SUSIE_REFERENCE_LIBRARY=/absolute/fresh-author-R-library \
 compares the entire fit with attributes and every TSV column at a fixed
 `1e-12` tolerance. This shares the pinned container and LD query results;
 it is not an independent LD-provider validation or separate-OS test.
-The tests cover small complete-pair subsets and failures, not general
-regional fine mapping, production daemon deployment, or study approval.
+The original tests cover small complete-pair subsets and failure guards.
+`tests/test_dense_contract.py` also exercises complete 50-variant matrices,
+nonempty credible sets, coherent permutations and allele reversals,
+multiple author parameter branches, and a known synthetic same-cohort
+case with residual-variance estimation. `tests/dense_reference.R` compares
+the whole author object and every TSV column, preserving `cs_all` strings
+when reading the table. Dense wrapper tests do not mount the MiXeR panel.
+Malformed matrices and declarations must fail without result publication.
+The strong 50-variant L=20 EM case does not converge within the default
+100 iterations: both the fresh author package and wrapper confirm that
+failure, and no fit is published. A separately explicit 1000-iteration
+case converges in 310 iterations and is compared at the unchanged numeric
+tolerance. There is no automatic retry or iteration-budget increase.
+None of these tests grants general statistical calibration, production
+daemon deployment, population suitability or study approval.
