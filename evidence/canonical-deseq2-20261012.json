@@ -1,0 +1,85 @@
+{
+  "node": "deseq2_de",
+  "family": "deseq2",
+  "status": "PROVEN_SCOPED",
+  "function": "Official negative-binomial bulk raw-count differential expression, optional apeglm posterior effect shrinkage",
+  "inputs": [
+    "Raw integer gene-by-sample count TSV",
+    "Sample metadata TSV"
+  ],
+  "outputs": [
+    "Complete DE results TSV",
+    "Normalized count TSV",
+    "Size factor TSV",
+    "Fitted DESeqDataSet RDS",
+    "Run report JSON"
+  ],
+  "official_reference": {
+    "records": [
+      {
+        "package": "DESeq2",
+        "version": "1.50.2",
+        "archive": "DESeq2_1.50.2.tar.gz",
+        "sha256": "514f23ae8d274623d80978c30bfa1c6566acd98188bf1aa563970959ea59522f",
+        "url": "https://bioconductor.org/packages/3.22/bioc/src/contrib/DESeq2_1.50.2.tar.gz",
+        "independently_source_installed": true
+      },
+      {
+        "package": "apeglm",
+        "version": "1.32.0",
+        "archive": "apeglm_1.32.0.tar.gz",
+        "sha256": "90e1e687252378ce1ba2e11dd5bd6f1580e0359d45ba41cceec204faeef1c4d7",
+        "url": "https://bioconductor.org/packages/3.22/bioc/src/contrib/apeglm_1.32.0.tar.gz",
+        "independently_source_installed": true
+      }
+    ],
+    "G0": false
+  },
+  "published_image": {
+    "reference": "ghcr.io/zj-2002/deseq2@sha256:5931c509f7f30d44177033877a96b062bf8532d16e5762daebfa20564278a59f",
+    "config_id": "1a1c3f86ec700c0dc616e895e7bbc4d14e89b4d07ec8229e41c79c61aac82c9f",
+    "manifest_digest": "sha256:5931c509f7f30d44177033877a96b062bf8532d16e5762daebfa20564278a59f",
+    "baked_runner_sha256": "5fb4026e22dd951b51ca068af97c6ada5460a347deddcd4ba80377687626d370",
+    "same_config_as_local_numerical_tests": true,
+    "anonymous_manifest_access_verified": true,
+    "production_loaded": false,
+    "G0": false
+  },
+  "verified": {
+    "official_cases": 26,
+    "numeric_fields": 436620,
+    "official_matching_NA_fields": 29674,
+    "dataset_semantic_fields": 1606250,
+    "byte_identical_tables": 78,
+    "boundary_tests": 55,
+    "compiled_contract_tests": 4,
+    "catalog_required_tests": 48,
+    "native_DAG_submissions": 11,
+    "native_outcomes": {
+      "success": 6,
+      "execution_failure": 3,
+      "preexecution_refusal": 2
+    },
+    "retained_external_task_manifests": 27,
+    "official_namespace_R_functions": 162,
+    "production_deployed": false,
+    "scientific_release": "NOT_GRANTED",
+    "G0": false
+  },
+  "tolerances": {
+    "absolute": 1e-10,
+    "relative": 1e-10,
+    "identities_and_NA_masks": "exact"
+  },
+  "scope": "All wrapper dispersion/shrinkage branches; numeric/factor covariates; literal tested IDs; metadata alignment; complete gene/NA ledger; two full official pasilla runs",
+  "remaining": [
+    "Full official API outside wrapper; independent dependencies/BLAS and inferential calibration",
+    "Study raw-scale, donor/model/species/gene/family eligibility; repeated measures and tximport",
+    "Current whole engine/resident daemon, trustworthy content-hash cache, global quota and persistent recovery",
+    "Atomic multi-file/concurrent-writer/SIGKILL publication; full-scale resource qualification"
+  ],
+  "scientific_implementation_locked": false,
+  "B_S": "CONDITIONAL_NOT_READY",
+  "GS01": "OPEN",
+  "G0": false
+}

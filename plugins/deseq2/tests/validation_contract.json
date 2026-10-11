@@ -1,0 +1,12 @@
+{
+  "node": "deseq2_de",
+  "absolute_tolerance": 1e-10,
+  "relative_tolerance": 1e-10,
+  "exact_requirements": ["gene and sample identities", "table shapes", "NA masks", "contrast and design", "fitted assays and gene ledger"],
+  "case_matrix": "All three dispersion fit types x both shrinkage options x no covariate or numeric age (12); nine semantic cases; two official pasilla cases; reverse contrast, unbalanced groups and Cook outlier (26 total)",
+  "reference": "Fresh primary-source DESeq2 1.50.2 and apeglm 1.32.0 installations, called independently from the wrapper; shared container R and other dependencies",
+  "NA_policy": "Only matching official NA is accepted; NaN and nonfinite numerical results fail",
+  "RDS_policy": "Compare identities, design, colData, all assays, numeric gene annotations and size factors; do not require serialization byte equality",
+  "boundaries": ["No full DESeq2 API equivalence", "No independent BLAS environment or inferential simulation", "No daemon deployment certificate", "No scientific study eligibility or G0"],
+  "G0": false
+}

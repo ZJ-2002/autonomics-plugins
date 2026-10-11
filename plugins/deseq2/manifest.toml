@@ -2,22 +2,11 @@ schema_version = 1
 plugin_name = "deseq2"
 
 [image]
-reference = "ghcr.io/auto-nomics/autonomics/deseq2@sha256:9bd9a2e95a59d7a1725351b99fe188a71202a68a7255830213fe39a226e7864f"
-tag = "1.50.2"
+reference = "ghcr.io/zj-2002/deseq2@sha256:5931c509f7f30d44177033877a96b062bf8532d16e5762daebfa20564278a59f"
+tag = "1.50.2-assured-v1"
 upstream = "Bioconductor DESeq2 1.50.2 @ d90821a + apeglm 1.32.0 (Bioconductor release 3.22, rocker/r-ver:4.5.3 base)"
 license = "LGPL-3.0-or-later"
 
-# Baked-runner family: the image carries /opt/autonomics/deseq2_runner.R and
-# every parameter travels through AUTONOMICS_DESEQ2_* environment variables,
-# so the command below is interpreter + fixed argv with no script.
-#
-# The legacy Rust validate() rules the v0 DSL cannot express are enforced by
-# the baked runner with the legacy error messages: condition_test differing
-# from condition_reference, covariates free of duplicates / reserved names
-# (sample_id, condition) / non-R-identifiers, fit_type membership, and the
-# rank-deficiency and data-shape checks. The failure point moves from
-# registry build to container start, exactly as in the mrpresso/mvmr
-# migrations.
 [[nodes]]
 kind = "deseq2_de"
 desc = "Runs official DESeq2 differential expression in an isolated container."
@@ -77,8 +66,9 @@ alpha = { type = "number", default = 0.1, exclusive_min = 0.0, exclusive_max = 1
 threads = { type = "int", default = 1, min = 1.0, max = 1.0, doc = "Fixed at 1: the deterministic first contract forbids parallel execution" }
 
 [nodes.command]
-interpreter = "Rscript"
-argv = ["--vanilla", "/opt/autonomics/deseq2_runner.R"]
+interpreter = "/opt/autonomics/Rscript-vanilla"
+argv = []
+script_file = "deseq2_runner.R"
 
 [nodes.command.env]
 AUTONOMICS_DESEQ2_CONDITION_REFERENCE = "{{ condition_reference }}"

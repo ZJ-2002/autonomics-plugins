@@ -1,0 +1,12 @@
+FROM ghcr.io/auto-nomics/autonomics/deseq2@sha256:9bd9a2e95a59d7a1725351b99fe188a71202a68a7255830213fe39a226e7864f
+USER root
+ENV OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 BIOCONDUCTOR_RELEASE=3.22 HOME=/tmp
+COPY deseq2_runner.R /opt/autonomics/deseq2_runner.R
+COPY Rscript-vanilla /opt/autonomics/Rscript-vanilla
+RUN chmod 0555 /opt/autonomics/deseq2_runner.R /opt/autonomics/Rscript-vanilla
+RUN Rscript --vanilla -e 'stopifnot(getRversion()=="4.5.3",packageVersion("DESeq2")=="1.50.2",packageVersion("apeglm")=="1.32.0");write.csv(installed.packages()[,c("Package","Version","LibPath")],"/opt/autonomics/installed-package-census.csv",row.names=FALSE);capture.output(sessionInfo(),file="/opt/autonomics/build-session-info.txt")'
+LABEL org.opencontainers.image.source="https://github.com/ZJ-2002/autonomics-plugins" \
+      org.opencontainers.image.version="1.50.2-assured-v1" \
+      org.opencontainers.image.licenses="LGPL-3.0-or-later"
+WORKDIR /work
+ENTRYPOINT ["/opt/autonomics/Rscript-vanilla", "/opt/autonomics/deseq2_runner.R"]

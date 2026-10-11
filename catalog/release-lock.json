@@ -383,8 +383,20 @@
       "kinds": [
         "deseq2_de"
       ],
-      "image_reference": "ghcr.io/auto-nomics/autonomics/deseq2@sha256:9bd9a2e95a59d7a1725351b99fe188a71202a68a7255830213fe39a226e7864f",
+      "image_reference": "ghcr.io/zj-2002/deseq2@sha256:5931c509f7f30d44177033877a96b062bf8532d16e5762daebfa20564278a59f",
       "files": [
+        {
+          "path": ".dockerignore",
+          "sha256": "58808d23dd0ac4312bfd6a570cc191c42fe1b0613c74560be61b9dfb2a60ec91",
+          "bytes": 71,
+          "executable": false
+        },
+        {
+          "path": "Containerfile.assured",
+          "sha256": "5c3bd628b3ef755b96bbddda5559adb54beb07a64c24f56f742b226cec67b02b",
+          "bytes": 1051,
+          "executable": false
+        },
         {
           "path": "Dockerfile",
           "sha256": "9fe7289b43181e4cc77121e343cb896a1f8f452f285d19791babe043d8a985f1",
@@ -393,8 +405,14 @@
         },
         {
           "path": "README.md",
-          "sha256": "10b2a26b77cd65ae232da2265a2881b96ae531b0cc6a725c4b4e1821bd6f657d",
-          "bytes": 5704,
+          "sha256": "77e3b30ba458925ef633ed453946a17244d76157000342e394e2f61f46f196ce",
+          "bytes": 4845,
+          "executable": false
+        },
+        {
+          "path": "Rscript-vanilla",
+          "sha256": "f0cdcbd3f9e264dca88371e2b35a7dc5e7d959699224aa77d8d582baa3e3d09c",
+          "bytes": 46,
           "executable": false
         },
         {
@@ -405,8 +423,8 @@
         },
         {
           "path": "deseq2_runner.R",
-          "sha256": "7b76e0045f8088253cbaf2d04859e5ed874fbc3b704783475e72dc5d91566e6f",
-          "bytes": 10896,
+          "sha256": "5fb4026e22dd951b51ca068af97c6ada5460a347deddcd4ba80377687626d370",
+          "bytes": 17080,
           "executable": false
         },
         {
@@ -435,20 +453,20 @@
         },
         {
           "path": "manifest.toml",
-          "sha256": "0c81a7d84b6bde752de8643ad0f4ad522fb519f4dca910f9bfaf81cba76922d2",
-          "bytes": 5452,
+          "sha256": "7dd4f51093fee5ae63cc76caf06186ca209a2dda790df58b27b1b4a41f59e8f1",
+          "bytes": 4779,
           "executable": false
         },
         {
           "path": "test_deseq2.sh",
-          "sha256": "0278474b56b5cff6244b20230a4e223030120f7789ff35d6d6dc132e0e992566",
-          "bytes": 11253,
+          "sha256": "7783bedfcacc5731ff3582e8f8cf5f7019a5d2f39d42bdff838d345af2d6fa92",
+          "bytes": 1935,
           "executable": true
         },
         {
           "path": "test_deseq2_data_boundary.sh",
-          "sha256": "acee5b1cbdd3bc6d8cdbb532c3263937454787fea9071d35313d531abefe65f7",
-          "bytes": 1065,
+          "sha256": "19778f7e64443f55c31b6026812fa6efd528d56d249c6800966d056c634a6a71",
+          "bytes": 1516,
           "executable": true
         },
         {
@@ -456,6 +474,30 @@
           "sha256": "a747d8ea41c34262d789ba00ff03f79ae391db2407688adf9de7d04a2290a786",
           "bytes": 2915,
           "executable": true
+        },
+        {
+          "path": "tests/official_reference.R",
+          "sha256": "6154511781938908b0ef5b6fd137f5f6b48889b971798cf71821165ee6aaf2fa",
+          "bytes": 6065,
+          "executable": false
+        },
+        {
+          "path": "tests/run_official_matrix.py",
+          "sha256": "932270ddd7939dfc121c3a7a4fff76698e8f7230e41695944b5597c897187dac",
+          "bytes": 11542,
+          "executable": false
+        },
+        {
+          "path": "tests/test_deseq2_boundaries.py",
+          "sha256": "f3459007cf90d8baeb095c2d67a71c3fe6df37266cb3a44967a9696dfa5d4184",
+          "bytes": 16031,
+          "executable": false
+        },
+        {
+          "path": "tests/validation_contract.json",
+          "sha256": "3635cd156d58a90ba2c1f10920efebadf6af5db3de608df39027c42b4f8bc7de",
+          "bytes": 1077,
+          "executable": false
         }
       ],
       "source_inventory_only": true,

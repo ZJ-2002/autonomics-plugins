@@ -1,0 +1,5 @@
+*
+!Containerfile.assured
+!Dockerfile
+!deseq2_runner.R
+!Rscript-vanilla

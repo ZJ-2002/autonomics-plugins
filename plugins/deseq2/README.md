@@ -1,103 +1,85 @@
-# deseq2 plugin
+# Original DESeq2 plugin
 
-Migrated from the legacy `deseq2_container` wrapper in nodes-io. One
-directory = one plugin family = one git-able unit. The original
-container-era README moved with the build tree as
-`container_README.md` (verbatim, modulo its now-regenerated kind and
-`$AUTONOMICS_IMAGE_PREFIX` spellings — image references are self-contained
-digest pins since the prefix's removal).
+This family retains the canonical `deseq2_de` kind, two File inputs, seven
+parameters and five File outputs. It is not the research-specific
+`cachexia_deseq2_de` replacement. Numerical-method, engineering, isolated-DAG
+and research-contract evidence are separate; technical agreement does not
+grant production deployment, study eligibility or G0.
 
-## Layout
+## Method and input/output contract
 
-- `manifest.toml` — node kind `deseq2_de`: params, ports, image
-  provenance, resources
-- `Dockerfile` — image build provenance (moved verbatim from
-  `containers/deseq2/`; build + push still via GHCR)
-- `deseq2_runner.R` — the baked runner, `COPY`-ed to
-  `/opt/autonomics/deseq2_runner.R` by the Dockerfile; the manifest
-  declares no script, only `interpreter = "Rscript"` plus fixed argv
-- `test_deseq2.sh` — full image baseline (build, run the pasilla model
-  twice, checksum-compare against the fixture baseline, independently
-  recompute size factors / normalized counts, negative-path checks);
-  `root=` repointed to this directory
-- `test_deseq2_fixture.sh` — fixture validation without R or Podman;
-  `root=` repointed, fixture directory env-overridable
-- `test_deseq2_data_boundary.sh` — asserts the image carries no pasilla
-  fixture and no `/panels`; moved verbatim
-- `container_README.md` — the original containers/deseq2/README.md
+Input 0 is a rectangular raw-count TSV with literal `gene_id` and sample
+columns; input 1 is a TSV with literal `sample_id`, exactly the submitted
+two `condition` levels and any declared covariates. Sample identities must
+match exactly; metadata is reordered to the count axis. Empty/duplicate IDs,
+malformed rows, embedded controls and missing model values are rejected.
+Counts must be nonnegative exact integers within R's 32-bit integer range.
+Normalized, log/RMA, CPM and fractional tximport values are not raw-count inputs.
+Numeric-looking covariate columns are numeric; other columns are factors.
+Users must verify this inference against their frozen scientific model.
 
-**Fixtures did not move.** The pasilla fixtures remain in the autonomics
-repository at `containers/deseq2/fixtures/` because still-live nodes-io
-Rust tests read them there (`wgcna_container.rs`,
-`limma_voom_container.rs`, `bulk_rnaseq_real_podman.rs`, and the legacy
-`deseq2_container.rs` integration test until that wrapper is deleted).
-The moved test scripts default `DESEQ2_FIXTURES` to the repository path
-and accept an override.
+The official DESeq2 1.50.2 package fits `~ <covariates> + condition`,
+reference-before-test, with `parametric`, `local` or `mean` dispersion fits.
+Official automatic parametric-to-local fallback is retained and separately
+reported as the actual fit type. Independent filtering and Cook filtering
+are enabled. The default is apeglm 1.32.0 shrinkage; `none` returns MLE values.
+Non-syntactic condition levels use the official sanitized coefficient name.
 
-## Provenance
+| Port | Artifact | Meaning |
+|---|---|---|
+| 0 | results.tsv | All input genes; baseMean, log2FoldChange, lfcSE, stat, pvalue, padj |
+| 1 | normalized_counts.tsv | Counts divided by official size factors, original axes |
+| 2 | size_factors.tsv | Official sample-level size factors |
+| 3 | deseq2_dataset.rds | Fitted official DESeqDataSet, not the shrunk result object |
+| 4 | run_report.json | Actual model/fit/package identity, full gene ledger and checksums |
 
-- Image:
-  `ghcr.io/auto-nomics/autonomics/deseq2@sha256:8b2e2a78d87293e6cae6dbed2e283dff1dd8461a7f993cb347ca9810698b2b3e`,
-  tag `1.50.2`, from `Dockerfile` (base `rocker/r-ver:4.5.3`, itself
-  digest-pinned).
-- Upstream: official Bioconductor
-  [DESeq2](https://github.com/thelovelab/DESeq2) 1.50.2 source tarball
-  (sha256 `514f23ae8d274623d80978c30bfa1c6566acd98188bf1aa563970959ea59522f`,
-  revision `d90821a`) installed into Bioconductor release 3.22; license
-  LGPL-3.0-or-later.
+With apeglm, log2FoldChange and lfcSE are posterior estimates, whereas stat,
+pvalue and padj remain the unshrunk official Wald tests. Do not reconstruct
+the Wald statistic from posterior effect/uncertainty. Official missing P and
+independent-filter-only missing padj are distinguished; no study family or
+frozen denominator is inferred from the retained subset.
 
-## Migration parity
+Existing outputs, including dangling links, are refused. Five outputs are
+privately staged and published only after calculation; ordinary errors roll
+back this invocation's published files. This is not atomic multi-file
+publication, concurrent-writer isolation or SIGKILL/restart recovery.
 
-The golden test (`crates/container-plugin/tests/deseq2_migration.rs`)
-compares the compiled `ContainerCommandSpec` against the legacy Rust
-wrapper (`nodes-io/src/deseq2_container.rs`): image, command, outputs,
-resources, timeout, env keys/values, and the script-less shape are
-byte-equal. Deliberate deltas:
+## Implementation identity and reproduction
 
-- **Baked runner preserved as argv.** The legacy wrapper passed
-  `["Rscript", "--vanilla", "/opt/autonomics/deseq2_runner.R"]` with
-  `script: None`; the manifest expresses exactly that with
-  `interpreter = "Rscript"` and `argv` (the DSL's baked-runner shape).
-  Parameters travel through the `AUTONOMICS_DESEQ2_*` environment
-  variables, so the pinned image needs no rebuild per invocation.
-- **Kind rename**: `deseq2_de_container` → `deseq2_de`; the artifact
-  prefix follows the kind (`/artifacts/deseq2_de_container` →
-  `/artifacts/deseq2_de`), the same rule the ldsc/mrpresso/mvmr
-  migrations applied. DAG specs referencing the old kind must be
-  regenerated. Note the run report produced inside the pinned image
-  still carries `"node": "deseq2_de_container"`; that string is baked
-  into the runner and changes only with the next image build.
-- **`timeout_secs` / `artifact_prefix` are node-level constants**
-  (3600 s, `/artifacts/deseq2_de`) instead of per-instance spec params;
-  the legacy spec accepted per-node overrides, the plugin DSL does not.
-- **`covariates` shape change**: the legacy spec carried a string array
-  and Rust joined it with `","` into `AUTONOMICS_DESEQ2_COVARIATES`. The
-  v0 env renderer space-joins arrays, while the baked runner splits the
-  variable on commas (`strsplit(value, ",", fixed = TRUE)`), so the
-  manifest declares a plain string carrying the comma-separated list —
-  byte-identical env for every legacy-legal input (legacy covariates are
-  simple R identifiers, which never contain commas or spaces). Same
-  serialized-string pattern as the mvmr `pcor` migration. The runner
-  re-validates duplicates, reserved names, R-identifier shape, and
-  column existence.
-- **`fit_type` loses its enum**: the v0 param vocabulary has no enum
-  type (it arrives with the panel-selection wave), so it is a string
-  with default `parametric`; the runner rejects anything outside
-  `parametric`/`local`/`mean` with the legacy message.
-- **Validation moved into the runner**: the DSL cannot express
-  `condition_test != condition_reference` or the covariate identifier
-  rules; the baked runner enforces them (and rank-deficiency, data
-  shape, sample-set equality) with the legacy error messages. The
-  failure point moves from registry build to container start. The DSL
-  carries what it can: `alpha` strict (0, 1) via `exclusive_min` /
-  `exclusive_max`, `threads` pinned to exactly 1 via `min = max = 1`.
-- **Resources pinned**: 2 CPUs, `4Gi` memory, pids limit 256, `1Gi`
-  shm, isolated network, read-only rootfs, pull policy `missing` —
-  the legacy wrapper's exact defaults; the manifest relies on the
-  hardened defaults for the three boolean/enum fields.
-- **Ports**: the two labeled input ports (`count_matrix`,
-  `sample_metadata`) carry over exactly. Output ports gain file-stem
-  labels (`results`, `normalized_counts`, `size_factors`,
-  `deseq2_dataset`, `run_report`) because the manifest pipeline always
-  names output ports; the legacy ports were unlabeled — the same
-  accepted delta as the mvmr migration.
+The repaired image is pinned in `manifest.toml`; R 4.5.3, DESeq2 1.50.2 and
+apeglm 1.32.0 are retained from the actually pulled original provider image
+`ghcr.io/auto-nomics/autonomics/deseq2@sha256:9bd9a2e95a59d7a1725351b99fe188a71202a68a7255830213fe39a226e7864f`.
+`Dockerfile` is historical upstream recipe provenance, not the repair build.
+Use `Containerfile.assured` to rebuild the repair over that immutable base.
+`Rscript-vanilla` and `script_file` preserve vanilla invocation through the
+engine's argument insertion; the actual baked and submitted script identities
+are checked separately. Resources remain 2 CPUs/4 GiB, threads=1, five outputs,
+isolated networking and read-only root filesystem. These do not prove global quotas.
+
+Official reference archives:
+- DESeq2 1.50.2: `514f23ae8d274623d80978c30bfa1c6566acd98188bf1aa563970959ea59522f`
+- apeglm 1.32.0: `90e1e687252378ce1ba2e11dd5bd6f1580e0359d45ba41cceec204faeef1c4d7`
+
+Fresh source installations, called independently from the wrapper, are the
+numerical reference. They share the container R/other dependencies: this is
+not independent BLAS validation, full DESeq2 API equivalence, inference
+simulation or real-study eligibility. The author pasilla data are technical
+benchmark inputs, not independent cachexia research evidence.
+
+Run the mandatory retained-evidence checks:
+
+```sh
+DESEQ2_EVIDENCE=/absolute/new-proof-directory \
+DESEQ2_REFERENCE_LIBRARY=/absolute/fresh-official-library \
+bash test_deseq2.sh
+```
+
+The CLI requires both official reference packages and an immutable real image;
+missing dependencies fail, never skip. It verifies baked-source identity,
+fixtures, 55 baked-runner boundaries and 26 fresh-author cases including all
+dispersion/shrinkage branches and the official pasilla data. It never builds
+an image automatically or deletes its evidence. Historical
+`fixtures/pasilla_baseline.json` and `container_README.md` are retained
+provenance, not the current numerical oracle. The data-boundary check covers
+/work, /opt, /tmp and /panels only; official package example datasets in
+/usr/local/lib/R/site-library/DESeq2/extdata are present and declared.
