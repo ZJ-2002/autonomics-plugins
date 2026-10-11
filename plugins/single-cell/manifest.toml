@@ -2,9 +2,9 @@ schema_version = 1
 plugin_name = "single-cell"
 
 [image]
-reference = "ghcr.io/auto-nomics/autonomics/single-cell-preprocessor@sha256:c34c26428d13804c2528bc734805c1ccfe909353604ac08da0ce9c68890e7e18"
-tag = "0.2.1"
-upstream = "scverse Scanpy 1.11.3 pinned runtime; python 3.11.11-slim base @ sha256:e61d857ebc3825e2aa7a698e9d46d8108d5980cafeb5ab783121f7a5b13d8b0b"
+reference = "ghcr.io/zj-2002/single-cell-preprocessor@sha256:e2f9fcd5ccf9e97b0f0129466df5abb21ae47ed32f123f6953b79fd83d915e20"
+tag = "0.2.2-assurance-candidate"
+upstream = "Scanpy 1.11.3 / AnnData 0.11.4 / Python 3.11.11; preprocessor-only overlay of c34c26428d13804c2528bc734805c1ccfe909353604ac08da0ce9c68890e7e18; baked H5AD workflow and numerical runtime unchanged"
 license = "BSD-3-Clause"
 
 # The CellTypist model bundle is a family-level panel: the v0 manifest DSL
@@ -27,12 +27,18 @@ kind = "single_cell_preprocessor"
 desc = "Inspects or ingests 10x MatrixMarket single-cell inputs with Scanpy."
 doc = """
 Input ports are the MatrixMarket matrix, barcodes, features, and cell
-metadata. The default inspect operation reads only the matrix header,
-validates companion-table alignment, and emits a JSON report plus a
-metadata-only H5AD. The ingest operation loads expression values in a
-pinned Scanpy image and emits a full H5AD. Both operations validate
-metadata-table alignment with barcodes. The network is disabled and
-the root filesystem is read-only.
+metadata. Inspect validates the matrix header and companion-table alignment,
+but does not validate matrix values; its H5AD is metadata-only and is not
+analysis eligible. Both modes stream-hash all input bytes. Ingest explicitly
+uses Scanpy read_mtx(dtype="float64"), filters cells before genes, and optionally
+normalizes to 10000 and log1p with a pre-normalization counts layer. All feature
+types are retained; this is not read_10x_mtx's gex_only default. Integer input
+mass must not exceed 2^53; real input must be finite and nonnegative. Empty
+filtered matrices fail. Literal IDs, original symbols, and excluded axes are
+recorded. Existing outputs are never overwritten. Ordinary publication errors
+roll back the two outputs, but publication is not crash-atomic. Technical
+ingestion does not qualify a dataset, QC threshold, count scale, donor model,
+or research use. The network is disabled and the root filesystem is read-only.
 """
 timeout_secs = 3600
 # The legacy wrapper defaulted to the suffixed spelling; kept byte-identical
@@ -60,7 +66,7 @@ metadata_separator = { type = "string", default = "auto", doc = "Cell metadata c
 
 [nodes.command]
 interpreter = "python"
-argv = ["/opt/autonomics/preprocess.py"]
+script_file = "preprocess.py"
 
 [nodes.command.env]
 AUTONOMICS_SINGLE_CELL_OPERATION = "{{ operation }}"

@@ -1,0 +1,6 @@
+FROM ghcr.io/auto-nomics/autonomics/single-cell-preprocessor@sha256:c34c26428d13804c2528bc734805c1ccfe909353604ac08da0ce9c68890e7e18
+
+USER root
+COPY preprocess.py /opt/autonomics/preprocess.py
+RUN chmod 0555 /opt/autonomics/preprocess.py
+USER 1000:1000

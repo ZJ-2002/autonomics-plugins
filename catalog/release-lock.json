@@ -14256,12 +14256,18 @@
         "h5ad_marker_annotate",
         "h5ad_ucell_score"
       ],
-      "image_reference": "ghcr.io/auto-nomics/autonomics/single-cell-preprocessor@sha256:c34c26428d13804c2528bc734805c1ccfe909353604ac08da0ce9c68890e7e18",
+      "image_reference": "ghcr.io/zj-2002/single-cell-preprocessor@sha256:e2f9fcd5ccf9e97b0f0129466df5abb21ae47ed32f123f6953b79fd83d915e20",
       "files": [
         {
           "path": ".dockerignore",
-          "sha256": "2478f65ef7d577e6d182bf26e652c2d61a2c4d26199ca731a2c6a653ebeea44b",
-          "bytes": 60,
+          "sha256": "7e094d8a37e133491accee4e8e8d42d0f4047dd1acbfc3bd4c66c52c3f727195",
+          "bytes": 83,
+          "executable": false
+        },
+        {
+          "path": "Containerfile.assured",
+          "sha256": "20d15ac33d5d1b7a8d33ca8dbd4636f875680e2651efcc15823cf8d9afdd224f",
+          "bytes": 253,
           "executable": false
         },
         {
@@ -14272,26 +14278,26 @@
         },
         {
           "path": "IMAGE.md",
-          "sha256": "587bb76770b0b0d5625d460c0388c0fe79b5d9c786c8efdc808aba8e56b2257e",
-          "bytes": 3887,
+          "sha256": "2d56ce87911e48133854c610eaa1a2b3d21ecb86c1d6391ecc7f52a498fe4c00",
+          "bytes": 4619,
           "executable": false
         },
         {
           "path": "README.md",
-          "sha256": "b830007403239084ee0231b56d729348252d63879589a634642d5eb65ceea27f",
-          "bytes": 8856,
+          "sha256": "deb97d24aaceef743a4998185a3cd0fe0d281134dee842bc9affb3ed5713cfab",
+          "bytes": 12186,
           "executable": false
         },
         {
           "path": "manifest.toml",
-          "sha256": "2bd47da29ed3d254c95797b5b4d3463f2a816b98f0e939b2ec03d864458760cd",
-          "bytes": 21860,
+          "sha256": "1e12b81711a9ebdfe705e483651dda1d5a289c2e55894d20a83de8d4bd7dcf48",
+          "bytes": 22467,
           "executable": false
         },
         {
           "path": "preprocess.py",
-          "sha256": "ec93eb735eb6567c1d74d1295273948697276018e996370cf0334a2750f73d7e",
-          "bytes": 14491,
+          "sha256": "89625ca09356f61bcb59993d6152f85be749181b47610e3360f9c83d7d2596a2",
+          "bytes": 20160,
           "executable": false
         },
         {
@@ -14319,6 +14325,12 @@
           "executable": false
         },
         {
+          "path": "test_preprocess_assurance.sh",
+          "sha256": "21caf9523335a4fcd27c31d56754d02d8ef858c4c114e3c6a3aaed5960df9ed2",
+          "bytes": 1678,
+          "executable": false
+        },
+        {
           "path": "test_single_cell_preprocessor.sh",
           "sha256": "01040a5afc4a0733e7ae0fb3fff8c5ff4b11e8c1a0100dc54a28f120d5f2e6f9",
           "bytes": 7684,
@@ -14328,6 +14340,24 @@
           "path": "test_single_cell_workflow.sh",
           "sha256": "602284104de982a7730cf849e103d4ef1bfbbd359b0c498fb8d3b37b75f182d8",
           "bytes": 4417,
+          "executable": false
+        },
+        {
+          "path": "tests/preprocess_reference.py",
+          "sha256": "6c7c3f1ae1d25d010b39ff05d6d26abc400c2ec093d8ed7d3d1d352a3b7f5fdf",
+          "bytes": 3262,
+          "executable": false
+        },
+        {
+          "path": "tests/test_preprocess_boundaries.py",
+          "sha256": "4f282d94c498bc9a2ee744375c30c8de48214d0eb2745dc2a71ae6d2622816d3",
+          "bytes": 9386,
+          "executable": false
+        },
+        {
+          "path": "tests/test_preprocess_container.py",
+          "sha256": "6d9cf247eb1c060c319286bd0e611e5476d1708ca34e7b74997093fd2c848ab7",
+          "bytes": 12602,
           "executable": false
         },
         {

@@ -1,0 +1,116 @@
+{
+  "schema_version": "1.0",
+  "canonical_kind": "single_cell_preprocessor",
+  "status": "PROVEN_SCOPED",
+  "provider": "Original single-cell family in owned monorepo; not an alternative adapter",
+  "image": {
+    "reference": "ghcr.io/zj-2002/single-cell-preprocessor@sha256:e2f9fcd5ccf9e97b0f0129466df5abb21ae47ed32f123f6953b79fd83d915e20",
+    "config_sha256": "3144c037c6da31b27ea8d240e4bf013c45258099f44242193946d209ab24dc7b",
+    "authenticated_pull_verified": true,
+    "package_visibility": "private",
+    "tracked_and_baked_preprocessor_sha256": "89625ca09356f61bcb59993d6152f85be749181b47610e3360f9c83d7d2596a2",
+    "preserved_legacy_workflow_sha256": "f15d8ecfd2a96f72cbc9f0fb284326a84e911f21de61509454bdfcff02f7166f"
+  },
+  "inputs": [
+    "0:File genes-by-cells MatrixMarket coordinate integer/real general, optional gzip",
+    "1:File literal one-column barcode TSV",
+    "2:File two/three-column feature TSV",
+    "3:File quoted TSV/CSV cell metadata, exact barcode set"
+  ],
+  "outputs": [
+    "0:preprocess_report.json schema2.0",
+    "1:preprocessed.h5ad;X=None for inspect"
+  ],
+  "official": {
+    "Scanpy": "1.11.3",
+    "AnnData": "0.11.4",
+    "Python": "3.11.11",
+    "fresh_PyPI_wheel_installations": true,
+    "complete_author_Python_source_members_exact": 164,
+    "independence": "Separate fresh author calls and mathematical normalization; shared frozen NumPy/SciPy/HDF5 runtime"
+  },
+  "method_proof": {
+    "author_cases": 35,
+    "finite_matrix_values": 4566704,
+    "full_obs_var_frames_and_sparse_indices_checked": true,
+    "H5AD_storage_attributes_and_container_keys_checked": true,
+    "absolute_tolerance": 1e-12,
+    "relative_tolerance": 0,
+    "branches": "inspect/ingest;cells_then_genes;min_genes0/1/2/3;min_cells0/1/2;normalization_on/off;float64_integer_precision;real;gzip;2/3 feature columns;duplicate symbols/coordinates;literal/reordered/quoted/comma metadata",
+    "real_benchmark": "Author PBMC3k raw H5AD 2700x32738 exported exactly to MatrixMarket;synthetic alignment metadata,not original 10x archive bytes or cachexia/donor qualification",
+    "mathematical_log1p_normalization_checked": true,
+    "no_inferential_calibration_claim": true
+  },
+  "engineering_proof": {
+    "actual_baked_runner_refusals": 52,
+    "compiled_contract_tests": 6,
+    "mandatory_catalog_tests": 48,
+    "zero_skips": true
+  },
+  "DAG_proof": {
+    "submissions": 12,
+    "success": 8,
+    "execution_failure": 2,
+    "preexecution_refusal": 2,
+    "nodes": 5,
+    "edges": 4,
+    "both_ports_read_and_independently_hashed": true,
+    "real_PBMC_count_ingestion_DAG": true,
+    "actual_family_model_panel_verified_not_deserialized": true,
+    "scope": "Immutable generic native component and SDK,not current whole engine/resident daemon"
+  },
+  "shared_score_image_requalification": {
+    "kind": "gene_set_score",
+    "positive_actual_DAGs": 15,
+    "fresh_official_full_AnnData_and_JSON_replay": true,
+    "old_certificate_unchanged": true,
+    "negative_cases_not_freshly_requalified_this_batch": true,
+    "not_a_new_certified_node": true
+  },
+  "corrected_defects": [
+    "host/image source drift",
+    "float32 integer precision loss",
+    "barcode extra-column acceptance",
+    "duplicate/ragged metadata headers and values",
+    "declared CSV mode ignored by old image",
+    "invalid separator silently accepted",
+    "negative/nonfinite expression acceptance",
+    "overwriting old evidence",
+    "H5AD left behind on JSON failure",
+    "stale recursive report hash",
+    "unbounded error preview",
+    "duplicate-symbol HDF5 index/column collision discovered in candidate-v2",
+    "legacy contract suite assumed repaired scorer still used baked shim;deleted-wrapper test returned without assertions"
+  ],
+  "plan_contract": {
+    "active_design": "v4.3.2",
+    "status": "NOT_GRANTED",
+    "QC_parameters_not_a_study_freeze": true,
+    "donor_species_tissue_scale_and_signature_qualification_not_granted": true,
+    "B_S": "CONDITIONAL_NOT_READY",
+    "GS01": "OPEN",
+    "native_Rust_mrlap": "FORBIDDEN"
+  },
+  "limitations": [
+    "Not whole Scanpy/AnnData API or whole eleven-node family certification",
+    "Explicit float64 is a supported author argument,not the package float32 default",
+    "Integer nonnegative total mass<=2^53 and finite cell totals bound numerical capacity;arbitrary signed/complex/symmetric/empty inputs unsupported",
+    "All feature types retained;not implicit gex_only filtering;real values do not establish raw-count eligibility",
+    "Inspect validates header/companions but not matrix body;X=None cannot support downstream expression analysis",
+    "Ingest is file import,not scanpy.tl.ingest;metadata values remain strings;not donor-level inference",
+    "Post-filter counts layer is retained only when normalization runs;full original axes remain in report ledgers and input files",
+    "Ordinary no-overwrite rollback is not crash-atomic publication,concurrent-writer locking or persistent recovery",
+    "Nine other baked H5AD workflow methods remain unqualified and host/baked workflow drift is not repaired in this batch",
+    "Full-scale/global memory/concurrency,independent numeric binaries,current whole engine and resident deployment/cache remain unproved",
+    "GHCR is private;authenticated retrieval proved,anonymous fresh installation pending"
+  ],
+  "failed_attempts_retained": [
+    "v1 HDF5 comparator used empty root key",
+    "v2 reference and candidate both failed duplicate-symbol index/column conflict",
+    "first 10x benchmark URL returned403;author raw H5AD export explicitly distinguished",
+    "first contract suite had5 actual successes/1 failure/one assertion-free legacy return;v2 has6 genuinely executed passes"
+  ],
+  "production_deployed": false,
+  "scientific_release": "NOT_GRANTED",
+  "G0": false
+}

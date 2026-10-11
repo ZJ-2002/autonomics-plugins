@@ -44,6 +44,60 @@ Every node runs isolated (no network) with a read-only root filesystem and
 
 ## Execution shape
 
+### Preprocessor assurance candidate (2026-10-12)
+
+`single_cell_preprocessor` retains its four File inputs, two File outputs,
+five parameters, artifact prefix and resource declarations. The manifest now
+injects the tracked `preprocess.py`; a candidate image also bakes identical
+bytes. `Containerfile.assured` overlays the immutable deployed image without
+changing its Python dependencies or baked H5AD workflow. This is deliberately
+not the older `Dockerfile`, which copies the unqualified host workflow.
+
+The wrapper explicitly selects official `read_mtx(dtype="float64")`, not
+Scanpy's float32 default. Its `ingest` means file import, not the distinct
+reference-mapping algorithm `scanpy.tl.ingest`. It validates complete coordinate bodies in ingest,
+rejects negative/nonfinite values, and limits integer total mass to 2^53 to
+guarantee lossless conversion and duplicate-coordinate summation. Finite
+nonnegative real matrices remain supported; ingestion does not establish that
+their values are suitable raw counts. Filter order is cells then genes, with
+optional official total normalization to 10000 and natural log1p. All feature
+types remain present unless gene filtering removes them; no implicit
+`read_10x_mtx(gex_only=True)` is substituted. Empty filtered axes fail.
+
+Barcode TSV is literal one-column text; feature TSV has two or three
+rectangular columns. Cell metadata is strict quoted CSV/TSV with unique
+headers and exact barcode membership. Literal identifiers, original symbols,
+officially de-duplicated variable names and excluded axes remain traceable.
+Inspect does not validate matrix values and its `X=None` H5AD is not
+analysis eligible; all input bytes are nevertheless stream-hashed.
+
+The report is schema 2.0: consumers must account for full axis ledgers,
+technical-only eligibility and the absence of a recursive self-report hash.
+The H5AD's hash is in the JSON; the caller records the report hash externally.
+Existing output files/directories/dangling links are refused. Two outputs are
+privately staged with ordinary-error rollback, not a crash-atomic transaction,
+concurrent-writer protocol or persistent restart guarantee.
+
+The candidate requires fresh independent author-wheel comparison, actual
+baked-runner boundaries, original manifest compilation, isolated native DAG
+execution and requalification of the shared `gene_set_score` image identity.
+No complete-family, installed-daemon, full-scale, scientific or G0 acceptance
+is implied. Nine other H5AD workflow implementations remain unqualified.
+
+Retained, mandatory local tests (no GitHub Actions credit required):
+
+```sh
+SINGLE_CELL_EVIDENCE=/absolute/new-evidence-directory \
+SINGLE_CELL_REFERENCE_LIBRARY=/absolute/fresh-official-wheel-directory \
+bash test_preprocess_assurance.sh
+```
+
+Install AnnData 0.11.4 and Scanpy 1.11.3 independently from hash-verified official
+PyPI wheels with `pip --no-deps --target`, while retaining the frozen numerical
+runtime. The reference subprocess imports only those fresh author packages,
+not the node source. Shared numerical libraries are not an independent BLAS
+validation. Absence of a required image/reference is a failure, never a skip.
+
 ### Scoped scoring repair (2026-10-10)
 
 `gene_set_score` now injects `scripts/score_genes.py` directly instead of
@@ -66,8 +120,8 @@ scientific interpretation. In particular, the legacy `h5ad_ucell_score`
 implementation is not certified as official UCell. The family-level
 CellTypist panel is still a deployment prerequisite for all nodes.
 
-- `single_cell_preprocessor` is a **baked-runner** node: the compiled argv
-  is `python /opt/autonomics/preprocess.py` (no injected script), and the
+- `single_cell_preprocessor` is a **script-injected** node: the compiled argv
+  is `python` plus the tracked and staged `preprocess.py`, and the
   five params travel through the same `AUTONOMICS_SINGLE_CELL_*` env vars
   the legacy wrapper set. The inspect-vs-filters cross-field rule is
   enforced inside `preprocess.py`, so no DSL-side validation is needed.
@@ -85,7 +139,7 @@ CellTypist panel is still a deployment prerequisite for all nodes.
 ## Install
 
 ```sh
-export AUTONOMICS_PLUGIN_ROOT=/mnt/projects/node-plugins
+export NODE_PLUGINS_ROOT=/path/to/autonomics-plugins/plugins
 cargo test -p container-plugin --test single_cell_migration
 ```
 
@@ -95,8 +149,9 @@ SHA once published):
 ```toml
 [[plugin]]
 name = "single-cell"
-git = "git@github.com:auto-nomics/single-cell-plugin.git"
+git = "https://github.com/ZJ-2002/autonomics-plugins.git"
 rev = "<commit sha>"
+subdir = "plugins/single-cell"
 ```
 
 ## Historical migration parity
@@ -104,7 +159,9 @@ rev = "<commit sha>"
 The following describes the pre-repair baseline at `1d681eac`. The scoped
 scoring repair deliberately changes `gene_set_score`'s injected script and
 seed bounds, so the old eleven-node byte-equivalence statement is not an
-acceptance claim for this revision. The other ten contracts remain exact.
+acceptance claim for this revision. Preprocessor injection, output schema and
+shared image identity also deliberately change; the other nine workflow
+interfaces are preserved, not numerically certified.
 
 The golden test (`container-plugin/tests/single_cell_migration.rs`) compares
 each compiled `ContainerCommandSpec` against the legacy Rust wrapper output:

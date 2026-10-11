@@ -6,13 +6,15 @@ the Python implementation and its locked wheel dependencies; expression
 matrices, barcodes, feature maps, metadata, and reference panels stay outside
 the image.
 
-Published immutable image:
+Historical deployed immutable image (not the repaired preprocessor):
 
 ```text
 ghcr.io/auto-nomics/autonomics/single-cell-preprocessor@sha256:c34c26428d13804c2528bc734805c1ccfe909353604ac08da0ce9c68890e7e18
 ```
 
-The plugin manifest pins this exact reference. The image uses the
+The current plugin manifest is authoritative for the candidate image reference.
+`Containerfile.assured` inherits the historical image's runtime and baked
+workflow, replacing only `preprocess.py`. The image uses the
 digest-pinned Python 3.11.11 slim base, runs as UID/GID 1000, and expects the
 Podman backend's read-only root filesystem, `/tmp` tmpfs, and isolated network.
 
@@ -24,9 +26,9 @@ The node has four File inputs:
 2. Cell barcode TSV, one ID per line.
 3. 10x feature TSV with `gene_id`, `gene_symbol`, and an optional third
    feature-type column.
-4. Whitespace-delimited cell metadata whose first column is the cell ID.
+4. Strict quoted TSV/CSV cell metadata whose first column is the cell ID.
 
-It always emits:
+Successful runs emit both files; failed runs publish neither normal result:
 
 1. `preprocess_report.json`: schema, matrix header, alignment, QC settings, and
    output dimensions.
@@ -35,15 +37,17 @@ It always emits:
 The default `inspect` operation reads only the MatrixMarket banner, legal
 comment lines, dimensions, and companion tables. It rejects filter or
 normalization parameters and writes a metadata-only H5AD with `X` unset. This
-is the safe path for very large inputs such as an 18 GiB `.mtx` or `.mtx.gz`.
+The complete file is still read for streaming SHA256. Inspect is not a
+production-scale ingestion qualification or evidence that matrix values are valid.
 The report still records the declared nonzero count but does not validate every
 coordinate.
 
-The `ingest` operation reads expression values through Scanpy, applies optional
+The `ingest` operation explicitly reads float64 values through official Scanpy,
+validates finite nonnegative values and integer mass <=2^53, and applies optional
 cell/gene filters, stores raw counts in the `counts` layer when normalization
 is requested, and writes a full H5AD. Normalization is deterministic Scanpy
 total-count scaling to 10,000 followed by `log1p`. Duplicate gene symbols are
-made unique in `var_names`; `gene_id` and `feature_type` remain available in
+made unique in `var_names`; original `gene_symbol`, `gene_id` and `feature_type` remain available in
 `var`. This operation requires enough container memory for the sparse matrix.
 
 ## H5AD workflow contract
@@ -69,6 +73,11 @@ schema-validated before reaching the container. Expression matrices remain
 opaque File values.
 
 ## Build and baselines
+
+The assurance candidate uses `podman build -f Containerfile.assured .` and
+`test_preprocess_assurance.sh`; see the plugin README for mandatory fresh
+author references and retained evidence. The following older scripts are
+historical smoke/size tests, not official numeric or production acceptance.
 
 ```sh
 test_single_cell_preprocessor.sh
