@@ -62,6 +62,15 @@
     "plugins.ldsc.tests.test_inference_entrypoint.InferenceEntrypointTests.test_h2_actual_log_and_literal_optional_arguments",
     "plugins.ldsc.tests.test_inference_entrypoint.InferenceEntrypointTests.test_missing_official_log_is_not_a_successful_empty_artifact",
     "plugins.ldsc.tests.test_inference_entrypoint.InferenceEntrypointTests.test_rg_preserves_both_original_inputs_and_single_official_log",
-    "plugins.ldsc.tests.test_inference_entrypoint.InferenceEntrypointTests.test_swallowed_pair_failure_is_a_failed_method_with_diagnostic_log"
+    "plugins.ldsc.tests.test_inference_entrypoint.InferenceEntrypointTests.test_swallowed_pair_failure_is_a_failed_method_with_diagnostic_log",
+    "ldsc_precision_contract_tests.PrecisionContractTests.test_complete_source_rows_gzip_magic_and_duplicate_snp_refused",
+    "ldsc_precision_contract_tests.PrecisionContractTests.test_exact_config_and_no_h2_family",
+    "ldsc_precision_contract_tests.PrecisionContractTests.test_negative_h2_diagnostic_retained_without_invented_p",
+    "ldsc_precision_contract_tests.PrecisionContractTests.test_nonpositive_h2_and_nonfinite_se_are_missing_not_zero_p",
+    "ldsc_precision_contract_tests.PrecisionContractTests.test_official_default_out_of_bounds_retains_object_p_but_not_family_p",
+    "ldsc_precision_contract_tests.PrecisionContractTests.test_output_json_roundtrip_is_full_precision_no_overwrite_no_nonfinite",
+    "ldsc_precision_contract_tests.PrecisionContractTests.test_swallowed_method_failure_and_invalid_p_refused",
+    "ldsc_precision_contract_tests.PrecisionContractTests.test_unknown_extra_missing_duplicate_and_nonfinite_configuration_refused",
+    "ldsc_precision_contract_tests.PrecisionContractTests.test_unrounded_official_p_and_raw_returned_values_retained"
   ]
 }

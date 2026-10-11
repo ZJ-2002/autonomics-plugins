@@ -69,3 +69,19 @@ keep optional arguments as separate argv elements. RG's known swallowed
 component-exception marker is converted to a failed node while retaining
 its diagnostic log. Six additional required offline wrapper tests cover
 these semantics; they are not h2/rg numerical method qualification.
+
+## Actual inference runtime defect (2026-10-12)
+
+A subsequent actual container probe found the pinned image's CLI references
+`estimate_h2`/`estimate_rg`, but its refactored module exposes
+`estimate_heritability`/`estimate_genetic_correlation`. Calling those exposed
+functions directly then fails chromosome-split panel lookup. Therefore the
+existing h2/rg log kinds are not numerical-ready; their previous shell tests
+only checked transport/log handling. Actual munging parity remains scoped to
+munging. The image is preserved, not relabelled as repaired.
+
+The separately opt-in `plugins/ldsc-precision` family reuses the previously
+acquired pristine CBIIT runtime with full-precision objects and scoped actual
+container parity. It still requires complete88-pair/native lineage, real
+panel/method acceptance and scientific gates. See
+`evidence/canonical-ldsc-inference-runtime-blocked-20261012.json`.

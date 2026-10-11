@@ -1,0 +1,14 @@
+{
+  "scope": "ACTUAL_RUNTIME_INFERENCE_BLOCKED_NOT_SCIENTIFIC_ACCEPTED",
+  "image": "ghcr.io/zj-2002/ldsc@sha256:93b2542386a08df10402045b8036ff4da6733bea65324d50e326d035579d247a",
+  "kinds": [
+    "ldsc_h2",
+    "ldsc_rg"
+  ],
+  "runtime_dispatch": "CLI references absent estimate_h2/estimate_rg names; actual API names are estimate_heritability/estimate_genetic_correlation",
+  "chromosome_io": "Actual API read_reference_ld_scores omits split-chromosome count, requesting LDscore..l2.ldscore instead of the22 chromosome files",
+  "scope_of_previous_pass": "c6416ff validated exact plain/gzip MUNGE original-input/CLI parity only; its inference wrapper cases were mock transport/log guards, not actual h2/rg numerical acceptance",
+  "precision_replacement": "opt-in ldsc-precision with pristine CBIIT6c673952 runtime and scoped full-returned-object parity; old canonical image preserved",
+  "formal_authorized": false,
+  "scientific_qualification": false
+}

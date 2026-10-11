@@ -1,0 +1,168 @@
+{
+  "status": "PASS",
+  "scope": "PINNED_OFFICIAL_METHOD_FULL_OBJECT_PRECISION_PARITY_SYNTHETIC_ONLY",
+  "image": "localhost/cachexia-ldsc-official@sha256:febf11d5ec554b53e2e022f26e55033233cb4692f40eb7d81cdaa7fe11d70999",
+  "cases": [
+    {
+      "method": "h2",
+      "scale": "observed",
+      "gzip_without_extension": false,
+      "original_munged_rows": 2200,
+      "full_returned_fields_compared": 180,
+      "finite_numeric_fields_compared": 136,
+      "all_returned_fields_exact": true,
+      "all_scalars_exact": true,
+      "official_family_P_exact": null,
+      "outputs_content_bound": true,
+      "result_status": "ESTIMATED",
+      "missing_raw_p_retained": null
+    },
+    {
+      "method": "h2",
+      "scale": "liability",
+      "gzip_without_extension": true,
+      "original_munged_rows": 2200,
+      "full_returned_fields_compared": 180,
+      "finite_numeric_fields_compared": 136,
+      "all_returned_fields_exact": true,
+      "all_scalars_exact": true,
+      "official_family_P_exact": null,
+      "outputs_content_bound": true,
+      "result_status": "ESTIMATED",
+      "missing_raw_p_retained": null
+    },
+    {
+      "method": "rg",
+      "scale": "observed",
+      "gzip_without_extension": false,
+      "original_munged_rows": 2200,
+      "full_returned_fields_compared": 625,
+      "finite_numeric_fields_compared": 476,
+      "all_returned_fields_exact": true,
+      "all_scalars_exact": true,
+      "official_family_P_exact": true,
+      "outputs_content_bound": true,
+      "result_status": "ESTIMATED",
+      "missing_raw_p_retained": null
+    },
+    {
+      "method": "rg",
+      "scale": "liability",
+      "gzip_without_extension": true,
+      "original_munged_rows": 2200,
+      "full_returned_fields_compared": 625,
+      "finite_numeric_fields_compared": 476,
+      "all_returned_fields_exact": true,
+      "all_scalars_exact": true,
+      "official_family_P_exact": true,
+      "outputs_content_bound": true,
+      "result_status": "ESTIMATED",
+      "missing_raw_p_retained": null
+    },
+    {
+      "method": "rg",
+      "scale": "nonpositive_h2",
+      "gzip_without_extension": false,
+      "original_munged_rows": 2200,
+      "full_returned_fields_compared": 625,
+      "finite_numeric_fields_compared": 469,
+      "all_returned_fields_exact": true,
+      "all_scalars_exact": true,
+      "official_family_P_exact": true,
+      "outputs_content_bound": true,
+      "result_status": "NOT_ESTIMABLE",
+      "missing_raw_p_retained": true
+    }
+  ],
+  "negative_cases": [
+    {
+      "defect": "source_digest",
+      "actual_container_exit": 2,
+      "audit_status": "BLOCKED",
+      "normal_numeric_state_config_outputs_absent": true
+    },
+    {
+      "defect": "panel_missing_chr22",
+      "actual_container_exit": 2,
+      "audit_status": "BLOCKED",
+      "normal_numeric_state_config_outputs_absent": true
+    },
+    {
+      "defect": "runtime_identity",
+      "actual_container_exit": 2,
+      "audit_status": "BLOCKED",
+      "normal_numeric_state_config_outputs_absent": true
+    },
+    {
+      "defect": "duplicate_config_key",
+      "actual_container_exit": 2,
+      "audit_status": "BLOCKED",
+      "normal_numeric_state_config_outputs_absent": true
+    }
+  ],
+  "method_script": {
+    "sha256": "4ca585ec540b12cb2d16de4ffffeef0fa6466e6e8e8f11e215392512a3c182e2",
+    "bytes": 17069
+  },
+  "reference_script": {
+    "sha256": "62b902ed1077553e8fcb8575708464b2a0445ba2709cada90f052813c1ba561d",
+    "bytes": 3932
+  },
+  "manifest": {
+    "sha256": "5c14741ef5299e953ee3be7dc208065789d19c41dc90731434ec7ca2510bf36c",
+    "bytes": 2805
+  },
+  "original_panel_files": 88,
+  "actual_real_panel_qualification": false,
+  "complete_architecture_family_qualification": false,
+  "native_lineage_qualification": false,
+  "scientific_qualification": false,
+  "formal_authorization": false,
+  "runtime_identity": {
+    "packages": {
+      "bitarray": "2.6.0",
+      "numpy": "1.23.3",
+      "pandas": "1.5.0",
+      "scipy": "1.9.2"
+    },
+    "python": "3.9.25",
+    "runtime_files": {
+      "app.py": "16b727b833e779578e490b953401cd8a42be9121b8520e1a0b68f91ad1ed7245",
+      "ldsc.py": "4236e817b1c7443131a9f078390072c38bee85112e891c29351e3e7d663b8a25",
+      "ldscore/__init__.py": "2e94cea154085cf70658e7fbe7257687bcf27da783a57dfd886f532eb23c21b6",
+      "ldscore/irwls.py": "e0a8e7712b4cd3958c96cb37b464675dc591926aeadbc8ac1c62dd6aef153867",
+      "ldscore/jackknife.py": "e41eaa7126f422ab7dccb6669efa112e658a1ea6f9d5b4522bf9daafe990bc0c",
+      "ldscore/ldsc_utils.py": "c45145b031478e5cd374cde281803117f72044a74d61a0a75d01b37da9f27e59",
+      "ldscore/ldsc_utils_local.py": "cc8feb1c4018342a3da142ef149cad38133c88821214a6d96b6295de604e0322",
+      "ldscore/ldscore.py": "df98f324ca775ece05a6e8f93e0584c88bde9535c360fda6ff96bb7f475e726b",
+      "ldscore/parse.py": "6135c9a287994669e472c49d109a2f8b302eab918f49c957ace2e9b53ca5f3bc",
+      "ldscore/regressions.py": "676625e556d94dae08c8b31c9426e84ee74acd6d8689f87f76d898a551ed010e",
+      "ldscore/sumstats.py": "56d1fc8b76b26ff0f93257610c5c2f20298f261747ae6d1ca07e139b0fd4936e",
+      "make_annot.py": "9d89c0efcb5ffc97b684be6e9d56c5502b0a603325ca4fcd0774964fd3c4fff6",
+      "munge_sumstats.py": "65783b746c36ea13a4c1bb64fe210acec9c9cf910a5706081aee3a76ad102be6",
+      "setup.py": "980a26e8448c9ca88380a03eda0c26d32108e3c10af8f0d956b5222db27341a7",
+      "test/simulate.py": "88e7376761bce77db8041d910977202ccd9a2d2df861c2e11cd24e1e679c7abc",
+      "test/test_irwls.py": "ff550f49c65695b09e5aabf35e3637b80e43dd702a413e29fb1bc558465edad1",
+      "test/test_jackknife.py": "8a9d9f83cdf31a2b0f069febf9460f15ab777505dd18e6903937cb3eaac5ccfc",
+      "test/test_ldscore.py": "11e21c8f890366650d0f106dd4edfe8ddc5c4a228d158aca0347cd7d6d3028cd",
+      "test/test_munge_sumstats.py": "5a9d5a1912d7909485462847087226eff21cf944cd0870eb98809ccfe5d3167a",
+      "test/test_parse.py": "cfb27ca614608a01df4d85c202b673f073a8cb6ec03c528f01d2716942cecd55",
+      "test/test_regressions.py": "ca0f825d32522961f338aab67baba37a4bf53948fc04e83d2a55612208bf42e4",
+      "test/test_sumstats.py": "f4dff75840d79f14ca442e30021c07316164523a340b3ddcdc06cbf2d2811c85"
+    }
+  },
+  "offline_required_contract_cases": 9,
+  "failed_attempts_preserved": [
+    {
+      "attempt": 1,
+      "scope": "Old canonical image did not expose estimate_h2/estimate_rg despite CLI dispatching to those names"
+    },
+    {
+      "attempt": 2,
+      "scope": "Actual descriptive API then failed chromosome-split panel lookup in the refactored image"
+    },
+    {
+      "resolution": "New opt-in family reuses previously acquired pristine official runtime; old image is not relabelled or claimed repaired"
+    }
+  ]
+}

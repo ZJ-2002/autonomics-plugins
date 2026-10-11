@@ -1,0 +1,63 @@
+schema_version = 1
+plugin_name = "ldsc-precision"
+[image]
+reference = "localhost/cachexia-ldsc-official@sha256:febf11d5ec554b53e2e022f26e55033233cb4692f40eb7d81cdaa7fe11d70999"
+tag = "CBIIT-LDSC-3.0.1-pristine-6c673952"
+upstream = "Pristine CBIIT/ldsc@6c673952cee74bd5c57aef1555a03b1c015399a0; complete runtime identities verified by every method"
+license = "GPL-3.0-only"
+[[panels]]
+binding = "ref_ld"
+mount = "/panels/ref_ld"
+bundle = "wjixiang/catalog-ldsc-ref-ld-1000g-eur-basic"
+[[panels]]
+binding = "w_ld"
+mount = "/panels/w_ld"
+bundle = "wjixiang/catalog-ldsc-w-ld-1000g-eur-hm3-no-mhc"
+
+[[nodes]]
+kind = "ldsc_h2_frozen_precision"
+desc = "Content-bound official h2 objects and unrounded scalar results; no scientific grant."
+doc = "Mandatory original architecture frozen method JSON, ordered actual munged inputs, complete22-chromosome panel manifest. Full official returned numeric state and source/runtime identities are retained; no P parsed from rounded logs. Scientific/engine authorization remains independently required."
+timeout_secs = 1800
+artifact_prefix = "/artifacts/ldsc_h2_precision"
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}, {type="file"}]
+outputs = [{path="result.json",format="json"}, {path="official.log",format="ldsc_log"}, {path="audit.json",format="json"}, {path="bound_config.json",format="json"}, {path="official_state.json",format="json"}]
+[nodes.command]
+interpreter = "python"
+script_file = "scripts/precision.py"
+[nodes.command.env]
+ARCH_LDSC_METHOD = "h2"
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+PYTHONDONTWRITEBYTECODE = "1"
+[nodes.resources]
+cpus = 1.0
+memory = "4Gi"
+network = "isolated"
+pull_policy = "never"
+
+[[nodes]]
+kind = "ldsc_rg_frozen_precision"
+desc = "Content-bound official rg objects and unrounded scalar results; no scientific grant."
+doc = "Mandatory original architecture frozen method JSON, ordered actual munged inputs, complete22-chromosome panel manifest. Full official returned numeric state and source/runtime identities are retained; no P parsed from rounded logs. Scientific/engine authorization remains independently required."
+timeout_secs = 1800
+artifact_prefix = "/artifacts/ldsc_rg_precision"
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}, {type="file"}, {type="file"}]
+outputs = [{path="result.json",format="json"}, {path="official.log",format="ldsc_log"}, {path="audit.json",format="json"}, {path="bound_config.json",format="json"}, {path="official_state.json",format="json"}]
+[nodes.command]
+interpreter = "python"
+script_file = "scripts/precision.py"
+[nodes.command.env]
+ARCH_LDSC_METHOD = "rg"
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+PYTHONDONTWRITEBYTECODE = "1"
+[nodes.resources]
+cpus = 1.0
+memory = "4Gi"
+network = "isolated"
+pull_policy = "never"

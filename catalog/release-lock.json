@@ -1,8 +1,8 @@
 {
   "schema_version": "1.0",
   "scope": "SOURCE_AND_INTERFACE_INVENTORY_NOT_METHOD_CERTIFICATION",
-  "canonical_families": 29,
-  "canonical_kinds": 60,
+  "canonical_families": 30,
+  "canonical_kinds": 62,
   "families": [
     {
       "directory": "plugins/bulk-rnaseq",
@@ -910,8 +910,8 @@
         },
         {
           "path": "README.md",
-          "sha256": "560ba2232e624b953c7a1fa1e9e70b2b9d93be3452d76f93990f199f61f7d7af",
-          "bytes": 3347,
+          "sha256": "f0702f0f0f48140f2e9f8f1c26c0c3d3b7faf4335182040c9fac7e062f3e5cf3",
+          "bytes": 4249,
           "executable": false
         },
         {
@@ -7230,6 +7230,56 @@
           "path": "tests/test_munge_entrypoint.py",
           "sha256": "860143929e10d26c8927fc152501c1a7e1776893f22fa53c5af9b3a71bfcbfa9",
           "bytes": 6038,
+          "executable": false
+        }
+      ],
+      "source_inventory_only": true,
+      "scientific_certified": false,
+      "auto_enable": false
+    },
+    {
+      "directory": "plugins/ldsc-precision",
+      "plugin_name": "ldsc-precision",
+      "kinds": [
+        "ldsc_h2_frozen_precision",
+        "ldsc_rg_frozen_precision"
+      ],
+      "image_reference": "localhost/cachexia-ldsc-official@sha256:febf11d5ec554b53e2e022f26e55033233cb4692f40eb7d81cdaa7fe11d70999",
+      "files": [
+        {
+          "path": "README.md",
+          "sha256": "d3ffe103334a4f1f035b6133388232f52f578547180310d5acc8126ee5cbca6c",
+          "bytes": 3588,
+          "executable": false
+        },
+        {
+          "path": "manifest.toml",
+          "sha256": "5c14741ef5299e953ee3be7dc208065789d19c41dc90731434ec7ca2510bf36c",
+          "bytes": 2805,
+          "executable": false
+        },
+        {
+          "path": "scripts/precision.py",
+          "sha256": "4ca585ec540b12cb2d16de4ffffeef0fa6466e6e8e8f11e215392512a3c182e2",
+          "bytes": 17069,
+          "executable": false
+        },
+        {
+          "path": "tests/precision_reference.py",
+          "sha256": "62b902ed1077553e8fcb8575708464b2a0445ba2709cada90f052813c1ba561d",
+          "bytes": 3932,
+          "executable": false
+        },
+        {
+          "path": "tests/run_precision_container_assurance.py",
+          "sha256": "a487dc411c22e85deffc0ab85a8fdb1146383ec633c9fe9e7aee28d7773e344d",
+          "bytes": 13866,
+          "executable": false
+        },
+        {
+          "path": "tests/test_precision_contract.py",
+          "sha256": "9c0579a9282ee0baef84358ae3a783e9b78ba81514edffb57ad90140784bd237",
+          "bytes": 6376,
           "executable": false
         }
       ],
