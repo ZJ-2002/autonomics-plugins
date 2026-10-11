@@ -14338,8 +14338,8 @@
         },
         {
           "path": "test_qc_assurance.sh",
-          "sha256": "4c9d06c0cab1790eb62ca5dc7c229190af7e6f3f678bafc9a29244acd64459c6",
-          "bytes": 1812,
+          "sha256": "b0d321a2273645d47db189f74f73e4598e157eefd32b2beb107515cb542b96b1",
+          "bytes": 2261,
           "executable": false
         },
         {
@@ -14362,8 +14362,8 @@
         },
         {
           "path": "tests/qc_compare.py",
-          "sha256": "1385d64aaf85894cbf89f15a3a9516b6cb6f2fd65167b9ba816a8a541cbe7076",
-          "bytes": 7930,
+          "sha256": "d2d30324793dc33b5e438be8269a8fe7f9021d54d637a88d3aa3dd8f78d1b109",
+          "bytes": 8391,
           "executable": false
         },
         {
@@ -14388,6 +14388,12 @@
           "path": "tests/test_qc_boundaries.py",
           "sha256": "a0fc4ee58ad02c6c125a0f6f0055d40d81e7c28b05a4063010bb8ff6a77dcb80",
           "bytes": 7534,
+          "executable": false
+        },
+        {
+          "path": "tests/test_qc_comparison.py",
+          "sha256": "67a9876caecac946dcbba860f62ac46a69bebf8b4358b2a7a8ad01336b3df7f3",
+          "bytes": 1744,
           "executable": false
         },
         {

@@ -23,16 +23,24 @@ def compare_value(actual, expected):
         return sum(compare_value(actual[name], expected[name]) for name in expected)
     if isinstance(expected, pd.DataFrame):
         pd.testing.assert_frame_equal(actual, expected, check_exact=False, atol=1e-12, rtol=0)
+        for column in expected.select_dtypes(include=["integer", "bool"]):
+            np.testing.assert_array_equal(actual[column].to_numpy(), expected[column].to_numpy())
         return sum(np.isfinite(expected[column].to_numpy()).sum() for column in expected.select_dtypes(include="number"))
     if sparse.issparse(expected):
         assert sparse.issparse(actual) and actual.format == expected.format and actual.dtype == expected.dtype
         np.testing.assert_array_equal(actual.indptr, expected.indptr)
         np.testing.assert_array_equal(actual.indices, expected.indices)
-        np.testing.assert_allclose(actual.data, expected.data, atol=1e-12, rtol=0, equal_nan=True)
+        if expected.dtype.kind in "biu":
+            np.testing.assert_array_equal(actual.data, expected.data)
+        else:
+            np.testing.assert_allclose(actual.data, expected.data, atol=1e-12, rtol=0, equal_nan=True)
         return int(np.isfinite(expected.data).sum())
     if isinstance(expected, (np.ndarray, np.generic)):
         assert np.asarray(actual).dtype == np.asarray(expected).dtype
-        if np.asarray(expected).dtype.kind in "fciub":
+        if np.asarray(expected).dtype.kind in "biu":
+            np.testing.assert_array_equal(actual, expected)
+            return int(np.isfinite(expected).sum())
+        if np.asarray(expected).dtype.kind in "fc":
             np.testing.assert_allclose(actual, expected, atol=1e-12, rtol=0, equal_nan=True)
             return int(np.isfinite(expected).sum())
         np.testing.assert_array_equal(actual, expected)
@@ -65,7 +73,7 @@ def compare(directory):
             assert set(produced[name].attrs) == set(reference[name].attrs)
             if isinstance(reference[name], h5py.Dataset):
                 assert produced[name].dtype == reference[name].dtype
-                if reference[name].dtype.kind in "fciub":
+                if reference[name].dtype.kind in "fc":
                     np.testing.assert_allclose(produced[name][()], reference[name][()], atol=1e-12, rtol=0, equal_nan=True)
                 else:
                     np.testing.assert_array_equal(produced[name][()], reference[name][()])

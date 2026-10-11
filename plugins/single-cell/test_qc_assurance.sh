@@ -33,3 +33,11 @@ podman run --rm --pull=never --network=none --read-only --cpus=2 --memory=3g \
   --mount "type=bind,src=$family,dst=/source,ro=true" \
   --entrypoint python "$image" /source/tests/test_qc_boundaries.py \
   /proof/boundaries > "$evidence/boundaries.stdout.txt" 2> "$evidence/boundaries.stderr.txt"
+
+podman run --rm --pull=never --network=none --read-only --cpus=2 --memory=3g \
+  --userns=keep-id --tmpfs /tmp:rw,size=256m --env PYTHONDONTWRITEBYTECODE=1 \
+  --mount "type=bind,src=$evidence,dst=/proof" \
+  --mount "type=bind,src=$family,dst=/source,ro=true" \
+  --entrypoint python "$image" /source/tests/test_qc_comparison.py \
+  /proof/INTEGER_COMPARISON_TESTS.json \
+  > "$evidence/comparison.stdout.txt" 2> "$evidence/comparison.stderr.txt"

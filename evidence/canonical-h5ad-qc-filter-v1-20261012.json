@@ -48,6 +48,8 @@
     "finite_values_checked": 2373879,
     "whole_AnnData_and_HDF5_datasets_checked": true,
     "official_undefined_masks_checked": true,
+    "integer_arrays_and_HDF5_datasets_checked_exactly": true,
+    "integer_comparison_mutants_refused": 3,
     "full_ledgers_hashes_and_independent_summaries_checked": true,
     "absolute_tolerance": 1e-12,
     "relative_tolerance": 0,
