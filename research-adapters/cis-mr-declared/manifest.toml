@@ -1,0 +1,33 @@
+schema_version = 1
+plugin_name = "cis-mr-declared"
+
+[image]
+reference = "localhost/autonomics-cis-mr-candidate@sha256:93995a551f3182688358122ebbe1e190047a80043724c831d1884c5de99621f7"
+tag = "MR-0.10.0-TwoSampleMR-0.7.9-R-4.5.1-local-candidate"
+upstream = "Official CRAN MendelianRandomization 0.10.0 and MRCIEU TwoSampleMR 0.7.9; measured offline candidate closure"
+license = "GPL-3.0-or-later"
+
+[[nodes]]
+kind = "cis_mr_declared"
+desc = "Official cis MR on byte-bound declared original inputs; scientific admission remains external."
+doc = "Four files: declared method config, complete MR data, signed LD, complete source ledger. Explicit fixed/random GLS or originally single-tool Wald only. Unknown overlap and unresolved independent-signal routes remain blocked. Missing-source rows persist as NOT_RUN. Three outputs: technical estimate, audit, full RDS. Local candidate image must already exist in the isolated container store; no runtime pull or automatic enablement. Not a registered formal method acceptance."
+timeout_secs = 900
+artifact_prefix = "/artifacts/cis_mr_declared"
+
+[nodes.resources]
+cpus = 1.0
+memory = "512Mi"
+network = "isolated"
+pull_policy = "never"
+
+[nodes.ports]
+inputs = [{ type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }]
+outputs = [
+  { path = "cis-mr-result.tsv", format = "tsv", label = "estimate" },
+  { path = "cis-mr-audit.json", format = "json", label = "audit" },
+  { path = "cis-mr.RDS", format = "r_rds", label = "fit" },
+]
+
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/cis_mr.R"

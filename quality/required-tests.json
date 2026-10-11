@@ -18,6 +18,10 @@
     "tests.test_catalog.CatalogTests.test_profile_roundtrips_subdir",
     "tests.test_catalog.CatalogTests.test_research_overlap_is_not_auto_enabled",
     "tests.test_catalog.CatalogTests.test_script_symlink_escape_fails",
-    "tests.test_catalog.CatalogTests.test_script_traversal_fails"
+    "tests.test_catalog.CatalogTests.test_script_traversal_fails",
+    "tests.test_cis_adapter_assembly.CisAssemblyTests.test_component_mutation_refuses_before_any_generated_write",
+    "tests.test_cis_adapter_assembly.CisAssemblyTests.test_missing_or_aliased_component_does_not_create_partial_program",
+    "tests.test_cis_adapter_assembly.CisAssemblyTests.test_original_qualified_components_and_generated_entry_agree",
+    "tests.test_cis_adapter_assembly.CisAssemblyTests.test_runnable_script_cannot_diverge_from_unmodified_component_lock"
   ]
 }

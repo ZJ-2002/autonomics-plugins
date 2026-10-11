@@ -15836,6 +15836,61 @@
       "auto_enable": false
     },
     {
+      "directory": "research-adapters/cis-mr-declared",
+      "plugin_name": "cis-mr-declared",
+      "kinds": [
+        "cis_mr_declared"
+      ],
+      "image_reference": "localhost/autonomics-cis-mr-candidate@sha256:93995a551f3182688358122ebbe1e190047a80043724c831d1884c5de99621f7",
+      "files": [
+        {
+          "path": "README.txt",
+          "sha256": "c50d9c23faaea9df9c803b87232c52153863a12f8670bc4ee96ff7acb24372e3",
+          "bytes": 1579,
+          "executable": false
+        },
+        {
+          "path": "component-source.json",
+          "sha256": "e81dede7e0d157bf3b53eaab36c131528d7bdcbc6fd5247b4e09e0f08d45bde2",
+          "bytes": 584,
+          "executable": false
+        },
+        {
+          "path": "components/research_cis_ld.R",
+          "sha256": "99137f03f7e36dc095fe0c0b47f0d963c9036161ec51d6bb323883ce4a50b168",
+          "bytes": 3100,
+          "executable": false
+        },
+        {
+          "path": "components/research_cis_mr.R",
+          "sha256": "d43b568ca700906ce547239581a81d4c7d9f886202ce516f1ee4f467dbb795fe",
+          "bytes": 8756,
+          "executable": false
+        },
+        {
+          "path": "entry.R",
+          "sha256": "4fc33df5ba0bd917c04418d8583ca1fcd7515cf9be2e17184f87c9eef7c10526",
+          "bytes": 1410,
+          "executable": false
+        },
+        {
+          "path": "manifest.toml",
+          "sha256": "466f4c47b94ebe4830008e11151f85b5470c5934d55fd95317eca90af5f87d13",
+          "bytes": 1561,
+          "executable": false
+        },
+        {
+          "path": "scripts/cis_mr.R",
+          "sha256": "8d3a1b8689108154c4a123f13c39627efc0b3f104ebb34c724b6e4f0f902dfd0",
+          "bytes": 13352,
+          "executable": false
+        }
+      ],
+      "source_inventory_only": true,
+      "scientific_certified": false,
+      "auto_enable": false
+    },
+    {
       "directory": "research-adapters/visualization",
       "plugin_name": "visualization",
       "kinds": [

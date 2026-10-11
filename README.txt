@@ -4,7 +4,9 @@ Engine: https://github.com/ZJ-2002/autonomics
 Plugins: https://github.com/ZJ-2002/autonomics-plugins
 
 plugins/ contains 26 independently installable plugin families.
-research-adapters/ contains 48 opt-in research/reference adapters.
+research-adapters/ contains 49 opt-in research/reference adapters.
+The added cis-mr-declared adapter uses a measured local-only image and remains
+opt-in; source inventory does not qualify a protected or formal method run.
 provenance/source-index.json records each original public repository,
 published revision and imported file SHA256/Git blob identity.
 shared-image-sources/ also preserves the two recipes from plugin-images;

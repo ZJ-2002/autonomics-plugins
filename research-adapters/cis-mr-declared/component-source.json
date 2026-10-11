@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "source_repository": "https://github.com/ZJ-2002/autonomics",
+  "source_commit": "c499c812e29188f9a3fda377d0c6af08c9bc7b22",
+  "component_files": {
+    "research_cis_ld.R": {
+      "sha256": "99137f03f7e36dc095fe0c0b47f0d963c9036161ec51d6bb323883ce4a50b168",
+      "bytes": 3100
+    },
+    "research_cis_mr.R": {
+      "sha256": "d43b568ca700906ce547239581a81d4c7d9f886202ce516f1ee4f467dbb795fe",
+      "bytes": 8756
+    }
+  },
+  "assembly_order": [
+    "research_cis_ld.R",
+    "research_cis_mr.R",
+    "entry.R"
+  ],
+  "scientific_authorization": false
+}
