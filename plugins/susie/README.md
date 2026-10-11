@@ -1,109 +1,77 @@
 # susie plugin
 
-Official susieR fine-mapping (`susie_rss`), migrated from the hardcoded
-Rust wrapper `crates/node-bundles/nodes-io/src/susie_rss_container.rs`
-(kind `susie_rss_container` → plugin kind `susie_rss`) following
-`docs/plugin-node-migration.md`.
+The original `susie_rss` kind calls author `susieR::susie_rss` 0.16.6,
+source commit `ef213feed2cb82419677661a8c986e1504df2c73`, in
+`ghcr.io/zj-2002/susie@sha256:b1df377e428e6166cd8ac65ac3e131c46c3bb68f172969c0e0f910751792d87e`.
+The live script is `scripts/run_susie_rss.R.sh`, staged and executed by
+Rscript. `run_susie_rss.R` is an archived baked runner, not the repaired
+execution path. The image's Python query helper and libbgmg remain pinned.
 
-## Layout
+## Input and signed LD
 
-```text
-susie/
-├── manifest.toml            # node contract: params, ports, panel, image
-├── scripts/
-│   └── run_susie_rss.R.sh   # the live runner (staged, run by Rscript)
-├── Dockerfile               # image provenance (build + push still via GHCR)
-├── run_susie_rss.R          # the image-baked copy of the runner (see below)
-├── susie_ld_query.py        # image-baked signed-LD query helper (still live)
-├── fixtures/
-│   └── chr21.sumstats.tsv   # chr21 smoke-test locus (snp/chrom/z/n)
-├── test_susie_rss.sh        # image baseline: build, verify, push, smoke-test
-└── README.md
-```
+One literal, rectangular TSV contains unique `snp`, `chrom`, finite `z`,
+and optional constant `n > 1`, `a1`, `a2`. IDs use GRCh37
+`chr:position:allele1:allele2` on a single autosome. Both allele columns
+must be present together. `a1` is the effect allele of `z`; absent columns
+mean the ID's first allele is the effect allele. Exact reversals are
+supported; strand guessing, rsID conversion and silent variant filtering
+are not. A supplied sample-size override must agree with input `n`.
 
-## The signed-LD panel
+The signed-LD bundle `wjixiang/catalog-mixer-g1000-eur` is mounted at
+`/panels/mixer_ref`. Its actual BIM allele order can be the reverse of its
+ID allele order. The runner reads BIM columns 5/6 and applies
+`R_effect = D R_BIM D`, preserving the supplied z-score orientation.
+The query is explicitly normalized to the BIM allele orientation.
 
-The node queries signed LD pairs from the
-`wjixiang/catalog-mixer-g1000-eur` catalog bundle, mounted read-only at
-`/panels/mixer_ref`. The runner reads
-`/panels/mixer_ref/stage_flat/chr@.bim` and
-`/panels/mixer_ref/ld_mixer/1000G.EUR.chr@` — the mount path is
-load-bearing. The panel is shared with the mixer family but bound by this
-plugin independently (each plugin binds its own panels; the images
-differ). The roughly 254-SNP `.snps` extraction lists in the panel are
-mixer leftovers and are not an alignment constraint.
+**The current MiXeR panel is sparse. Missing pairs are not known zeros.**
+Every selected off-diagonal pair must be explicitly present, and the
+assembled matrix must pass the declared float32-tolerant PSD check
+(`minimum eigenvalue >= -1e-6 * variant_count`). No PSD repair, allele
+repair or automatic dropping occurs. The committed 50-SNP fixture has
+missing pairs and a minimum eigenvalue near -0.223 when absent entries
+are incorrectly zero-filled: it now fails instead of publishing results.
+This repair does not make the sparse panel suitable for general regional
+fine mapping. A scientifically qualified dense-LD route remains required.
 
-## The runner channel
+Because this is external-reference LD, residual-variance estimation is
+rejected; an approved in-sample route must be verified separately. The
+wrapper fixes the R seed immediately before the official call and rejects
+nonconverged or invalid fit summaries. These are runtime safeguards, not
+proof of the scientific validity of a locus or reference population.
 
-The image bakes `/opt/susie/bin/run_susie_rss.R` and
-`/opt/susie/bin/susie_ld_query.py`, but the **live runner is
-`scripts/run_susie_rss.R.sh`**: the baked R runner adapted verbatim,
-staged per run by `ContainerCommandNode` and executed as
-`Rscript /work/.autonomics/script`. The Python LD-query helper has no
-plugin-side copy in the execution path — the runner still calls the
-image-baked `/opt/susie/bin/susie_ld_query.py`, which links against the
-image-baked `libbgmg.so`.
+## Outputs
 
-Every parameter travels through the same `SUSIE_*` environment variables
-the legacy `container_spec()` set; the runner reads each with
-`Sys.getenv` + default, so an empty value means "use the default" exactly
-like the legacy wrapper omitting the variable. Rebuilding the image does
-not require republishing the manifest; changing the runner no longer
-requires rebuilding the image.
+The declared ports remain TSV (0), untouched official fit RDS (1), and log
+(2). Validation/runtime failures go to the log before result publication.
+Existing output paths are never overwritten. Result publication uses
+success-only temporary files and hard links, not a multi-file transaction
+or crash-recovery protocol.
 
-## Image
+TSV retains `snp,pip,cs,alpha,mu,mu2,lbf` and adds `cs_all`. `cs` is the
+last credible-set list index containing a SNP; `cs_all` contains every
+such index separated by semicolons. These indices are not effect IDs.
+`alpha` is the maximum single-effect assignment probability, and the
+reported `mu/mu2/lbf` belong to that effect; they are not total posterior
+coefficients. Negative-infinite log Bayes factors can be legitimate.
+Use the RDS for full effect arrays and named credible sets.
 
-`ghcr.io/auto-nomics/autonomics/susie@sha256:8a72a443461add5c94c4907f9a1d6106b989850e93217a95587d9095542febe8`
-(tag `0.16.6`; susieR `0.16.6` @ `ef213fe` on `rocker/r-ver:4.5.1`, with
-gsa-mixer `2.2.1` `libbgmg` for the LD query — pinned in the Dockerfile).
+## Actual wrapper tests
 
-## Migration parity notes
-
-- Byte-exact vs the legacy `container_spec`: image reference, the three
-  outputs (`susie_rss.tsv` / `susie_rss`, `susie_rss.RDS` / `r_rds`,
-  `susie_rss.log` / `susie_rss_log`), `timeout_secs = 1800`,
-  `artifact_prefix = /artifacts/susie_rss_container` (explicit, so it does
-  not fall back to the derived `/artifacts/susie_rss`), the single panel
-  bundle (`wjixiang/catalog-mixer-g1000-eur` at `/panels/mixer_ref`),
-  isolated network, read-only rootfs, pull policy `missing`, and no
-  resource overrides (the legacy spec left cpus/memory/pids unset).
-- Env channel identical: the eleven `SUSIE_*` keys plus `SUSIE_N`.
-- The `susieR::susie_rss(...)` call, the panel mount paths, the LD-query
-  invocation, and the TSV/RDS/log output layout are token-identical to
-  the baked runner.
-- Known deltas (all recorded in
-  `crates/container-plugin/tests/susie_migration.rs`):
-  - The compiled command is `["Rscript"]` + the staged script path, where
-    the legacy command was `["Rscript", "/opt/susie/bin/run_susie_rss.R"]`.
-  - Defaults render through serde_json, so `r2_min`/`check_null_threshold`
-    `0.0` reach the container as `"0.0"` where the legacy Rust
-    `f64::to_string` produced `"0"`. `as.numeric()` parses both
-    identically (documented pitfall 8).
-  - The legacy wrapper omitted the `SUSIE_N` key entirely when `n` was
-    absent; the manifest's optional param renders an empty value. The
-    runner's `nzchar(Sys.getenv("SUSIE_N", unset = ""))` treats both
-    identically ("read the n column").
-  - `estimate_prior_method` and `z_method` are plain `string` params (v0
-    has no enum param type); the legacy `validate()` membership checks
-    moved into the runner with the byte-identical error messages
-    (`estimate_prior_method must be one of: optim, EM, simple`,
-    `z_method must be one of: wald, score`). The failure point moves from
-    registry build to container start, exactly as in the
-    deseq2/visualization migrations. All numeric and integer bounds
-    (`l >= 1`, `coverage/min_abs_corr/r2_min` in `[0, 1]`,
-    `scaled_prior_variance > 0`, `max_iter >= 1`, `timeout_secs >= 1`,
-    absolute `artifact_prefix`) stay at compile time through the manifest
-    DSL.
-  - The legacy spec's `artifact_prefix` and `timeout_secs` spec fields are
-    manifest-level now; the compiled param schema is closed
-    (`additionalProperties: false`).
-
-## Test
+Tests require Podman, the exact cached image, the real cached chr21 panel,
+and a separately installed author package from the pinned source archive.
+Missing dependencies are failures, not skipped successes. Each test uses
+only the declared three output ports. Nothing builds, pushes images,
+reads production credentials, or alters deployment configuration.
 
 ```sh
-./test_susie_rss.sh   # builds, verifies the panel + image, pushes, smoke-tests
+SUSIE_TEST_EVIDENCE=/absolute/new/evidence-directory \
+SUSIE_REFERENCE_LIBRARY=/absolute/fresh-author-R-library \
+./test_susie_rss.sh
 ```
 
-The golden parity test lives at
-`crates/container-plugin/tests/susie_migration.rs` (skipped when this
-directory is absent; `NODE_PLUGINS_ROOT` overrides the checkout root).
+`tests/official_reference.R` independently calls the fresh author package,
+compares the entire fit with attributes and every TSV column at a fixed
+`1e-12` tolerance. This shares the pinned container and LD query results;
+it is not an independent LD-provider validation or separate-OS test.
+The tests cover small complete-pair subsets and failures, not general
+regional fine mapping, production daemon deployment, or study approval.

@@ -14170,8 +14170,8 @@
         },
         {
           "path": "README.md",
-          "sha256": "0edd85c1d0292c6986b6f7d2493b1644bd0a1e98380f83474781d89060ae8b29",
-          "bytes": 5307,
+          "sha256": "d00045e6cce5ff5893e69583e4282fcc84d1d792d6dc2c0e3b572c08100b1014",
+          "bytes": 4105,
           "executable": false
         },
         {
@@ -14182,8 +14182,8 @@
         },
         {
           "path": "manifest.toml",
-          "sha256": "dbea7202e20368b6d8c47c0dbb5cb334e7a355bac5977317b6b8dd684814685c",
-          "bytes": 6157,
+          "sha256": "00a403f2cb26ca2da2b7e575c1efa6aa117cbcf1346871d015bab99d3056279c",
+          "bytes": 5737,
           "executable": false
         },
         {
@@ -14194,8 +14194,8 @@
         },
         {
           "path": "scripts/run_susie_rss.R.sh",
-          "sha256": "02897fb5f908d422b102849cc60dd2cef81e0c9175ec31329d4a9e806419a6ac",
-          "bytes": 7762,
+          "sha256": "1616e40551507b88473fa5aa5f6ccaf53e7b948885945c4c2146ebfb08d81043",
+          "bytes": 13884,
           "executable": false
         },
         {
@@ -14206,9 +14206,21 @@
         },
         {
           "path": "test_susie_rss.sh",
-          "sha256": "cf8961c3b2ece15385ce8cd47222f4d33225e9cfc7fd1bfefd3ad64328db959c",
-          "bytes": 3196,
+          "sha256": "416eab149f4a800156a459725c08f3a71396faeeb665f0546ab736ecbdeb1e77",
+          "bytes": 583,
           "executable": true
+        },
+        {
+          "path": "tests/official_reference.R",
+          "sha256": "40f6e0fe30a3878240b3e57f862a7197ad9dbb7d5aa164dac908d46ab44e436c",
+          "bytes": 3967,
+          "executable": false
+        },
+        {
+          "path": "tests/test_contract.py",
+          "sha256": "1300008552e891d0b23339314e50bcbaa12db727372bca44d88341610f61f70c",
+          "bytes": 11088,
+          "executable": false
         }
       ],
       "source_inventory_only": true,

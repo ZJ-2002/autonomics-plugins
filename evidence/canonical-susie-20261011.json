@@ -1,0 +1,125 @@
+{
+  "schema_version": 1,
+  "node_kind": "susie_rss",
+  "plugin_family": "susie",
+  "active_design": "v4.3.2",
+  "method_layer": "SCOPED_ORIGINAL_OFFICIAL_CALLS_COMPLETE_OBJECT_PARITY",
+  "engineering_layer": "29_ACTUAL_WRAPPER_CASES_AND_7_DECLARED_MANIFEST_COMPILATION_TESTS",
+  "DAG_layer": "5_POSITIVE_4_NEGATIVE_NATIVE_DAGS_FULL_CONTAINER_PLUGIN_DATA_CATALOG_CRATES_REBUILT_AGAINST_HASH_VERIFIED_OWNED_SDK_SNAPSHOT_NOT_RESIDENT_DAEMON",
+  "plan_layer": "GENERAL_REGIONAL_LD_NOT_READY_SOFTWARE_IMPLEMENTATION_LOCKS_NOT_FILLED",
+  "formal_research_release": "NOT_GRANTED",
+  "full_original_method_domain": "NOT_CERTIFIED",
+  "G0": false,
+  "source_identity": {
+    "parent_commit": "c20b363742b8384c86a12fcca88f086a9437eb89",
+    "live_script_sha256": "1616e40551507b88473fa5aa5f6ccaf53e7b948885945c4c2146ebfb08d81043",
+    "manifest_sha256": "00a403f2cb26ca2da2b7e575c1efa6aa117cbcf1346871d015bab99d3056279c",
+    "author_commit": "ef213feed2cb82419677661a8c986e1504df2c73",
+    "author_archive_sha256": "f36dd4045a448c0b07a1ea8429dc531d573e31fbe822bfe61842244ddd5ddd88",
+    "official_version": "0.16.6",
+    "image": "ghcr.io/zj-2002/susie@sha256:b1df377e428e6166cd8ac65ac3e131c46c3bb68f172969c0e0f910751792d87e",
+    "fresh_author_namespace_functions_identical": 447
+  },
+  "I_O": {
+    "input": "one literal rectangular TSV: unique snp, one autosomal chrom, finite z; optional constant n>1 and exact effect/other allele pair",
+    "outputs": [
+      "port0 TSV including complete cs_all membership",
+      "port1 untouched official fit RDS",
+      "port2 diagnostic log"
+    ],
+    "ports_preserved": true,
+    "archive_baked_R_runner_certified": false
+  },
+  "actual_scope": [
+    "complete-pair one/two/three-variant chr21 subsets",
+    "optim/EM/simple; fixed prior; Wald/score; known/missing N",
+    "literal BIM identity and input effect-allele alignment",
+    "full fit attributes and each TSV column"
+  ],
+  "numerical_results": {
+    "final_complete_object_comparisons": 13,
+    "wrapper_positive_scenarios": 8,
+    "DAG_positive_scenarios": 5,
+    "finite_numeric_values": 854,
+    "max_absolute_difference": 0,
+    "comparison": "R all.equal tolerance=1e-12 plus measured finite-value max absolute differences zero",
+    "nonfinite_intercept_NA_slots": 13,
+    "nonfinite_slots_not_counted_as_numeric_matches": true
+  },
+  "known_failure_correctly_refused": {
+    "original_50_SNP_fixture": "SPARSE_PAIRS_INCOMPLETE",
+    "zero_filled_min_eigenvalue": -0.2227966,
+    "general_regional_reference_route": "NOT_READY_NO_AUTOMATIC_ZERO_FILL_OR_PSD_REPAIR"
+  },
+  "unsupported_or_unproven": [
+    "general regional fine mapping from current sparse panel",
+    "other chromosomes or large-scale resource behavior",
+    "strand inference, rsID conversion, automatic SNP filtering",
+    "external-reference residual variance estimation",
+    "independent LD-provider or separate-OS numerical validation",
+    "resident daemon/current whole-engine build and deployment",
+    "engine content hashes, cache reuse, persistent recovery, output transaction",
+    "v4.3.2 study reference/ancestry/build/effect scale and scientific approval"
+  ],
+  "counterexample": {
+    "scope": "OBSERVED_TECHNICAL_COUNTEREXAMPLE_NOT_SCIENTIFIC_EVIDENCE",
+    "mixed_BIM_orientation_PIP_delta": [
+      {
+        "snp": "21:9411410:C:T",
+        "before_pip": 0.796650083538049,
+        "after_pip": 0.999110972473008,
+        "absolute_difference": 0.20246088893495895
+      },
+      {
+        "snp": "21:9412441:T:TATA",
+        "before_pip": 0.203349916461951,
+        "after_pip": 0.995533643378942,
+        "absolute_difference": 0.792183726916991
+      }
+    ],
+    "original_50_variant_zero_filled_min_eigenvalue": -0.2227966,
+    "final_50_variant_result": "REFUSED_INCOMPLETE_SPARSE_PANEL",
+    "prior_wrapper_suite": {
+      "failed": 28,
+      "passed": 0
+    },
+    "additional_prior_mixed_BIM_failed": 1,
+    "current_wrapper_suite": {
+      "passed": 28,
+      "failed": 0
+    },
+    "additional_current_mixed_BIM_passed": 1,
+    "not_29_distinct_bugs": true,
+    "G0": false
+  },
+  "panel_file_identity": {
+    "verified_chr21_files": [
+      {
+        "path": "/home/zj-normal/.autonomics/panels/wjixiang/catalog-mixer-g1000-eur@sha256:25b47a318e764d00ccdd015483323abe2bfb43ed032868b6ef8eeaf8441c173b/ld_mixer/1000G.EUR.chr21",
+        "sha256": "49ffa5640685f7f63d893831f486372e961333daaca8e8d257608f5ec1678727",
+        "size": 56355947
+      },
+      {
+        "path": "/home/zj-normal/.autonomics/panels/wjixiang/catalog-mixer-g1000-eur@sha256:25b47a318e764d00ccdd015483323abe2bfb43ed032868b6ef8eeaf8441c173b/stage_flat/chr21.bim",
+        "sha256": "9642a1d09d0fa5ee86f6bdf438ae2bd6f6b38f0544fb7e547735736cf9b87853",
+        "size": 4683372
+      }
+    ],
+    "other_chromosomes_verified": false,
+    "declared_panel_digest": "sha256:25b47a318e764d00ccdd015483323abe2bfb43ed032868b6ef8eeaf8441c173b",
+    "manifest_sha256": "6147a2ca5b049ee2cad0f4e78dfccc8bf60a8fdafae1ea2437d83d79cc33fe74"
+  },
+  "proof_packet": "results/cachexia-v4.3.2/canonical-susie-v1-20261011",
+  "references": [
+    "https://github.com/stephenslab/susieR/tree/ef213feed2cb82419677661a8c986e1504df2c73",
+    "https://stephenslab.github.io/susieR/reference/susie_rss.html"
+  ],
+  "catalog_regression": "48_ACTUAL_TESTS_PASSED_AFTER_EXPLICIT_REVIEWED_RELEASE_LOCK_REFRESH_ONLY_SUSIE_CHANGED",
+  "SDK_identity": {
+    "snapshot": "/home/zj-normal/.cache/susie-sdk-snapshot-v1-20261011",
+    "before_manifest_sha256": "36c36295f638109ff2f8ec7b6124c6695198c7db7ca92c0fcb2370a16610136b",
+    "after_manifest_sha256": "4f149008c704bf3b7ae0d2b0e2f30a32c81ac99da031f239e529a9b04197af92",
+    "unchanged_files": 5366,
+    "whole_current_engine_rebuild": false
+  }
+}
