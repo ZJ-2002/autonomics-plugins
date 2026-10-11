@@ -13423,7 +13423,7 @@
       "kinds": [
         "mvmr"
       ],
-      "image_reference": "ghcr.io/auto-nomics/autonomics/mvmr@sha256:ce9ad3f46cf8b74a95c194fe791b6a529d9168676c5d936a05ba440569260eb3",
+      "image_reference": "ghcr.io/zj-2002/mvmr@sha256:b7a098030b3380f96de8c9fde5017a00b870e59d8553090cf97b6b96919be6ea",
       "files": [
         {
           "path": "Dockerfile",
@@ -13433,8 +13433,8 @@
         },
         {
           "path": "README.md",
-          "sha256": "77c3549a6bb325301f0cecb4f8dcdcf4c14d6f61a38c57db15bd0103829162c7",
-          "bytes": 4318,
+          "sha256": "6a61df32b804889d67562220cc44492c54602c9e7da82aa3ccb81e2b0b871f5d",
+          "bytes": 4556,
           "executable": false
         },
         {
@@ -13445,20 +13445,38 @@
         },
         {
           "path": "manifest.toml",
-          "sha256": "c4bb49d4a354696460d1e7f6c199b6ed23bea64de6e99fd34e1d26cb73320c7c",
-          "bytes": 3588,
+          "sha256": "1fbfc67878b9fbc6c6415ba44a05a42e897b99b603dd03b1aa5fece81d111292",
+          "bytes": 4425,
           "executable": false
         },
         {
           "path": "scripts/mvmr.R",
-          "sha256": "02d59f9c1042dfc2cb70c12b0d5f45168e09d7f7307b141968db8561e02f3531",
-          "bytes": 3792,
+          "sha256": "9f761ec73ec0291653d6484589508db8fc390a4950c43c0e17dc9957d7d1c2a9",
+          "bytes": 8484,
           "executable": false
         },
         {
           "path": "test_mvmr.sh",
-          "sha256": "b60ee12cfef1e6a93327e9d11c0d56bff39d326cfeee16948982cd2327b5d159",
-          "bytes": 2136,
+          "sha256": "a6d3344aa18bf740468491eaac5be54285f34119a350084e5ea180c1e03e7f80",
+          "bytes": 666,
+          "executable": false
+        },
+        {
+          "path": "tests/compare_official.R",
+          "sha256": "d628cb4acf47f0cdf918f73bd90e9da044b812d4dd5ec3367b397b27d0076f5b",
+          "bytes": 2985,
+          "executable": false
+        },
+        {
+          "path": "tests/dump_package.R",
+          "sha256": "510e94aea7ed577e115c0e9464273ce11d7a4998d993e8ec2baf8baaf809902d",
+          "bytes": 991,
+          "executable": false
+        },
+        {
+          "path": "tests/test_contract.py",
+          "sha256": "593f2486bc0689a2ffae27de5d01012268d9b9160c8adf82f9e14e7a4cabff66",
+          "bytes": 10313,
           "executable": false
         }
       ],

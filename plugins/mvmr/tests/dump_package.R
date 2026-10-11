@@ -1,0 +1,13 @@
+arguments <- commandArgs(trailingOnly = TRUE)
+if (length(arguments) != 2L) stop("Expected library selector and output path")
+if (arguments[[1L]] != "installed") .libPaths(c(arguments[[1L]], .libPaths()))
+package_namespace <- asNamespace("MVMR")
+functions <- sort(Filter(function(name) is.function(get(name, package_namespace)), ls(package_namespace, all.names = TRUE)))
+definitions <- setNames(lapply(functions, function(name) {
+  implementation <- get(name, package_namespace)
+  list(formals = formals(implementation), body = body(implementation))
+}), functions)
+saveRDS(list(version = as.character(packageVersion("MVMR")), functions = definitions), arguments[[2L]])
+data("rawdat_mvmr", package = "MVMR")
+write.table(rawdat_mvmr, paste0(arguments[[2L]], ".fixture.tsv"), sep = "\t", quote = FALSE, row.names = FALSE)
+cat("MVMR", as.character(packageVersion("MVMR")), "R", as.character(getRversion()), "functions", length(definitions), "fixture", nrow(rawdat_mvmr), ncol(rawdat_mvmr), "\n")

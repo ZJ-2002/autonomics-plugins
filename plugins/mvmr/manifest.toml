@@ -2,7 +2,7 @@ schema_version = 1
 plugin_name = "mvmr"
 
 [image]
-reference = "ghcr.io/auto-nomics/autonomics/mvmr@sha256:ce9ad3f46cf8b74a95c194fe791b6a529d9168676c5d936a05ba440569260eb3"
+reference = "ghcr.io/zj-2002/mvmr@sha256:b7a098030b3380f96de8c9fde5017a00b870e59d8553090cf97b6b96919be6ea"
 tag = "0.4.8"
 upstream = "WSpiller MVMR 0.4.8 @ bceaa38"
 license = "GPL-3.0-only"
@@ -21,7 +21,14 @@ otherwise. pcor supplies a phenotypic exposure correlation matrix,
 serialized row-major with rows separated by ';' and entries by ','
 (example: 1,0.25;0.25,1); it must be square, symmetric and carry a unit
 diagonal, is converted to per-SNP covariances with MVMR::phenocov_mvmr,
-and qhet requires it. The node saves the official format_mvmr input and
+and qhet requires it. Alternatively gencov_columns supplies all K*K
+per-SNP covariance entries in the same TSV, in row-major exposure order.
+Covariances must be finite, symmetric, positive semidefinite and have
+diagonals equal to squared exposure SEs; pcor and gencov_columns cannot
+both be supplied. With neither, the official gencov=0 default is retained,
+not approved as a research overlap assumption. Exposure arrays use the
+engine's lossless env_r_arrays channel; older engines cannot load this
+manifest. The node saves the official format_mvmr input and
 the selected result objects as an RDS artifact (mvmr.RDS) and emits their
 printed representation as a log artifact (mvmr.log). No numerical logic
 is reimplemented.
@@ -38,11 +45,18 @@ outputs = [
   { path = "mvmr.log", format = "mvmr_log", label = "log" },
 ]
 
+[nodes.resources]
+cpus = 2
+memory = "2g"
+network = "isolated"
+pull_policy = "never"
+
 [nodes.params]
 beta_yg = { type = "string", doc = "Outcome (Y) effect-size column name" }
 sebeta_yg = { type = "string", doc = "Outcome (Y) standard-error column name" }
-beta_xg = { type = "string_array", min_len = 1, doc = "Exposure effect-size column names, one per exposure, exposure-ordered" }
-sebeta_xg = { type = "string_array", min_len = 1, doc = "Exposure standard-error column names, ordered like beta_xg" }
+beta_xg = { type = "string_array", min_len = 2, doc = "Exposure effect-size column names, at least two, exposure-ordered" }
+sebeta_xg = { type = "string_array", min_len = 2, doc = "Exposure standard-error column names, ordered like beta_xg" }
+gencov_columns = { type = "string_array", optional = true, doc = "Full K*K per-SNP covariance columns in the same TSV, row-major in beta_xg exposure order; diagonal must equal SE squared; mutually exclusive with pcor" }
 label_column = { type = "string", optional = true, doc = "Instrument (rsID) column name; table row names when empty" }
 strength = { type = "bool", default = true, doc = "Include MVMR::strength_mvmr conditional F-statistic results" }
 strhet = { type = "bool", default = true, doc = "Include MVMR::strhet_mvmr heterogeneity results" }
@@ -61,11 +75,14 @@ script_file = "scripts/mvmr.R"
 [nodes.command.env]
 MVMR_BETA_YG = "{{ beta_yg }}"
 MVMR_SEBETA_YG = "{{ sebeta_yg }}"
-MVMR_BETA_XG = "{{ beta_xg }}"
-MVMR_SEBETA_XG = "{{ sebeta_xg }}"
 MVMR_LABEL_COLUMN = "{{ label_column }}"
 MVMR_STRENGTH = "{{ strength }}"
 MVMR_STRHET = "{{ strhet }}"
 MVMR_PLEIOTROPY = "{{ pleiotropy }}"
 MVMR_QHET = "{{ qhet }}"
 MVMR_PCOR = "{{ pcor }}"
+
+[nodes.command.env_r_arrays]
+MVMR_BETA_XG_R = "beta_xg"
+MVMR_SEBETA_XG_R = "sebeta_xg"
+MVMR_GENCOV_COLUMNS_R = "gencov_columns"

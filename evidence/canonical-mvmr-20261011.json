@@ -1,0 +1,221 @@
+{
+  "schema_version": "1.0",
+  "node_kind": "mvmr",
+  "function_id": "FUNC_mvmr",
+  "family": "plugins/mvmr",
+  "status": "ACCEPTED_SCOPED_TECHNICAL_NOT_SCIENTIFIC_CERTIFICATE",
+  "active_study_design": "BMC_v4.3.2_FULL_FIXED.zip",
+  "active_design_sha256": "4c5af762ab1e9768a24b9446827ea367176a80407862cfc10ca09a95f44f1151",
+  "plan_contract": "Section 12 requires qualified SNP-exposure covariance and official conditional F; unspecified or partial overlap is not permission for zero covariance. Scientific GA08 and software/method locks are not filled by this proof.",
+  "official_implementation": {
+    "package": "MVMR",
+    "version": "0.4.8",
+    "R": "4.5.1",
+    "upstream_revision": "bceaa38088d093a5d30c713afb016e7fbc7ed2be",
+    "image": "ghcr.io/zj-2002/mvmr@sha256:b7a098030b3380f96de8c9fde5017a00b870e59d8553090cf97b6b96919be6ea",
+    "image_config": "a408a99c273d330835bec4e11ae991eff141c6aadba71e3118ac6f2d91135fd2",
+    "reference_archive": "https://codeload.github.com/WSpiller/MVMR/tar.gz/bceaa38088d093a5d30c713afb016e7fbc7ed2be",
+    "reference_archive_sha256": "e1b8c506a5c4986c866db161bcbbe9efaa5d52b1890f8edfcd58a41df3b46482",
+    "fresh_install_reference": "Separate fresh library in the same pinned image, not an independent host/OS numerical environment",
+    "namespace_function_definitions_identical": 10,
+    "primary_sources": [
+      "https://wspiller.github.io/MVMR/reference/ivw_mvmr.html",
+      "https://wspiller.github.io/MVMR/reference/phenocov_mvmr.html"
+    ]
+  },
+  "required_engine_capability": {
+    "name": "command.env_r_arrays",
+    "implementation_commit": "cc20f47f",
+    "published_engine_commit": "2a41abb2a0c11b74a7077be9986fb5e5e968067a",
+    "older_engines": "Reject the new manifest field; do not deploy the plugin alone on an older engine"
+  },
+  "source_tree_sha256": {
+    "plugins/mvmr/Dockerfile": "5311864c9987e51e447d0ff966c707f1b0cc13b932cc089b8bfebc722ba051df",
+    "plugins/mvmr/README.md": "6a61df32b804889d67562220cc44492c54602c9e7da82aa3ccb81e2b0b871f5d",
+    "plugins/mvmr/fixtures/rawdat_mvmr.csv": "2dc75d23016cd5cd0e31a107e9bce6a3134c2861e37e3747ed32800527f88208",
+    "plugins/mvmr/manifest.toml": "1fbfc67878b9fbc6c6415ba44a05a42e897b99b603dd03b1aa5fece81d111292",
+    "plugins/mvmr/scripts/mvmr.R": "9f761ec73ec0291653d6484589508db8fc390a4950c43c0e17dc9957d7d1c2a9",
+    "plugins/mvmr/test_mvmr.sh": "a6d3344aa18bf740468491eaac5be54285f34119a350084e5ea180c1e03e7f80",
+    "plugins/mvmr/tests/compare_official.R": "d628cb4acf47f0cdf918f73bd90e9da044b812d4dd5ec3367b397b27d0076f5b",
+    "plugins/mvmr/tests/dump_package.R": "510e94aea7ed577e115c0e9464273ce11d7a4998d993e8ec2baf8baaf809902d",
+    "plugins/mvmr/tests/test_contract.py": "593f2486bc0689a2ffae27de5d01012268d9b9160c8adf82f9e14e7a4cabff66"
+  },
+  "input_contract": [
+    "One unquoted rectangular instrument TSV with unique literal SNP IDs and headers; finite effects, positive SE, weighted full-rank design and N>K",
+    "Exposure effect/SE arrays remain ordered and lossless, including spaces, quotes, backslashes and Unicode; at least two exposures",
+    "pcor: dimension K*K, finite symmetric unit-diagonal PSD correlation in exposure order; official phenocov_mvmr",
+    "gencov_columns: full K*K row-major per-SNP matrices in same table; symmetric PSD with diagonal SE squared; no clipping or repair",
+    "pcor and supplied covariance mutually exclusive; absent both retains explicitly warned generic official zero default, NOT study permission"
+  ],
+  "output_contract": [
+    {
+      "port": 0,
+      "path": "mvmr.RDS",
+      "meaning": "Complete official formatted input and enabled result objects, plus unchanged covariance and exposure-order audit; nonfinite numeric inference fails closed"
+    },
+    {
+      "port": 1,
+      "path": "mvmr.log",
+      "meaning": "Validation/method/warning/error diagnostic log, started before validation; unsuccessful runs have no successful result port"
+    }
+  ],
+  "method_scope": [
+    "Official IVW, conditional strength, strhet and pleiotropy on two/three-exposure, 145-SNP author-derived example cases",
+    "Zero/phenotypic/per-SNP covariance, explicit disabled diagnostics, literal SNP IDs and non-syntactic columns",
+    "Qhet only with pcor, CI=FALSE and ncores=1; author development warning retained; no bootstrap CI proof"
+  ],
+  "official_fixture": {
+    "rows": 145,
+    "columns": 9,
+    "identity": "Vendored CSV fields exactly equal fresh author dataset after named-column reordering and explicit SNP factor-to-character conversion; original failed raw-container comparison and diagnostic retained"
+  },
+  "engineering_proof": {
+    "r_array_tests_before": "12 failed, 1 passed on identical final 13 cases",
+    "r_array_tests_after": "13 passed, zero skipped",
+    "canonical_manifest_compile_tests": "7 passed with NODE_PLUGINS_ROOT explicitly set; missing plugin is a failure, not zero assertions",
+    "whole_container_plugin_units": "111 passed, zero ignored, after matching test-util dependency and fixture-path correction",
+    "wrapper_before": "31 failed/34 cases on original script; separately reproduced nonfinite official-result acceptance in interim repaired script",
+    "wrapper_after": "35 passed, zero skipped via manifest-pinned smoke entry",
+    "distinct_named_tests": 166
+  },
+  "official_complete_object_comparisons": [
+    {
+      "case": "dag-lexical-nonsyntactic",
+      "layer": "dag",
+      "slots": 5,
+      "numeric_values": 884,
+      "max_absolute_difference": 0.0
+    },
+    {
+      "case": "dag-three-pcor",
+      "layer": "dag",
+      "slots": 5,
+      "numeric_values": 1180,
+      "max_absolute_difference": 0.0
+    },
+    {
+      "case": "dag-three-provided",
+      "layer": "dag",
+      "slots": 5,
+      "numeric_values": 1180,
+      "max_absolute_difference": 0.0
+    },
+    {
+      "case": "dag-two-disabled",
+      "layer": "dag",
+      "slots": 2,
+      "numeric_values": 878,
+      "max_absolute_difference": 0.0
+    },
+    {
+      "case": "dag-two-pcor",
+      "layer": "dag",
+      "slots": 5,
+      "numeric_values": 884,
+      "max_absolute_difference": 0.0
+    },
+    {
+      "case": "dag-two-provided",
+      "layer": "dag",
+      "slots": 5,
+      "numeric_values": 884,
+      "max_absolute_difference": 0.0
+    },
+    {
+      "case": "dag-two-qhet",
+      "layer": "dag",
+      "slots": 6,
+      "numeric_values": 886,
+      "max_absolute_difference": 0.0
+    },
+    {
+      "case": "dag-two-zero",
+      "layer": "dag",
+      "slots": 5,
+      "numeric_values": 884,
+      "max_absolute_difference": 0.0
+    },
+    {
+      "case": "lexical-nonsyntactic",
+      "layer": "direct",
+      "slots": 5,
+      "numeric_values": 884,
+      "max_absolute_difference": 0.0
+    },
+    {
+      "case": "three-pcor",
+      "layer": "direct",
+      "slots": 5,
+      "numeric_values": 1180,
+      "max_absolute_difference": 0.0
+    },
+    {
+      "case": "three-provided",
+      "layer": "direct",
+      "slots": 5,
+      "numeric_values": 1180,
+      "max_absolute_difference": 0.0
+    },
+    {
+      "case": "two-disabled",
+      "layer": "direct",
+      "slots": 2,
+      "numeric_values": 878,
+      "max_absolute_difference": 0.0
+    },
+    {
+      "case": "two-pcor",
+      "layer": "direct",
+      "slots": 5,
+      "numeric_values": 884,
+      "max_absolute_difference": 0.0
+    },
+    {
+      "case": "two-provided",
+      "layer": "direct",
+      "slots": 5,
+      "numeric_values": 884,
+      "max_absolute_difference": 0.0
+    },
+    {
+      "case": "two-qhet",
+      "layer": "direct",
+      "slots": 6,
+      "numeric_values": 886,
+      "max_absolute_difference": 0.0
+    },
+    {
+      "case": "two-zero",
+      "layer": "direct",
+      "slots": 5,
+      "numeric_values": 884,
+      "max_absolute_difference": 0.0
+    }
+  ],
+  "isolated_DAG_proof": {
+    "positive_runs": 8,
+    "negative_runs": 6,
+    "positive_graph": "Native original mvmr kind, production loader function, file_reference -> mvmr; two nodes/one edge, one real container",
+    "negative_scope": [
+      "Duplicate SNP, covariance dimension and nonfinite inference: node failed with retained declared log, no successful result ports",
+      "Unknown parameter, missing edge and univariate input: rejected before method execution"
+    ],
+    "build_scope": "Current complete container-plugin source plus recorded local release-cache SDK dependencies using Rust 1.96.0. Not a cold current full-engine build, resident daemon submission or production deployment.",
+    "staged_current_script_hash_matches": 11
+  },
+  "cache_scope": "Content-hashing scheduler option was set, but report FileRef hashes remain null/immutable_remote; no engine input-hash, incremental reuse or restart-resume assurance is granted. External file hashes seal the actual inputs and outputs.",
+  "local_packet": "/home/zj-normal/Work/autonomics/results/cachexia-v4.3.2/canonical-mvmr-v1-20261011",
+  "limitations": [
+    "Real v4.3.2 covariance-source justification, ancestry/scale/harmonisation/SNP-selection and full study eligibility remain unqualified",
+    "Full original package domain, qhet bootstrap CI, other exposure counts and large-data resource envelope not certified",
+    "No resident daemon verification, deployment, global host quota, cross-daemon concurrency or cache/resume certification",
+    "No G08 independent scientific reviewer signoff; local proofs are reviewable technical evidence only",
+    "Spatial B-S remains CONDITIONAL_NOT_READY and GS01 OPEN; native Rust MRlap remains FORBIDDEN"
+  ],
+  "production_plugins_sha256_unchanged": "64d7cf2a8d43b46be7cbca0acec37c8b0d39e59a616d637285f2f378cdff8427",
+  "production_deployed": false,
+  "formal_research_release": "NOT_GRANTED",
+  "full_original_method_domain": "NOT_CERTIFIED",
+  "scientific_certified": false,
+  "G0": false
+}
