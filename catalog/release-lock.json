@@ -13992,20 +13992,20 @@
         },
         {
           "path": "README.md",
-          "sha256": "ae86b8ffb853011173cf581fbf19f289964b4909eaecaf1514c80baff82aa0ee",
-          "bytes": 2630,
+          "sha256": "8e5f8f3a2eac7f46676bdd9d8dd70adc5571d4828d869e4dfa75f2fb67a5a22d",
+          "bytes": 5349,
           "executable": false
         },
         {
           "path": "manifest.toml",
-          "sha256": "9ec31bb89f30e0e06c9d00ebb5487d796cddbbc7bff6ad429f0edcfbaea6f81a",
-          "bytes": 2346,
+          "sha256": "acb7240150d80d3af965210855468782f975c2e3ec8878503e1fe9f9473ffa61",
+          "bytes": 2657,
           "executable": false
         },
         {
           "path": "scripts/singscore.sh",
-          "sha256": "c27a05195780d13f23aa5f60b91c0901fa364f232cac7187097262b811f1527a",
-          "bytes": 4991,
+          "sha256": "0ccfea285f042f05af15f61dd5de3ef8ff2d924387d8a6d07bf3852eac5a59b2",
+          "bytes": 6539,
           "executable": false
         },
         {
@@ -14016,9 +14016,33 @@
         },
         {
           "path": "test_singscore_smoke.sh",
-          "sha256": "e80fc144f4933bab273e427b517c58c8a796364f7408c5de9fc35496d63501c2",
-          "bytes": 1766,
+          "sha256": "e6091c13c5bf8b16deb1f10ba2f44a4950f545e8cd0880b106df5f525056d9e6",
+          "bytes": 1350,
           "executable": true
+        },
+        {
+          "path": "tests/dump_package.R",
+          "sha256": "979dd95d1a673b712903bc983df38034e10745363ce70220557951e0bab503c9",
+          "bytes": 1338,
+          "executable": false
+        },
+        {
+          "path": "tests/test_contract.py",
+          "sha256": "1a17b35c2ba815ba0b166feeb30a7eeda6f12cf67a21613ac4c7c6a789e0222e",
+          "bytes": 11874,
+          "executable": false
+        },
+        {
+          "path": "tests/verify_outputs.R",
+          "sha256": "7e31f32cc46fd7e5cc141a2050224c7dff7c30e8552eb117246b8022d6c5ea7d",
+          "bytes": 1750,
+          "executable": false
+        },
+        {
+          "path": "verify_scores.py",
+          "sha256": "02166f202e58fa9c9a067fa7f40333fb4929def5a7934559f6d558b7eb6d7054",
+          "bytes": 2293,
+          "executable": false
         }
       ],
       "source_inventory_only": true,

@@ -1,0 +1,162 @@
+{
+  "schema_version": "1.0",
+  "node_kind": "singscore_bspec",
+  "function_id": "FUNC_singscore_bspec",
+  "family": "plugins/singscore",
+  "active_study_design": "BMC_v4.3.2_FULL_FIXED.zip",
+  "active_design_sha256": "4c5af762ab1e9768a24b9446827ea367176a80407862cfc10ca09a95f44f1151",
+  "plan_member": "BMC432/00_PLAN/BONE_MARROW_CACHEXIA_MASTER_PLAN_v4.3.2_ZH_FULL.md",
+  "plan_contract": "B-SPEC section 5: within-sample average ranks, no stable-gene reference, known direction, centered TotalScore",
+  "technical_role": "Deterministic descriptive gene-signature scoring; not a hypothesis test, causal estimator, cell-count estimate or specificity certification",
+  "official_implementation": {
+    "package": "singscore",
+    "version": "1.32.0",
+    "distribution": "Bioconductor 3.23",
+    "R": "4.6.1",
+    "image": "ghcr.io/zj-2002/singscore-official@sha256:04981a66d7c3fc7055a185a0102dc9f337dd63381b676681c08e52e8c22e2ca5",
+    "reference_archive": "https://bioconductor.org/packages/3.23/bioc/src/contrib/singscore_1.32.0.tar.gz",
+    "reference_archive_sha256": "b4ffcbcb215ec99b9c8159bcf47cebba02517ff2c76c6aebabd2d7848298fd5a",
+    "primary_sources": [
+      "https://davislaboratory.github.io/singscore/reference/rankGenes.html",
+      "https://davislaboratory.github.io/singscore/reference/simpleScore.html",
+      "https://bioconductor.org/packages/release/bioc/html/singscore.html"
+    ]
+  },
+  "source_tree_sha256": {
+    "plugins/singscore/manifest.toml": "acb7240150d80d3af965210855468782f975c2e3ec8878503e1fe9f9473ffa61",
+    "plugins/singscore/scripts/singscore.sh": "0ccfea285f042f05af15f61dd5de3ef8ff2d924387d8a6d07bf3852eac5a59b2",
+    "plugins/singscore/tests/test_contract.py": "1a17b35c2ba815ba0b166feeb30a7eeda6f12cf67a21613ac4c7c6a789e0222e",
+    "plugins/singscore/tests/dump_package.R": "979dd95d1a673b712903bc983df38034e10745363ce70220557951e0bab503c9",
+    "plugins/singscore/verify_scores.py": "02166f202e58fa9c9a067fa7f40333fb4929def5a7934559f6d558b7eb6d7054",
+    "tests/test_singscore_comparison.py": "b35dba1b7e733da15c381e28178469366b464339440e15e77938a4277860b16b",
+    "quality/required-tests.json": "202f04f7c54a0f944c7b5619c6ff590037b2f5c33839bb60b0035caeb1b06972",
+    "plugins/singscore/tests/verify_outputs.R": "7e31f32cc46fd7e5cc141a2050224c7dff7c30e8552eb117246b8022d6c5ea7d"
+  },
+  "input_contract": [
+    {
+      "port": 0,
+      "type": "File",
+      "format": "unquoted TSV",
+      "meaning": "First column literal unique gene IDs; other columns literal unique sample IDs; finite numeric expression; no missing-value filling, normalization, mapping, selection or row dropping"
+    },
+    {
+      "port": 1,
+      "type": "File",
+      "format": "unquoted TSV",
+      "meaning": "Unique already-mapped gene IDs plus explicit up/down direction; nonempty up arm required; no duplicate, overlapping or missing members"
+    },
+    {
+      "port": 2,
+      "type": "File",
+      "format": "unquoted TSV",
+      "meaning": "Exactly one metadata row per matrix sample, literal sample and nonempty group; groups attached after scoring, never used for ranking"
+    }
+  ],
+  "output_contract": [
+    {
+      "port": 0,
+      "type": "File",
+      "path": "singscore_scores.tsv",
+      "meaning": "sample, TotalScore, group; exact matrix sample order, finite scores; no automatic biological interpretation"
+    },
+    {
+      "port": 1,
+      "type": "File",
+      "path": "singscore.RDS",
+      "meaning": "Full official rank_data and simple score/dispersion table plus joined scores; RDS contents are not extra declared ports"
+    },
+    {
+      "port": 2,
+      "type": "File",
+      "path": "singscore.log",
+      "meaning": "Method/version and execution diagnostics; input/scoring failures retain logs, not normal scores/RDS"
+    }
+  ],
+  "supported_scope": "Dense finite numeric matrix TSV; up-only or bidirectional signature vectors; rankGenes(tiesMethod=average, stableGenes=NULL), simpleScore(centerScore=TRUE, knownDirection=TRUE, dispersionFun=stats::mad)",
+  "unsupported_scope": [
+    "Down-only signatures",
+    "Stable-gene reference scoring",
+    "Other tie/centering/direction options",
+    "S4/GeneSet input-file interfaces",
+    "Missing expression or missing signature members",
+    "Automatic gene/ortholog/probe mapping",
+    "Study input/background/length/coverage/donor qualification",
+    "UCell, z-mean, pseudobulk or source70 substitution"
+  ],
+  "evidence": {
+    "local_packet": "/home/zj-normal/Work/autonomics/results/cachexia-v4.1/canonical-singscore-v1-20261011",
+    "unchanged_before_after_cases": 31,
+    "before_failed_assertions": 24,
+    "after_failed_assertions": 0,
+    "after_skipped": 0,
+    "baseline_invalid_cases_erroneously_accepted": 12,
+    "baseline_invalid_cases_rejected_but_diagnostic_or_artifact_assertions_failed": 10,
+    "baseline_valid_identity_or_order_assertions_failed": 2,
+    "legacy_smoke_false_green_cases": [
+      "NaN",
+      "extra sample",
+      "duplicate sample"
+    ],
+    "required_catalog_and_comparison_tests_run": 38,
+    "required_tests_missing_or_skipped": 0,
+    "fresh_official_source_installation": true,
+    "reference_environment": "Fresh official source installed in a separate library and separate OCI processes; dependency/OS environment shared, not host execution",
+    "installed_vs_fresh_package_function_definitions": 31,
+    "installed_vs_fresh_rankGenes_method_definitions": 5,
+    "installed_vs_fresh_simpleScore_method_definitions": 4,
+    "synthetic_positive_rank_full_score_reference_rechecks": 9,
+    "official_package_example": {
+      "dataset": "toy_expr_se / toy_gs_up / toy_gs_dn",
+      "genes": 20,
+      "samples": 2,
+      "up": 5,
+      "down": 5,
+      "scope": "Published author-package example, not study cohort data"
+    },
+    "current_plugin_successful_isolated_DAGs": 4,
+    "current_plugin_negative_isolated_DAGs": 4,
+    "baseline_duplicate_sample_DAG_incorrectly_succeeded": true,
+    "graph_scope": "Three original native file_reference inputs plus original dynamically compiled singscore_bspec, four nodes/three edges when connected; failure controls include missing edge and unknown spec parameter",
+    "published_DAG_RDS_references_passed": 4,
+    "rank_matrix_comparison": "Exact complete matrix with IDs, axes and attributes",
+    "simple_score_comparison": "Final independent verification requires identical complete RDS score/dispersion tables and attributes; TSV values each use absolute tolerance 1e-12, never a mean/relative or NaN agreement",
+    "actual_engine_staged_R_script_matches_source": true,
+    "cached_sdk_revision": "d8659cdf1ebf",
+    "cached_runner_sha256": "517fbacdcc67c3a64e52373a352464d79a625d0806f4b446d37b34bee9128c6d",
+    "current_full_engine_or_resident_daemon_rebuilt": false,
+    "input_identity_boundary": "Final jobs use supported cached path/format input specs; external fixture SHA256 checked independently. Cached primitive lacks current hash_content API; no input caching/hash qualification is granted",
+    "manifest_resources": {
+      "network": "isolated",
+      "cpus": 2,
+      "memory": "2g",
+      "pull_policy": "never",
+      "scope": "Per-container declaration; not global host/resource-budget certification"
+    },
+    "strict_direct_and_DAG_comparisons": 13,
+    "maximum_observed_TSV_absolute_error": 3.3306690738754696e-16
+  },
+  "status": {
+    "official_method": "PROVEN_SCOPED",
+    "engineering_interface": "ACCEPTED_SCOPED",
+    "isolated_DAG": "ACCEPTED_SCOPED_CACHED_NATIVE_SDK_CURRENT_PLUGIN",
+    "plan_contract": "METHOD_ALIGNED_INPUT_ELIGIBILITY_AND_G0_NOT_GRANTED",
+    "whole_official_method_domain": "NOT_CERTIFIED",
+    "resident_deployment": "NOT_UPDATED_NOT_CERTIFIED",
+    "independent_human_scientific_review": "NOT_GRANTED",
+    "formal_research_release": "NOT_GRANTED",
+    "scientific_certified": false,
+    "G0": false
+  },
+  "remaining": [
+    "Freeze approved software/method version and qualified inputs in the active design; this code does not amend those files",
+    "Per-signature original/mapped/measurable/missing member ledger, 80%/5 thresholds and per-direction coverage",
+    "Frozen common background, RNA-seq length processing or array probe consolidation, eligible cohorts/donors/contrasts",
+    "Full B-SPEC score-to-Welch/paired-test/family chain, missing P propagation and family denominator preservation",
+    "Actual deployed registry/binary/source/image identity and resident execution",
+    "All package branches, large-scale memory/performance, arbitrary encodings/filesystems, transactional multi-file publication and crash recovery",
+    "Cache reuse/invalidation, mutable-local immutability semantics and global cross-daemon resource budgets",
+    "Independent reviewer approval; no developer self-issued scientific release"
+  ],
+  "spatial_boundary": "B-S CONDITIONAL_NOT_READY; GS01 OPEN; no null model selected",
+  "native_Rust_MRlap": "FORBIDDEN"
+}

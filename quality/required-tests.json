@@ -29,6 +29,15 @@
     "tests.test_cachexia_v432_adapter.LatestContractTests.test_manifest_is_explicit_isolated_opt_in_with_unchanged_image",
     "tests.test_cachexia_v432_adapter.LatestContractTests.test_original_method_bytes_have_only_declared_version_changes",
     "tests.test_cachexia_v432_adapter.LatestContractTests.test_original_unified_adapter_is_unchanged",
-    "tests.test_cachexia_v432_adapter.LatestContractTests.test_ungoverned_and_unregistered_designs_stay_blocked"
+    "tests.test_cachexia_v432_adapter.LatestContractTests.test_ungoverned_and_unregistered_designs_stay_blocked",
+    "tests.test_singscore_comparison.ComparisonTests.test_exact_lexical_sample_agreement",
+    "tests.test_singscore_comparison.ComparisonTests.test_nan_is_rejected",
+    "tests.test_singscore_comparison.ComparisonTests.test_infinite_golden_is_rejected",
+    "tests.test_singscore_comparison.ComparisonTests.test_duplicate_sample_is_rejected",
+    "tests.test_singscore_comparison.ComparisonTests.test_extra_sample_is_rejected",
+    "tests.test_singscore_comparison.ComparisonTests.test_missing_sample_is_rejected",
+    "tests.test_singscore_comparison.ComparisonTests.test_empty_tables_are_rejected",
+    "tests.test_singscore_comparison.ComparisonTests.test_frozen_tolerance_is_not_relaxed",
+    "tests.test_singscore_comparison.ComparisonTests.test_empty_log_is_rejected"
   ]
 }

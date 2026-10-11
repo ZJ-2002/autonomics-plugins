@@ -1,11 +1,6 @@
 schema_version = 1
 plugin_name = "singscore"
 
-# B-SPEC main score (v4.0 plan section 5). DEPLOY GATES (open): 1) image
-# digest pin after the ghcr push, 2) a frozen matrix-id gene set per
-# signature supplied by the study-plan mapping contract (this node maps
-# nothing), 3) daemon/deployed acceptance - until then the row stays
-# PENDING in the node acceptance matrix and z-mean is sensitivity only.
 [image]
 reference = "ghcr.io/zj-2002/singscore-official@sha256:04981a66d7c3fc7055a185a0102dc9f337dd63381b676681c08e52e8c22e2ca5"
 tag = "1.32.0"
@@ -25,11 +20,19 @@ average-rank mode, which differs from the package min-tie default, so it
 is set explicitly and never inferred - then simpleScore(upSet, downSet),
 known-direction centered. No cross-subject ranking anywhere. Outputs: per-sample score TSV (sample,
 TotalScore, group), full rankData+scores RDS, run log. The node is
-parameter-free on purpose: G0 freezes the functions and defaults, and
+parameter-free on purpose: its technical contract fixes the functions and defaults, and
 the node refuses gene ids missing from the matrix rows (mapping is the
 upstream study-plan contract, never invented here). Scores are NOT
 cell counts or absolute activity; comparability across platforms or
 backgrounds requires the separately frozen dataset-common background.
+Identifiers are literal strings, including leading zeroes and the literal
+NA. Metadata must match every matrix sample exactly once; output preserves
+matrix column order. Expression must be finite numeric. Signatures must
+be nonempty, unique and already mapped; up-only and bidirectional sets
+are supported, down-only is refused. Missing members, malformed TSV,
+nonfinite scores or existing output files fail closed. This interface
+does not freeze scientific inputs, enforce study coverage thresholds,
+certify sample eligibility or grant G0/deployment permission.
 """
 timeout_secs = 1200
 artifact_prefix = "/artifacts/singscore_bspec"
@@ -46,4 +49,10 @@ outputs = [
 [nodes.command]
 interpreter = "Rscript"
 script_file = "scripts/singscore.sh"
+
+[nodes.resources]
+network = "isolated"
+cpus = 2
+memory = "2g"
+pull_policy = "never"
 

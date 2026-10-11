@@ -1,98 +1,140 @@
-# singscore_bspec - official Bioconductor singscore (frozen) for the v4.0
-# B-SPEC main score. Pure R source run by the `Rscript` interpreter
-# (mrlap.sh/harmonise.sh pattern).
-#
-# Contract: per-sample ranking score - rankGenes (type="internal",
-# average ranks, ties kept - the package default; non-stable-gene
-# reference mode is the package behavior when no reference is supplied)
-# then simpleScore (known directions, mean-centered, non-signature
-# "all" background). SC04 rule: score per sample first; never rank genes
-# across subjects, never train the score on case/control labels.
-#
-# Inputs:  port 0 expression matrix TSV (row names = gene ids matching the
-#          gene-set ids; columns = samples; already normalized to the
-#          frozen dataset-common background)
-#          port 1 gene set TSV (columns: gene, direction - "up"/"down")
-#          port 2 samples TSV (columns: sample, group) - kept for lineage
-#          only; the score itself never reads group.
-# Outputs: port 0 per-sample score TSV (sample, group, TotalScore),
-#          port 1 full rankData+scores RDS, port 2 run log.
-#
-# Parameter-free statistical surface on purpose: the v4.0 G0 lock fixes
-# rankGenes/simpleScore defaults; adding a tunable here would reopen the
-# "挑结果" door the plan forbids. The gene-set file MUST already be in
-# matrix-id space (entrez ids per the B-SPEC mapping contract); this node
-# never performs id mapping.
-
-suppressMessages(library(singscore))
-
-mat_path <- Sys.getenv("AUTONOMICS_INPUT0")
-gs_path  <- Sys.getenv("AUTONOMICS_INPUT1")
-smp_path <- Sys.getenv("AUTONOMICS_INPUT2")
-score_path <- Sys.getenv("AUTONOMICS_OUTPUT0")
-rds_path <- Sys.getenv("AUTONOMICS_OUTPUT1")
-log_path <- Sys.getenv("AUTONOMICS_OUTPUT2")
-
-expr <- as.matrix(read.delim(mat_path, row.names = 1, check.names = FALSE))
-geneSet <- read.delim(gs_path, check.names = FALSE, stringsAsFactors = FALSE)
-samples <- read.delim(smp_path, check.names = FALSE, stringsAsFactors = FALSE)
-
-for (col in c("gene", "direction")) {
-  if (!col %in% names(geneSet)) stop(paste0("gene set file missing column `", col, "`"), call. = FALSE)
-}
-if (!all(c("sample", "group") %in% names(samples))) {
-  stop("samples file must carry sample and group columns", call. = FALSE)
-}
-if (!all(geneSet$direction %in% c("up", "down"))) {
-  stop("gene set direction column must be up/down only", call. = FALSE)
-}
-missing_genes <- setdiff(geneSet$gene, rownames(expr))
-if (length(missing_genes) > 0) {
-  stop(paste0("gene set contains ", length(missing_genes),
-              " ids absent from the expression matrix rows (mapping is upstream contract, not this node): ",
-              paste(head(sort(missing_genes), 8), collapse = ",")), call. = FALSE)
-}
-unmatched_samples <- setdiff(samples$sample, colnames(expr))
-if (length(unmatched_samples) > 0) {
-  stop(paste0("samples file lists ", length(unmatched_samples),
-              " samples absent from the matrix columns"), call. = FALSE)
+read_tsv <- function(path) {
+  fields <- count.fields(path, sep = "\t", quote = "", comment.char = "",
+                         blank.lines.skip = FALSE)
+  if (length(fields) == 0 || fields[1] == 0 || any(fields != fields[1])) {
+    stop("TSV must have a nonempty header and equal field counts on every row", call. = FALSE)
+  }
+  table <- read.delim(path, check.names = FALSE, stringsAsFactors = FALSE,
+                      colClasses = "character", na.strings = character(),
+                      row.names = NULL, quote = "", comment.char = "",
+                      strip.white = FALSE, fill = FALSE, blank.lines.skip = FALSE)
+  if (any(!nzchar(trimws(names(table)))) || anyDuplicated(names(table))) {
+    stop("TSV column names must be nonempty and unique", call. = FALSE)
+  }
+  table
 }
 
-sink(log_path, split = TRUE)
-cat("singscore version:", as.character(packageVersion("singscore")), "\n")
-cat("matrix:", nrow(expr), "genes x", ncol(expr), "samples; gene set:",
-    sum(geneSet$direction == "up"), "up +", sum(geneSet$direction == "down"), "down\n")
-flush.console()
-
-# Plan-fixed contract: average ranks (the package default is min-tie -
-# rankGenes gets tiesMethod = "average" explicitly per v4.0 section 5),
-# known-direction centered simpleScore(upSet, downSet).
-upSet <- geneSet$gene[geneSet$direction == "up"]
-downSet <- geneSet$gene[geneSet$direction == "down"]
-rank_data <- rankGenes(expr, tiesMethod = "average")
-# One-directional signatures: the official simpleScore treats a MISSING
-# downSet as one-sided; passing an empty vector instead silently yields a
-# zero-row score table (review counterexample). Branch explicitly - the
-# call shape follows the gene set, it is never a tunable.
-ss <- if (length(downSet) == 0) {
-  simpleScore(rank_data, upSet = upSet)
-} else if (length(upSet) == 0) {
-  # simpleScore's only required set is upSet; a DOWN-only signature has no
-  # documented single-set form, and reusing the up slot would silently flip
-  # the direction. Refuse instead of guessing - the study-plan side must
-  # express such sets explicitly.
-  stop("down-only gene sets are not expressible through simpleScore without guessing direction; refuse", call. = FALSE)
-} else {
-  simpleScore(rank_data, upSet = upSet, downSet = downSet)
+validate_ids <- function(values, label, unique_required = TRUE) {
+  if (length(values) == 0 || anyNA(values) || any(!nzchar(trimws(values))) ||
+      any(values != trimws(values))) {
+    stop(paste(label, "must be nonempty literal identifiers without surrounding whitespace"), call. = FALSE)
+  }
+  if (unique_required && anyDuplicated(values)) {
+    stop(paste(label, "must be unique"), call. = FALSE)
+  }
 }
-# singscore 1.32.0 returns the per-sample score data.frame directly
-# (TotalScore/UpScore/DownScore columns, rownames = samples).
-scores <- as.data.frame(ss)
-scores$sample <- rownames(scores)
-scores <- merge(scores[, c("sample", "TotalScore")], samples[, c("sample", "group")], by = "sample", all.x = TRUE)
-write.table(scores, score_path, sep = "\t", row.names = FALSE, quote = FALSE)
-saveRDS(list(rank_data = rank_data, simple = ss, scores = scores), rds_path)
-cat("\n== singscore_bspec summary ==\n")
-print(head(scores[order(scores$sample), ], 5))
-sink()
-q(status = 0)
+
+run_score <- function() {
+  inputs <- Sys.getenv(paste0("AUTONOMICS_INPUT", 0:2))
+  outputs <- Sys.getenv(paste0("AUTONOMICS_OUTPUT", 0:2))
+  if (any(!nzchar(inputs)) || any(!nzchar(outputs))) {
+    stop("All three declared input and output ports are required", call. = FALSE)
+  }
+  if (any(!dir.exists(dirname(outputs))) || anyDuplicated(outputs)) {
+    stop("Output parents must exist and declared output paths must be distinct", call. = FALSE)
+  }
+  if (file.exists(outputs[3])) {
+    stop("Refuse to overwrite an existing run log", call. = FALSE)
+  }
+  sink(outputs[3], split = TRUE)
+  on.exit(sink(), add = TRUE)
+  staged <- character()
+  published <- character()
+  complete <- FALSE
+  on.exit({
+    unlink(staged)
+    if (!complete) unlink(published)
+  }, add = TRUE)
+  tryCatch({
+    if (any(file.exists(outputs[1:2]))) {
+      stop("Refuse to overwrite existing score or RDS artifacts", call. = FALSE)
+    }
+    matrix_table <- read_tsv(inputs[1])
+    if (ncol(matrix_table) < 2 || nrow(matrix_table) == 0) {
+      stop("Expression matrix must have genes and at least one sample", call. = FALSE)
+    }
+    genes <- matrix_table[[1]]
+    sample_ids <- names(matrix_table)[-1]
+    validate_ids(genes, "Expression gene identifiers")
+    validate_ids(sample_ids, "Expression sample identifiers")
+    values <- suppressWarnings(as.double(as.matrix(matrix_table[-1])))
+    if (any(!is.finite(values))) {
+      stop("Expression values must be numeric and finite; missing expression is not zero-filled", call. = FALSE)
+    }
+    expr <- matrix(values, nrow = length(genes), dimnames = list(genes, sample_ids))
+    gene_set <- read_tsv(inputs[2])
+    samples <- read_tsv(inputs[3])
+    if (!all(c("gene", "direction") %in% names(gene_set))) {
+      stop("Gene set file must carry gene and direction columns", call. = FALSE)
+    }
+    if (!all(c("sample", "group") %in% names(samples))) {
+      stop("Samples file must carry sample and group columns", call. = FALSE)
+    }
+    validate_ids(gene_set$gene, "Signature gene identifiers")
+    if (!all(gene_set$direction %in% c("up", "down"))) {
+      stop("Gene set direction must be up/down only", call. = FALSE)
+    }
+    missing_genes <- setdiff(gene_set$gene, genes)
+    if (length(missing_genes) > 0) {
+      stop(paste0("Gene set contains ids absent from the expression matrix; mapping is upstream: ",
+                  paste(head(sort(missing_genes), 8), collapse = ",")), call. = FALSE)
+    }
+    validate_ids(samples$sample, "Metadata sample identifiers")
+    validate_ids(samples$group, "Metadata group labels", unique_required = FALSE)
+    if (!setequal(samples$sample, sample_ids)) {
+      stop("Metadata and expression sample identities must match exactly one-to-one", call. = FALSE)
+    }
+    up_set <- gene_set$gene[gene_set$direction == "up"]
+    down_set <- gene_set$gene[gene_set$direction == "down"]
+    if (length(up_set) == 0) {
+      stop("Down-only signatures are unsupported; refuse to guess a direction", call. = FALSE)
+    }
+    suppressMessages(library(singscore))
+    if (packageVersion("singscore") != "1.32.0") {
+      stop("This method contract requires official singscore 1.32.0", call. = FALSE)
+    }
+    cat("singscore version:", as.character(packageVersion("singscore")), "\n")
+    cat("matrix:", nrow(expr), "genes x", ncol(expr), "samples; gene set:",
+        length(up_set), "up +", length(down_set), "down\n")
+    rank_data <- singscore::rankGenes(expr, tiesMethod = "average", stableGenes = NULL)
+    simple <- if (length(down_set) == 0) {
+      singscore::simpleScore(rank_data, upSet = up_set, centerScore = TRUE,
+                             knownDirection = TRUE, dispersionFun = stats::mad)
+    } else {
+      singscore::simpleScore(rank_data, upSet = up_set, downSet = down_set,
+                             centerScore = TRUE, knownDirection = TRUE,
+                             dispersionFun = stats::mad)
+    }
+    if (nrow(simple) != length(sample_ids) ||
+        !identical(rownames(simple), sample_ids) ||
+        any(!is.finite(simple$TotalScore))) {
+      stop("Official scoring returned missing, nonfinite or misaligned sample scores", call. = FALSE)
+    }
+    scores <- data.frame(sample = sample_ids, TotalScore = simple$TotalScore,
+                          group = samples$group[match(sample_ids, samples$sample)],
+                          check.names = FALSE, stringsAsFactors = FALSE)
+    staged <- vapply(outputs[1:2], function(path) tempfile(".singscore-", tmpdir = dirname(path)), character(1))
+    write.table(scores, staged[1], sep = "\t", row.names = FALSE, quote = FALSE)
+    saveRDS(list(rank_data = rank_data, simple = simple, scores = scores), staged[2])
+    for (position in seq_along(staged)) {
+      if (!suppressWarnings(file.link(staged[position], outputs[position]))) {
+        stop("Fresh output publication failed; existing artifacts are never replaced", call. = FALSE)
+      }
+      published <- c(published, outputs[position])
+    }
+    complete <- TRUE
+    cat("\n== singscore_bspec summary ==\n")
+    print(head(scores, 5))
+    0L
+  }, error = function(error) {
+    cat("ERROR:", conditionMessage(error), "\n")
+    message("ERROR: ", conditionMessage(error))
+    1L
+  })
+}
+
+status <- tryCatch(run_score(), error = function(error) {
+  message("ERROR: ", conditionMessage(error))
+  1L
+})
+quit(status = status)
