@@ -1,0 +1,92 @@
+schema_version = 1
+plugin_name = "coloc"
+
+[image]
+reference = "ghcr.io/auto-nomics/autonomics/coloc@sha256:a2afe7aa83ae6f1ecb9573317aa022af4db0870771378c7fe90d295d70057322"
+tag = "coloc-5.2.3-susieR-0.14.2"
+upstream = "Official coloc 5.2.3 and susieR 0.14.2; a distinct stack from susieR 0.16.6"
+license = "GPL-3.0-or-later"
+
+[[nodes]]
+kind = "coloc_susie"
+desc = "Official signal-aware coloc.susie with complete signed LD for both traits."
+doc = """
+Four ordered File inputs: two SNP/beta/SE TSVs and two square signed-LD TSVs.
+Variant columns are snp,beta,se,effect_allele,other_allele,ld_a1,ld_a2,ld_n.
+Both traits must have exactly the same ordered SNP IDs and matching allele
+pairs (exact reversals are allowed, strand inference is not). LD first
+column is snp; remaining columns and row IDs exactly match the trait order.
+LD is aligned to each trait's effect alleles before the author calls.
+No intersection, missing-pair zero fill, PSD repair or LD fallback occurs.
+ld_n is a constant integer reference count; it need not equal GWAS N.
+The signed-correlation input and alignment_evidence are declarations, not
+proof of real build/ancestry/participant/reference eligibility.
+
+Calls coloc::runsusie separately for each trait, followed by coloc::coloc.susie.
+Author fits, full result, every signal pair and conditional-on-H4 variant
+posterior are retained. No credible sets produces an explicit NOT_ESTIMABLE
+status row with absent H0-H4, not zero posterior or scientific rejection.
+The RDS retains the untouched author result, including its no-CS return type.
+Residual variance estimation is false for this external-reference route.
+No automatic iteration extension is used: nonconvergence fails at the
+explicit max_iter budget. It does not silently change a frozen analysis.
+Existing outputs are never overwritten; this is not crash-safe transactional
+publication, persistent recovery, scientific release or G0 approval.
+"""
+timeout_secs = 1800
+artifact_prefix = "/artifacts/coloc_susie"
+
+[nodes.ports]
+inputs = [{ type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }]
+outputs = [
+  { path = "coloc_summary.tsv", format = "tsv" },
+  { path = "coloc_variants.tsv", format = "tsv" },
+  { path = "coloc.RDS", format = "r_rds" },
+  { path = "coloc.log", format = "text" },
+]
+
+[nodes.params]
+n1 = { type = "int", min = 3.0, doc = "Declared trait 1 GWAS sample size; no guessed default" }
+n2 = { type = "int", min = 3.0, doc = "Declared trait 2 GWAS sample size" }
+type1 = { type = "string", doc = "quant or cc; no guessed default" }
+type2 = { type = "string", doc = "quant or cc; no guessed default" }
+sd_y1 = { type = "number", optional = true, doc = "Known phenotype SD, required for quant trait 1" }
+sd_y2 = { type = "number", optional = true, doc = "Known phenotype SD, required for quant trait 2" }
+case_fraction1 = { type = "number", optional = true, doc = "Known case fraction, required for cc trait 1" }
+case_fraction2 = { type = "number", optional = true, doc = "Known case fraction, required for cc trait 2" }
+l = { type = "int", default = 10, min = 1.0, doc = "SuSiE maximum single effects; study main/sensitivity eligibility is separate" }
+coverage = { type = "number", default = 0.95, min = 0.0, max = 1.0, doc = "Official credible-set coverage" }
+min_abs_corr = { type = "number", default = 0.5, min = 0.0, max = 1.0, doc = "Official credible-set purity threshold" }
+p1 = { type = "number", default = 0.0001, min = 0.0, max = 1.0, doc = "Per-SNP association prior for trait 1" }
+p2 = { type = "number", default = 0.0001, min = 0.0, max = 1.0, doc = "Per-SNP association prior for trait 2" }
+p12 = { type = "number", default = 0.000005, min = 0.0, max = 1.0, doc = "Official 5.2.3 per-SNP sharing prior; research priors must be passed explicitly" }
+max_iter = { type = "int", default = 100, min = 1.0, doc = "Explicit bounded runsusie iteration budget; no automatic extension" }
+seed = { type = "int", default = 1, min = 0.0, max = 2147483647.0, doc = "Seed set once before both official fits and purity sampling" }
+alignment_evidence = { type = "string", doc = "Required declared alignment provenance identity, not automatic scientific certification" }
+
+[nodes.resources]
+cpus = 2.0
+memory = "2Gi"
+
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/coloc_susie.R"
+
+[nodes.command.env]
+COLOC_N1 = "{{ n1 }}"
+COLOC_N2 = "{{ n2 }}"
+COLOC_TYPE1 = "{{ type1 }}"
+COLOC_TYPE2 = "{{ type2 }}"
+COLOC_SD_Y1 = "{{ sd_y1 }}"
+COLOC_SD_Y2 = "{{ sd_y2 }}"
+COLOC_CASE_FRACTION1 = "{{ case_fraction1 }}"
+COLOC_CASE_FRACTION2 = "{{ case_fraction2 }}"
+COLOC_L = "{{ l }}"
+COLOC_COVERAGE = "{{ coverage }}"
+COLOC_MIN_ABS_CORR = "{{ min_abs_corr }}"
+COLOC_P1 = "{{ p1 }}"
+COLOC_P2 = "{{ p2 }}"
+COLOC_P12 = "{{ p12 }}"
+COLOC_MAX_ITER = "{{ max_iter }}"
+COLOC_SEED = "{{ seed }}"
+COLOC_ALIGNMENT_EVIDENCE = "{{ alignment_evidence }}"

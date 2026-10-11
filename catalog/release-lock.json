@@ -1,8 +1,8 @@
 {
   "schema_version": "1.0",
   "scope": "SOURCE_AND_INTERFACE_INVENTORY_NOT_METHOD_CERTIFICATION",
-  "canonical_families": 26,
-  "canonical_kinds": 55,
+  "canonical_families": 27,
+  "canonical_kinds": 56,
   "families": [
     {
       "directory": "plugins/cellchat",
@@ -168,6 +168,85 @@
           "path": "tests/test_cmap_connectivity.py",
           "sha256": "2d77d1ad36fff53be484b31f8405531e813796ac66508bb18b5ef504853b2ea7",
           "bytes": 11807,
+          "executable": false
+        }
+      ],
+      "source_inventory_only": true,
+      "scientific_certified": false,
+      "auto_enable": false
+    },
+    {
+      "directory": "plugins/coloc",
+      "plugin_name": "coloc",
+      "kinds": [
+        "coloc_susie"
+      ],
+      "image_reference": "ghcr.io/auto-nomics/autonomics/coloc@sha256:a2afe7aa83ae6f1ecb9573317aa022af4db0870771378c7fe90d295d70057322",
+      "files": [
+        {
+          "path": "README.md",
+          "sha256": "084cb571962b926717c0b07085dc3f58e9f295ad3823d6026fdf9fe90ee428ad",
+          "bytes": 2924,
+          "executable": false
+        },
+        {
+          "path": "fixtures/input0.tsv",
+          "sha256": "c8e978773f26b06d8076eb96d53358005e0fb2037a750b71bc7c5df1b9c876eb",
+          "bytes": 2807,
+          "executable": false
+        },
+        {
+          "path": "fixtures/input1.tsv",
+          "sha256": "c8e978773f26b06d8076eb96d53358005e0fb2037a750b71bc7c5df1b9c876eb",
+          "bytes": 2807,
+          "executable": false
+        },
+        {
+          "path": "fixtures/input2.tsv",
+          "sha256": "94c99f9da930a87bab068a2e94ffe1821b6597033e31315b18e7480f50cc528f",
+          "bytes": 52058,
+          "executable": false
+        },
+        {
+          "path": "fixtures/input3.tsv",
+          "sha256": "94c99f9da930a87bab068a2e94ffe1821b6597033e31315b18e7480f50cc528f",
+          "bytes": 52058,
+          "executable": false
+        },
+        {
+          "path": "fixtures/provenance.json",
+          "sha256": "6c9771ea08d9e537194af5c2176a080c4d65d4018e3d711ba8aa97dfe9578100",
+          "bytes": 531,
+          "executable": false
+        },
+        {
+          "path": "manifest.toml",
+          "sha256": "f71baeaa0e6b0aed98977833c0812004661a185661f20528d323f8cb492d5189",
+          "bytes": 4859,
+          "executable": false
+        },
+        {
+          "path": "scripts/coloc_susie.R",
+          "sha256": "f07514e530468323102d5eda5f31ef7b4436df1082448a2f808c8f21ecfcaa41",
+          "bytes": 9715,
+          "executable": false
+        },
+        {
+          "path": "tests/official_reference.R",
+          "sha256": "f10800d2d33eb557f9b54fffe871b45e41743f741da346178c65e4dce609f1ad",
+          "bytes": 4715,
+          "executable": false
+        },
+        {
+          "path": "tests/package_source_parity.R",
+          "sha256": "d0ff900d9f89616f6f0098386c266c57045a2d8d8c4395191818d38d3a2f2577",
+          "bytes": 1232,
+          "executable": false
+        },
+        {
+          "path": "tests/test_contract.py",
+          "sha256": "0e5592944ccbf1398ca9e1a4628512b884b6b3ada296f84a094a0986979b4f82",
+          "bytes": 11795,
           "executable": false
         }
       ],

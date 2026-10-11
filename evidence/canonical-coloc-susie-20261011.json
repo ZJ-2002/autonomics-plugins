@@ -1,0 +1,78 @@
+{
+  "canonical_kind": "coloc_susie",
+  "family": "coloc",
+  "active_design": "v4.3.2",
+  "scope": "SCOPED_OFFICIAL_METHOD_INTERFACE_ISOLATED_DAG_NOT_SCIENTIFIC_ADMISSION",
+  "method": {
+    "call_sequence": [
+      "coloc::runsusie(trait1)",
+      "coloc::runsusie(trait2)",
+      "coloc::coloc.susie"
+    ],
+    "coloc_version": "5.2.3",
+    "susieR_version": "0.14.2",
+    "official_source_archives": [
+      {
+        "package": "coloc",
+        "url": "https://cran.r-project.org/src/contrib/coloc_5.2.3.tar.gz",
+        "http_status": 200,
+        "bytes": 3770788,
+        "sha256": "259dbd9613d809aa60ad148f6e187249642510f0dbbd15a50b25588d9a426150"
+      },
+      {
+        "package": "susieR",
+        "url": "https://cran.r-project.org/src/contrib/susieR_0.14.2.tar.gz",
+        "http_status": 200,
+        "bytes": 2303754,
+        "sha256": "ba02322eb1f7a7cc024c9278aa7903a34d8ad5d6f3b12c168374bc6214ed2c6e"
+      }
+    ],
+    "namespace_function_definitions_compared": 161,
+    "latest_or_general_domain_certified": false
+  },
+  "image_reference": "ghcr.io/auto-nomics/autonomics/coloc@sha256:a2afe7aa83ae6f1ecb9573317aa022af4db0870771378c7fe90d295d70057322",
+  "manifest_sha256": "f71baeaa0e6b0aed98977833c0812004661a185661f20528d323f8cb492d5189",
+  "script_sha256": "f07514e530468323102d5eda5f31ef7b4436df1082448a2f808c8f21ecfcaa41",
+  "inputs": "Four Files: two SNP/beta/SE/counting-allele/reference-count tables and two complete ordered signed-LD matrices",
+  "outputs": [
+    "0 all signal-pair summary TSV",
+    "1 every conditional-on-H4 variant posterior TSV",
+    "2 full RDS with datasets, untouched author fits/result, priors and metadata",
+    "3 diagnostic log"
+  ],
+  "method_proof": "PROVEN_SCOPED_FRESH_AUTHOR_PACKAGES_NOT_WRAPPER_GENERATED_GOLDENS",
+  "interface_proof": "32_ACTUAL_CASES_0_DEPENDENCY_SKIPS",
+  "isolated_DAG_proof": "3_SUCCESSFUL_EXECUTIONS_4_TARGETED_REFUSALS_5_NODES_4_EDGES_EXCEPT_MISSING_EDGE",
+  "plan_contract": "TECHNICAL_INPUT_AND_EXPLICIT_PRIOR_L_GRID_ONLY_STUDY_QUALIFICATION_UNGRANTED",
+  "successful_native_DAGs": 3,
+  "blocked_native_DAGs": 4,
+  "successful_but_not_estimable_DAGs": 1,
+  "wrapper_cases": 32,
+  "whole_official_workflow_comparisons": 16,
+  "catalog_cases": 48,
+  "numeric_tolerance": {
+    "R_all_equal": 1e-12,
+    "check_attributes": true
+  },
+  "technical_inputs": [
+    "Real-reference 50-SNP LD with synthetic effects",
+    "Author D3/D4 500-SNP simulated multi-signal data; full original RDS retained, synthetic A/G labels declared"
+  ],
+  "scheme_parameter_branches": "Explicit L=10/20 crossed with p12=1e-6,1e-5,1e-4; p1=p2=1e-4; no scientific parameter choice or threshold grant",
+  "default_prior_is_not_plan_prior": "Author default p12=5e-6; study main 1e-5 must be explicitly supplied; primary technical DAG does so",
+  "no_CS_semantics": "Tagged absent H0-H4, full untouched author no-CS return; not H4=0 and not a negative scientific finding",
+  "run_report_output_content_hashes_complete": false,
+  "independent_materialized_output_SHA256_and_copy_verification": true,
+  "remaining": [
+    "Real regional selection/allele/build/ancestry/LD/trait/sample qualification and frozen software locks",
+    "Complete regional-to-finemap-to-signal-family assembly, prior robustness/scientific threshold interpretation",
+    "Latest-version and full-domain/statistical calibration proof",
+    "Resident daemon deployment, output content-hash registration, cache/resume/global resource acceptance",
+    "Independent scientific review and formal admission"
+  ],
+  "historical_120_slot_or_original_coloc_abf_status_changed": false,
+  "production_deployed": false,
+  "formal_research_release": "NOT_GRANTED",
+  "G0": false,
+  "evidence_packet": "/home/zj-normal/Work/autonomics/results/cachexia-v4.3.2/canonical-coloc-susie-v1-20261011"
+}

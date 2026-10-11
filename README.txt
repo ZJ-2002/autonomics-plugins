@@ -3,7 +3,9 @@ Autonomics plugin monorepo — initial source migration
 Engine: https://github.com/ZJ-2002/autonomics
 Plugins: https://github.com/ZJ-2002/autonomics-plugins
 
-plugins/ contains 26 independently installable plugin families.
+plugins/ contains 27 independently installable plugin families, including
+the general-purpose signal-aware coloc family. Its method evidence is
+scoped and does not grant formal research admission or deployment.
 research-adapters/ contains 49 opt-in research/reference adapters.
 The added cis-mr-declared adapter uses a measured local-only image and remains
 opt-in; source inventory does not qualify a protected or formal method run.

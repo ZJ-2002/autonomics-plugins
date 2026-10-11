@@ -1,0 +1,8 @@
+{
+  "source_packet": "/home/zj-normal/Work/autonomics/results/cachexia-v4.3.2/canonical-susie-dense-v1-20261011/final-wrapper-cases/test_complete_50_strong_credible_set/input.tsv",
+  "source_sha256": "b1887aa916757b8cf6a6a0c7ba9d81006d857e2de2cfa49458ccce3d0d2273fd",
+  "LD": "Real-reference chr21 complete signed LD independently verified in sealed prior packet",
+  "effects": "Synthetic strong z transformed to beta=z*0.02, se=0.02 for both traits; no real study evidence",
+  "scientific_release": "NOT_GRANTED",
+  "G0": false
+}
