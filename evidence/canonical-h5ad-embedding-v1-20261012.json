@@ -95,7 +95,8 @@
     "actual_baked_original_counterexamples": 7,
     "final_real_image_refusals": 35,
     "mandatory_compiled_contract_tests": 6,
-    "mandatory_catalog_tests": 48,
+    "initial_common_catalog_tests": 48,
+    "mandatory_catalog_tests": 71,
     "skips": 0,
     "ordinary_second_publication_failure_injected": true,
     "crash_or_resume_claim": false
