@@ -1,9 +1,113 @@
 {
   "schema_version": "1.0",
   "scope": "SOURCE_AND_INTERFACE_INVENTORY_NOT_METHOD_CERTIFICATION",
-  "canonical_families": 28,
-  "canonical_kinds": 58,
+  "canonical_families": 29,
+  "canonical_kinds": 60,
   "families": [
+    {
+      "directory": "plugins/bulk-rnaseq",
+      "plugin_name": "bulk-rnaseq",
+      "kinds": [
+        "limma_voom",
+        "wgcna"
+      ],
+      "image_reference": "ghcr.io/zj-2002/bulk-rnaseq-official@sha256:319f2cd767117d702d814675f8f3da16418c9525f175ab1aa509040ab662f86a",
+      "files": [
+        {
+          "path": ".dockerignore",
+          "sha256": "3e343a362179cf6c43da7538be1ffc82f06419ca85124bbc59e0ebc473eb6aa9",
+          "bytes": 155,
+          "executable": false
+        },
+        {
+          "path": "Dockerfile",
+          "sha256": "f3c506f93670a3890c57abb4d30c59f1c24ca495a97e9340dd5772d4fdaae4de",
+          "bytes": 1328,
+          "executable": false
+        },
+        {
+          "path": "README.md",
+          "sha256": "fe522f5a4c443353a80605929f7203fe94b1abcea0445f00f94c9a8ef329a07d",
+          "bytes": 4598,
+          "executable": false
+        },
+        {
+          "path": "Rscript-vanilla",
+          "sha256": "f0cdcbd3f9e264dca88371e2b35a7dc5e7d959699224aa77d8d582baa3e3d09c",
+          "bytes": 46,
+          "executable": false
+        },
+        {
+          "path": "build-image.R",
+          "sha256": "45284736bb23bf1ec88fdbef388f9ae1be41a92f5490df79da007b9712833a1a",
+          "bytes": 1715,
+          "executable": false
+        },
+        {
+          "path": "limma_voom_runner.R",
+          "sha256": "0d24b3264112b51fcf9c097a7e5772fd5a5b88687ca8864a4fd7ba8451be0cd2",
+          "bytes": 18435,
+          "executable": false
+        },
+        {
+          "path": "manifest.toml",
+          "sha256": "7a872f8b0ed34515f7b568b29fd05dab79283a88994562cc746e5744198962aa",
+          "bytes": 6563,
+          "executable": false
+        },
+        {
+          "path": "source-archives/SHA256SUMS",
+          "sha256": "cd2323589cc917b20654c40be86f25de247a9b3689e7d57c45cf4469576e2b47",
+          "bytes": 342,
+          "executable": false
+        },
+        {
+          "path": "source-archives/WGCNA_1.74.tar.gz",
+          "sha256": "4f61e117b82287f01b61bf936d5c5ea3814c9c4b0d0b90d5016dda77f1f955d6",
+          "bytes": 1170085,
+          "executable": false
+        },
+        {
+          "path": "source-archives/edgeR_4.8.2.tar.gz",
+          "sha256": "dc1451f32fc5793001b14e0cae1b0fafcadc3b7081637f2f8e8dba5ee4760da4",
+          "bytes": 3067798,
+          "executable": false
+        },
+        {
+          "path": "source-archives/limma_3.66.0.tar.gz",
+          "sha256": "d8ba41bf7030738208a1c5d937f6c91b461d785cfe21dc5c54f22c4e66b901a4",
+          "bytes": 2855676,
+          "executable": false
+        },
+        {
+          "path": "source-archives/statmod_1.5.2.tar.gz",
+          "sha256": "5f83d82043c5e26f1048fc0139580da1b7e40becf95fb4cb26ed3afcd46a581d",
+          "bytes": 93227,
+          "executable": false
+        },
+        {
+          "path": "test_smoke.sh",
+          "sha256": "79656d6ea081bab1a784f9287ff7e526faab8cc465fab3b0cd1f8e4b997359f4",
+          "bytes": 944,
+          "executable": false
+        },
+        {
+          "path": "tests/test_limma_boundaries.py",
+          "sha256": "4ccbad0203e0ae2a0c29ede94e793fb139bbc154f76132ef917192467a82d56a",
+          "bytes": 17389,
+          "executable": false
+        },
+        {
+          "path": "wgcna_runner.R",
+          "sha256": "26e440d682c5083237fb2235d165f3c0735f33cdbf586826ca0aab94f767f819",
+          "bytes": 10140,
+          "executable": false
+        }
+      ],
+      "source_inventory_only": true,
+      "scientific_certified": false,
+      "auto_enable": false
+    },
     {
       "directory": "plugins/cellchat",
       "plugin_name": "cellchat",

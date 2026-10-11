@@ -1,0 +1,52 @@
+{
+  "kind": "limma_voom",
+  "family": "bulk-rnaseq",
+  "status": "PROVEN_SCOPED",
+  "image_reference": "ghcr.io/zj-2002/bulk-rnaseq-official@sha256:319f2cd767117d702d814675f8f3da16418c9525f175ab1aa509040ab662f86a",
+  "source_sha256": "0d24b3264112b51fcf9c097a7e5772fd5a5b88687ca8864a4fd7ba8451be0cd2",
+  "scope": "Original two File inputs/five File outputs; categorical and continuous full-rank donor/sample designs; three exposed normalizations; exact literal axes and filtering ledger; finite exact integer counts.",
+  "method": "Fresh official limma 3.66.0/edgeR 4.8.2/statmod 1.5.2 source installs;705 complete R function definitions identical;20 independent official cases;72,000 finite numerical fields and60 complete tables byte-identical.",
+  "verification": {
+    "official_cases": 20,
+    "numerical_fields": 72000,
+    "complete_table_byte_checks": 60,
+    "real_pinned_image_boundary_tests": 58,
+    "compiled_contract_tests": 5,
+    "native_submissions": 11,
+    "native_outcomes": {
+      "success": 6,
+      "execution_failure": 3,
+      "preexecution_refusal": 2
+    },
+    "G0": false
+  },
+  "native_runner_scope": "Sealed generic native component with immutable SDK, not current whole-engine build or resident daemon",
+  "repaired_counterexamples": [
+    "Numeric gene ID coercion",
+    "Existing analytical output overwritten",
+    "Quantile expression replaced after official precision weights were already calculated",
+    "Nonintegral text rounded into an integer during double conversion"
+  ],
+  "additional_guards": [
+    "Literal rectangular TSV and sample alignment",
+    "Correct sample labels on weights",
+    "Complete retained/excluded gene ledger",
+    "No silently dropped model rows; full rank and positive residual df",
+    "Vanilla interpreter and tracked script identity",
+    "Private staging and no-overwrite publication"
+  ],
+  "withdrawn_pre_precision_image": "ghcr.io/zj-2002/bulk-rnaseq-official@sha256:abf182a99798942375307aba48940419577355811a051a6470c9aa123612af0b",
+  "earlier_test_attempt_limits": "An intermediate 58-case invocation selected the prior image before the new identity file was written;58 executed with2 expected precision failures. It is retained as failed evidence, never counted as final PASS.",
+  "remaining": [
+    "Official APIs outside exposed wrapper branches/data domain",
+    "Independent runtime/BLAS and simulation/calibration across intended study regimes",
+    "Actual frozen model, donor independence, matrix scale, gene universe and hypothesis-family eligibility",
+    "Current whole-engine/resident daemon deployment, output-hash cache trust, persistent recovery and global quotas",
+    "Multi-file atomic publication/concurrent-writer locking/SIGKILL rollback",
+    "Anonymous GHCR availability pending package visibility change; authenticated digest pull verified",
+    "WGCNA remains PENDING: unchanged source/package installation/interface tests are not method acceptance"
+  ],
+  "production_deployed": false,
+  "scientific_release": "NOT_GRANTED",
+  "G0": false
+}

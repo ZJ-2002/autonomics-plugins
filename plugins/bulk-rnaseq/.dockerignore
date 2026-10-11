@@ -1,0 +1,9 @@
+*
+!Dockerfile
+!build-image.R
+!limma_voom_runner.R
+!wgcna_runner.R
+!Rscript-vanilla
+!source-archives/
+!source-archives/*.tar.gz
+!source-archives/SHA256SUMS

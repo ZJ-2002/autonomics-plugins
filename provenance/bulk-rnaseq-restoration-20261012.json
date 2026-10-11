@@ -1,0 +1,43 @@
+{
+  "directory": "plugins/bulk-rnaseq",
+  "upstream_repository": "https://github.com/auto-nomics/bulk-rnaseq-plugin.git",
+  "upstream_revision": "178e71c7cc8d82f9f4bacd16f009530c7813e717",
+  "restored_original_files": [
+    {
+      "path": "Dockerfile",
+      "size": 4853,
+      "sha256": "ec42a803aa0f42f86cfaa5d9bf3455a7136494bd1d1bef19f42ee0cad14061a5"
+    },
+    {
+      "path": "README.md",
+      "size": 5070,
+      "sha256": "bbb8ffbe92df46debcb67bcbc6f23ba249a3441977f92aeb67e25aeb900e3668"
+    },
+    {
+      "path": "limma_voom_runner.R",
+      "size": 11509,
+      "sha256": "45a06a5fb9523fcc37a8dc082b38e718bd26f7340ab19ba48119357cc1da64e0"
+    },
+    {
+      "path": "manifest.toml",
+      "size": 7023,
+      "sha256": "c20af4df33d88db10bbe8851165c02aa75efbd4d1ad1a2cd259ce3dbe1ccd59f"
+    },
+    {
+      "path": "test_smoke.sh",
+      "size": 1608,
+      "sha256": "85090f301135f8e7dad11ac642e19325d0056c0f9a49ad880289cd0bbbd9b233"
+    },
+    {
+      "path": "wgcna_runner.R",
+      "size": 10140,
+      "sha256": "26e440d682c5083237fb2235d165f3c0735f33cdbf586826ca0aab94f767f819"
+    }
+  ],
+  "unchanged_wgcna_sha256": "26e440d682c5083237fb2235d165f3c0735f33cdbf586826ca0aab94f767f819",
+  "repaired_kind": "limma_voom",
+  "image_reference": "ghcr.io/zj-2002/bulk-rnaseq-official@sha256:319f2cd767117d702d814675f8f3da16418c9525f175ab1aa509040ab662f86a",
+  "source_index_is_historical_and_unchanged": true,
+  "production_deployed": false,
+  "G0": false
+}

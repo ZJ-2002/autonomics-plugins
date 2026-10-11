@@ -82,10 +82,16 @@ reproduce each complete program in memory, without modifying any source.
 provenance/frozen-genetic-source-20261011.json records this new transport
 batch; the initial migration source-index remains historical and unchanged.
 
-Current canonical families contain 28 families/58 kinds. Research adapters are opt-in
+Current canonical families contain 29 families/60 kinds. Research adapters are opt-in
 (58 families after this import). The generic cachexia-mvmr adapter remains
 available under its original interface; the frozen two-exposure adapter has
 a different explicit node kind. Both need actual scientific/source admission.
 Localhost image pins require a separately verified image installation; the
 catalog does not promise remote pullability. The preview release retains its
 independently selected source snapshot. No live production profile is changed.
+
+bulk-rnaseq restores limma_voom and wgcna. Only limma_voom has the new scoped
+official numerical/native-DAG proof; shared WGCNA installation is not method
+acceptance. The new owned bulk-rnaseq-official GHCR package was private at
+first publication: authenticated digest pull is verified, anonymous pull
+and current daemon deployment are not granted by this source inventory.
