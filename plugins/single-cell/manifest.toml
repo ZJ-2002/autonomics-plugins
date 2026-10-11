@@ -93,8 +93,15 @@ kind = "h5ad_qc_filter"
 desc = "Filters cells and genes in an H5AD and emits a QC report."
 doc = """
 Input port 0 is H5AD. Output ports are output.h5ad then report.json.
-Computes per-cell gene/total counts and mitochondrial and ribosomal
-percentages, then filters cells and genes by the configured thresholds.
+Calls Scanpy calculate_qc_metrics on X (not raw/layers), with percent_top=None
+and log1p=False. Filters cells first, then gene detection in retained cells.
+Patterns match var_names case-insensitively; no species or symbol mapping.
+100 disables each percentage filter; undefined zero-library percentages
+remain NaN in H5AD. Strict report JSON uses null for undefined summaries.
+Integer X is promoted to int64; each row/column sum must fit int64. Sparse X is
+canonicalized to CSR. Existing derived artifacts are sliced, not recomputed.
+Rejects invalid counts, thresholds, empty results and existing output paths.
+Neither QC parameters nor donor/count-scale eligibility are study approvals.
 The matrix remains opaque to the host and is processed only in the
 pinned Python image.
 """
@@ -120,7 +127,7 @@ rb_gene_pattern = { type = "string", default = "^RPL|^RPS", doc = "Regex selecti
 
 [nodes.command]
 interpreter = "python"
-script_file = "scripts/run_workflow.py"
+script_file = "scripts/qc_filter.py"
 
 [nodes.command.env]
 AUTONOMICS_SINGLE_CELL_WORKFLOW = "qc_filter"

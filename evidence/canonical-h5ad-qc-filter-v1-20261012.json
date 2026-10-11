@@ -1,0 +1,89 @@
+{
+  "schema_version": "1.0",
+  "canonical_kind": "h5ad_qc_filter",
+  "status": "PROVEN_SCOPED",
+  "provider": "Original single-cell family, not an alternative research adapter",
+  "official_method": "Explicit composite recipe using official Scanpy APIs, not an official function named h5ad_qc_filter",
+  "inputs": [
+    "0:File H5AD with finite nonnegative numeric X and unique nonempty obs/var IDs"
+  ],
+  "outputs": [
+    "0:output.h5ad with official QC/subsetting semantics",
+    "1:report.json schema2.0 with complete axis ledgers"
+  ],
+  "parameters": [
+    "min_genes",
+    "max_genes",
+    "min_cells",
+    "max_cells",
+    "max_pct_mt",
+    "max_pct_rb",
+    "mt_gene_pattern",
+    "rb_gene_pattern"
+  ],
+  "official": {
+    "Scanpy": "1.11.3",
+    "AnnData": "0.11.4",
+    "Python_source_members_exact": 164,
+    "source_archives": "Verified copies from sealed primary PyPI downloads, freshly independently installed here",
+    "independence": "Separate author calls and independent count/detection/percentage/report checks; shared frozen numerical/HDF5 binaries",
+    "primary_docs": [
+      "https://scanpy.readthedocs.io/en/1.11.x/generated/scanpy.pp.calculate_qc_metrics.html",
+      "https://scanpy.readthedocs.io/en/1.11.x/generated/scanpy.pp.filter_cells.html",
+      "https://scanpy.readthedocs.io/en/1.11.x/generated/scanpy.pp.filter_genes.html"
+    ]
+  },
+  "implementation": {
+    "manifest_sha256": "c3512e70d5cf255a3ac0efab15b577c588e71c97ce32627490351b87655e1e26",
+    "script": "scripts/qc_filter.py",
+    "script_sha256": "60c36e9731ee010b3fd6b27fd2cf6ec2b98ac02004d5a4402705740a04f8eaa7",
+    "interpreter": "python",
+    "image": "ghcr.io/zj-2002/single-cell-preprocessor@sha256:e2f9fcd5ccf9e97b0f0129466df5abb21ae47ed32f123f6953b79fd83d915e20",
+    "image_config_sha256": "3144c037c6da31b27ea8d240e4bf013c45258099f44242193946d209ab24dc7b",
+    "image_unchanged": true,
+    "package_visibility": "private"
+  },
+  "method_proof": {
+    "complete_author_cases": 41,
+    "finite_values_checked": 2373879,
+    "whole_AnnData_and_HDF5_datasets_checked": true,
+    "official_undefined_masks_checked": true,
+    "full_ledgers_hashes_and_independent_summaries_checked": true,
+    "absolute_tolerance": 1e-12,
+    "relative_tolerance": 0,
+    "author_pbmc3k_raw_source_sha256": "89a96f1beaa2dd83a687666d3f19a4513ac27a2a2d12581fcd77afed7ea653a1",
+    "benchmark_not_disease_or_qualified_donor_cohort": true
+  },
+  "engineering_proof": {
+    "actual_baked_original_counterexamples": 8,
+    "real_image_refusals": 41,
+    "mandatory_compiled_contract_tests": 6,
+    "mandatory_catalog_tests": 48,
+    "skips": 0,
+    "ordinary_second_publication_failure_injected": true,
+    "crash_or_resume_claim": false
+  },
+  "isolated_DAG_proof": {
+    "original_canonical_kind": true,
+    "submissions": 12,
+    "successful_whole_author_replays": 8,
+    "specific_failures": 4,
+    "two_file_ports_materialized_read_and_hashed": true,
+    "real_family_panel_resolved": true,
+    "scope": "Sealed native component/SDK; not whole current engine or resident daemon"
+  },
+  "supported_recipe": "X only; explicit case-insensitive var-name patterns; no top-count/log transforms; cell then gene filters; inclusive bounds; zero disables upper count bounds;100 disables percentage bounds;undefined percentages retained as NaN;int64 per-axis exactness checks;sparse canonicalization;official raw/layer/graph slicing",
+  "publication": "No overwrite; both files staged before ordinary publication; inode-specific rollback; not crash-atomic",
+  "plan_contract": "NOT_IMPLEMENTATION_LOCKED;NOT_GRANTED; no frozen threshold, scale, species, donor/animal independence, formal sample/family or scientific eligibility granted",
+  "remaining": [
+    "Full unknown AnnData encodings and future/latest package APIs",
+    "Study counts/species/gene-ID/threshold/donor eligibility",
+    "Cell annotation/Seurat transfer and preexisting derived-artifact requalification",
+    "Current whole-engine/resident deployment and private anonymous installation",
+    "Full-scale/global quotas/cache invalidation/persistent resume/crash publication",
+    "Scientific review and G0"
+  ],
+  "proof_packet": "/home/zj-normal/Work/autonomics/results/cachexia-v4.3.2/canonical-h5ad-qc-filter-v1-20261012",
+  "production_deployed": false,
+  "G0": false
+}

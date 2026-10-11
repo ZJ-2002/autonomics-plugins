@@ -14284,14 +14284,14 @@
         },
         {
           "path": "README.md",
-          "sha256": "deb97d24aaceef743a4998185a3cd0fe0d281134dee842bc9affb3ed5713cfab",
-          "bytes": 12186,
+          "sha256": "64bc2f079c817fb09be5704c7d2af0efda0d1bb32ec08b9a9867cfec724c2f94",
+          "bytes": 14239,
           "executable": false
         },
         {
           "path": "manifest.toml",
-          "sha256": "1e12b81711a9ebdfe705e483651dda1d5a289c2e55894d20a83de8d4bd7dcf48",
-          "bytes": 22467,
+          "sha256": "c3512e70d5cf255a3ac0efab15b577c588e71c97ce32627490351b87655e1e26",
+          "bytes": 23012,
           "executable": false
         },
         {
@@ -14304,6 +14304,12 @@
           "path": "requirements.txt",
           "sha256": "60becba211030aafc3fd6a900ae3eb72025755cfe0b53e2c585978001f20bb04",
           "bytes": 975,
+          "executable": false
+        },
+        {
+          "path": "scripts/qc_filter.py",
+          "sha256": "60c36e9731ee010b3fd6b27fd2cf6ec2b98ac02004d5a4402705740a04f8eaa7",
+          "bytes": 11846,
           "executable": false
         },
         {
@@ -14331,6 +14337,12 @@
           "executable": false
         },
         {
+          "path": "test_qc_assurance.sh",
+          "sha256": "4c9d06c0cab1790eb62ca5dc7c229190af7e6f3f678bafc9a29244acd64459c6",
+          "bytes": 1812,
+          "executable": false
+        },
+        {
           "path": "test_single_cell_preprocessor.sh",
           "sha256": "01040a5afc4a0733e7ae0fb3fff8c5ff4b11e8c1a0100dc54a28f120d5f2e6f9",
           "bytes": 7684,
@@ -14349,6 +14361,18 @@
           "executable": false
         },
         {
+          "path": "tests/qc_compare.py",
+          "sha256": "1385d64aaf85894cbf89f15a3a9516b6cb6f2fd65167b9ba816a8a541cbe7076",
+          "bytes": 7930,
+          "executable": false
+        },
+        {
+          "path": "tests/qc_reference.py",
+          "sha256": "49e44742c9697e3ad9df7f79b332f523b746c30db8c3d725a1f878d8ee3dd56b",
+          "bytes": 2498,
+          "executable": false
+        },
+        {
           "path": "tests/test_preprocess_boundaries.py",
           "sha256": "4f282d94c498bc9a2ee744375c30c8de48214d0eb2745dc2a71ae6d2622816d3",
           "bytes": 9386,
@@ -14358,6 +14382,18 @@
           "path": "tests/test_preprocess_container.py",
           "sha256": "6d9cf247eb1c060c319286bd0e611e5476d1708ca34e7b74997093fd2c848ab7",
           "bytes": 12602,
+          "executable": false
+        },
+        {
+          "path": "tests/test_qc_boundaries.py",
+          "sha256": "a0fc4ee58ad02c6c125a0f6f0055d40d81e7c28b05a4063010bb8ff6a77dcb80",
+          "bytes": 7534,
+          "executable": false
+        },
+        {
+          "path": "tests/test_qc_container.py",
+          "sha256": "ff8dbb0ba703425dcb6b37814529f3cc6be40139e0dc03546de1706571c90089",
+          "bytes": 7687,
           "executable": false
         },
         {

@@ -9,7 +9,7 @@ directory = one plugin family = one git-able unit, one image
 
 - `manifest.toml` — the eleven-node contract: params, ports, panel, image
   provenance
-- `scripts/run_workflow.py` — shared runner shim for nine H5AD nodes;
+- `scripts/run_workflow.py` — shared runner shim for eight H5AD nodes;
   rebuilds the legacy `params.json` from `SC_P_*` env vars and execs the
   workflow runner baked into the image
 - `Dockerfile`, `.dockerignore`, `requirements.txt`, `preprocess.py`,
@@ -43,6 +43,41 @@ Every node runs isolated (no network) with a read-only root filesystem and
 `PullPolicy::Missing`, exactly like the legacy wrappers.
 
 ## Execution shape
+
+### QC assurance candidate (2026-10-12)
+
+`h5ad_qc_filter` uses the tracked, injected `scripts/qc_filter.py`, not the
+legacy baked workflow branch. Its address, eight parameters, H5AD input,
+two output ports and declared resources remain unchanged. The image is
+unchanged from the preprocessor assurance candidate.
+
+The explicit recipe uses Scanpy 1.11.3 `calculate_qc_metrics` with X,
+`qc_vars=["mt", "rb"]`, `percent_top=None`, `log1p=False`, `use_raw=False`
+and no layer. It applies cell filters before gene-detection filters in
+retained cells. Both bounds are inclusive; zero disables upper count
+bounds, and 100 disables percentage bounds. Zero-library percentages
+remain officially undefined (NaN in H5AD); active percentage bounds drop
+those cells. Strict JSON records undefined summary fields as null.
+
+Patterns match `var_names` case-insensitively, not an inferred symbol,
+species or annotation column. Integer X is promoted to int64 with exact
+row/column overflow checks. Sparse coordinates are summed and explicit
+zeros removed before detection. Fractional nonnegative X is accepted by
+the API, but this does not establish that the input is raw counts.
+Neither raw nor a `counts` layer is selected silently. AnnData subsetting
+preserves its official raw/layer/graph semantics; derived graphs and
+embeddings are sliced, not recomputed or scientifically requalified.
+
+The output preserves full cell/gene exclusion ledgers and hashes. Existing
+outputs are refused; ordinary second-publication failures are rolled back.
+This is not crash-atomic publication, persistent resume or a study QC lock.
+The scientific implementation lock, donor/animal independence, species,
+count scale, thresholds, resource-scale deployment and G0 remain ungranted.
+
+Run `QC_EVIDENCE=<new-directory> QC_REFERENCE_LIBRARY=<official-library>`
+`bash plugins/single-cell/test_qc_assurance.sh`. Required synthetic author
+comparisons and refusals cannot silently skip. The test driver also accepts
+an explicit author PBMC3k raw H5AD benchmark, which is not a study cohort.
 
 ### Preprocessor assurance candidate (2026-10-12)
 
