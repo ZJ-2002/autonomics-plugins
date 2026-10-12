@@ -1,0 +1,36 @@
+{
+  "auto_enable": false,
+  "imported_files": {
+    "README.md": {
+      "bytes": 5461,
+      "executable": false,
+      "git_blob": "b1e9371780fef759810cb677a0689d2784f21a6e",
+      "sha256": "01d5a1c9cb5db78045df5d7f0155fef705f576600d3acf3ba212e651e56ea7f6",
+      "source_path": "study_plugins/c-network-source-contract/README.md"
+    },
+    "manifest.toml": {
+      "bytes": 2316,
+      "executable": false,
+      "git_blob": "92ca5aacdb3f5874a6a0c01b7d39ce0faa1348da",
+      "sha256": "82b048f337ece02936278e7cd48e2f0984a26039293db8274327e36fde53a880",
+      "source_path": "study_plugins/c-network-source-contract/manifest.toml"
+    },
+    "scripts/run-source.py": {
+      "bytes": 72450,
+      "executable": false,
+      "git_blob": "87e0fabb61a5829ba55fc6a9a0b4d272da49ad21",
+      "sha256": "04c4dc31580c5737608089b9a8a03c21f77397b61d2af3278760e42031b7d383",
+      "source_path": "study_plugins/c-network-source-contract/scripts/run-source.py"
+    }
+  },
+  "loaded_worker_registration_verified": false,
+  "method_acceptance_verified": false,
+  "runtime_image_currently_present_verified": false,
+  "schema_version": 1,
+  "scientific_authorization": false,
+  "scope": "BYTE_EXACT_GOVERNANCE_ADAPTER_SOURCE_TRANSPORT_NOT_ALGORITHM_REIMPLEMENTATION_OR_RUNTIME_ACCEPTANCE",
+  "source_commit": "073fa0b888828a661a73fa87ee562adbbe571c32",
+  "source_family": "study_plugins/c-network-source-contract",
+  "source_repository": "https://github.com/ZJ-2002/autonomics",
+  "status": "ENGINEERING_CANDIDATE"
+}

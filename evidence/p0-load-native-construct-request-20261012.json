@@ -1,0 +1,37 @@
+{
+  "node_specs": {
+    "b-bulk-inputs-contract/b_bulk_frozen_inputs": {},
+    "b-bulk-limma-contract/b_bulk_frozen_design": {},
+    "b-bulk-limma-contract/b_bulk_frozen_limma": {},
+    "b-donor-contract/b_donor_frozen_inputs": {},
+    "b-donor-method/b_donor_frozen_deseq2": {},
+    "b-donor-method/b_donor_frozen_design": {},
+    "b-state-contract/b_state_frozen_contrast_inputs": {},
+    "b-state-contract/b_state_frozen_donor_tpm": {},
+    "b-state-contract/b_state_frozen_score_inputs": {},
+    "b-state-method/b_state_frozen_score_contrast": {},
+    "b-state-method/b_state_frozen_singscore": {},
+    "c-network-contract/c_network_frozen_matched_null": {},
+    "c-network-source-contract/c_network_source_normalize": {},
+    "c-safety-contract/c_safety_bound_risk_matrix": {},
+    "c-safety-contract/c_safety_declared_risk_matrix": {},
+    "pseudobulk-contract/pseudobulk_frozen_raw_counts": {},
+    "singscore-contract/singscore_frozen_contrasts": {},
+    "singscore-contract/singscore_frozen_scores": {}
+  },
+  "plugin_directories": [
+    "/home/zj-normal/.cache/autonomics-team-20261012/runtime-plugins-evolution/research-adapters/b-bulk-inputs-contract",
+    "/home/zj-normal/.cache/autonomics-team-20261012/runtime-plugins-evolution/research-adapters/b-donor-contract",
+    "/home/zj-normal/.cache/autonomics-team-20261012/runtime-plugins-evolution/research-adapters/b-donor-method",
+    "/home/zj-normal/.cache/autonomics-team-20261012/runtime-plugins-evolution/research-adapters/b-state-contract",
+    "/home/zj-normal/.cache/autonomics-team-20261012/runtime-plugins-evolution/research-adapters/b-state-method",
+    "/home/zj-normal/.cache/autonomics-team-20261012/runtime-plugins-evolution/research-adapters/pseudobulk-contract",
+    "/home/zj-normal/.cache/autonomics-team-20261012/runtime-plugins-evolution/research-adapters/singscore-contract",
+    "/home/zj-normal/.cache/autonomics-team-20261012/runtime-plugins-evolution/research-adapters/c-network-contract",
+    "/home/zj-normal/.cache/autonomics-team-20261012/runtime-plugins-evolution/research-adapters/c-network-source-contract",
+    "/home/zj-normal/.cache/autonomics-team-20261012/runtime-plugins-evolution/research-adapters/c-safety-contract",
+    "/home/zj-normal/.cache/autonomics-team-20261012/runtime-plugins-evolution/research-adapters/b-bulk-limma-contract"
+  ],
+  "schema_version": 1,
+  "scope": "NATIVE_REGISTRY_CONSTRUCTION_OBSERVATION_NOT_AUTHORIZATION"
+}

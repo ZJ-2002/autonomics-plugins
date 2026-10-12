@@ -1,0 +1,43 @@
+{
+  "auto_enable": false,
+  "imported_files": {
+    "README.md": {
+      "bytes": 4539,
+      "executable": false,
+      "git_blob": "f2e64b1df9d9c6eae68591b1a3ec6175f60c5757",
+      "sha256": "978844db675173464f7527502d412d7668912ec794796d37f2185a1743ab19f7",
+      "source_path": "study_plugins/pseudobulk-contract/README.md"
+    },
+    "manifest.toml": {
+      "bytes": 2151,
+      "executable": false,
+      "git_blob": "24dd1470600e0f54194e189ff7dc516476a2de68",
+      "sha256": "357c5616409d1ffad152ca31eb530ab015830cd0bb3d5c59399dafe7b753c415",
+      "source_path": "study_plugins/pseudobulk-contract/manifest.toml"
+    },
+    "scripts/pseudobulk.py": {
+      "bytes": 26484,
+      "executable": false,
+      "git_blob": "a32893b346a431390e07d7c5b7e2388a3b74ab35",
+      "sha256": "9728e902e032dd948f8906a5682a42a28d4d2abfc39db96b2265c5670572dca6",
+      "source_path": "study_plugins/pseudobulk-contract/scripts/pseudobulk.py"
+    },
+    "scripts/run-counts.py": {
+      "bytes": 54671,
+      "executable": false,
+      "git_blob": "5a22bd4b9c1b75f6ba1cd23efea350c9932d6f5c",
+      "sha256": "41f397996e294b0e5eb8f91b5d09d12ee8a29366d3ccb94dc0cb9444c83c13bf",
+      "source_path": "study_plugins/pseudobulk-contract/scripts/run-counts.py"
+    }
+  },
+  "loaded_worker_registration_verified": false,
+  "method_acceptance_verified": false,
+  "runtime_image_currently_present_verified": false,
+  "schema_version": 1,
+  "scientific_authorization": false,
+  "scope": "BYTE_EXACT_GOVERNANCE_ADAPTER_SOURCE_TRANSPORT_NOT_ALGORITHM_REIMPLEMENTATION_OR_RUNTIME_ACCEPTANCE",
+  "source_commit": "073fa0b888828a661a73fa87ee562adbbe571c32",
+  "source_family": "study_plugins/pseudobulk-contract",
+  "source_repository": "https://github.com/ZJ-2002/autonomics",
+  "status": "ENGINEERING_CANDIDATE"
+}

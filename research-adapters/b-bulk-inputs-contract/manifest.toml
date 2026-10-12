@@ -1,0 +1,39 @@
+schema_version = 1
+plugin_name = "b-bulk-inputs-contract"
+
+[image]
+reference = "localhost/autonomics/python-guard@sha256:d7d40ff1494750f26ded735e2551efb86d970355b805868b92ec9107b7ca7c68"
+tag = "qualified-cache-v1"
+upstream = "Existing protected Python cache identity inspected; this producer is a preparation candidate, not protected execution or method acceptance."
+license = "Python-2.0"
+
+[[nodes]]
+kind = "b_bulk_frozen_inputs"
+desc = "Prepare complete normalized bulk limma inputs from nine actual source and original-design files."
+doc = "Nine File inputs in original design ZIP/request/expression/source samples/analysis samples/features/contrast lock/source metadata/resource alias order. Uses the complete bundled original compiler, transcriptome registry, unchanged pseudobulk helpers and actual bulk preparation. Retains every source feature, sample decision, clinical covariate and exact original governance. No raw-count/TPM/ordinary-OLS substitution, inference of clinical labels, fitting, family registration, source qualification, G0 or authorization. A complete no-clobber bundle precedes seven File ports. Host research source is never imported. Existing Python image presence is not acceptance of this new producer."
+timeout_secs = 3600
+stage_in_mode = "copy"
+artifact_prefix = "/artifacts/b_bulk_frozen_inputs"
+[nodes.resources]
+network = "isolated"
+read_only_rootfs = true
+pull_policy = "never"
+cpus = 2.0
+memory = "2Gi"
+pids_limit = 128
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}, {type="file"}, {type="file"}, {type="file"}, {type="file"}, {type="file"}, {type="file"}, {type="file"}]
+outputs = [
+  {path="expression.tsv", format="tsv"},
+  {path="genes.tsv", format="tsv"},
+  {path="samples.tsv", format="tsv"},
+  {path="decisions.tsv", format="tsv"},
+  {path="method-template.json", format="json"},
+  {path="family-proposal.json", format="json"},
+  {path="input-preparation.json", format="json"},
+]
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/run-inputs.py"
+[nodes.command.env]
+PYTHONDONTWRITEBYTECODE = "1"

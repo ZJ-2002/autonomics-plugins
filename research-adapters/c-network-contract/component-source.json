@@ -1,0 +1,29 @@
+{
+  "auto_enable": false,
+  "imported_files": {
+    "manifest.toml": {
+      "bytes": 2406,
+      "executable": false,
+      "git_blob": "42a8133a1ce7d9d93d8f3fc3c34debefd5481151",
+      "sha256": "08d1927eb8ffb5190f7abfe5b683a6926726b20fb5a845ec8b1f766e019e2a9b",
+      "source_path": "study_plugins/c-network-contract/manifest.toml"
+    },
+    "scripts/run-network.py": {
+      "bytes": 169062,
+      "executable": false,
+      "git_blob": "483a9e415faaeecb1c6751c02018e4dcb945a806",
+      "sha256": "36f2d8a38abaaf96c011ac075ec5af0133adf4ba3e8d2106dc69a48219436eca",
+      "source_path": "study_plugins/c-network-contract/scripts/run-network.py"
+    }
+  },
+  "loaded_worker_registration_verified": false,
+  "method_acceptance_verified": false,
+  "runtime_image_currently_present_verified": false,
+  "schema_version": 1,
+  "scientific_authorization": false,
+  "scope": "BYTE_EXACT_GOVERNANCE_ADAPTER_SOURCE_TRANSPORT_NOT_ALGORITHM_REIMPLEMENTATION_OR_RUNTIME_ACCEPTANCE",
+  "source_commit": "073fa0b888828a661a73fa87ee562adbbe571c32",
+  "source_family": "study_plugins/c-network-contract",
+  "source_repository": "https://github.com/ZJ-2002/autonomics",
+  "status": "ENGINEERING_CANDIDATE"
+}

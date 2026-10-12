@@ -1,0 +1,101 @@
+{
+  "auto_enable": false,
+  "full_method_qualification_verified": false,
+  "image_config_id": "4e6a1a96e5625df3a3113a117acacb1736f8a1544d4595a14f1b561fa260b581",
+  "image_reference": "localhost/autonomics/b-bulk-limma@sha256:6932fcead69397d2d6dc941c45aca1e74e84c11a098bd0a510f73ec7fd4301c2",
+  "image_sources": {
+    "/opt/b-bulk-build/SOURCE_LOCK.json": {
+      "bytes": 2851,
+      "local_path": "image-source/SOURCE_LOCK.json",
+      "sha256": "5e12f6c8573004c40bd0724c66733152f3a394a530b30d8d283476aaeebcd9c2"
+    },
+    "/opt/b-bulk-build/install-source.R": {
+      "bytes": 3036,
+      "local_path": "image-source/install-source.R",
+      "sha256": "1e014a6cd11c9768910ec6fc11334ef706b85f71d845b010fde07e7ae64487b7"
+    },
+    "/opt/b-bulk-build/package-lock.tsv": {
+      "bytes": 580,
+      "local_path": "image-source/package-lock.tsv",
+      "sha256": "b0ad611f7c33ae7812c1665d6d4831adc9dbe56f50671c77a6eceb54c5c36204"
+    },
+    "/opt/b-bulk-build/probe-toolchain.R": {
+      "bytes": 2750,
+      "local_path": "image-source/probe-toolchain.R",
+      "sha256": "010005ae937d1546937830bcfc885662e20c18b787010557a3e51afdbb86b31a"
+    },
+    "/opt/b-bulk/bin/Rscript-vanilla": {
+      "bytes": 182,
+      "local_path": "image-source/Rscript-vanilla",
+      "sha256": "7ae0fab26e28de0bdd8ce15dc3d694dd64c383ca002867e76c63db9f4596d8c6"
+    },
+    "/opt/b-bulk/bulk-limma.R": {
+      "bytes": 16004,
+      "local_path": "image-source/bulk-limma.R",
+      "sha256": "c5d0a5f4fe179dd79ea49ea954f439b1e08af312102ac7ba3c570a82d10f010a"
+    },
+    "/opt/b-bulk/run-design.R": {
+      "bytes": 18683,
+      "local_path": "image-source/run-design.R",
+      "sha256": "b1f7cc7b2d8e8a94244b148ea651fa4a4b286f2a69da093b05c4541a82a73a2e"
+    },
+    "/opt/b-bulk/run-limma.R": {
+      "bytes": 18709,
+      "local_path": "image-source/run-limma.R",
+      "sha256": "cddc93770a8ceafa4ffe4f98c0f1584463666b6f1601acae342ca0988f5dbc99"
+    }
+  },
+  "imported_files": {
+    "README.md": {
+      "bytes": 5389,
+      "executable": false,
+      "git_blob": "ac9fd3be1472a5e6576662e12b64b2dccd7d2371",
+      "sha256": "a1df2667482d21ba3f53e8d5b0dfd834f90ab952d76c5b8b3e4013646b77898b",
+      "source_path": "study_plugins/b-bulk-limma-contract/README.md"
+    },
+    "scripts/bulk-limma.R": {
+      "bytes": 16004,
+      "executable": false,
+      "git_blob": "70b6c6f95ada1ff019977e47a07294c3f0709f63",
+      "sha256": "c5d0a5f4fe179dd79ea49ea954f439b1e08af312102ac7ba3c570a82d10f010a",
+      "source_path": "study_plugins/b-bulk-limma-contract/scripts/bulk-limma.R"
+    },
+    "scripts/run-design.R": {
+      "bytes": 18683,
+      "executable": false,
+      "git_blob": "3ffeb0938620a2cc66066fae2edb4af639c5e3c7",
+      "sha256": "b1f7cc7b2d8e8a94244b148ea651fa4a4b286f2a69da093b05c4541a82a73a2e",
+      "source_path": "study_plugins/b-bulk-limma-contract/scripts/run-design.R"
+    },
+    "scripts/run-limma.R": {
+      "bytes": 18709,
+      "executable": false,
+      "git_blob": "bfb787a70b698e27c4c2a20fe4c935e2fa94c43f",
+      "sha256": "cddc93770a8ceafa4ffe4f98c0f1584463666b6f1601acae342ca0988f5dbc99",
+      "source_path": "study_plugins/b-bulk-limma-contract/scripts/run-limma.R"
+    }
+  },
+  "loaded_worker_registration_verified": false,
+  "method_acceptance_verified": false,
+  "new_manifest_is_interface_transport_not_existing_source_import": true,
+  "schema_version": 1,
+  "scientific_authorization": false,
+  "scope": "EXACT_NORMALIZED_LIMMA_ENGINEERING_CANDIDATE_TRANSPORT_NOT_FULL_METHOD_OR_SCIENCE",
+  "software_lock": {
+    "R": "4.6.1",
+    "digest": "0.6.39",
+    "jsonlite": "2.0.0",
+    "limma": "3.68.5",
+    "statmod": "1.5.2",
+    "stats": "4.6.1"
+  },
+  "source_commit": "073fa0b888828a661a73fa87ee562adbbe571c32",
+  "source_context_identity": {
+    "bytes": 5913,
+    "sha256": "82718e65c3f5fd1c7dff255df7fdfee6023b8a108920c6733f077449caf70f85"
+  },
+  "source_distribution_provenance_qualified": false,
+  "source_family": "study_plugins/b-bulk-limma-contract",
+  "source_repository": "https://github.com/ZJ-2002/autonomics",
+  "status": "ENGINEERING_CANDIDATE"
+}

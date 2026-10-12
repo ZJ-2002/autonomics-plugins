@@ -1,0 +1,50 @@
+schema_version = 1
+plugin_name = "singscore-contract"
+
+[image]
+reference = "localhost/autonomics/singscore-contract@sha256:442ba1128697740289d709a8c6e75e1f2620a3d105954ca8dfddf562a89853d7"
+tag = "qualification-v1"
+upstream = "Official Bioconductor singscore 1.32.0 on R 4.6.1, with independently qualified study adapters"
+license = "GPL-3.0-only"
+
+# Qualification candidate only. Registration and image admission are separate
+# operator actions; this manifest grants no G0 or formal execution permission.
+[[nodes]]
+kind = "singscore_frozen_scores"
+desc = "Official average-rank, direction-aware scores with frozen coverage rules."
+doc = "Inputs: frozen config JSON, qualified human gene expression TSV, original full signature membership TSV. Outputs all program/sample scores, complete coverage ledger and input/software audit. Requires verified common gene/sample universes, exact input SHA256 and software versions. No normalization, signature selection or template freezing. Insufficient coverage retains NA rows. Requires separate method acceptance and signed study authorization."
+timeout_secs = 900
+artifact_prefix = "/artifacts/singscore_frozen_scores"
+[nodes.resources]
+network = "isolated"
+read_only_rootfs = true
+pull_policy = "never"
+cpus = 2.0
+memory = "2Gi"
+pids_limit = 128
+[nodes.ports]
+inputs = [{ type = "file" }, { type = "file" }, { type = "file" }]
+outputs = [{ path = "scores.tsv", format = "tsv" }, { path = "coverage.tsv", format = "tsv" }, { path = "audit.json", format = "json" }]
+[nodes.command]
+interpreter = "sh"
+script_file = "scripts/run-scores.sh"
+
+[[nodes]]
+kind = "singscore_frozen_contrasts"
+desc = "Frozen donor-level Welch/paired tests and complete twenty-member BH/BY family."
+doc = "Inputs: frozen contrast config JSON, scores TSV, verified donor/sample map TSV, frozen twenty-test universe TSV. Outputs all twenty result rows, paired donor differences and complete input/model audit. Uses prespecified tests and exclusions, never samples selected after scores. SC04 remains low-precision support only. Non-estimable rows retain NA and adjustment P=1; full BH/BY denominator remains twenty. No gate or scientific sign-off is granted."
+timeout_secs = 900
+artifact_prefix = "/artifacts/singscore_frozen_contrasts"
+[nodes.resources]
+network = "isolated"
+read_only_rootfs = true
+pull_policy = "never"
+cpus = 2.0
+memory = "2Gi"
+pids_limit = 128
+[nodes.ports]
+inputs = [{ type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }]
+outputs = [{ path = "results.tsv", format = "tsv" }, { path = "pairs.tsv", format = "tsv" }, { path = "audit.json", format = "json" }]
+[nodes.command]
+interpreter = "sh"
+script_file = "scripts/run-contrasts.sh"

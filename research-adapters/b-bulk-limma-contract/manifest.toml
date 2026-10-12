@@ -1,0 +1,51 @@
+schema_version = 1
+plugin_name = "b-bulk-limma-contract"
+
+# ENGINEERING_CANDIDATE: explicit opt-in, not default loading or scientific acceptance.
+[image]
+reference = "localhost/autonomics/b-bulk-limma@sha256:6932fcead69397d2d6dc941c45aca1e74e84c11a098bd0a510f73ec7fd4301c2"
+tag = "offline-v2-engineering-candidate"
+upstream = "Actual offline R4.6.1/limma3.68.5/statmod1.5.2 build and bounded25-gene SYN numerical/ABI review; source distribution authentication, full method, loaded worker and science remain unqualified."
+license = "NOASSERTION"
+
+[[nodes]]
+kind = "b_bulk_frozen_design"
+desc = "Declare normalized bulk design from five actual byte-bound inputs."
+doc = "Five File inputs in config/expression/genes/samples/decisions order; one audit.json output. Uses the exact embedded R component and installed vanilla launcher. Measures the frozen R/package lock, full gene/sample identities, declared covariates, units, rank and residual df. No expression fit, source eligibility, independence proof, family freeze, G0 or formal authority. Engineering candidate only; tiny-SYN resource scope is not a new signed study policy."
+timeout_secs = 1200
+stage_in_mode = "copy"
+artifact_prefix = "/artifacts/b_bulk_frozen_design"
+[nodes.resources]
+network = "isolated"
+read_only_rootfs = true
+pull_policy = "never"
+cpus = 1.0
+memory = "1Gi"
+pids_limit = 64
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}, {type="file"}, {type="file"}, {type="file"}]
+outputs = [{path="audit.json", format="json"}]
+[nodes.command]
+interpreter = "/opt/b-bulk/bin/Rscript-vanilla"
+script_file = "scripts/run-design.R"
+
+[[nodes]]
+kind = "b_bulk_frozen_limma"
+desc = "Official fixed normalized-log2 lmFit/eBayes with actual same-source DESIGN receipt."
+doc = "Six File inputs in config/expression/genes/samples/decisions/actual-DESIGN-audit order; results.tsv/audit.json/official.rds outputs. Exact official limma lmFit and eBayes trendTRUE robustTRUE; normalized arrays only, no raw-count/voom/ordinary-OLS replacement. Checks complete original gene rows, exact input/config/software/design receipt and preserves constant/non-estimable/low-precision NA and family denominator. No per-contrast replacement for full multi-contrast BH/BY, real-source qualification, full-method acceptance, biological independence, G0 or formal authority."
+timeout_secs = 1200
+stage_in_mode = "copy"
+artifact_prefix = "/artifacts/b_bulk_frozen_limma"
+[nodes.resources]
+network = "isolated"
+read_only_rootfs = true
+pull_policy = "never"
+cpus = 1.0
+memory = "1Gi"
+pids_limit = 64
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}, {type="file"}, {type="file"}, {type="file"}, {type="file"}]
+outputs = [{path="results.tsv",format="tsv"}, {path="audit.json",format="json"}, {path="official.rds",format="r_rds"}]
+[nodes.command]
+interpreter = "/opt/b-bulk/bin/Rscript-vanilla"
+script_file = "scripts/run-limma.R"

@@ -1,0 +1,11 @@
+# Explicit normalized-bulk engineering candidate
+
+This new opt-in manifest binds the measured6932 digest/config4e6a image and the existing byte-exact core R programs; it changes no algorithm or canonical counts/voom limma node. The imported source README is retained historically; this transport document describes the new interface package. The native registry must be constructed using explicitly selected families and return actual implementation refs before an unsigned assembler may use them. No default profile or deployment is changed.
+
+`component-source.json` records all8 measured image-source identities (core, two fixed entries, vanilla launcher, SOURCE_LOCK, package-lock, installer, compiler recipe). Their exact bytes are retained under image-source; no package archive, host R library, clinical input, OCI or rootfs is copied. Adapter entry bytes must equal their measured installed-image counterparts.
+
+The existing completed21-case micro run retained original FAILED/outer1 because its last checker expected the wrong text. Independent read-only review passed all21 completed micro cases while preserving original source/PLAN/OPERATOR/OUTER bytes. Historical same-algorithm numeric references and independent OLS group coefficients cover only25 SYN genes/at most8 units. This is bounded engineering numerical/port ABI evidence, not full-method qualification. The evidence file retains explicit source/G0/formal/loaded-registration false fields.
+
+The manifest's1CPU/1GiB/pids64/1200s describes this engineering candidate; real/full-family memory and signed launch/resource policy require separate frozen qualification. Existing core B8GiB+2GiB reserve and its remaining signed launch are not lowered, reset or borrowed. R4.6.1 and limma3.68.5/statmod1.5.2/jsonlite2.0.0/digest0.6.39/stats4.6.1 remain exact. Network is isolated, pull never, root filesystem read-only and source staging copy. Actual image existence in another shared or future store is never inferred from this manifest.
+
+Source distribution authentication, method/science acceptance, G0, formal authorization, default enablement and deployed worker capability remain false. Existing cachexia-contracts-v432 and cis-mr-declared adapters are reused rather than duplicated.

@@ -1,0 +1,3 @@
+# Opt-in source transport only
+
+The source README, manifest and programs are imported byte-for-byte from the core source revision recorded in component-source.json. This adapter lives outside the default canonical plugins directory. No runtime/worker/image/source/science qualification or enablement is inferred from transportation; retained cached-image labels in the original manifest describe its historical source, not current image existence. Actual graph registration and isolated image/entry/ABI qualification require separate root-scheduled checks. No statistical algorithm was replaced. Full original module decisions, gate states and signed resource/launch policies stay unchanged.

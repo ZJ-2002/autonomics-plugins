@@ -1,0 +1,79 @@
+schema_version = 1
+plugin_name = "b-state-contract"
+
+[image]
+reference = "localhost/autonomics/python-guard@sha256:d7d40ff1494750f26ded735e2551efb86d970355b805868b92ec9107b7ca7c68"
+tag = "candidate-local-v2"
+upstream = "Content-verified cached Python OCI; these fixed core B entries still require complete protected pipeline qualification."
+license = "Python-2.0"
+
+# Fixed candidate only. Registration grants neither method acceptance nor G0.
+
+[[nodes]]
+kind = "b_state_frozen_donor_tpm"
+desc = "Complete declared donor TPM from actual raw-count artifacts."
+doc = "Eleven File inputs: config; counts, features, feature QC, columns, cell QC, audit; lengths, annotation, derivation, ranking background. Retains zero/NA columns, full denominator and declared units. No scientific qualification, G0 or authority."
+timeout_secs = 3600
+stage_in_mode = "copy"
+artifact_prefix = "/artifacts/b_state_frozen_donor_tpm"
+[nodes.resources]
+network = "isolated"
+read_only_rootfs = true
+pull_policy = "never"
+cpus = 2.0
+memory = "2Gi"
+pids_limit = 128
+[nodes.ports]
+inputs = [{ type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }]
+outputs = [{ path = "expression.tsv", format = "tsv" }, { path = "gene-qc.tsv", format = "tsv" }, { path = "column-qc.tsv", format = "tsv" }, { path = "background.tsv", format = "tsv" }, { path = "normalization.json", format = "json" }]
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/run-tpm.py"
+[nodes.command.env]
+PYTHONDONTWRITEBYTECODE = "1"
+
+[[nodes]]
+kind = "b_state_frozen_score_inputs"
+desc = "Complete source-bound core B program score preparation."
+doc = "Twelve File inputs: config; actual normalization config, expression, gene QC, column QC, background, receipt; original program register, source members, mapped members, mapping provenance and evidence. Keeps instances, coverage failures, source directions and viewing declarations. No biology or family acceptance."
+timeout_secs = 3600
+stage_in_mode = "copy"
+artifact_prefix = "/artifacts/b_state_frozen_score_inputs"
+[nodes.resources]
+network = "isolated"
+read_only_rootfs = true
+pull_policy = "never"
+cpus = 2.0
+memory = "2Gi"
+pids_limit = 128
+[nodes.ports]
+inputs = [{ type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }]
+outputs = [{ path = "scoring-config.json", format = "json" }, { path = "members.tsv", format = "tsv" }, { path = "coverage.tsv", format = "tsv" }, { path = "audit.json", format = "json" }]
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/run-score-inputs.py"
+[nodes.command.env]
+PYTHONDONTWRITEBYTECODE = "1"
+
+[[nodes]]
+kind = "b_state_frozen_contrast_inputs"
+desc = "Complete donor contrast preparation from actual scoring receipts."
+doc = "Fourteen File inputs: config; score config and preparation audit; scores, method audit, members, coverage; column QC; count audit, sample map, embedded metadata; decisions; normalization config and receipt. Preserves units, pairs and clinical metadata. Rejects mismatched producers and undeclared models; no scientific authority."
+timeout_secs = 3600
+stage_in_mode = "copy"
+artifact_prefix = "/artifacts/b_state_frozen_contrast_inputs"
+[nodes.resources]
+network = "isolated"
+read_only_rootfs = true
+pull_policy = "never"
+cpus = 2.0
+memory = "2Gi"
+pids_limit = 128
+[nodes.ports]
+inputs = [{ type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }]
+outputs = [{ path = "contrast-config.json", format = "json" }, { path = "samples.tsv", format = "tsv" }, { path = "decisions.tsv", format = "tsv" }, { path = "audit.json", format = "json" }]
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/run-contrast-inputs.py"
+[nodes.command.env]
+PYTHONDONTWRITEBYTECODE = "1"

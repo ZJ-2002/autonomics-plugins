@@ -1,0 +1,52 @@
+schema_version = 1
+plugin_name = "b-state-method"
+
+[image]
+reference = "localhost/autonomics/b-state-official-candidate@sha256:e2097dd2ea87845952eb39e565b43ec9ff10ba9a3cbf5692f18ded03303fb913"
+tag = "candidate-local-v2"
+upstream = "Authenticated R 4.6.1 donor base; measured singscore 1.32.0; whole XML 3.99-0.25, stringi 1.8.9 and RSQLite 3.53.3 rebuilt offline in that base. Stringi uses bundled ICU 74.1. Complete distribution origin, protected whole-family pipeline and science remain unqualified."
+license = "NOASSERTION"
+
+# Fixed candidate only. Registration grants neither method acceptance nor G0.
+
+[[nodes]]
+kind = "b_state_frozen_singscore"
+desc = "Official fixed core B singscore over actual donor TPM."
+doc = "Six File inputs: prepared scoring config, expression, members, coverage, column QC, preparation audit. Official rankGenes average ties and frozen simpleScore centered TotalScore. Retains unavailable rows/columns. Audit port 3; RDS port 4. No method substitution, full-family scientific qualification or formal authority."
+timeout_secs = 7200
+stage_in_mode = "copy"
+artifact_prefix = "/artifacts/b_state_frozen_singscore"
+[nodes.resources]
+network = "isolated"
+read_only_rootfs = true
+pull_policy = "never"
+cpus = 2.0
+memory = "8Gi"
+pids_limit = 256
+[nodes.ports]
+inputs = [{ type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }]
+outputs = [{ path = "scores.tsv", format = "tsv" }, { path = "members.tsv", format = "tsv" }, { path = "coverage.tsv", format = "tsv" }, { path = "audit.json", format = "json" }, { path = "official.rds", format = "r_rds" }]
+[nodes.command]
+interpreter = "/opt/autonomics/b-state/bin/Rscript-vanilla"
+script_file = "scripts/run-score.R"
+
+[[nodes]]
+kind = "b_state_frozen_score_contrast"
+desc = "Official explicitly frozen unadjusted donor Welch or paired contrast."
+doc = "Six File inputs: prepared contrast config, samples, decisions, scores, coverage, preparation audit. Calls stats::t.test only for declared models. Keeps NOT_RUN, unresolved units, missing scores, incomplete pairs and degenerate variance. Low-precision nominal P remains separate from family P. Audit port 2; RDS port 3. No full-family correction or scientific authority."
+timeout_secs = 7200
+stage_in_mode = "copy"
+artifact_prefix = "/artifacts/b_state_frozen_score_contrast"
+[nodes.resources]
+network = "isolated"
+read_only_rootfs = true
+pull_policy = "never"
+cpus = 2.0
+memory = "8Gi"
+pids_limit = 256
+[nodes.ports]
+inputs = [{ type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }]
+outputs = [{ path = "results.tsv", format = "tsv" }, { path = "selected-samples.tsv", format = "tsv" }, { path = "audit.json", format = "json" }, { path = "official.rds", format = "r_rds" }]
+[nodes.command]
+interpreter = "/opt/autonomics/b-state/bin/Rscript-vanilla"
+script_file = "scripts/run-contrast.R"

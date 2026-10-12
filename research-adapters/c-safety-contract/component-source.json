@@ -1,0 +1,43 @@
+{
+  "auto_enable": false,
+  "imported_files": {
+    "README.md": {
+      "bytes": 4746,
+      "executable": false,
+      "git_blob": "e05635983f75d87beef6c459b90b5bcc90366158",
+      "sha256": "5dcd7e546f75351d167e3619bbe9d68045ebc335203d02d3368080bcf15c9959",
+      "source_path": "study_plugins/c-safety-contract/README.md"
+    },
+    "manifest.toml": {
+      "bytes": 3900,
+      "executable": false,
+      "git_blob": "e853b953a8a0730d2e82871d7e7dc28502795c53",
+      "sha256": "13afc18a8586c7d2dec450f5d043e8de7c6c4a44022f2df44e32931e4d0af3c3",
+      "source_path": "study_plugins/c-safety-contract/manifest.toml"
+    },
+    "scripts/run-bound-safety.py": {
+      "bytes": 67317,
+      "executable": false,
+      "git_blob": "f970b0c66556f9de8c776c2c72d61381ba0b4b1f",
+      "sha256": "3d92a40282d7f6c62cd7ef185128e7efe523755f579ad90c061abfdc646f577f",
+      "source_path": "study_plugins/c-safety-contract/scripts/run-bound-safety.py"
+    },
+    "scripts/run-safety.py": {
+      "bytes": 67294,
+      "executable": false,
+      "git_blob": "05ccd8d6314ccc571a35e8012a9e1af84bb2da36",
+      "sha256": "52f4499254ee46289435cd700cb5cf85682d0148aeed84e8fe41b46896ffc2b4",
+      "source_path": "study_plugins/c-safety-contract/scripts/run-safety.py"
+    }
+  },
+  "loaded_worker_registration_verified": false,
+  "method_acceptance_verified": false,
+  "runtime_image_currently_present_verified": false,
+  "schema_version": 1,
+  "scientific_authorization": false,
+  "scope": "BYTE_EXACT_GOVERNANCE_ADAPTER_SOURCE_TRANSPORT_NOT_ALGORITHM_REIMPLEMENTATION_OR_RUNTIME_ACCEPTANCE",
+  "source_commit": "073fa0b888828a661a73fa87ee562adbbe571c32",
+  "source_family": "study_plugins/c-safety-contract",
+  "source_repository": "https://github.com/ZJ-2002/autonomics",
+  "status": "ENGINEERING_CANDIDATE"
+}

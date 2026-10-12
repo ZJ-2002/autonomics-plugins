@@ -1,0 +1,78 @@
+{
+  "auto_enable": false,
+  "imported_files": {
+    "README.md": {
+      "bytes": 2216,
+      "executable": false,
+      "git_blob": "9245b00c87b69cb59b70e31b7b151891fcee45b1",
+      "sha256": "93a4b54d0c0b6811f9faf17659e5f315af45ce7f86fd66f36e1f37bb86c8ac1f",
+      "source_path": "study_plugins/b-state-contract/README.md"
+    },
+    "manifest.toml": {
+      "bytes": 4188,
+      "executable": false,
+      "git_blob": "bd752866eefd5f4696739549b6d97f4e2a9cb515",
+      "sha256": "18bf972891868cb7304d6b118b2b55ce7e3439b2559c0db9d4b85a3aa6b721f6",
+      "source_path": "study_plugins/b-state-contract/manifest.toml"
+    },
+    "scripts/contrast.R": {
+      "bytes": 24800,
+      "executable": false,
+      "git_blob": "079ec8e34f086b3c1ec9d5922f4a488ed5c21bf5",
+      "sha256": "6c8eacf101732e9048e0a99ce30de7c7b711e4bdb860c0f0dbe06c6a9bb176dc",
+      "source_path": "study_plugins/b-state-contract/scripts/contrast.R"
+    },
+    "scripts/run-contrast-inputs.py": {
+      "bytes": 186146,
+      "executable": false,
+      "git_blob": "6f7836fb3c167e5dd4bcf53af7d3a2fd1a021307",
+      "sha256": "931aaecb24b68a01ead14ef65ca879e545b9fe664722c570bb36a70cbdb6673b",
+      "source_path": "study_plugins/b-state-contract/scripts/run-contrast-inputs.py"
+    },
+    "scripts/run-contrast.R": {
+      "bytes": 27720,
+      "executable": false,
+      "git_blob": "df071d74b69cf5879941041c68b77aa9a9a39461",
+      "sha256": "b9659521360cb21f05ea4a1352bf1afbf87a4db9e96901b0c8d1c7c13a7d36c1",
+      "source_path": "study_plugins/b-state-contract/scripts/run-contrast.R"
+    },
+    "scripts/run-score-inputs.py": {
+      "bytes": 144012,
+      "executable": false,
+      "git_blob": "2adc2593941e2785a6c37d5ad1af88b400e3245b",
+      "sha256": "c2a0ccec339e3e4c41f2dee4b3464926911d5483481507b612f1db36a8ee4781",
+      "source_path": "study_plugins/b-state-contract/scripts/run-score-inputs.py"
+    },
+    "scripts/run-score.R": {
+      "bytes": 20705,
+      "executable": false,
+      "git_blob": "6d87af920ee103e322f3c536186de49cbab622b5",
+      "sha256": "cf5f8bded7ab6e0f8277c2571592ab09d11f04fb80a6f3c6340ecf253d560b81",
+      "source_path": "study_plugins/b-state-contract/scripts/run-score.R"
+    },
+    "scripts/run-tpm.py": {
+      "bytes": 102460,
+      "executable": false,
+      "git_blob": "e31fe10dfea5411b0118c1baa36aacb3746c5129",
+      "sha256": "af40ad5d5160ce61912f17893f6e4416c6036f5bf0967aa6650a50bf14358eb8",
+      "source_path": "study_plugins/b-state-contract/scripts/run-tpm.py"
+    },
+    "scripts/score.R": {
+      "bytes": 18037,
+      "executable": false,
+      "git_blob": "7d0e14151181449ee020067725f96651404f03c3",
+      "sha256": "a2a059555c2b6519b0d503860f7cee04c96ee5907bfe625d65b3e233e5910698",
+      "source_path": "study_plugins/b-state-contract/scripts/score.R"
+    }
+  },
+  "loaded_worker_registration_verified": false,
+  "method_acceptance_verified": false,
+  "runtime_image_currently_present_verified": false,
+  "schema_version": 1,
+  "scientific_authorization": false,
+  "scope": "BYTE_EXACT_GOVERNANCE_ADAPTER_SOURCE_TRANSPORT_NOT_ALGORITHM_REIMPLEMENTATION_OR_RUNTIME_ACCEPTANCE",
+  "source_commit": "073fa0b888828a661a73fa87ee562adbbe571c32",
+  "source_family": "study_plugins/b-state-contract",
+  "source_repository": "https://github.com/ZJ-2002/autonomics",
+  "status": "ENGINEERING_CANDIDATE"
+}

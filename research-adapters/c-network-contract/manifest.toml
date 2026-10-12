@@ -1,0 +1,39 @@
+schema_version = 1
+plugin_name = "c-network-contract"
+
+[image]
+reference = "localhost/autonomics/python-guard@sha256:d7d40ff1494750f26ded735e2551efb86d970355b805868b92ec9107b7ca7c68"
+tag = "candidate-not-runtime-qualified"
+upstream = "Cached Python OCI candidate only. Runtime/interpreter/source/entry qualification must be measured separately; never infer it from host tests."
+license = "Python-2.0"
+
+# Candidate only: not registered, deployed, scientifically approved or
+# qualified in an image/protected worker by this manifest's existence.
+[[nodes]]
+kind = "c_network_frozen_matched_null"
+desc = "Complete declared C network family with exact matched nulls and conservative missingness."
+doc = "Six File inputs: actual-bound frozen method recipe; physical edges; full graph node/background attributes; separate A/B source seeds; complete original-column conditional universe; byte bundle of all declared source recipes. Five outputs: full observed/empirical-P table; every sampled A/B set and exact null statistic; matching strata/pools; full BH/BY family; source/software/method/output audit. Seed-set size, full graph degree, declared expression bins and detectability are preserved without matching relaxation. Missing matched pools yield NOT_ESTIMABLE/NA/P=1, never omitted rows. Explicit finite unreachable-distance penalty equals full graph node count; inclusive rational ties; independent seed-set sampling with within-set no replacement. No causal effect, drug efficacy, source-independence certification, G0 grant, family freeze or result-history reset. Actual image/runtime/scientific and formal-entry lineage qualification remains required."
+timeout_secs = 28800
+stage_in_mode = "copy"
+artifact_prefix = "/artifacts/c_network_frozen_matched_null"
+[nodes.resources]
+network = "isolated"
+read_only_rootfs = true
+pull_policy = "never"
+cpus = 2.0
+memory = "8Gi"
+pids_limit = 128
+[nodes.ports]
+inputs = [{ type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }]
+outputs = [
+  { path = "network-results.tsv", format = "tsv" },
+  { path = "null-draws.tsv", format = "tsv" },
+  { path = "match-strata.tsv", format = "tsv" },
+  { path = "family.tsv", format = "tsv" },
+  { path = "audit.json", format = "json" },
+]
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/run-network.py"
+[nodes.command.env]
+PYTHONDONTWRITEBYTECODE = "1"

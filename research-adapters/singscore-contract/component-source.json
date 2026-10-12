@@ -1,0 +1,71 @@
+{
+  "auto_enable": false,
+  "imported_files": {
+    "Dockerfile": {
+      "bytes": 1942,
+      "executable": false,
+      "git_blob": "874338db078fa72efdea2e331ab5c987e85f1b5b",
+      "sha256": "545ebcfa90286cd67b076cb86ce2e0ea37f1b3389fd5250b74155114bd700fa5",
+      "source_path": "study_plugins/singscore-contract/Dockerfile"
+    },
+    "README.md": {
+      "bytes": 5114,
+      "executable": false,
+      "git_blob": "7ef9d8a814a6a2e67adf3434393b725e2bf3115b",
+      "sha256": "27c27775dec0a7fefe95d74b0621b645a92ee198310078cf44b34fc14603d9c8",
+      "source_path": "study_plugins/singscore-contract/README.md"
+    },
+    "manifest.toml": {
+      "bytes": 2690,
+      "executable": false,
+      "git_blob": "bcfe15f559274490a67c976adf96bea73646d681",
+      "sha256": "9f01ec4d54b4840102001915232ee136e82e131c2467d814de21c559b90a99c4",
+      "source_path": "study_plugins/singscore-contract/manifest.toml"
+    },
+    "scripts/contrasts.R": {
+      "bytes": 9521,
+      "executable": false,
+      "git_blob": "7d4ec8e4df611d72cf2fa153e2e1754599a4b954",
+      "sha256": "bbf2c53bf56196d60983e99b7d2d52eda8251c0c21c4cd525b72bb9d894c0f32",
+      "source_path": "study_plugins/singscore-contract/scripts/contrasts.R"
+    },
+    "scripts/install-environment.R": {
+      "bytes": 2661,
+      "executable": false,
+      "git_blob": "e0124d7f6e27003496fae4c3e6b12190cefe6699",
+      "sha256": "4dfcac618f4428947db5e22446eea596032fd2f4e5596c587acbeefaa993d650",
+      "source_path": "study_plugins/singscore-contract/scripts/install-environment.R"
+    },
+    "scripts/run-contrasts.sh": {
+      "bytes": 231,
+      "executable": false,
+      "git_blob": "1e9e2dc671a356adbd0bab7aeb3f4bcfae4d6533",
+      "sha256": "b4f299b3a89cdde9ef6326e50bff54e9a768b2be3060e9347da4ee2753524114",
+      "source_path": "study_plugins/singscore-contract/scripts/run-contrasts.sh"
+    },
+    "scripts/run-scores.sh": {
+      "bytes": 206,
+      "executable": false,
+      "git_blob": "c2ebbef56ff19f34c5f42e6295765521ab5f4f4a",
+      "sha256": "01d4234013d6df0d16e27b89f41d5641031e69a16e6091b98c527a94b6e87900",
+      "source_path": "study_plugins/singscore-contract/scripts/run-scores.sh"
+    },
+    "scripts/score.R": {
+      "bytes": 8694,
+      "executable": false,
+      "git_blob": "39f96b4c994cdbd7061c66f262a1cfe1daaae775",
+      "sha256": "1b918a0a5700b6c602aa32bca3f1954426f1bdab068ad0e289b129f42cb2e32f",
+      "source_path": "study_plugins/singscore-contract/scripts/score.R"
+    }
+  },
+  "loaded_worker_registration_verified": false,
+  "method_acceptance_verified": false,
+  "runtime_image_currently_present_verified": false,
+  "schema_version": 1,
+  "scientific_authorization": false,
+  "scope": "BYTE_EXACT_GOVERNANCE_ADAPTER_SOURCE_TRANSPORT_NOT_ALGORITHM_REIMPLEMENTATION_OR_RUNTIME_ACCEPTANCE",
+  "source_commit": "073fa0b888828a661a73fa87ee562adbbe571c32",
+  "source_family": "study_plugins/singscore-contract",
+  "source_repository": "https://github.com/ZJ-2002/autonomics",
+  "status": "ENGINEERING_CANDIDATE"
+}

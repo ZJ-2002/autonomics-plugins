@@ -1,0 +1,5 @@
+name	version	archive	sha256	depends	imports	linkingto
+digest	0.6.39	digest_0.6.39.tar.gz	8bf048b49b2d17077138fae758bda56bbd53278d9437f2fdeaedf979c90a13c9	R (>= 3.3.0)	utils	
+jsonlite	2.0.0	jsonlite_2.0.0.tar.gz	75eb910c82b350ec33f094779da0f87bff154c232e4ae39c9896a9b89f3ac82d	methods		
+statmod	1.5.2	statmod_1.5.2.tar.gz	5f83d82043c5e26f1048fc0139580da1b7e40becf95fb4cb26ed3afcd46a581d	R (>= 3.0.0)	stats, graphics	
+limma	3.68.5	limma_3.68.5.tar.gz	40b1d2059a76ad98db4bf80139760acf8e8bae92a8265aaaf16ac199831533f4	R (>= 3.6.0)	grDevices, graphics, stats, utils, methods, statmod	

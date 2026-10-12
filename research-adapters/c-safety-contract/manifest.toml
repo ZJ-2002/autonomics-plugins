@@ -1,0 +1,66 @@
+schema_version = 1
+plugin_name = "c-safety-contract"
+
+[image]
+reference = "localhost/autonomics/python-guard@sha256:d7d40ff1494750f26ded735e2551efb86d970355b805868b92ec9107b7ca7c68"
+tag = "candidate-not-runtime-qualified"
+upstream = "Cached fixed Python image; this new entry requires its own actual-image and protected-worker qualification."
+license = "Python-2.0"
+
+[[nodes]]
+kind = "c_safety_declared_risk_matrix"
+desc = "Complete seven-domain curated risk evidence matrix; no automatic safety verdict."
+doc = "Five File inputs: exact declaration, original v4.2.1 design archive, whole sole-ledger candidate register, one intended intervention scope per candidate, complete curated evidence table. Five outputs preserve the three input tables, candidate-by-seven-domain matrix, and content/software audit. Missing domains remain NOT_ASSESSED; every safety conclusion remains NOT_DETERMINED. Opposite intervention direction and unknown or differing species/tissue/dose/time/life-stage do not become matching evidence. Source facts mirrored in databases retain descriptive lineage counts, without claiming biological independence. Concrete source releases, exact original candidate columns, complete candidate scope, and whole-source SHA256 are required. No P values, statistical family correction, source assertion verification, T1 ranking, safety grant, clinical recommendation, G0 or formal authorization. No arbitrary script execution."
+timeout_secs = 28800
+stage_in_mode = "copy"
+artifact_prefix = "/artifacts/c_safety_declared_risk_matrix"
+[nodes.resources]
+network = "isolated"
+read_only_rootfs = true
+pull_policy = "never"
+cpus = 2.0
+memory = "8Gi"
+pids_limit = 128
+[nodes.ports]
+inputs = [{ type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }]
+outputs = [
+  { path = "candidate-register.tsv", format = "tsv" },
+  { path = "candidate-scopes.tsv", format = "tsv" },
+  { path = "risk-evidence.tsv", format = "tsv" },
+  { path = "risk-matrix.tsv", format = "tsv" },
+  { path = "risk-audit.json", format = "json" },
+]
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/run-safety.py"
+[nodes.command.env]
+PYTHONDONTWRITEBYTECODE = "1"
+
+[[nodes]]
+kind = "c_safety_bound_risk_matrix"
+desc = "Same-ledger seven-domain risk evidence attachment for a governed C network DAG."
+doc = "Six File inputs: canonical schema-2 declaration, same original design archive, complete sole-ledger candidate register, one intended scope per candidate, full curated evidence table, actual original C network source preparation. The preparation binds the exact candidate ledger bytes, candidate census and network family, without granting biological or scientific acceptance. Five output ports retain the source tables, complete descriptive risk matrix and content/software audit. Missing and conflicting evidence remain visible; no automatic safety verdict, P values, statistical safety-family result, candidate ranking or clinical recommendation. Native protected admission must also bind the source preparation to the same network template/seeds/universe/normalization and freeze all inputs."
+timeout_secs = 28800
+stage_in_mode = "copy"
+artifact_prefix = "/artifacts/c_safety_bound_risk_matrix"
+[nodes.resources]
+network = "isolated"
+read_only_rootfs = true
+pull_policy = "never"
+cpus = 2.0
+memory = "8Gi"
+pids_limit = 128
+[nodes.ports]
+inputs = [{ type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }]
+outputs = [
+  { path = "candidate-register.tsv", format = "tsv" },
+  { path = "candidate-scopes.tsv", format = "tsv" },
+  { path = "risk-evidence.tsv", format = "tsv" },
+  { path = "risk-matrix.tsv", format = "tsv" },
+  { path = "risk-audit.json", format = "json" },
+]
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/run-bound-safety.py"
+[nodes.command.env]
+PYTHONDONTWRITEBYTECODE = "1"

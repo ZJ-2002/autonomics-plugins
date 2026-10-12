@@ -1,0 +1,50 @@
+{
+  "auto_enable": false,
+  "imported_files": {
+    "README.md": {
+      "bytes": 3710,
+      "executable": false,
+      "git_blob": "11c7e01e1b698ddf3feabac03c36fcda4bddf467",
+      "sha256": "7cabfd05dcfbf77fa11342d0f0e45b6e2d1acc4f99f76bb75adad277e6943f02",
+      "source_path": "study_plugins/b-donor-method/README.md"
+    },
+    "manifest.toml": {
+      "bytes": 3331,
+      "executable": false,
+      "git_blob": "9ce49cfb6ce5c78ba6bb3798f528bb9f58410ddc",
+      "sha256": "9a9f8ba601304a4152feffb43c5695465c655bad7f28f62c70b67c2ea13a3273",
+      "source_path": "study_plugins/b-donor-method/manifest.toml"
+    },
+    "scripts/Rscript-vanilla.sh": {
+      "bytes": 206,
+      "executable": false,
+      "git_blob": "d58e68c1655bd26a891897ff75591c19bcc90278",
+      "sha256": "638cf5d6b93c1bf93069ff02d9c57e78f71fc29bce98a6d867a7370a9110309b",
+      "source_path": "study_plugins/b-donor-method/scripts/Rscript-vanilla.sh"
+    },
+    "scripts/run-deseq2.R": {
+      "bytes": 23993,
+      "executable": false,
+      "git_blob": "72cb37543c18b3650fabbf06bbac1433b48a0d57",
+      "sha256": "60a8466bdec09d9081fd7adf371b2eb0e19c21dbca6f175fa7f4f507250e8688",
+      "source_path": "study_plugins/b-donor-method/scripts/run-deseq2.R"
+    },
+    "scripts/run-design.R": {
+      "bytes": 23964,
+      "executable": false,
+      "git_blob": "c92871e6528241dfca3430721d889ebddbfa8dde",
+      "sha256": "e9c54195b0e762d6dc73be09d2930a44eb757dcb33a97d9f720edcae79dd1ae4",
+      "source_path": "study_plugins/b-donor-method/scripts/run-design.R"
+    }
+  },
+  "loaded_worker_registration_verified": false,
+  "method_acceptance_verified": false,
+  "runtime_image_currently_present_verified": false,
+  "schema_version": 1,
+  "scientific_authorization": false,
+  "scope": "BYTE_EXACT_GOVERNANCE_ADAPTER_SOURCE_TRANSPORT_NOT_ALGORITHM_REIMPLEMENTATION_OR_RUNTIME_ACCEPTANCE",
+  "source_commit": "073fa0b888828a661a73fa87ee562adbbe571c32",
+  "source_family": "study_plugins/b-donor-method",
+  "source_repository": "https://github.com/ZJ-2002/autonomics",
+  "status": "ENGINEERING_CANDIDATE"
+}
