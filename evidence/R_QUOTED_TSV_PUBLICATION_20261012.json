@@ -1,0 +1,73 @@
+{
+  "scope": "Root-reviewed bounded original-node IO closure; not a whole-platform or scientific release",
+  "published_source_commit": "1f896634506f40d6e69aa7ff1b174075a329ee07",
+  "nodes": [
+    {
+      "kind": "pseudobulk_counts",
+      "method": "Donor/sample x celltype count SUM; inherited official Scanpy 1.11.3 comparison",
+      "inputs": ["H5AD File"],
+      "outputs": ["pseudobulk_counts.tsv", "pseudobulk_samples.tsv", "pseudobulk.log"],
+      "source_sha256": "77884036871586b1be564a8c25f9ab72b2939a987db112aecd328cc86e44c83d",
+      "original_official_status": "PROVEN_SCOPED",
+      "closure_card": "results/cachexia-v4.3.2/canonical-r-output-publication-full-agent-v1-20261012/canonical-pseudobulk-counts-io-closure-v2-20261012.json"
+    },
+    {
+      "kind": "deseq2_de",
+      "method": "Official DESeq2 1.50.2 within the prior bounded raw-count design contract; never log2-RMA input",
+      "inputs": ["Raw integer count matrix File", "Sample metadata File"],
+      "outputs": ["results.tsv", "normalized_counts.tsv", "size_factors.tsv", "deseq2_dataset.rds", "run_report.json"],
+      "source_sha256": "cb019c599face7715089df4c16157851b0403bef5f61a3166123ba913ba170f1",
+      "original_official_status": "PROVEN_SCOPED",
+      "closure_card": "results/cachexia-v4.3.2/canonical-r-output-publication-full-agent-v1-20261012/canonical-deseq2-de-io-closure-v2-20261012.json"
+    },
+    {
+      "kind": "limma_voom",
+      "method": "Official limma 3.66.0 and edgeR 4.8.2 within the prior bounded count/voom design contract; not normalized-array qualification",
+      "inputs": ["Integer count matrix File", "Sample metadata File"],
+      "outputs": ["results.tsv", "voom_weights.tsv", "normalized_expression.tsv", "contrast_summary.tsv", "run_report.json"],
+      "source_sha256": "4dd81e31f558b311da0fdbcc54415967d7cd237356b54d56cfed7ed284808dcf",
+      "original_official_status": "PROVEN_SCOPED",
+      "closure_card": "results/cachexia-v4.3.2/canonical-r-output-publication-full-agent-v1-20261012/canonical-limma-voom-io-closure-v2-20261012.json"
+    }
+  ],
+  "actual_current_source_proofs": {
+    "fixed_image_full_R_analyses": 4,
+    "full_analysis_numeric_fields": 19250,
+    "maximum_absolute_error_against_inherited_author": 0.0,
+    "full_R_entry_publication_cases": 10,
+    "isolated_three_manifest_DAGs": 2,
+    "nodes_per_DAG": 4,
+    "edges_per_DAG": 5,
+    "File_ports_per_DAG": 13,
+    "decoded_TSV_readbacks": 18,
+    "existing_real_RDS_readbacks": 4,
+    "existing_RDS_semantic_fields": 53800,
+    "actual_post_merge_required_tests": 95,
+    "missing_or_skipped_tests": 0,
+    "source_lock_matches": true
+  },
+  "root_seal": {
+    "path": "results/cachexia-v4.3.2/canonical-r-output-publication-full-agent-v1-20261012/SEALED_FILES.json",
+    "sha256": "0baff3edbfd25b6ddf0e19eb8c53bf61e01ceec72d6118195092fc3174d6efe1",
+    "regular_files": 258,
+    "internal_links": 14,
+    "preserved_intentional_fault_links": 2
+  },
+  "separate_reaudit": {
+    "path": "results/cachexia-v4.3.2/r-publication-readonly-review-agent-v1-20261012/INDEX.json",
+    "sha256": "ce2cdafcbeb4719915e22d6d8dfa5723cb0b3e1244c18a42c527c9512960aadf",
+    "independent_external_developer_or_scientific_approval": false
+  },
+  "excluded": [
+    "Per-file hardlink no-overwrite proof applies to two R runners, not a five-file atomic or durable transaction",
+    "Hostile stat/unlink TOCTOU, same-path concurrent writers and kill/power-loss recovery are not certified",
+    "Original7dc four full-image baseline fault cases and extra actual cgroup observations were not executed",
+    "All26 inspected engine port content_hash values are null; independent SHA rechecks are not strong-cache proof",
+    "Actual smoke containers use explicit CPU2/2g overrides; default resource envelope and global concurrency remain unqualified",
+    "No current whole-engine, resident-daemon deployment, frozen real study qualification or G0"
+  ],
+  "frozen_configuration_changed": false,
+  "production_deployed": false,
+  "scientific_release": "NOT_GRANTED",
+  "G0": false
+}
