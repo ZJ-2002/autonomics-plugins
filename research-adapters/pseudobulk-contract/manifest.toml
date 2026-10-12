@@ -1,0 +1,40 @@
+schema_version = 1
+plugin_name = "pseudobulk-contract"
+
+[image]
+reference = "localhost/autonomics/python-guard@sha256:d7d40ff1494750f26ded735e2551efb86d970355b805868b92ec9107b7ca7c68"
+tag = "qualified-cache-v1"
+upstream = "Cached official Python 3.12 alpine amd64 OCI; reserialized manifest identity differs from original registry digest. SQLite runtime lock must be measured."
+license = "Python-2.0"
+
+# Candidate only. No registration, image execution acceptance, biological
+# independence qualification, differential model acceptance or G0 is implied.
+[[nodes]]
+kind = "pseudobulk_frozen_raw_counts"
+desc = "Exact raw RNA count sums by declared biological observation and cell type."
+doc = "Seven File inputs: actual-bound frozen recipe; MatrixMarket raw counts; features; barcodes; full sample map; full cell map; source metadata byte pack. Six outputs: counts; RNA features; complete feature QC; all declared observation/cell-type columns including zero cells; complete cell QC; input/unit/software audit. Technical libraries and repeated timepoints retain the same independent-unit identity. Unresolved pools remain descriptive and never count as resolved biological N. No normalization, cell annotation, QC selection, contrast model, hypothesis freeze or G0 grant. Separate image/runtime/component/scientific qualification is mandatory."
+timeout_secs = 3600
+stage_in_mode = "copy"
+artifact_prefix = "/artifacts/pseudobulk_frozen_raw_counts"
+[nodes.resources]
+network = "isolated"
+read_only_rootfs = true
+pull_policy = "never"
+cpus = 2.0
+memory = "2Gi"
+pids_limit = 128
+[nodes.ports]
+inputs = [{ type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }]
+outputs = [
+  { path = "counts.mtx", format = "matrix_market" },
+  { path = "features.tsv", format = "tsv" },
+  { path = "feature-qc.tsv", format = "tsv" },
+  { path = "columns.tsv", format = "tsv" },
+  { path = "cell-qc.tsv", format = "tsv" },
+  { path = "audit.json", format = "json" },
+]
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/run-counts.py"
+[nodes.command.env]
+PYTHONDONTWRITEBYTECODE = "1"

@@ -1,0 +1,43 @@
+{
+  "auto_enable": false,
+  "imported_files": {
+    "README.md": {
+      "bytes": 2027,
+      "executable": false,
+      "git_blob": "10762408a5b2bdb7b1d560dc660a7de94093a03e",
+      "sha256": "0827836fe20e5035229f06e3912a4a2c6ce8f6d91307e90b45c581aa8a1f0d34",
+      "source_path": "study_plugins/b-state-method/README.md"
+    },
+    "manifest.toml": {
+      "bytes": 2928,
+      "executable": false,
+      "git_blob": "483225ad66bf26bcb1e6f8cf5866e9b37df20517",
+      "sha256": "58d8b41479f2436d6e629aeb660ea12d5a43f36d02354c353acf2abc6585d620",
+      "source_path": "study_plugins/b-state-method/manifest.toml"
+    },
+    "scripts/run-contrast.R": {
+      "bytes": 27720,
+      "executable": false,
+      "git_blob": "df071d74b69cf5879941041c68b77aa9a9a39461",
+      "sha256": "b9659521360cb21f05ea4a1352bf1afbf87a4db9e96901b0c8d1c7c13a7d36c1",
+      "source_path": "study_plugins/b-state-method/scripts/run-contrast.R"
+    },
+    "scripts/run-score.R": {
+      "bytes": 20705,
+      "executable": false,
+      "git_blob": "6d87af920ee103e322f3c536186de49cbab622b5",
+      "sha256": "cf5f8bded7ab6e0f8277c2571592ab09d11f04fb80a6f3c6340ecf253d560b81",
+      "source_path": "study_plugins/b-state-method/scripts/run-score.R"
+    }
+  },
+  "loaded_worker_registration_verified": false,
+  "method_acceptance_verified": false,
+  "runtime_image_currently_present_verified": false,
+  "schema_version": 1,
+  "scientific_authorization": false,
+  "scope": "BYTE_EXACT_GOVERNANCE_ADAPTER_SOURCE_TRANSPORT_NOT_ALGORITHM_REIMPLEMENTATION_OR_RUNTIME_ACCEPTANCE",
+  "source_commit": "073fa0b888828a661a73fa87ee562adbbe571c32",
+  "source_family": "study_plugins/b-state-method",
+  "source_repository": "https://github.com/ZJ-2002/autonomics",
+  "status": "ENGINEERING_CANDIDATE"
+}

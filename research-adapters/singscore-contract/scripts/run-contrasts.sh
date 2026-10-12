@@ -1,0 +1,5 @@
+#!/bin/sh
+set -eu
+exec Rscript --vanilla /opt/autonomics/contrasts.R \
+    "$AUTONOMICS_INPUT0" "$AUTONOMICS_INPUT1" "$AUTONOMICS_INPUT2" "$AUTONOMICS_INPUT3" \
+    "$AUTONOMICS_OUTPUT0" "$AUTONOMICS_OUTPUT1" "$AUTONOMICS_OUTPUT2"

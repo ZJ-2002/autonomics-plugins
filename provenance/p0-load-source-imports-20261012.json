@@ -1,0 +1,476 @@
+{
+  "auto_enable": false,
+  "baseline_plugins_commit": "d60b710b24d76b30f7f83dc5de93aac3ca07dddd",
+  "original_source_index_rewritten": false,
+  "research_adapters": [
+    {
+      "auto_enable": false,
+      "directory": "research-adapters/b-bulk-inputs-contract",
+      "files": {
+        "README.md": {
+          "bytes": 3135,
+          "executable": false,
+          "git_blob": "46e3410b2518aeb00abfb258fa5a400db5fe5706",
+          "sha256": "991aca262e21b6563a0b66126b8cd7f0d8740b668b54fe9e745af38081a7c25c",
+          "source_path": "study_plugins/b-bulk-inputs-contract/README.md"
+        },
+        "manifest.toml": {
+          "bytes": 2060,
+          "executable": false,
+          "git_blob": "7de6d0f0b14e3e32fa3c0cc17df713651ace4ce1",
+          "sha256": "b8f4976bb3e01afe8f98ce38597485998c73a0bdc912f036d2e6cdd4d066a0dc",
+          "source_path": "study_plugins/b-bulk-inputs-contract/manifest.toml"
+        },
+        "scripts/run-inputs.py": {
+          "bytes": 221547,
+          "executable": false,
+          "git_blob": "37e928a94fe47901447ca7b4bf7538d4f37b6fe1",
+          "sha256": "2d4609950a0ca9bf86bd9734325d93d3ec2eea2e49fc5f9532801f68c42d132c",
+          "source_path": "study_plugins/b-bulk-inputs-contract/scripts/run-inputs.py"
+        }
+      },
+      "scientific_certified": false,
+      "source_commit": "073fa0b888828a661a73fa87ee562adbbe571c32",
+      "source_inventory_only": true
+    },
+    {
+      "auto_enable": false,
+      "directory": "research-adapters/b-donor-contract",
+      "files": {
+        "README.md": {
+          "bytes": 6737,
+          "executable": false,
+          "git_blob": "e5a6a5ec03c13b0d4bd81252b2273dd94edc9d03",
+          "sha256": "45978e1259800b0e63f4577e63a9e8a0557c84cd5ac1d5f8fd7eadb01e8516b7",
+          "source_path": "study_plugins/b-donor-contract/README.md"
+        },
+        "manifest.toml": {
+          "bytes": 2023,
+          "executable": false,
+          "git_blob": "f6462632f077a97104273dc428a1d6a881ba6a94",
+          "sha256": "7968974f84fa5548be7861780090e10e5dac03ab7435181342a68537f5fe3abc",
+          "source_path": "study_plugins/b-donor-contract/manifest.toml"
+        },
+        "scripts/donor.R": {
+          "bytes": 20895,
+          "executable": false,
+          "git_blob": "4dded0765a77097a8071e1735342947ceeeb75ad",
+          "sha256": "18108cdfe4838b0f56d1b4856455ca0196818ac5466c1d1917dbfa48ed0a8834",
+          "source_path": "study_plugins/b-donor-contract/scripts/donor.R"
+        },
+        "scripts/run-deseq2.R": {
+          "bytes": 23993,
+          "executable": false,
+          "git_blob": "72cb37543c18b3650fabbf06bbac1433b48a0d57",
+          "sha256": "60a8466bdec09d9081fd7adf371b2eb0e19c21dbca6f175fa7f4f507250e8688",
+          "source_path": "study_plugins/b-donor-contract/scripts/run-deseq2.R"
+        },
+        "scripts/run-design.R": {
+          "bytes": 23964,
+          "executable": false,
+          "git_blob": "c92871e6528241dfca3430721d889ebddbfa8dde",
+          "sha256": "e9c54195b0e762d6dc73be09d2930a44eb757dcb33a97d9f720edcae79dd1ae4",
+          "source_path": "study_plugins/b-donor-contract/scripts/run-design.R"
+        },
+        "scripts/run-inputs.py": {
+          "bytes": 86330,
+          "executable": false,
+          "git_blob": "1a05b0d57e6c7182e727177b22d5114bbf72c9a3",
+          "sha256": "ef4d0e4dbb4dd47b304d81867105ec3f12476d8e60af925732003e2247ac4764",
+          "source_path": "study_plugins/b-donor-contract/scripts/run-inputs.py"
+        }
+      },
+      "scientific_certified": false,
+      "source_commit": "073fa0b888828a661a73fa87ee562adbbe571c32",
+      "source_inventory_only": true
+    },
+    {
+      "auto_enable": false,
+      "directory": "research-adapters/b-donor-method",
+      "files": {
+        "README.md": {
+          "bytes": 3710,
+          "executable": false,
+          "git_blob": "11c7e01e1b698ddf3feabac03c36fcda4bddf467",
+          "sha256": "7cabfd05dcfbf77fa11342d0f0e45b6e2d1acc4f99f76bb75adad277e6943f02",
+          "source_path": "study_plugins/b-donor-method/README.md"
+        },
+        "manifest.toml": {
+          "bytes": 3331,
+          "executable": false,
+          "git_blob": "9ce49cfb6ce5c78ba6bb3798f528bb9f58410ddc",
+          "sha256": "9a9f8ba601304a4152feffb43c5695465c655bad7f28f62c70b67c2ea13a3273",
+          "source_path": "study_plugins/b-donor-method/manifest.toml"
+        },
+        "scripts/Rscript-vanilla.sh": {
+          "bytes": 206,
+          "executable": false,
+          "git_blob": "d58e68c1655bd26a891897ff75591c19bcc90278",
+          "sha256": "638cf5d6b93c1bf93069ff02d9c57e78f71fc29bce98a6d867a7370a9110309b",
+          "source_path": "study_plugins/b-donor-method/scripts/Rscript-vanilla.sh"
+        },
+        "scripts/run-deseq2.R": {
+          "bytes": 23993,
+          "executable": false,
+          "git_blob": "72cb37543c18b3650fabbf06bbac1433b48a0d57",
+          "sha256": "60a8466bdec09d9081fd7adf371b2eb0e19c21dbca6f175fa7f4f507250e8688",
+          "source_path": "study_plugins/b-donor-method/scripts/run-deseq2.R"
+        },
+        "scripts/run-design.R": {
+          "bytes": 23964,
+          "executable": false,
+          "git_blob": "c92871e6528241dfca3430721d889ebddbfa8dde",
+          "sha256": "e9c54195b0e762d6dc73be09d2930a44eb757dcb33a97d9f720edcae79dd1ae4",
+          "source_path": "study_plugins/b-donor-method/scripts/run-design.R"
+        }
+      },
+      "scientific_certified": false,
+      "source_commit": "073fa0b888828a661a73fa87ee562adbbe571c32",
+      "source_inventory_only": true
+    },
+    {
+      "auto_enable": false,
+      "directory": "research-adapters/b-state-contract",
+      "files": {
+        "README.md": {
+          "bytes": 2216,
+          "executable": false,
+          "git_blob": "9245b00c87b69cb59b70e31b7b151891fcee45b1",
+          "sha256": "93a4b54d0c0b6811f9faf17659e5f315af45ce7f86fd66f36e1f37bb86c8ac1f",
+          "source_path": "study_plugins/b-state-contract/README.md"
+        },
+        "manifest.toml": {
+          "bytes": 4188,
+          "executable": false,
+          "git_blob": "bd752866eefd5f4696739549b6d97f4e2a9cb515",
+          "sha256": "18bf972891868cb7304d6b118b2b55ce7e3439b2559c0db9d4b85a3aa6b721f6",
+          "source_path": "study_plugins/b-state-contract/manifest.toml"
+        },
+        "scripts/contrast.R": {
+          "bytes": 24800,
+          "executable": false,
+          "git_blob": "079ec8e34f086b3c1ec9d5922f4a488ed5c21bf5",
+          "sha256": "6c8eacf101732e9048e0a99ce30de7c7b711e4bdb860c0f0dbe06c6a9bb176dc",
+          "source_path": "study_plugins/b-state-contract/scripts/contrast.R"
+        },
+        "scripts/run-contrast-inputs.py": {
+          "bytes": 186146,
+          "executable": false,
+          "git_blob": "6f7836fb3c167e5dd4bcf53af7d3a2fd1a021307",
+          "sha256": "931aaecb24b68a01ead14ef65ca879e545b9fe664722c570bb36a70cbdb6673b",
+          "source_path": "study_plugins/b-state-contract/scripts/run-contrast-inputs.py"
+        },
+        "scripts/run-contrast.R": {
+          "bytes": 27720,
+          "executable": false,
+          "git_blob": "df071d74b69cf5879941041c68b77aa9a9a39461",
+          "sha256": "b9659521360cb21f05ea4a1352bf1afbf87a4db9e96901b0c8d1c7c13a7d36c1",
+          "source_path": "study_plugins/b-state-contract/scripts/run-contrast.R"
+        },
+        "scripts/run-score-inputs.py": {
+          "bytes": 144012,
+          "executable": false,
+          "git_blob": "2adc2593941e2785a6c37d5ad1af88b400e3245b",
+          "sha256": "c2a0ccec339e3e4c41f2dee4b3464926911d5483481507b612f1db36a8ee4781",
+          "source_path": "study_plugins/b-state-contract/scripts/run-score-inputs.py"
+        },
+        "scripts/run-score.R": {
+          "bytes": 20705,
+          "executable": false,
+          "git_blob": "6d87af920ee103e322f3c536186de49cbab622b5",
+          "sha256": "cf5f8bded7ab6e0f8277c2571592ab09d11f04fb80a6f3c6340ecf253d560b81",
+          "source_path": "study_plugins/b-state-contract/scripts/run-score.R"
+        },
+        "scripts/run-tpm.py": {
+          "bytes": 102460,
+          "executable": false,
+          "git_blob": "e31fe10dfea5411b0118c1baa36aacb3746c5129",
+          "sha256": "af40ad5d5160ce61912f17893f6e4416c6036f5bf0967aa6650a50bf14358eb8",
+          "source_path": "study_plugins/b-state-contract/scripts/run-tpm.py"
+        },
+        "scripts/score.R": {
+          "bytes": 18037,
+          "executable": false,
+          "git_blob": "7d0e14151181449ee020067725f96651404f03c3",
+          "sha256": "a2a059555c2b6519b0d503860f7cee04c96ee5907bfe625d65b3e233e5910698",
+          "source_path": "study_plugins/b-state-contract/scripts/score.R"
+        }
+      },
+      "scientific_certified": false,
+      "source_commit": "073fa0b888828a661a73fa87ee562adbbe571c32",
+      "source_inventory_only": true
+    },
+    {
+      "auto_enable": false,
+      "directory": "research-adapters/b-state-method",
+      "files": {
+        "README.md": {
+          "bytes": 2027,
+          "executable": false,
+          "git_blob": "10762408a5b2bdb7b1d560dc660a7de94093a03e",
+          "sha256": "0827836fe20e5035229f06e3912a4a2c6ce8f6d91307e90b45c581aa8a1f0d34",
+          "source_path": "study_plugins/b-state-method/README.md"
+        },
+        "manifest.toml": {
+          "bytes": 2928,
+          "executable": false,
+          "git_blob": "483225ad66bf26bcb1e6f8cf5866e9b37df20517",
+          "sha256": "58d8b41479f2436d6e629aeb660ea12d5a43f36d02354c353acf2abc6585d620",
+          "source_path": "study_plugins/b-state-method/manifest.toml"
+        },
+        "scripts/run-contrast.R": {
+          "bytes": 27720,
+          "executable": false,
+          "git_blob": "df071d74b69cf5879941041c68b77aa9a9a39461",
+          "sha256": "b9659521360cb21f05ea4a1352bf1afbf87a4db9e96901b0c8d1c7c13a7d36c1",
+          "source_path": "study_plugins/b-state-method/scripts/run-contrast.R"
+        },
+        "scripts/run-score.R": {
+          "bytes": 20705,
+          "executable": false,
+          "git_blob": "6d87af920ee103e322f3c536186de49cbab622b5",
+          "sha256": "cf5f8bded7ab6e0f8277c2571592ab09d11f04fb80a6f3c6340ecf253d560b81",
+          "source_path": "study_plugins/b-state-method/scripts/run-score.R"
+        }
+      },
+      "scientific_certified": false,
+      "source_commit": "073fa0b888828a661a73fa87ee562adbbe571c32",
+      "source_inventory_only": true
+    },
+    {
+      "auto_enable": false,
+      "directory": "research-adapters/pseudobulk-contract",
+      "files": {
+        "README.md": {
+          "bytes": 4539,
+          "executable": false,
+          "git_blob": "f2e64b1df9d9c6eae68591b1a3ec6175f60c5757",
+          "sha256": "978844db675173464f7527502d412d7668912ec794796d37f2185a1743ab19f7",
+          "source_path": "study_plugins/pseudobulk-contract/README.md"
+        },
+        "manifest.toml": {
+          "bytes": 2151,
+          "executable": false,
+          "git_blob": "24dd1470600e0f54194e189ff7dc516476a2de68",
+          "sha256": "357c5616409d1ffad152ca31eb530ab015830cd0bb3d5c59399dafe7b753c415",
+          "source_path": "study_plugins/pseudobulk-contract/manifest.toml"
+        },
+        "scripts/pseudobulk.py": {
+          "bytes": 26484,
+          "executable": false,
+          "git_blob": "a32893b346a431390e07d7c5b7e2388a3b74ab35",
+          "sha256": "9728e902e032dd948f8906a5682a42a28d4d2abfc39db96b2265c5670572dca6",
+          "source_path": "study_plugins/pseudobulk-contract/scripts/pseudobulk.py"
+        },
+        "scripts/run-counts.py": {
+          "bytes": 54671,
+          "executable": false,
+          "git_blob": "5a22bd4b9c1b75f6ba1cd23efea350c9932d6f5c",
+          "sha256": "41f397996e294b0e5eb8f91b5d09d12ee8a29366d3ccb94dc0cb9444c83c13bf",
+          "source_path": "study_plugins/pseudobulk-contract/scripts/run-counts.py"
+        }
+      },
+      "scientific_certified": false,
+      "source_commit": "073fa0b888828a661a73fa87ee562adbbe571c32",
+      "source_inventory_only": true
+    },
+    {
+      "auto_enable": false,
+      "directory": "research-adapters/singscore-contract",
+      "files": {
+        "Dockerfile": {
+          "bytes": 1942,
+          "executable": false,
+          "git_blob": "874338db078fa72efdea2e331ab5c987e85f1b5b",
+          "sha256": "545ebcfa90286cd67b076cb86ce2e0ea37f1b3389fd5250b74155114bd700fa5",
+          "source_path": "study_plugins/singscore-contract/Dockerfile"
+        },
+        "README.md": {
+          "bytes": 5114,
+          "executable": false,
+          "git_blob": "7ef9d8a814a6a2e67adf3434393b725e2bf3115b",
+          "sha256": "27c27775dec0a7fefe95d74b0621b645a92ee198310078cf44b34fc14603d9c8",
+          "source_path": "study_plugins/singscore-contract/README.md"
+        },
+        "manifest.toml": {
+          "bytes": 2690,
+          "executable": false,
+          "git_blob": "bcfe15f559274490a67c976adf96bea73646d681",
+          "sha256": "9f01ec4d54b4840102001915232ee136e82e131c2467d814de21c559b90a99c4",
+          "source_path": "study_plugins/singscore-contract/manifest.toml"
+        },
+        "scripts/contrasts.R": {
+          "bytes": 9521,
+          "executable": false,
+          "git_blob": "7d4ec8e4df611d72cf2fa153e2e1754599a4b954",
+          "sha256": "bbf2c53bf56196d60983e99b7d2d52eda8251c0c21c4cd525b72bb9d894c0f32",
+          "source_path": "study_plugins/singscore-contract/scripts/contrasts.R"
+        },
+        "scripts/install-environment.R": {
+          "bytes": 2661,
+          "executable": false,
+          "git_blob": "e0124d7f6e27003496fae4c3e6b12190cefe6699",
+          "sha256": "4dfcac618f4428947db5e22446eea596032fd2f4e5596c587acbeefaa993d650",
+          "source_path": "study_plugins/singscore-contract/scripts/install-environment.R"
+        },
+        "scripts/run-contrasts.sh": {
+          "bytes": 231,
+          "executable": false,
+          "git_blob": "1e9e2dc671a356adbd0bab7aeb3f4bcfae4d6533",
+          "sha256": "b4f299b3a89cdde9ef6326e50bff54e9a768b2be3060e9347da4ee2753524114",
+          "source_path": "study_plugins/singscore-contract/scripts/run-contrasts.sh"
+        },
+        "scripts/run-scores.sh": {
+          "bytes": 206,
+          "executable": false,
+          "git_blob": "c2ebbef56ff19f34c5f42e6295765521ab5f4f4a",
+          "sha256": "01d4234013d6df0d16e27b89f41d5641031e69a16e6091b98c527a94b6e87900",
+          "source_path": "study_plugins/singscore-contract/scripts/run-scores.sh"
+        },
+        "scripts/score.R": {
+          "bytes": 8694,
+          "executable": false,
+          "git_blob": "39f96b4c994cdbd7061c66f262a1cfe1daaae775",
+          "sha256": "1b918a0a5700b6c602aa32bca3f1954426f1bdab068ad0e289b129f42cb2e32f",
+          "source_path": "study_plugins/singscore-contract/scripts/score.R"
+        }
+      },
+      "scientific_certified": false,
+      "source_commit": "073fa0b888828a661a73fa87ee562adbbe571c32",
+      "source_inventory_only": true
+    },
+    {
+      "auto_enable": false,
+      "directory": "research-adapters/c-network-contract",
+      "files": {
+        "manifest.toml": {
+          "bytes": 2406,
+          "executable": false,
+          "git_blob": "42a8133a1ce7d9d93d8f3fc3c34debefd5481151",
+          "sha256": "08d1927eb8ffb5190f7abfe5b683a6926726b20fb5a845ec8b1f766e019e2a9b",
+          "source_path": "study_plugins/c-network-contract/manifest.toml"
+        },
+        "scripts/run-network.py": {
+          "bytes": 169062,
+          "executable": false,
+          "git_blob": "483a9e415faaeecb1c6751c02018e4dcb945a806",
+          "sha256": "36f2d8a38abaaf96c011ac075ec5af0133adf4ba3e8d2106dc69a48219436eca",
+          "source_path": "study_plugins/c-network-contract/scripts/run-network.py"
+        }
+      },
+      "scientific_certified": false,
+      "source_commit": "073fa0b888828a661a73fa87ee562adbbe571c32",
+      "source_inventory_only": true
+    },
+    {
+      "auto_enable": false,
+      "directory": "research-adapters/c-network-source-contract",
+      "files": {
+        "README.md": {
+          "bytes": 5461,
+          "executable": false,
+          "git_blob": "b1e9371780fef759810cb677a0689d2784f21a6e",
+          "sha256": "01d5a1c9cb5db78045df5d7f0155fef705f576600d3acf3ba212e651e56ea7f6",
+          "source_path": "study_plugins/c-network-source-contract/README.md"
+        },
+        "manifest.toml": {
+          "bytes": 2316,
+          "executable": false,
+          "git_blob": "92ca5aacdb3f5874a6a0c01b7d39ce0faa1348da",
+          "sha256": "82b048f337ece02936278e7cd48e2f0984a26039293db8274327e36fde53a880",
+          "source_path": "study_plugins/c-network-source-contract/manifest.toml"
+        },
+        "scripts/run-source.py": {
+          "bytes": 72450,
+          "executable": false,
+          "git_blob": "87e0fabb61a5829ba55fc6a9a0b4d272da49ad21",
+          "sha256": "04c4dc31580c5737608089b9a8a03c21f77397b61d2af3278760e42031b7d383",
+          "source_path": "study_plugins/c-network-source-contract/scripts/run-source.py"
+        }
+      },
+      "scientific_certified": false,
+      "source_commit": "073fa0b888828a661a73fa87ee562adbbe571c32",
+      "source_inventory_only": true
+    },
+    {
+      "auto_enable": false,
+      "directory": "research-adapters/c-safety-contract",
+      "files": {
+        "README.md": {
+          "bytes": 4746,
+          "executable": false,
+          "git_blob": "e05635983f75d87beef6c459b90b5bcc90366158",
+          "sha256": "5dcd7e546f75351d167e3619bbe9d68045ebc335203d02d3368080bcf15c9959",
+          "source_path": "study_plugins/c-safety-contract/README.md"
+        },
+        "manifest.toml": {
+          "bytes": 3900,
+          "executable": false,
+          "git_blob": "e853b953a8a0730d2e82871d7e7dc28502795c53",
+          "sha256": "13afc18a8586c7d2dec450f5d043e8de7c6c4a44022f2df44e32931e4d0af3c3",
+          "source_path": "study_plugins/c-safety-contract/manifest.toml"
+        },
+        "scripts/run-bound-safety.py": {
+          "bytes": 67317,
+          "executable": false,
+          "git_blob": "f970b0c66556f9de8c776c2c72d61381ba0b4b1f",
+          "sha256": "3d92a40282d7f6c62cd7ef185128e7efe523755f579ad90c061abfdc646f577f",
+          "source_path": "study_plugins/c-safety-contract/scripts/run-bound-safety.py"
+        },
+        "scripts/run-safety.py": {
+          "bytes": 67294,
+          "executable": false,
+          "git_blob": "05ccd8d6314ccc571a35e8012a9e1af84bb2da36",
+          "sha256": "52f4499254ee46289435cd700cb5cf85682d0148aeed84e8fe41b46896ffc2b4",
+          "source_path": "study_plugins/c-safety-contract/scripts/run-safety.py"
+        }
+      },
+      "scientific_certified": false,
+      "source_commit": "073fa0b888828a661a73fa87ee562adbbe571c32",
+      "source_inventory_only": true
+    },
+    {
+      "auto_enable": false,
+      "directory": "research-adapters/b-bulk-limma-contract",
+      "files": {
+        "README.md": {
+          "bytes": 5389,
+          "executable": false,
+          "git_blob": "ac9fd3be1472a5e6576662e12b64b2dccd7d2371",
+          "sha256": "a1df2667482d21ba3f53e8d5b0dfd834f90ab952d76c5b8b3e4013646b77898b",
+          "source_path": "study_plugins/b-bulk-limma-contract/README.md"
+        },
+        "scripts/bulk-limma.R": {
+          "bytes": 16004,
+          "executable": false,
+          "git_blob": "70b6c6f95ada1ff019977e47a07294c3f0709f63",
+          "sha256": "c5d0a5f4fe179dd79ea49ea954f439b1e08af312102ac7ba3c570a82d10f010a",
+          "source_path": "study_plugins/b-bulk-limma-contract/scripts/bulk-limma.R"
+        },
+        "scripts/run-design.R": {
+          "bytes": 18683,
+          "executable": false,
+          "git_blob": "3ffeb0938620a2cc66066fae2edb4af639c5e3c7",
+          "sha256": "b1f7cc7b2d8e8a94244b148ea651fa4a4b286f2a69da093b05c4541a82a73a2e",
+          "source_path": "study_plugins/b-bulk-limma-contract/scripts/run-design.R"
+        },
+        "scripts/run-limma.R": {
+          "bytes": 18709,
+          "executable": false,
+          "git_blob": "bfb787a70b698e27c4c2a20fe4c935e2fa94c43f",
+          "sha256": "cddc93770a8ceafa4ffe4f98c0f1584463666b6f1601acae342ca0988f5dbc99",
+          "source_path": "study_plugins/b-bulk-limma-contract/scripts/run-limma.R"
+        }
+      },
+      "generated_manifest": true,
+      "scientific_certified": false,
+      "source_commit": "073fa0b888828a661a73fa87ee562adbbe571c32",
+      "source_inventory_only": true
+    }
+  ],
+  "schema_version": 1,
+  "scientific_certified": false,
+  "scope": "ADDITIONAL_EXPLICIT_OPT_IN_SOURCE_TRANSPORT_NOT_DEFAULT_PROFILE_OR_METHOD_CERTIFICATION",
+  "source_commit": "073fa0b888828a661a73fa87ee562adbbe571c32",
+  "source_repository": "https://github.com/ZJ-2002/autonomics"
+}

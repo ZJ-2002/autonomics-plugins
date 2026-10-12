@@ -1,0 +1,57 @@
+schema_version = 1
+plugin_name = "b-donor-method"
+
+[image]
+reference = "localhost/autonomics/b-donor-official-candidate@sha256:67cbe8da4412c6fc1c842a4ef3b4b10b412f497b7d57b429ff74f3416826b06d"
+tag = "candidate-local-v1"
+upstream = "Authenticated cached R 4.6.1 base and whole Matrix 1.7-5 package, independently compiled official DESeq2 1.52.0 runtime Git source 16aeab6d6158bd8cbb8e98764c2f33399b1a3fd3, and measured installed dependency snapshots. Rejected host Matrix GLIBC_2.43 candidate is retained separately. Complete dependency origin and actual image runtime remain unqualified."
+license = "NOASSERTION"
+
+# Actual built offline OCI candidate, not deployed or runtime qualified.
+# The immutable image launcher runs Rscript --vanilla. The engine inserts the
+# loaded script immediately after this executable; argv flags would be late.
+[[nodes]]
+kind = "b_donor_frozen_design"
+desc = "Verify fixed donor model design against the actual raw count and metadata inputs."
+doc = "Five File inputs: actual-bound model config; raw counts; complete genes; donor observations; complete decisions. Checks same-source hashes, exact software lock, donor replication, pair completeness, covariates, matrix rank and residual degrees of freedom. Preserves low precision, descriptive and non-estimable states without granting power, biological independence, family freeze, G0 or formal authorization. Output is the actual DESIGN audit required by the model."
+timeout_secs = 7200
+stage_in_mode = "copy"
+artifact_prefix = "/artifacts/b_donor_frozen_design"
+[nodes.resources]
+network = "isolated"
+read_only_rootfs = true
+pull_policy = "never"
+cpus = 2.0
+memory = "8Gi"
+pids_limit = 256
+[nodes.ports]
+inputs = [{ type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }]
+outputs = [{ path = "audit.json", format = "json" }]
+[nodes.command]
+interpreter = "/opt/autonomics/b-donor/bin/Rscript-vanilla"
+script_file = "scripts/run-design.R"
+
+[[nodes]]
+kind = "b_donor_frozen_deseq2"
+desc = "Official fixed DESeq2 Wald model with same-source design receipt and complete gene rows."
+doc = "Six File inputs: the same actual-bound config/counts/genes/donor observations/decisions as DESIGN, plus that actual DESIGN audit. Recomputes and verifies the whole receipt before fitting. Uses official DESeq2 with exact frozen method/software parameters; rejects absent packages, version mismatch, unapproved warnings, changed dispersion fit and failed Wald convergence. Retains all-zero/unavailable genes as NA. Supportive raw P is separate from candidate family P at the frozen donor minimum. Does not perform per-contrast replacement of full multi-contrast BH/BY or grant scientific authorization."
+timeout_secs = 7200
+stage_in_mode = "copy"
+artifact_prefix = "/artifacts/b_donor_frozen_deseq2"
+[nodes.resources]
+network = "isolated"
+read_only_rootfs = true
+pull_policy = "never"
+cpus = 2.0
+memory = "8Gi"
+pids_limit = 256
+[nodes.ports]
+inputs = [{ type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }]
+outputs = [
+  { path = "results.tsv", format = "tsv" },
+  { path = "audit.json", format = "json" },
+  { path = "official.rds", format = "r_rds" },
+]
+[nodes.command]
+interpreter = "/opt/autonomics/b-donor/bin/Rscript-vanilla"
+script_file = "scripts/run-deseq2.R"

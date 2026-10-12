@@ -1,0 +1,35 @@
+schema_version = 1
+plugin_name = "c-network-source-contract"
+
+[image]
+reference = "localhost/autonomics/python-guard@sha256:d7d40ff1494750f26ded735e2551efb86d970355b805868b92ec9107b7ca7c68"
+tag = "candidate-not-runtime-qualified"
+upstream = "Cached Python OCI candidate only; host conversion does not qualify this image or protected execution."
+license = "Python-2.0"
+
+[[nodes]]
+kind = "c_network_source_normalize"
+desc = "Complete content-bound human physical-source conversion with explicitly unverified experimental annotations."
+doc = "Six File ports: exact normalization declaration, original design archive, complete STRING physical gzip, complete protein-to-gene map, explicit detection/expression background, explicit original literature/experiment annotations. Three outputs: complete original-column physical edges, complete background including isolates with graph degree, and full source/selection/software audit. Aggregation or predictions cannot supply an experimental lineage. Symmetric duplicate scores must agree; ambiguous mapping, missing/orphan evidence and conflicting primary lineages block output. Declared gene-pair/lineage dedup preserves counts and cannot certify independent replication. Streaming full original bytes, gzip validation and bounded SQLite staging; no truncation to budgets. Original design identity, delivery membership and actual execution-rule version are verified; biological interpretation and scientific protocol compliance remain unverified. No real source admission, G0, family freeze, scientific approval or formal authorization. Candidate plugin only until actual image/protected-runtime qualification."
+timeout_secs = 28800
+stage_in_mode = "copy"
+artifact_prefix = "/artifacts/c_network_source_normalize"
+[nodes.resources]
+network = "isolated"
+read_only_rootfs = true
+pull_policy = "never"
+cpus = 2.0
+memory = "8Gi"
+pids_limit = 128
+[nodes.ports]
+inputs = [{ type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }]
+outputs = [
+  { path = "network-edges.tsv", format = "tsv" },
+  { path = "network-nodes.tsv", format = "tsv" },
+  { path = "source-audit.json", format = "json" },
+]
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/run-source.py"
+[nodes.command.env]
+PYTHONDONTWRITEBYTECODE = "1"

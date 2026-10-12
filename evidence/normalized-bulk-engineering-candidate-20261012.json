@@ -1,0 +1,77 @@
+{
+  "ABI": [
+    {
+      "inputs": [
+        "config",
+        "expression",
+        "genes",
+        "samples",
+        "decisions"
+      ],
+      "kind": "b_bulk_frozen_design",
+      "outputs": [
+        "audit.json"
+      ]
+    },
+    {
+      "inputs": [
+        "config",
+        "expression",
+        "genes",
+        "samples",
+        "decisions",
+        "actual_DESIGN_audit"
+      ],
+      "kind": "b_bulk_frozen_limma",
+      "outputs": [
+        "results.tsv",
+        "audit.json",
+        "official.rds"
+      ]
+    }
+  ],
+  "adapter_kinds": [
+    "b_bulk_frozen_design",
+    "b_bulk_frozen_limma"
+  ],
+  "auto_enable": false,
+  "formal_authorized": false,
+  "full_method_qualification_verified": false,
+  "image_config_id": "4e6a1a96e5625df3a3113a117acacb1736f8a1544d4595a14f1b561fa260b581",
+  "image_reference": "localhost/autonomics/b-bulk-limma@sha256:6932fcead69397d2d6dc941c45aca1e74e84c11a098bd0a510f73ec7fd4301c2",
+  "loaded_worker_registration_verified": false,
+  "manifest_source_transport_only": true,
+  "method_acceptance_verified": false,
+  "native_loader_construct_verified": false,
+  "plugins_baseline": "d60b710b24d76b30f7f83dc5de93aac3ca07dddd",
+  "prior_scoped_micro_review": {
+    "limitation_summary": [
+      "25 synthetic genes and at most8 declared units; no real-source or clinical-design validation",
+      "Historical HOST_OFFICIAL_SYN reference shares the official limma/component implementation; reference parity is reproducibility, not an independent eBayes correctness proof",
+      "Independent stdlib OLS oracle covers fitted group coefficients only, not moderated variance/prior degrees-of-freedom or robust trend fitting",
+      "No large-matrix scaling, near-singular conditioning sweep, extreme-tail p-value accuracy, outlier/batch/missingness sweep or platform generalization",
+      "No statistical power/calibration, biological independence, source acquisition/authentication, scientific G0, signed-study authorization or deployment"
+    ],
+    "micro_numeric_and_port_ABI_verified": true,
+    "original_batch_status": "FAILED",
+    "original_operator_Gitcommit": "fca87090255d3415a8bba9fc01f3ebdac5e3f0df",
+    "original_outer_exit": 1,
+    "original_plan_sha256": "13dc6f05ba1dc88475b33c7bbe130c26b85728e1a6491cb6cf784609a64a8ebc",
+    "raw_readonly_report": {
+      "bytes": 46373,
+      "path": "/home/zj-normal/.cache/autonomics-team-20261012/b-bulk-completed-syn-readonly-review-v1.json",
+      "sha256": "1eeefd01f1ae9000e2bb4e0a4167e0eb051d5120419d915dcdba0049a355e4b9"
+    },
+    "readonly_verified_case_count": 21,
+    "report_bytes": 49788,
+    "report_sha256": "b045b49ae15f40c1b4d188add0c4b13f085ccf9b12d6b1cb6adee6302e6138f5"
+  },
+  "production_deployed": false,
+  "runtime_image_in_selected_deployment_store_verified": false,
+  "scientific_G0_granted": false,
+  "scientific_certified": false,
+  "scope": "EXPLICIT_OPT_IN_NORMALIZED_BULK_ENGINEERING_CANDIDATE_SOURCE_AND_ABI_NOT_LOADED_OR_SCIENCE",
+  "source_commit": "073fa0b888828a661a73fa87ee562adbbe571c32",
+  "source_distribution_provenance_qualified": false,
+  "status": "ENGINEERING_CANDIDATE"
+}

@@ -1,0 +1,361 @@
+{
+  "all_specs_are_empty_and_no_manifest_parameters_required": true,
+  "auto_enable": false,
+  "baseline_plugins": "d60b710b24d76b30f7f83dc5de93aac3ca07dddd",
+  "default_profile_changed": false,
+  "expected_native_ABI": {
+    "b-bulk-inputs-contract/b_bulk_frozen_inputs": {
+      "image_reference": "localhost/autonomics/python-guard@sha256:d7d40ff1494750f26ded735e2551efb86d970355b805868b92ec9107b7ca7c68",
+      "inputs": 9,
+      "interpreter": "python3",
+      "outputs": [
+        "expression.tsv",
+        "genes.tsv",
+        "samples.tsv",
+        "decisions.tsv",
+        "method-template.json",
+        "family-proposal.json",
+        "input-preparation.json"
+      ],
+      "script_file": "scripts/run-inputs.py"
+    },
+    "b-bulk-limma-contract/b_bulk_frozen_design": {
+      "image_reference": "localhost/autonomics/b-bulk-limma@sha256:6932fcead69397d2d6dc941c45aca1e74e84c11a098bd0a510f73ec7fd4301c2",
+      "inputs": 5,
+      "interpreter": "/opt/b-bulk/bin/Rscript-vanilla",
+      "outputs": [
+        "audit.json"
+      ],
+      "script_file": "scripts/run-design.R"
+    },
+    "b-bulk-limma-contract/b_bulk_frozen_limma": {
+      "image_reference": "localhost/autonomics/b-bulk-limma@sha256:6932fcead69397d2d6dc941c45aca1e74e84c11a098bd0a510f73ec7fd4301c2",
+      "inputs": 6,
+      "interpreter": "/opt/b-bulk/bin/Rscript-vanilla",
+      "outputs": [
+        "results.tsv",
+        "audit.json",
+        "official.rds"
+      ],
+      "script_file": "scripts/run-limma.R"
+    },
+    "b-donor-contract/b_donor_frozen_inputs": {
+      "image_reference": "localhost/autonomics/python-guard@sha256:d7d40ff1494750f26ded735e2551efb86d970355b805868b92ec9107b7ca7c68",
+      "inputs": 11,
+      "interpreter": "python3",
+      "outputs": [
+        "method-template.json",
+        "genes.tsv",
+        "samples.tsv",
+        "decisions.tsv",
+        "provenance.json"
+      ],
+      "script_file": "scripts/run-inputs.py"
+    },
+    "b-donor-method/b_donor_frozen_deseq2": {
+      "image_reference": "localhost/autonomics/b-donor-official-candidate@sha256:67cbe8da4412c6fc1c842a4ef3b4b10b412f497b7d57b429ff74f3416826b06d",
+      "inputs": 6,
+      "interpreter": "/opt/autonomics/b-donor/bin/Rscript-vanilla",
+      "outputs": [
+        "results.tsv",
+        "audit.json",
+        "official.rds"
+      ],
+      "script_file": "scripts/run-deseq2.R"
+    },
+    "b-donor-method/b_donor_frozen_design": {
+      "image_reference": "localhost/autonomics/b-donor-official-candidate@sha256:67cbe8da4412c6fc1c842a4ef3b4b10b412f497b7d57b429ff74f3416826b06d",
+      "inputs": 5,
+      "interpreter": "/opt/autonomics/b-donor/bin/Rscript-vanilla",
+      "outputs": [
+        "audit.json"
+      ],
+      "script_file": "scripts/run-design.R"
+    },
+    "b-state-contract/b_state_frozen_contrast_inputs": {
+      "image_reference": "localhost/autonomics/python-guard@sha256:d7d40ff1494750f26ded735e2551efb86d970355b805868b92ec9107b7ca7c68",
+      "inputs": 14,
+      "interpreter": "python3",
+      "outputs": [
+        "contrast-config.json",
+        "samples.tsv",
+        "decisions.tsv",
+        "audit.json"
+      ],
+      "script_file": "scripts/run-contrast-inputs.py"
+    },
+    "b-state-contract/b_state_frozen_donor_tpm": {
+      "image_reference": "localhost/autonomics/python-guard@sha256:d7d40ff1494750f26ded735e2551efb86d970355b805868b92ec9107b7ca7c68",
+      "inputs": 11,
+      "interpreter": "python3",
+      "outputs": [
+        "expression.tsv",
+        "gene-qc.tsv",
+        "column-qc.tsv",
+        "background.tsv",
+        "normalization.json"
+      ],
+      "script_file": "scripts/run-tpm.py"
+    },
+    "b-state-contract/b_state_frozen_score_inputs": {
+      "image_reference": "localhost/autonomics/python-guard@sha256:d7d40ff1494750f26ded735e2551efb86d970355b805868b92ec9107b7ca7c68",
+      "inputs": 12,
+      "interpreter": "python3",
+      "outputs": [
+        "scoring-config.json",
+        "members.tsv",
+        "coverage.tsv",
+        "audit.json"
+      ],
+      "script_file": "scripts/run-score-inputs.py"
+    },
+    "b-state-method/b_state_frozen_score_contrast": {
+      "image_reference": "localhost/autonomics/b-state-official-candidate@sha256:e2097dd2ea87845952eb39e565b43ec9ff10ba9a3cbf5692f18ded03303fb913",
+      "inputs": 6,
+      "interpreter": "/opt/autonomics/b-state/bin/Rscript-vanilla",
+      "outputs": [
+        "results.tsv",
+        "selected-samples.tsv",
+        "audit.json",
+        "official.rds"
+      ],
+      "script_file": "scripts/run-contrast.R"
+    },
+    "b-state-method/b_state_frozen_singscore": {
+      "image_reference": "localhost/autonomics/b-state-official-candidate@sha256:e2097dd2ea87845952eb39e565b43ec9ff10ba9a3cbf5692f18ded03303fb913",
+      "inputs": 6,
+      "interpreter": "/opt/autonomics/b-state/bin/Rscript-vanilla",
+      "outputs": [
+        "scores.tsv",
+        "members.tsv",
+        "coverage.tsv",
+        "audit.json",
+        "official.rds"
+      ],
+      "script_file": "scripts/run-score.R"
+    },
+    "c-network-contract/c_network_frozen_matched_null": {
+      "image_reference": "localhost/autonomics/python-guard@sha256:d7d40ff1494750f26ded735e2551efb86d970355b805868b92ec9107b7ca7c68",
+      "inputs": 6,
+      "interpreter": "python3",
+      "outputs": [
+        "network-results.tsv",
+        "null-draws.tsv",
+        "match-strata.tsv",
+        "family.tsv",
+        "audit.json"
+      ],
+      "script_file": "scripts/run-network.py"
+    },
+    "c-network-source-contract/c_network_source_normalize": {
+      "image_reference": "localhost/autonomics/python-guard@sha256:d7d40ff1494750f26ded735e2551efb86d970355b805868b92ec9107b7ca7c68",
+      "inputs": 6,
+      "interpreter": "python3",
+      "outputs": [
+        "network-edges.tsv",
+        "network-nodes.tsv",
+        "source-audit.json"
+      ],
+      "script_file": "scripts/run-source.py"
+    },
+    "c-safety-contract/c_safety_bound_risk_matrix": {
+      "image_reference": "localhost/autonomics/python-guard@sha256:d7d40ff1494750f26ded735e2551efb86d970355b805868b92ec9107b7ca7c68",
+      "inputs": 6,
+      "interpreter": "python3",
+      "outputs": [
+        "candidate-register.tsv",
+        "candidate-scopes.tsv",
+        "risk-evidence.tsv",
+        "risk-matrix.tsv",
+        "risk-audit.json"
+      ],
+      "script_file": "scripts/run-bound-safety.py"
+    },
+    "c-safety-contract/c_safety_declared_risk_matrix": {
+      "image_reference": "localhost/autonomics/python-guard@sha256:d7d40ff1494750f26ded735e2551efb86d970355b805868b92ec9107b7ca7c68",
+      "inputs": 5,
+      "interpreter": "python3",
+      "outputs": [
+        "candidate-register.tsv",
+        "candidate-scopes.tsv",
+        "risk-evidence.tsv",
+        "risk-matrix.tsv",
+        "risk-audit.json"
+      ],
+      "script_file": "scripts/run-safety.py"
+    },
+    "pseudobulk-contract/pseudobulk_frozen_raw_counts": {
+      "image_reference": "localhost/autonomics/python-guard@sha256:d7d40ff1494750f26ded735e2551efb86d970355b805868b92ec9107b7ca7c68",
+      "inputs": 7,
+      "interpreter": "python3",
+      "outputs": [
+        "counts.mtx",
+        "features.tsv",
+        "feature-qc.tsv",
+        "columns.tsv",
+        "cell-qc.tsv",
+        "audit.json"
+      ],
+      "script_file": "scripts/run-counts.py"
+    },
+    "singscore-contract/singscore_frozen_contrasts": {
+      "image_reference": "localhost/autonomics/singscore-contract@sha256:442ba1128697740289d709a8c6e75e1f2620a3d105954ca8dfddf562a89853d7",
+      "inputs": 4,
+      "interpreter": "sh",
+      "outputs": [
+        "results.tsv",
+        "pairs.tsv",
+        "audit.json"
+      ],
+      "script_file": "scripts/run-contrasts.sh"
+    },
+    "singscore-contract/singscore_frozen_scores": {
+      "image_reference": "localhost/autonomics/singscore-contract@sha256:442ba1128697740289d709a8c6e75e1f2620a3d105954ca8dfddf562a89853d7",
+      "inputs": 3,
+      "interpreter": "sh",
+      "outputs": [
+        "scores.tsv",
+        "coverage.tsv",
+        "audit.json"
+      ],
+      "script_file": "scripts/run-scores.sh"
+    }
+  },
+  "method_acceptance_verified": false,
+  "native_probe_currently_executed": false,
+  "native_probe_request_path": "evidence/p0-load-native-construct-request-20261012.json",
+  "production_deployed": false,
+  "scientific_G0_granted": false,
+  "scope": "EXPLICIT_11_FAMILY_18_KIND_ENGINEERING_TRANSPORT_PREPARED_NOT_NATIVE_LOADED_OR_IMAGE_SCIENCE_ACCEPTED",
+  "source_commit": "073fa0b888828a661a73fa87ee562adbbe571c32",
+  "source_distribution_provenance_qualified": false,
+  "stdlib_check": {
+    "auto_enable": false,
+    "canonical_families": 31,
+    "canonical_kinds": 62,
+    "loaded_worker_registration_verified": false,
+    "native_loader_construct_verified": false,
+    "new_unique_kinds": 18,
+    "scientific_authorization": false,
+    "scope": "OFFLINE_MANIFEST_SOURCE_AND_PORT_ABI_TRANSPORT_NOT_NATIVE_LOADER_IMAGE_WORKER_OR_SCIENCE_ACCEPTANCE",
+    "selected_families": [
+      {
+        "auto_enable": false,
+        "directory": "b-bulk-inputs-contract",
+        "kinds": [
+          "b_bulk_frozen_inputs"
+        ],
+        "normalized_eight_source_hashes_checked": false,
+        "scientific_authorization": false,
+        "source_file_count": 3
+      },
+      {
+        "auto_enable": false,
+        "directory": "b-donor-contract",
+        "kinds": [
+          "b_donor_frozen_inputs"
+        ],
+        "normalized_eight_source_hashes_checked": false,
+        "scientific_authorization": false,
+        "source_file_count": 6
+      },
+      {
+        "auto_enable": false,
+        "directory": "b-donor-method",
+        "kinds": [
+          "b_donor_frozen_design",
+          "b_donor_frozen_deseq2"
+        ],
+        "normalized_eight_source_hashes_checked": false,
+        "scientific_authorization": false,
+        "source_file_count": 5
+      },
+      {
+        "auto_enable": false,
+        "directory": "b-state-contract",
+        "kinds": [
+          "b_state_frozen_donor_tpm",
+          "b_state_frozen_score_inputs",
+          "b_state_frozen_contrast_inputs"
+        ],
+        "normalized_eight_source_hashes_checked": false,
+        "scientific_authorization": false,
+        "source_file_count": 9
+      },
+      {
+        "auto_enable": false,
+        "directory": "b-state-method",
+        "kinds": [
+          "b_state_frozen_singscore",
+          "b_state_frozen_score_contrast"
+        ],
+        "normalized_eight_source_hashes_checked": false,
+        "scientific_authorization": false,
+        "source_file_count": 4
+      },
+      {
+        "auto_enable": false,
+        "directory": "pseudobulk-contract",
+        "kinds": [
+          "pseudobulk_frozen_raw_counts"
+        ],
+        "normalized_eight_source_hashes_checked": false,
+        "scientific_authorization": false,
+        "source_file_count": 4
+      },
+      {
+        "auto_enable": false,
+        "directory": "singscore-contract",
+        "kinds": [
+          "singscore_frozen_scores",
+          "singscore_frozen_contrasts"
+        ],
+        "normalized_eight_source_hashes_checked": false,
+        "scientific_authorization": false,
+        "source_file_count": 8
+      },
+      {
+        "auto_enable": false,
+        "directory": "c-network-contract",
+        "kinds": [
+          "c_network_frozen_matched_null"
+        ],
+        "normalized_eight_source_hashes_checked": false,
+        "scientific_authorization": false,
+        "source_file_count": 2
+      },
+      {
+        "auto_enable": false,
+        "directory": "c-network-source-contract",
+        "kinds": [
+          "c_network_source_normalize"
+        ],
+        "normalized_eight_source_hashes_checked": false,
+        "scientific_authorization": false,
+        "source_file_count": 3
+      },
+      {
+        "auto_enable": false,
+        "directory": "c-safety-contract",
+        "kinds": [
+          "c_safety_declared_risk_matrix",
+          "c_safety_bound_risk_matrix"
+        ],
+        "normalized_eight_source_hashes_checked": false,
+        "scientific_authorization": false,
+        "source_file_count": 4
+      },
+      {
+        "auto_enable": false,
+        "directory": "b-bulk-limma-contract",
+        "kinds": [
+          "b_bulk_frozen_design",
+          "b_bulk_frozen_limma"
+        ],
+        "normalized_eight_source_hashes_checked": true,
+        "scientific_authorization": false,
+        "source_file_count": 4
+      }
+    ]
+  }
+}

@@ -15205,6 +15205,531 @@
       "auto_enable": false
     },
     {
+      "directory": "research-adapters/b-bulk-inputs-contract",
+      "plugin_name": "b-bulk-inputs-contract",
+      "kinds": [
+        "b_bulk_frozen_inputs"
+      ],
+      "image_reference": "localhost/autonomics/python-guard@sha256:d7d40ff1494750f26ded735e2551efb86d970355b805868b92ec9107b7ca7c68",
+      "files": [
+        {
+          "path": "README.md",
+          "sha256": "991aca262e21b6563a0b66126b8cd7f0d8740b668b54fe9e745af38081a7c25c",
+          "bytes": 3135,
+          "executable": false
+        },
+        {
+          "path": "TRANSPORT.md",
+          "sha256": "95352b5248659b3e08ef8fbb3e2bd6110696e376a779779048cd63fd124a03aa",
+          "bytes": 692,
+          "executable": false
+        },
+        {
+          "path": "component-source.json",
+          "sha256": "b4f0a8d0199e93fe882525f14f89ff263e0f400799361caca1447de5bda1d356",
+          "bytes": 1494,
+          "executable": false
+        },
+        {
+          "path": "manifest.toml",
+          "sha256": "b8f4976bb3e01afe8f98ce38597485998c73a0bdc912f036d2e6cdd4d066a0dc",
+          "bytes": 2060,
+          "executable": false
+        },
+        {
+          "path": "scripts/run-inputs.py",
+          "sha256": "2d4609950a0ca9bf86bd9734325d93d3ec2eea2e49fc5f9532801f68c42d132c",
+          "bytes": 221547,
+          "executable": false
+        }
+      ],
+      "source_inventory_only": true,
+      "scientific_certified": false,
+      "auto_enable": false
+    },
+    {
+      "directory": "research-adapters/b-bulk-limma-contract",
+      "plugin_name": "b-bulk-limma-contract",
+      "kinds": [
+        "b_bulk_frozen_design",
+        "b_bulk_frozen_limma"
+      ],
+      "image_reference": "localhost/autonomics/b-bulk-limma@sha256:6932fcead69397d2d6dc941c45aca1e74e84c11a098bd0a510f73ec7fd4301c2",
+      "files": [
+        {
+          "path": "README.md",
+          "sha256": "a1df2667482d21ba3f53e8d5b0dfd834f90ab952d76c5b8b3e4013646b77898b",
+          "bytes": 5389,
+          "executable": false
+        },
+        {
+          "path": "TRANSPORT.md",
+          "sha256": "d98e80678a893c2494a42e332ed0f38a3530d95554ba7e4f04547a4cb7de90f8",
+          "bytes": 2254,
+          "executable": false
+        },
+        {
+          "path": "component-source.json",
+          "sha256": "96215d7b41c0aa80d007e62ccb5fbcefb7fec59e6e2dff5217b8a08a1edd8674",
+          "bytes": 4075,
+          "executable": false
+        },
+        {
+          "path": "image-source/Rscript-vanilla",
+          "sha256": "7ae0fab26e28de0bdd8ce15dc3d694dd64c383ca002867e76c63db9f4596d8c6",
+          "bytes": 182,
+          "executable": false
+        },
+        {
+          "path": "image-source/SOURCE_LOCK.json",
+          "sha256": "5e12f6c8573004c40bd0724c66733152f3a394a530b30d8d283476aaeebcd9c2",
+          "bytes": 2851,
+          "executable": false
+        },
+        {
+          "path": "image-source/bulk-limma.R",
+          "sha256": "c5d0a5f4fe179dd79ea49ea954f439b1e08af312102ac7ba3c570a82d10f010a",
+          "bytes": 16004,
+          "executable": false
+        },
+        {
+          "path": "image-source/install-source.R",
+          "sha256": "1e014a6cd11c9768910ec6fc11334ef706b85f71d845b010fde07e7ae64487b7",
+          "bytes": 3036,
+          "executable": false
+        },
+        {
+          "path": "image-source/package-lock.tsv",
+          "sha256": "b0ad611f7c33ae7812c1665d6d4831adc9dbe56f50671c77a6eceb54c5c36204",
+          "bytes": 580,
+          "executable": false
+        },
+        {
+          "path": "image-source/probe-toolchain.R",
+          "sha256": "010005ae937d1546937830bcfc885662e20c18b787010557a3e51afdbb86b31a",
+          "bytes": 2750,
+          "executable": false
+        },
+        {
+          "path": "image-source/run-design.R",
+          "sha256": "b1f7cc7b2d8e8a94244b148ea651fa4a4b286f2a69da093b05c4541a82a73a2e",
+          "bytes": 18683,
+          "executable": false
+        },
+        {
+          "path": "image-source/run-limma.R",
+          "sha256": "cddc93770a8ceafa4ffe4f98c0f1584463666b6f1601acae342ca0988f5dbc99",
+          "bytes": 18709,
+          "executable": false
+        },
+        {
+          "path": "manifest.toml",
+          "sha256": "ed45c9cdeb79e869cc5eb25f1fa220a2cf2e7d46a0c6a34a4c8c9d408e9451a8",
+          "bytes": 2870,
+          "executable": false
+        },
+        {
+          "path": "scripts/bulk-limma.R",
+          "sha256": "c5d0a5f4fe179dd79ea49ea954f439b1e08af312102ac7ba3c570a82d10f010a",
+          "bytes": 16004,
+          "executable": false
+        },
+        {
+          "path": "scripts/run-design.R",
+          "sha256": "b1f7cc7b2d8e8a94244b148ea651fa4a4b286f2a69da093b05c4541a82a73a2e",
+          "bytes": 18683,
+          "executable": false
+        },
+        {
+          "path": "scripts/run-limma.R",
+          "sha256": "cddc93770a8ceafa4ffe4f98c0f1584463666b6f1601acae342ca0988f5dbc99",
+          "bytes": 18709,
+          "executable": false
+        }
+      ],
+      "source_inventory_only": true,
+      "scientific_certified": false,
+      "auto_enable": false
+    },
+    {
+      "directory": "research-adapters/b-donor-contract",
+      "plugin_name": "b-donor-contract",
+      "kinds": [
+        "b_donor_frozen_inputs"
+      ],
+      "image_reference": "localhost/autonomics/python-guard@sha256:d7d40ff1494750f26ded735e2551efb86d970355b805868b92ec9107b7ca7c68",
+      "files": [
+        {
+          "path": "README.md",
+          "sha256": "45978e1259800b0e63f4577e63a9e8a0557c84cd5ac1d5f8fd7eadb01e8516b7",
+          "bytes": 6737,
+          "executable": false
+        },
+        {
+          "path": "TRANSPORT.md",
+          "sha256": "95352b5248659b3e08ef8fbb3e2bd6110696e376a779779048cd63fd124a03aa",
+          "bytes": 692,
+          "executable": false
+        },
+        {
+          "path": "component-source.json",
+          "sha256": "2b6e019c6d25568d9d9c3252ceb26e60e72e5e3de96251efde8c7be1b9f0f889",
+          "bytes": 2380,
+          "executable": false
+        },
+        {
+          "path": "manifest.toml",
+          "sha256": "7968974f84fa5548be7861780090e10e5dac03ab7435181342a68537f5fe3abc",
+          "bytes": 2023,
+          "executable": false
+        },
+        {
+          "path": "scripts/donor.R",
+          "sha256": "18108cdfe4838b0f56d1b4856455ca0196818ac5466c1d1917dbfa48ed0a8834",
+          "bytes": 20895,
+          "executable": false
+        },
+        {
+          "path": "scripts/run-deseq2.R",
+          "sha256": "60a8466bdec09d9081fd7adf371b2eb0e19c21dbca6f175fa7f4f507250e8688",
+          "bytes": 23993,
+          "executable": false
+        },
+        {
+          "path": "scripts/run-design.R",
+          "sha256": "e9c54195b0e762d6dc73be09d2930a44eb757dcb33a97d9f720edcae79dd1ae4",
+          "bytes": 23964,
+          "executable": false
+        },
+        {
+          "path": "scripts/run-inputs.py",
+          "sha256": "ef4d0e4dbb4dd47b304d81867105ec3f12476d8e60af925732003e2247ac4764",
+          "bytes": 86330,
+          "executable": false
+        }
+      ],
+      "source_inventory_only": true,
+      "scientific_certified": false,
+      "auto_enable": false
+    },
+    {
+      "directory": "research-adapters/b-donor-method",
+      "plugin_name": "b-donor-method",
+      "kinds": [
+        "b_donor_frozen_design",
+        "b_donor_frozen_deseq2"
+      ],
+      "image_reference": "localhost/autonomics/b-donor-official-candidate@sha256:67cbe8da4412c6fc1c842a4ef3b4b10b412f497b7d57b429ff74f3416826b06d",
+      "files": [
+        {
+          "path": "README.md",
+          "sha256": "7cabfd05dcfbf77fa11342d0f0e45b6e2d1acc4f99f76bb75adad277e6943f02",
+          "bytes": 3710,
+          "executable": false
+        },
+        {
+          "path": "TRANSPORT.md",
+          "sha256": "95352b5248659b3e08ef8fbb3e2bd6110696e376a779779048cd63fd124a03aa",
+          "bytes": 692,
+          "executable": false
+        },
+        {
+          "path": "component-source.json",
+          "sha256": "75039a326e95bc094536ba07d3859f42851821c735098dead3219d497c558959",
+          "bytes": 2079,
+          "executable": false
+        },
+        {
+          "path": "manifest.toml",
+          "sha256": "9a9f8ba601304a4152feffb43c5695465c655bad7f28f62c70b67c2ea13a3273",
+          "bytes": 3331,
+          "executable": false
+        },
+        {
+          "path": "scripts/Rscript-vanilla.sh",
+          "sha256": "638cf5d6b93c1bf93069ff02d9c57e78f71fc29bce98a6d867a7370a9110309b",
+          "bytes": 206,
+          "executable": false
+        },
+        {
+          "path": "scripts/run-deseq2.R",
+          "sha256": "60a8466bdec09d9081fd7adf371b2eb0e19c21dbca6f175fa7f4f507250e8688",
+          "bytes": 23993,
+          "executable": false
+        },
+        {
+          "path": "scripts/run-design.R",
+          "sha256": "e9c54195b0e762d6dc73be09d2930a44eb757dcb33a97d9f720edcae79dd1ae4",
+          "bytes": 23964,
+          "executable": false
+        }
+      ],
+      "source_inventory_only": true,
+      "scientific_certified": false,
+      "auto_enable": false
+    },
+    {
+      "directory": "research-adapters/b-state-contract",
+      "plugin_name": "b-state-contract",
+      "kinds": [
+        "b_state_frozen_donor_tpm",
+        "b_state_frozen_score_inputs",
+        "b_state_frozen_contrast_inputs"
+      ],
+      "image_reference": "localhost/autonomics/python-guard@sha256:d7d40ff1494750f26ded735e2551efb86d970355b805868b92ec9107b7ca7c68",
+      "files": [
+        {
+          "path": "README.md",
+          "sha256": "93a4b54d0c0b6811f9faf17659e5f315af45ce7f86fd66f36e1f37bb86c8ac1f",
+          "bytes": 2216,
+          "executable": false
+        },
+        {
+          "path": "TRANSPORT.md",
+          "sha256": "95352b5248659b3e08ef8fbb3e2bd6110696e376a779779048cd63fd124a03aa",
+          "bytes": 692,
+          "executable": false
+        },
+        {
+          "path": "component-source.json",
+          "sha256": "83c10ddf190d56a13f4e3af82a9d67979ea694e9d55ffadd8d5dabf1d70bede1",
+          "bytes": 3330,
+          "executable": false
+        },
+        {
+          "path": "manifest.toml",
+          "sha256": "18bf972891868cb7304d6b118b2b55ce7e3439b2559c0db9d4b85a3aa6b721f6",
+          "bytes": 4188,
+          "executable": false
+        },
+        {
+          "path": "scripts/contrast.R",
+          "sha256": "6c8eacf101732e9048e0a99ce30de7c7b711e4bdb860c0f0dbe06c6a9bb176dc",
+          "bytes": 24800,
+          "executable": false
+        },
+        {
+          "path": "scripts/run-contrast-inputs.py",
+          "sha256": "931aaecb24b68a01ead14ef65ca879e545b9fe664722c570bb36a70cbdb6673b",
+          "bytes": 186146,
+          "executable": false
+        },
+        {
+          "path": "scripts/run-contrast.R",
+          "sha256": "b9659521360cb21f05ea4a1352bf1afbf87a4db9e96901b0c8d1c7c13a7d36c1",
+          "bytes": 27720,
+          "executable": false
+        },
+        {
+          "path": "scripts/run-score-inputs.py",
+          "sha256": "c2a0ccec339e3e4c41f2dee4b3464926911d5483481507b612f1db36a8ee4781",
+          "bytes": 144012,
+          "executable": false
+        },
+        {
+          "path": "scripts/run-score.R",
+          "sha256": "cf5f8bded7ab6e0f8277c2571592ab09d11f04fb80a6f3c6340ecf253d560b81",
+          "bytes": 20705,
+          "executable": false
+        },
+        {
+          "path": "scripts/run-tpm.py",
+          "sha256": "af40ad5d5160ce61912f17893f6e4416c6036f5bf0967aa6650a50bf14358eb8",
+          "bytes": 102460,
+          "executable": false
+        },
+        {
+          "path": "scripts/score.R",
+          "sha256": "a2a059555c2b6519b0d503860f7cee04c96ee5907bfe625d65b3e233e5910698",
+          "bytes": 18037,
+          "executable": false
+        }
+      ],
+      "source_inventory_only": true,
+      "scientific_certified": false,
+      "auto_enable": false
+    },
+    {
+      "directory": "research-adapters/b-state-method",
+      "plugin_name": "b-state-method",
+      "kinds": [
+        "b_state_frozen_singscore",
+        "b_state_frozen_score_contrast"
+      ],
+      "image_reference": "localhost/autonomics/b-state-official-candidate@sha256:e2097dd2ea87845952eb39e565b43ec9ff10ba9a3cbf5692f18ded03303fb913",
+      "files": [
+        {
+          "path": "README.md",
+          "sha256": "0827836fe20e5035229f06e3912a4a2c6ce8f6d91307e90b45c581aa8a1f0d34",
+          "bytes": 2027,
+          "executable": false
+        },
+        {
+          "path": "TRANSPORT.md",
+          "sha256": "95352b5248659b3e08ef8fbb3e2bd6110696e376a779779048cd63fd124a03aa",
+          "bytes": 692,
+          "executable": false
+        },
+        {
+          "path": "component-source.json",
+          "sha256": "959806440ec358a0b088c9fd432d6801641a95f0538345862fd38be7c57d57d5",
+          "bytes": 1766,
+          "executable": false
+        },
+        {
+          "path": "manifest.toml",
+          "sha256": "58d8b41479f2436d6e629aeb660ea12d5a43f36d02354c353acf2abc6585d620",
+          "bytes": 2928,
+          "executable": false
+        },
+        {
+          "path": "scripts/run-contrast.R",
+          "sha256": "b9659521360cb21f05ea4a1352bf1afbf87a4db9e96901b0c8d1c7c13a7d36c1",
+          "bytes": 27720,
+          "executable": false
+        },
+        {
+          "path": "scripts/run-score.R",
+          "sha256": "cf5f8bded7ab6e0f8277c2571592ab09d11f04fb80a6f3c6340ecf253d560b81",
+          "bytes": 20705,
+          "executable": false
+        }
+      ],
+      "source_inventory_only": true,
+      "scientific_certified": false,
+      "auto_enable": false
+    },
+    {
+      "directory": "research-adapters/c-network-contract",
+      "plugin_name": "c-network-contract",
+      "kinds": [
+        "c_network_frozen_matched_null"
+      ],
+      "image_reference": "localhost/autonomics/python-guard@sha256:d7d40ff1494750f26ded735e2551efb86d970355b805868b92ec9107b7ca7c68",
+      "files": [
+        {
+          "path": "TRANSPORT.md",
+          "sha256": "95352b5248659b3e08ef8fbb3e2bd6110696e376a779779048cd63fd124a03aa",
+          "bytes": 692,
+          "executable": false
+        },
+        {
+          "path": "component-source.json",
+          "sha256": "908f15645831b8dc4e9868ee2a133de6887642a15ceb42c99e41cba2e32006ee",
+          "bytes": 1194,
+          "executable": false
+        },
+        {
+          "path": "manifest.toml",
+          "sha256": "08d1927eb8ffb5190f7abfe5b683a6926726b20fb5a845ec8b1f766e019e2a9b",
+          "bytes": 2406,
+          "executable": false
+        },
+        {
+          "path": "scripts/run-network.py",
+          "sha256": "36f2d8a38abaaf96c011ac075ec5af0133adf4ba3e8d2106dc69a48219436eca",
+          "bytes": 169062,
+          "executable": false
+        }
+      ],
+      "source_inventory_only": true,
+      "scientific_certified": false,
+      "auto_enable": false
+    },
+    {
+      "directory": "research-adapters/c-network-source-contract",
+      "plugin_name": "c-network-source-contract",
+      "kinds": [
+        "c_network_source_normalize"
+      ],
+      "image_reference": "localhost/autonomics/python-guard@sha256:d7d40ff1494750f26ded735e2551efb86d970355b805868b92ec9107b7ca7c68",
+      "files": [
+        {
+          "path": "README.md",
+          "sha256": "01d5a1c9cb5db78045df5d7f0155fef705f576600d3acf3ba212e651e56ea7f6",
+          "bytes": 5461,
+          "executable": false
+        },
+        {
+          "path": "TRANSPORT.md",
+          "sha256": "95352b5248659b3e08ef8fbb3e2bd6110696e376a779779048cd63fd124a03aa",
+          "bytes": 692,
+          "executable": false
+        },
+        {
+          "path": "component-source.json",
+          "sha256": "9af2bb6a925bb62162db6dc42ada3efc9976c21479b40bbb4f83cfac652cbe94",
+          "bytes": 1505,
+          "executable": false
+        },
+        {
+          "path": "manifest.toml",
+          "sha256": "82b048f337ece02936278e7cd48e2f0984a26039293db8274327e36fde53a880",
+          "bytes": 2316,
+          "executable": false
+        },
+        {
+          "path": "scripts/run-source.py",
+          "sha256": "04c4dc31580c5737608089b9a8a03c21f77397b61d2af3278760e42031b7d383",
+          "bytes": 72450,
+          "executable": false
+        }
+      ],
+      "source_inventory_only": true,
+      "scientific_certified": false,
+      "auto_enable": false
+    },
+    {
+      "directory": "research-adapters/c-safety-contract",
+      "plugin_name": "c-safety-contract",
+      "kinds": [
+        "c_safety_declared_risk_matrix",
+        "c_safety_bound_risk_matrix"
+      ],
+      "image_reference": "localhost/autonomics/python-guard@sha256:d7d40ff1494750f26ded735e2551efb86d970355b805868b92ec9107b7ca7c68",
+      "files": [
+        {
+          "path": "README.md",
+          "sha256": "5dcd7e546f75351d167e3619bbe9d68045ebc335203d02d3368080bcf15c9959",
+          "bytes": 4746,
+          "executable": false
+        },
+        {
+          "path": "TRANSPORT.md",
+          "sha256": "95352b5248659b3e08ef8fbb3e2bd6110696e376a779779048cd63fd124a03aa",
+          "bytes": 692,
+          "executable": false
+        },
+        {
+          "path": "component-source.json",
+          "sha256": "8aad3d245cc261379621640d8090047ffe145d85fe48b410af78f15593922907",
+          "bytes": 1795,
+          "executable": false
+        },
+        {
+          "path": "manifest.toml",
+          "sha256": "13afc18a8586c7d2dec450f5d043e8de7c6c4a44022f2df44e32931e4d0af3c3",
+          "bytes": 3900,
+          "executable": false
+        },
+        {
+          "path": "scripts/run-bound-safety.py",
+          "sha256": "3d92a40282d7f6c62cd7ef185128e7efe523755f579ad90c061abfdc646f577f",
+          "bytes": 67317,
+          "executable": false
+        },
+        {
+          "path": "scripts/run-safety.py",
+          "sha256": "52f4499254ee46289435cd700cb5cf85682d0148aeed84e8fe41b46896ffc2b4",
+          "bytes": 67294,
+          "executable": false
+        }
+      ],
+      "source_inventory_only": true,
+      "scientific_certified": false,
+      "auto_enable": false
+    },
+    {
       "directory": "research-adapters/cachexia-10x-preprocessor",
       "plugin_name": "cachexia-10x-preprocessor",
       "kinds": [
@@ -17400,6 +17925,129 @@
           "sha256": "75ce91cde58b6cf90c9e9bcd0096330777d8caf4b7399681b945635438c57533",
           "bytes": 43389,
           "executable": true
+        }
+      ],
+      "source_inventory_only": true,
+      "scientific_certified": false,
+      "auto_enable": false
+    },
+    {
+      "directory": "research-adapters/pseudobulk-contract",
+      "plugin_name": "pseudobulk-contract",
+      "kinds": [
+        "pseudobulk_frozen_raw_counts"
+      ],
+      "image_reference": "localhost/autonomics/python-guard@sha256:d7d40ff1494750f26ded735e2551efb86d970355b805868b92ec9107b7ca7c68",
+      "files": [
+        {
+          "path": "README.md",
+          "sha256": "978844db675173464f7527502d412d7668912ec794796d37f2185a1743ab19f7",
+          "bytes": 4539,
+          "executable": false
+        },
+        {
+          "path": "TRANSPORT.md",
+          "sha256": "95352b5248659b3e08ef8fbb3e2bd6110696e376a779779048cd63fd124a03aa",
+          "bytes": 692,
+          "executable": false
+        },
+        {
+          "path": "component-source.json",
+          "sha256": "72f3efb8be0e7e5abceccf4af2dd1b9be90b375551b180b704d3de26107a3af7",
+          "bytes": 1793,
+          "executable": false
+        },
+        {
+          "path": "manifest.toml",
+          "sha256": "357c5616409d1ffad152ca31eb530ab015830cd0bb3d5c59399dafe7b753c415",
+          "bytes": 2151,
+          "executable": false
+        },
+        {
+          "path": "scripts/pseudobulk.py",
+          "sha256": "9728e902e032dd948f8906a5682a42a28d4d2abfc39db96b2265c5670572dca6",
+          "bytes": 26484,
+          "executable": false
+        },
+        {
+          "path": "scripts/run-counts.py",
+          "sha256": "41f397996e294b0e5eb8f91b5d09d12ee8a29366d3ccb94dc0cb9444c83c13bf",
+          "bytes": 54671,
+          "executable": false
+        }
+      ],
+      "source_inventory_only": true,
+      "scientific_certified": false,
+      "auto_enable": false
+    },
+    {
+      "directory": "research-adapters/singscore-contract",
+      "plugin_name": "singscore-contract",
+      "kinds": [
+        "singscore_frozen_scores",
+        "singscore_frozen_contrasts"
+      ],
+      "image_reference": "localhost/autonomics/singscore-contract@sha256:442ba1128697740289d709a8c6e75e1f2620a3d105954ca8dfddf562a89853d7",
+      "files": [
+        {
+          "path": "Dockerfile",
+          "sha256": "545ebcfa90286cd67b076cb86ce2e0ea37f1b3389fd5250b74155114bd700fa5",
+          "bytes": 1942,
+          "executable": false
+        },
+        {
+          "path": "README.md",
+          "sha256": "27c27775dec0a7fefe95d74b0621b645a92ee198310078cf44b34fc14603d9c8",
+          "bytes": 5114,
+          "executable": false
+        },
+        {
+          "path": "TRANSPORT.md",
+          "sha256": "95352b5248659b3e08ef8fbb3e2bd6110696e376a779779048cd63fd124a03aa",
+          "bytes": 692,
+          "executable": false
+        },
+        {
+          "path": "component-source.json",
+          "sha256": "417bbf32f77a3c4774401177ccdb20d3a38861a5c5ba817a68267f2b9506cb09",
+          "bytes": 3008,
+          "executable": false
+        },
+        {
+          "path": "manifest.toml",
+          "sha256": "9f01ec4d54b4840102001915232ee136e82e131c2467d814de21c559b90a99c4",
+          "bytes": 2690,
+          "executable": false
+        },
+        {
+          "path": "scripts/contrasts.R",
+          "sha256": "bbf2c53bf56196d60983e99b7d2d52eda8251c0c21c4cd525b72bb9d894c0f32",
+          "bytes": 9521,
+          "executable": false
+        },
+        {
+          "path": "scripts/install-environment.R",
+          "sha256": "4dfcac618f4428947db5e22446eea596032fd2f4e5596c587acbeefaa993d650",
+          "bytes": 2661,
+          "executable": false
+        },
+        {
+          "path": "scripts/run-contrasts.sh",
+          "sha256": "b4f299b3a89cdde9ef6326e50bff54e9a768b2be3060e9347da4ee2753524114",
+          "bytes": 231,
+          "executable": false
+        },
+        {
+          "path": "scripts/run-scores.sh",
+          "sha256": "01d4234013d6df0d16e27b89f41d5641031e69a16e6091b98c527a94b6e87900",
+          "bytes": 206,
+          "executable": false
+        },
+        {
+          "path": "scripts/score.R",
+          "sha256": "1b918a0a5700b6c602aa32bca3f1954426f1bdab068ad0e289b129f42cb2e32f",
+          "bytes": 8694,
+          "executable": false
         }
       ],
       "source_inventory_only": true,

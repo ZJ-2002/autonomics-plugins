@@ -1,0 +1,4 @@
+#!/bin/sh
+# The engine inserts its loaded script before manifest argv. Bake vanilla
+# into the executable so profiles cannot run before the fixed method.
+exec Rscript --vanilla "$@"

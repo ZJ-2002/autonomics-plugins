@@ -1,0 +1,36 @@
+{
+  "auto_enable": false,
+  "imported_files": {
+    "README.md": {
+      "bytes": 3135,
+      "executable": false,
+      "git_blob": "46e3410b2518aeb00abfb258fa5a400db5fe5706",
+      "sha256": "991aca262e21b6563a0b66126b8cd7f0d8740b668b54fe9e745af38081a7c25c",
+      "source_path": "study_plugins/b-bulk-inputs-contract/README.md"
+    },
+    "manifest.toml": {
+      "bytes": 2060,
+      "executable": false,
+      "git_blob": "7de6d0f0b14e3e32fa3c0cc17df713651ace4ce1",
+      "sha256": "b8f4976bb3e01afe8f98ce38597485998c73a0bdc912f036d2e6cdd4d066a0dc",
+      "source_path": "study_plugins/b-bulk-inputs-contract/manifest.toml"
+    },
+    "scripts/run-inputs.py": {
+      "bytes": 221547,
+      "executable": false,
+      "git_blob": "37e928a94fe47901447ca7b4bf7538d4f37b6fe1",
+      "sha256": "2d4609950a0ca9bf86bd9734325d93d3ec2eea2e49fc5f9532801f68c42d132c",
+      "source_path": "study_plugins/b-bulk-inputs-contract/scripts/run-inputs.py"
+    }
+  },
+  "loaded_worker_registration_verified": false,
+  "method_acceptance_verified": false,
+  "runtime_image_currently_present_verified": false,
+  "schema_version": 1,
+  "scientific_authorization": false,
+  "scope": "BYTE_EXACT_GOVERNANCE_ADAPTER_SOURCE_TRANSPORT_NOT_ALGORITHM_REIMPLEMENTATION_OR_RUNTIME_ACCEPTANCE",
+  "source_commit": "073fa0b888828a661a73fa87ee562adbbe571c32",
+  "source_family": "study_plugins/b-bulk-inputs-contract",
+  "source_repository": "https://github.com/ZJ-2002/autonomics",
+  "status": "ENGINEERING_CANDIDATE"
+}
