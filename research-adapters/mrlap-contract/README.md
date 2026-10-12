@@ -1,6 +1,7 @@
 # Frozen official MRlap candidate — not admitted for formal execution
 
-This adapter supplies only the official MRlap computation. It does not approve
+This adapter supplies the official MRlap computation and one explicitly marked
+completion of the frozen direct-IV applicability check without a fit. It does not approve
 G0, LD reference applicability, normalization, sample overlap, instrument
 selection, diagnostics or a scientific conclusion. Eligible O1 analyses remain
 blocked in the formal worker until the full adapter, producer binding and method
@@ -24,7 +25,17 @@ case-control traits require integer total N and log-odds beta, rather than
 effective N or odds ratios. MRlap returns standardized observed Z/sqrt(N)
 effects; these are not interchangeable with the other adapter's raw beta scale.
 
-At least three accepted direct upstream IVs are required. Pruning is disabled
+At least three accepted direct upstream IVs are required for a statistical fit.
+After every ten-input, original-parent, full-GWAS/N, panel-content and software
+check has passed, an actual upstream retained direct-IV count of zero, one or two
+publishes a complete `NOT_ESTIMABLE` MAIN row with method `NONE`, reason
+`INSUFFICIENT_FROZEN_DIRECT_IVS` and all coefficients/P values missing. Its audit
+states `method_executed=false` and `method_status=NOT_APPLICABLE`, binds the same
+real parent hashes and exact threshold/count, and leaves LDSC diagnostics null.
+This is the only no-fit route. Missing/unlicensed sources, wrong hashes,
+contracts, panels, N, coverage, environments or arbitrary method errors stay
+blocked. A genuinely empty selected table from an actual clump is supported;
+an empty full GWAS is rejected. Pruning is disabled
 and the exact qualified upstream IV universe must survive the official method.
 All selected rows remain in the retention ledger, including upstream exclusions.
 MAIN does not remove MHC or TERT. With `do_pruning=FALSE`, official MRlap ignores
@@ -43,8 +54,11 @@ build. Missing diagnostics and malformed corrected quantities block. Finite
 official estimates that fail applicability are NOT_ESTIMABLE with primary P=NA;
 they never fall back to observed IVW P. Raw quantities stay in private outputs.
 
-Outputs are MAIN estimates, full selection retention, execution audit, original
-official R result and deterministic diagnostic log tar. Scripts use fixed RNG
+Outputs retain the same five-port ABI: MAIN estimates, full selection retention,
+execution audit, R result and deterministic diagnostic tar. A fit contains the
+original official result/logs. A no-fit completion contains a clearly labelled
+applicability-only RDS and only `not-applicable.json` in the tar; it never invents
+an official result or LDSC logs. Scripts use fixed RNG
 and one BLAS thread. `mrlap.R` is the sole source; regenerate its byte-bound shell
 entrypoint with `python3 -B scripts/generate_mrlap_contract_wrapper.py`.
 
@@ -66,9 +80,16 @@ component-only; the formal runtime's storage policy has not been changed.
 The aggregation candidate `frozen_mrlap_request` binds seven actual MR/MRlap
 ports per O1 edge. The recipe compiler checks their causal clump, harmonization,
 config-hash binder and audit lineage before emitting an O1 batch. The native
-node rechecks producer bytes, full retained IV IDs, frozen diagnostic criteria
+node rechecks producer bytes, the same supported parent protocol, full retained IV IDs, frozen diagnostic criteria
 and primary-P provenance. It preserves the parallel IVW P, including when the
 corrected result is rejected, without using that IVW P for the O1 family. Each
 batch is limited to 36 edges/252 input ports; complete original families remain
 unsplit for correction. This engineering integration is not scientific method
 admission or qualification of a newly frozen worker binary.
+
+The collector accepts the sole no-fit route only when its actual harmonic
+ledger and parent MAIN count prove fewer than three direct IVs, the frozen
+threshold is exactly three, full preflight coverage is demonstrated, all MRlap
+statistics are missing, and no official retained IVs/diagnostics are claimed.
+`completed_adapters` records successful adapter/QC completion; the separate audit
+retains `method_executed=false` so it cannot be mistaken for a statistical fit.

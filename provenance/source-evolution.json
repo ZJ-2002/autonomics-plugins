@@ -741,6 +741,78 @@
         "bytes": 24578,
         "git_blob": "8bb924b03d460e7c5c028bca7fec39f4ca42dfaf"
       }
+    },
+    {
+      "path": "research-adapters/mrlap-contract/README.md",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/autonomics.git",
+        "revision": "f3d7bdfe5cbdb96ae7771e6e2247f43b5df6f311",
+        "sha256": "9aa73554456ae51ffa6cf980cbda349584e259a0e62376f490f0a8f5b5e87bf1",
+        "bytes": 5015,
+        "git_blob": "1fa8db3fb0e8f51e58d5f66b516ff65bddb07ce3"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "d9b25d4ce9b3aab46b1c4f905c3ca5b0e7c033d4",
+        "path": "research-adapters/mrlap-contract/README.md",
+        "sha256": "0253c344d42530ce10f968eec7f0f0697d04f7b297b2bb6f65bb863f090aff1f",
+        "bytes": 6589,
+        "git_blob": "8c5f86457a8c450c66572fe1b40eb0414c8fa2ea"
+      }
+    },
+    {
+      "path": "research-adapters/mrlap-contract/manifest.toml",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/autonomics.git",
+        "revision": "f3d7bdfe5cbdb96ae7771e6e2247f43b5df6f311",
+        "sha256": "4a01e417d089e391155f633600c376d25a943c110383618f2beab246878d9128",
+        "bytes": 2150,
+        "git_blob": "32921f6c55824ec75acb978b98f51a5c58d7057a"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "d9b25d4ce9b3aab46b1c4f905c3ca5b0e7c033d4",
+        "path": "research-adapters/mrlap-contract/manifest.toml",
+        "sha256": "347bfc49710a3d9b87626e8354369b306194b541ba8d3a2df56fdeb53895313d",
+        "bytes": 2530,
+        "git_blob": "22efab55fb51dfe0f928416f1bd4b5eca568d356"
+      }
+    },
+    {
+      "path": "research-adapters/mrlap-contract/scripts/mrlap.R",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/autonomics.git",
+        "revision": "f3d7bdfe5cbdb96ae7771e6e2247f43b5df6f311",
+        "sha256": "1e663717ac9c02762ea4bb3a2a27e7b81257c7864f4c6d8b746cc4089cb8141b",
+        "bytes": 22354,
+        "git_blob": "9182f18994d61f181177681882d818e8a3b4b443"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "d9b25d4ce9b3aab46b1c4f905c3ca5b0e7c033d4",
+        "path": "research-adapters/mrlap-contract/scripts/mrlap.R",
+        "sha256": "f764b092d85ddf9aa9e27ca29befeffe1c0088a9fecebb33f5d1012b9a46f524",
+        "bytes": 27431,
+        "git_blob": "977d164e288331c3c1c95380bf5cd7f858bbddec"
+      }
+    },
+    {
+      "path": "research-adapters/mrlap-contract/scripts/run-mrlap.sh",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/autonomics.git",
+        "revision": "f3d7bdfe5cbdb96ae7771e6e2247f43b5df6f311",
+        "sha256": "bb58843eb478fbd952e8ef78d600771ec7b24a31689ba1c3787a602bd0dd9abb",
+        "bytes": 23049,
+        "git_blob": "c163bfc2a18c4bf6fc723466b921e170e4ec8f83"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "d9b25d4ce9b3aab46b1c4f905c3ca5b0e7c033d4",
+        "path": "research-adapters/mrlap-contract/scripts/run-mrlap.sh",
+        "sha256": "5ab8923d09a8ebafb99baf5167dd4cf01ade8d14cd7cac5685df62be298515c4",
+        "bytes": 28126,
+        "git_blob": "9ccf1c22210a6f34146df62bf03e7b8d573b78cf"
+      }
     }
   ]
 }

@@ -19,7 +19,7 @@ bundle = "ZJ-2002/catalog-mrlap-ldsc-eur-w-ld-hm3-no-mhc"
 [[nodes]]
 kind = "mrlap_official_frozen"
 desc = "Candidate: frozen full GWAS, N source, upstream direct IVs, official cross-trait LDSC/MRlap."
-doc = "Ten frozen inputs bind full normalized GWAS, complete N provenance, selected source tables, upstream harmonic ledger/audit/config and panel identity. O1 only; no internal clumping, reverse selection, IVW fallback or scientific authorization. Official method source/image and applicability require separate acceptance. This candidate is not yet admitted by the formal worker."
+doc = "Ten frozen inputs bind full normalized GWAS, complete N provenance, selected source tables, upstream harmonic ledger/audit/config and panel identity. O1 only; no internal clumping, reverse selection, IVW fallback or scientific authorization. After all preflight and software checks, only fewer than three actual upstream direct IVs completes without fitting: full NOT_ESTIMABLE row, null coefficients/P, method_executed=false, exact parent-bound applicability audit and clearly labelled no-fit RDS/tar in the unchanged five-output ABI. Missing sources, bad identities/panels/N/coverage or technical errors remain blocked. Official method source/image and applicability require separate acceptance. This candidate is not yet admitted by the formal worker."
 timeout_secs = 3600
 artifact_prefix = "/artifacts/mrlap_official_frozen"
 [nodes.resources]
