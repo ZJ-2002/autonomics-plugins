@@ -10,6 +10,7 @@ import tomllib
 import unittest
 
 from tools.check_frozen_genetic import check_family
+from tools.catalog import verify_import_detailed
 
 ROOT = Path(__file__).resolve().parents[1]
 FAMILY = ROOT/'research-adapters/mrlap-contract'
@@ -29,14 +30,22 @@ class MRlapContractTransportTests(unittest.TestCase):
         rows=[r for r in index['research_adapters'] if r['directory']=='research-adapters/mrlap-contract']
         self.assertEqual(len(rows),1);original=rows[0]
         lock=json.loads((FAMILY/'component-source.json').read_bytes())
-        self.assertEqual(original['revision'],lock['source_commit'])
+        # Original import history is retained after a separately recorded Git
+        # source evolution; it is never refreshed from the current bytes.
+        self.assertEqual(original['revision'],'f3d7bdfe5cbdb96ae7771e6e2247f43b5df6f311')
         self.assertFalse(original['scientific_certified']);self.assertFalse(original['auto_enable'])
         self.assertEqual({r['path'] for r in original['files']},set(lock['imported_files']))
         for row in original['files']:
-            raw=(FAMILY/row['path']).read_bytes()
+            raw=subprocess.run(['git','-C',str(ROOT),'cat-file','blob',row['git_blob']],
+                capture_output=True,check=True).stdout
             self.assertEqual(hashlib.sha256(raw).hexdigest(),row['sha256'])
             self.assertEqual(len(raw),row['bytes'])
             self.assertEqual(hashlib.sha1(b'blob '+str(len(raw)).encode()+b'\0'+raw).hexdigest(),row['git_blob'])
+        report=verify_import_detailed(ROOT)
+        self.assertGreater(report['original_import_files_verified'],0)
+        self.assertGreaterEqual(report['recorded_source_evolution_files_verified'],4)
+        self.assertFalse(report['scientific_method_certified']);self.assertFalse(report['auto_enable'])
+        self.assertEqual(lock['source_commit'],'e2b8fe4693477a78dd749b814d641bb2c491df3f')
 
     def test_exact_independent_kind_ports_and_source_transport(self):
         report=check_family(FAMILY)

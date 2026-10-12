@@ -1,6 +1,9 @@
 Independent ten-input research MRlap transport, not scientific acceptance
 
-Exact source: f3d7bdfe5cbdb96ae7771e6e2247f43b5df6f311 in ZJ-2002/autonomics.
+Original import: f3d7bdfe5cbdb96ae7771e6e2247f43b5df6f311 in ZJ-2002/autonomics.
+Current byte-exact source: e2b8fe4693477a78dd749b814d641bb2c491df3f.
+The original source-index remains unchanged; independently verified Git source
+evolution records identify the current imported paths without changing old facts.
 component-source.json binds imported files and the complete wrapper renderer.
 All manifest/R/generated program bytes match that source commit. The sole
 official statistical implementation remains MRlap::MRlap; the canonical
@@ -12,6 +15,12 @@ actual harmonization/audit/config and panel identity. Supporting 4.2.1/4.3.2
 protocols requires an exact same-version upstream parent. No defaults create
 scientific overlap decisions, applicability, resource admission or G0.
 
+The sole no-fit completion is fewer than three real parent direct IVs after all
+ten-input/full-GWAS/N/panel/protocol/software checks. It retains all five outputs,
+null coefficients/P, actual parent hashes and method_executed=false. Its RDS/tar
+are labelled applicability-only; missing sources or arbitrary errors remain
+blocked. This transport update does not change any official statistical function.
+
 Measured local image reference:
 ghcr.io/zj-2002/mrlap-official@sha256:e6e10cddfa1cba8046ee6fbc1492b94cbd70d66b097f5f415845d56f9f925434
 Image metadata Id:
@@ -19,12 +28,15 @@ Image metadata Id:
 The e6e10... serialization is not relabeled as 78f195... or treated as the
 same method certificate. podman image inspect found the exact digest/reference
 and labels 0.0.3.3 / 660f026864f8bfbbad5a8206bdff7d58f5d5d05b on 2026-10-12.
-Metadata does not validate installed GenomicSEM/TwoSampleMR/support packages.
+Separate controlled private-image probes measured the expected namespace
+versions and seven selected official function ASTs. Those probes explicitly
+exclude statistical fit, actual loaded source-kind registration and full method
+or producer qualification; this new transport has no scientific certificate.
 The wrapper is supplied by this plugin transport; no new image was built.
 
 Use tools.check_frozen_genetic for read-only byte/wrapper checks. source-index
 and release-lock mark scientific_certified=false and auto_enable=false.
-Loaded worker registration, actual image dependencies, official numerical
+Loaded worker registration, complete dependency applicability, official numerical
 method/diagnostic qualification and memory 8Gi plus 2Gi resource admission
 remain unverified requirements. No profile, daemon or canonical algorithm
 was changed. Native Rust MRlap remains outside this adapter.

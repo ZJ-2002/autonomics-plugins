@@ -30,10 +30,17 @@ mrlap_parent_protocol_matches <- function(current, parent) {
   mrlap_protocol_supported(current) && mrlap_protocol_supported(parent) && identical(current, parent)
 }
 
-read_normal <- function(path) {
+read_normal <- function(path, allow_empty_selected = FALSE) {
   d <- read_tsv(path)
+  # A real upstream clump may select zero instruments. Full GWAS sources remain
+  # nonempty; an empty selected table is admitted only with its actual parent
+  # content/projection/harmonic/selection bindings checked below.
+  if (allow_empty_selected && nrow(d) == 0L && identical(names(d), normal_columns)) {
+    for (name in c("snp", "effect_allele", "other_allele")) d[[name]] <- character()
+    for (name in c("chr", "pos", "beta", "se", "eaf", "pval")) d[[name]] <- numeric()
+  }
   if (is.logical(d$eaf) && all(is.na(d$eaf))) d$eaf <- as.numeric(d$eaf)
-  check(identical(names(d), normal_columns) && nrow(d) > 0L && !anyDuplicated(d$snp) &&
+  check(identical(names(d), normal_columns) && (nrow(d) > 0L || allow_empty_selected) && !anyDuplicated(d$snp) &&
     is.character(d$snp) && all(grepl("^rs[0-9]+$", d$snp)), "complete unique normalized rsID GWAS required")
   for (name in c("chr", "pos", "beta", "se", "eaf", "pval")) {
     check(is.numeric(d[[name]]), paste("numeric GWAS column required:", name))
@@ -139,7 +146,7 @@ preflight <- function(paths, panel_root) {
   check(all(vapply(names(c$input_sha256), function(k) identical(hashes[[k]], c$input_sha256[[k]]), logical(1))),
     "frozen content identity mismatch")
   full_x <- read_normal(paths[2L]); full_y <- read_normal(paths[3L])
-  selected_x <- read_normal(paths[5L]); selected_y <- read_normal(paths[6L])
+  selected_x <- read_normal(paths[5L], allow_empty_selected = TRUE); selected_y <- read_normal(paths[6L])
   check_projection(selected_x, full_x, "selected exposure"); check_projection(selected_y, full_y, "selected outcome")
   sizes <- read_tsv(paths[4L])
   check(identical(names(sizes), c("trait", "snp", "N")) &&
@@ -163,13 +170,18 @@ preflight <- function(paths, panel_root) {
     identical(mr_config$input_sha256$exposure, hashes$selected_exposure) &&
     identical(mr_config$input_sha256$outcome, hashes$selected_outcome), "upstream frozen construct/overlap contract differs")
   h <- read_tsv(paths[7L])
+  check(all(c("SNP", "mr_keep", "beta.exposure", "beta.outcome", "se.exposure", "se.outcome", "id.exposure", "id.outcome") %in% names(h)),
+    "complete upstream harmonic instrument ledger required")
+  if (nrow(h) == 0L) {
+    h$SNP <- character(); h$mr_keep <- logical()
+  }
   check(all(c("SNP", "mr_keep", "beta.exposure", "beta.outcome", "se.exposure", "se.outcome", "id.exposure", "id.outcome") %in% names(h)) &&
     !anyDuplicated(h$SNP) && setequal(h$SNP, selected_x$snp) && is.logical(h$mr_keep) && !anyNA(h$mr_keep),
     "complete upstream harmonic instrument ledger required")
   ivs <- h$SNP[h$mr_keep]
-  check(length(ivs) >= 3L && all(ivs %in% full_x$snp) && all(ivs %in% full_y$snp) &&
+  check(all(ivs %in% full_x$snp) && all(ivs %in% full_y$snp) &&
     all(h$id.exposure[h$mr_keep] == c$exposure_id) && all(h$id.outcome[h$mr_keep] == c$outcome_id),
-    "three qualified direct IVs and construct identity required")
+    "qualified direct IVs and construct identity required")
   x <- full_x[match(ivs, full_x$snp), ]; y <- full_y[match(ivs, full_y$snp), ]
   check(all(x$chr == y$chr & x$pos == y$pos), "direct IV coordinates differ")
   check(all(x$pval < 5e-8), "retained instruments violate the frozen exposure significance threshold")
@@ -202,7 +214,9 @@ preflight <- function(paths, panel_root) {
   convert <- function(g, n) data.frame(rsid = g$snp, chr = g$chr, pos = g$pos,
     a1 = g$effect_allele, a2 = g$other_allele, beta = g$beta, se = g$se, N = n)
   list(config = c, input_sha256 = hashes, exposure = convert(full_x, nx), outcome = convert(full_y, ny),
-    ivs = ivs, source_iv_ids = selected_x$snp, common_hm3_rows = length(common), panel_manifest = panel)
+    ivs = ivs, source_iv_ids = selected_x$snp, common_hm3_rows = length(common), panel_manifest = panel,
+    not_applicable_reason = if (length(ivs) < c$instrument_policy$complex_trait_min_iv)
+      "INSUFFICIENT_FROZEN_DIRECT_IVS" else NULL)
 }
 
 numeric_result <- function(x, label) {
@@ -243,7 +257,57 @@ write_audit <- function(audit, path) {
   if (!is.null(audit$diagnostic_policy))
     audit$diagnostic_policy$allowed_warning_messages <- as.list(audit$diagnostic_policy$allowed_warning_messages)
   if ("warnings" %in% names(audit)) audit$warnings <- as.list(audit$warnings)
+  for (key in c("requested_iv_ids", "retained_iv_ids"))
+    if (key %in% names(audit)) audit[[key]] <- as.list(audit[[key]])
   jsonlite::write_json(audit, path, auto_unbox = TRUE, pretty = TRUE, null = "null", digits = 17)
+}
+
+# A successful adapter/QC completion without invoking any official statistic.
+# Only this frozen, actual-parent instrument-count condition can enter here;
+# main still verifies every source/panel/namespace/software input beforehand.
+publish_not_applicable <- function(p, paths, outputs) {
+  c <- p$config
+  check(identical(p$not_applicable_reason, "INSUFFICIENT_FROZEN_DIRECT_IVS") &&
+    identical(c$instrument_policy$complex_trait_min_iv, 3L) && length(p$ivs) < 3L,
+    "only insufficient frozen direct IVs permit no-fit completion")
+  check(identical(vapply(paths, hash_file, character(1), USE.NAMES = FALSE),
+    unname(unlist(p$input_sha256, use.names = TRUE))), "input changed during applicability completion")
+  estimate <- data.frame(analysis_id = c$analysis_id, exposure_id = c$exposure_id, outcome_id = c$outcome_id,
+    overlap_class = "O1", analysis_scope = "MAIN", method = "NONE", n_iv = length(p$ivs),
+    effect_scale = c$effect_scale, status = "NOT_ESTIMABLE", reason = "INSUFFICIENT_FROZEN_DIRECT_IVS",
+    beta = NA_real_, se = NA_real_, p = NA_real_, primary_p = NA_real_, primary_source = "NOT_SUPPLIED",
+    observed_beta = NA_real_, observed_se = NA_real_)
+  requested <- p$source_iv_ids %in% p$ivs
+  retention_status <- rep("EXCLUDED_BY_UPSTREAM_FROZEN_HARMONIZATION", length(requested))
+  retention_status[requested] <- "NOT_APPLICABLE_INSUFFICIENT_DIRECT_IVS"
+  retention <- data.frame(snp = p$source_iv_ids, requested = requested,
+    retained = rep(FALSE, length(requested)), status = retention_status)
+  audit <- list(scope = "OFFICIAL_FROZEN_MRLAP_NOT_G0_OR_SCIENTIFIC_SIGNOFF", authorization = "NONE",
+    analysis_id = c$analysis_id, exposure_id = c$exposure_id, outcome_id = c$outcome_id, overlap_class = "O1",
+    input_sha256 = p$input_sha256, software_lock = c$software_lock, diagnostic_policy = c$diagnostic_policy,
+    source_revision_check = "REQUIRES_INDEPENDENT_PINNED_IMAGE_FUNCTION_AST_QUALIFICATION",
+    method_executed = FALSE, method_status = "NOT_APPLICABLE", not_applicable_reason = p$not_applicable_reason,
+    applicability_evidence = list(criterion = "UPSTREAM_FROZEN_DIRECT_HARMONIZATION_COUNT",
+      minimum_direct_iv = 3L, actual_direct_iv_count = length(p$ivs), full_preflight_validated = TRUE,
+      full_exposure_rows = nrow(p$exposure), full_outcome_rows = nrow(p$outcome)),
+    diagnostics = NULL, cross_trait_ldsc_snps = NULL, diagnostic_pass = NULL,
+    pre_munge_common_hm3_rows = p$common_hm3_rows, warnings = character(),
+    requested_iv_ids = p$ivs, retained_iv_ids = character(), internal_pruning = FALSE,
+    internal_reverse_filter_applied = FALSE, main_region_removal = FALSE,
+    seed = c$seed, effect_scale = c$effect_scale, session_info = capture.output(sessionInfo()))
+  for (output in outputs) dir.create(dirname(output), recursive = TRUE, showWarnings = FALSE)
+  utils::write.table(estimate, outputs[1L], sep = "\t", quote = FALSE, row.names = FALSE, na = "NA")
+  utils::write.table(retention, outputs[2L], sep = "\t", quote = FALSE, row.names = FALSE, na = "NA")
+  write_audit(audit, outputs[3L])
+  saveRDS(list(scope = "FROZEN_MRLAP_APPLICABILITY_ONLY_NO_STATISTICAL_FIT", method_executed = FALSE,
+    not_applicable_reason = p$not_applicable_reason, input_sha256 = p$input_sha256,
+    requested_iv_ids = p$ivs, applicability_evidence = audit$applicability_evidence), outputs[4L])
+  work <- tempfile("mrlap-no-fit-"); check(dir.create(work), "private no-fit scratch unavailable")
+  on.exit(unlink(work, recursive = TRUE), add = TRUE)
+  write_audit(audit, file.path(work, "not-applicable.json"))
+  status <- system2("tar", c("--sort=name", "--mtime=@0", "--owner=0", "--group=0", "--numeric-owner",
+    "-cf", shQuote(outputs[5L]), "-C", shQuote(work), "not-applicable.json"))
+  check(identical(status, 0L), "no-fit applicability archive publication failed")
 }
 
 main <- function(args) {
@@ -257,6 +321,10 @@ main <- function(args) {
   check(identical(as.character(getRversion()), c$software_lock$R_version), "R lock differs")
   for (package in c("MRlap", "GenomicSEM", "TwoSampleMR"))
     check(identical(as.character(utils::packageVersion(package)), c$software_lock[[paste0(package, "_version")]]), "method version differs")
+  if (!is.null(p$not_applicable_reason)) {
+    publish_not_applicable(p, args[1:10], outputs)
+    return(invisible(NULL))
+  }
   data.table::setDTthreads(2L)
   work <- tempfile("mrlap-work-"); check(dir.create(work), "private scratch unavailable")
   previous <- getwd(); setwd(work); on.exit({setwd(previous); unlink(work, recursive = TRUE)}, add = TRUE)
@@ -288,6 +356,7 @@ main <- function(args) {
     analysis_id = c$analysis_id, exposure_id = c$exposure_id, outcome_id = c$outcome_id, overlap_class = "O1",
     input_sha256 = p$input_sha256, software_lock = c$software_lock, diagnostic_policy = c$diagnostic_policy,
     source_revision_check = "REQUIRES_INDEPENDENT_PINNED_IMAGE_FUNCTION_AST_QUALIFICATION",
+    method_executed = TRUE,
     diagnostics = as.list(diagnostics), cross_trait_ldsc_snps = count, pre_munge_common_hm3_rows = p$common_hm3_rows,
     warnings = warnings_seen, diagnostic_pass = accepted, requested_iv_ids = p$ivs, retained_iv_ids = mc$IVs,
     internal_pruning = FALSE, internal_reverse_filter_applied = FALSE, main_region_removal = FALSE,
