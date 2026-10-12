@@ -310,8 +310,15 @@ kind = "sc_dense_ingest"
 desc = "Ingests a dense CSV/TSV gene-by-cell or cell-by-gene count matrix into H5AD."
 doc = """
 Input port 0 is a CSV/TSV(.gz) count matrix. Output ports are output.h5ad
-then report.json. genes_by_cells expects genes in rows; cells_by_genes is
-transposed automatically. The legacy path parameter (ingest a host file
+then report.json. genes_by_cells expects genes in rows and is transposed
+to AnnData cells-by-genes; cells_by_genes retains the input orientation.
+Literal identifiers are preserved, never inferred numerically or renamed.
+Values must be finite nonnegative integers in the exact int64 storage range;
+no normalization or biological count-source qualification is performed.
+Headerless column IDs are generated as 1..N and explicitly marked synthetic.
+Scanpy filters cells before genes. Both outputs are staged and published
+without overwrite; ordinary rollback is not crash atomicity or recovery.
+The legacy path parameter (ingest a host file
 without an input edge) has no manifest equivalent: stage the matrix
 through the input port instead.
 """
@@ -336,7 +343,7 @@ condition_label = { type = "string", optional = true, doc = "Optional constant w
 
 [nodes.command]
 interpreter = "python"
-script_file = "scripts/run_workflow.py"
+script_file = "scripts/dense_ingest.py"
 
 [nodes.command.env]
 AUTONOMICS_SINGLE_CELL_WORKFLOW = "dense_ingest"
