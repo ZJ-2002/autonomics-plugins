@@ -14213,14 +14213,14 @@
         },
         {
           "path": "README.md",
-          "sha256": "441f7646bb4a8348b229b63d64108a9aba24add37b359426ee44a9a52afa4676",
-          "bytes": 5942,
+          "sha256": "483f3f3aadecd8068e3682175e05b7d15870ec250a0685dcdf505582ac2e64ae",
+          "bytes": 7901,
           "executable": false
         },
         {
           "path": "manifest.toml",
-          "sha256": "22a4a36d679fab0bf2464d2ac03494ef4479f658fa617124bb885135dd76a2a2",
-          "bytes": 6224,
+          "sha256": "17a2be2eac2e1bf8e8ff3556a8fa5c059d8755d6eb4f650cd4e98aad1bc5dcdc",
+          "bytes": 6795,
           "executable": false
         },
         {
@@ -14231,14 +14231,26 @@
         },
         {
           "path": "scripts/pseudobulk_counts.py",
-          "sha256": "b73a2b2f6ef2052a0b00ba3694d562781b1927deb19303837698b7dbf01cca27",
-          "bytes": 12170,
+          "sha256": "38258d9685a335f0157ad9682d71b39aec6e31dc5df926b863d3039d55f3feba",
+          "bytes": 15451,
+          "executable": false
+        },
+        {
+          "path": "test_assurance.sh",
+          "sha256": "b48078fe744cbd8d648b93ed99da7efd21bc2cf91af1c693cfa5249f2d8dc057",
+          "bytes": 913,
           "executable": false
         },
         {
           "path": "tests/bench_pseudobulk.py",
           "sha256": "6a643833e643e1fbae029c25b3029271e6504c011ced60469e0bfad291368456",
           "bytes": 2646,
+          "executable": false
+        },
+        {
+          "path": "tests/test_assurance.py",
+          "sha256": "537b732e245339cf9cf4c674e5b2ebd918df0c9d3c3d5e0f3c9a88d6db0f55a3",
+          "bytes": 10221,
           "executable": false
         },
         {
@@ -14356,9 +14368,15 @@
           "executable": false
         },
         {
+          "path": "SUBSET_ASSURANCE.md",
+          "sha256": "8a97218cf1a07c84dc85f637f59de5d99ce7085bf94ed982ffde18e0b18d5470",
+          "bytes": 3833,
+          "executable": false
+        },
+        {
           "path": "manifest.toml",
-          "sha256": "31c26c10e798381f0b17c1e4a12d27d8fdee750fa9e949a197cd5d66053f77fe",
-          "bytes": 23129,
+          "sha256": "1d17525b0561391cc9aee9aab444eabe0a4627160fac4945c8a3e5a0ddfe60c5",
+          "bytes": 23273,
           "executable": false
         },
         {
@@ -14404,6 +14422,12 @@
           "executable": false
         },
         {
+          "path": "scripts/subset_by_obs.py",
+          "sha256": "0db6f4caadbb28f679f2d813c60de33d3c74ca1111934f01389b182306b088ec",
+          "bytes": 7731,
+          "executable": false
+        },
+        {
           "path": "test_celltypist_assurance.sh",
           "sha256": "9826a462b1ccaee71a157bc4a0766d625bbbf514ac5e0418e061c9ff307422e3",
           "bytes": 2636,
@@ -14443,6 +14467,12 @@
           "path": "test_single_cell_workflow.sh",
           "sha256": "602284104de982a7730cf849e103d4ef1bfbbd359b0c498fb8d3b37b75f182d8",
           "bytes": 4417,
+          "executable": false
+        },
+        {
+          "path": "test_subset_assurance.sh",
+          "sha256": "43281195f4fbdd87b2b2d163943fcc6b8089abd9ab38d736205be0e8711a6f86",
+          "bytes": 805,
           "executable": false
         },
         {
@@ -14569,6 +14599,12 @@
           "path": "tests/test_score_genes_contract.py",
           "sha256": "6e50e75b571765c87dfe5723cc2457a03a59c1903a045430cab5124506ecb9f7",
           "bytes": 2058,
+          "executable": false
+        },
+        {
+          "path": "tests/test_subset_by_obs.py",
+          "sha256": "c88766868a9c747ac1dd8b3308956603923dde877023af20e48a1a0e24cdcf81",
+          "bytes": 14640,
           "executable": false
         },
         {

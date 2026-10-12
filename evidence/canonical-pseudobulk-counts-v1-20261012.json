@@ -1,0 +1,138 @@
+{
+  "schema_version": "1.0",
+  "canonical_kind": "pseudobulk_counts",
+  "status": "PROVEN_SCOPED",
+  "provider": "Original canonical plugin family,not replacement adapter",
+  "family": "pseudobulk",
+  "role": "Exact donor/sample x celltype count SUM",
+  "inputs_outputs": {
+    "inputs": [
+      {
+        "type": "file"
+      }
+    ],
+    "outputs": [
+      {
+        "path": "pseudobulk_counts.tsv",
+        "format": "pseudobulk_counts"
+      },
+      {
+        "path": "pseudobulk_samples.tsv",
+        "format": "pseudobulk_samples"
+      },
+      {
+        "path": "pseudobulk.log",
+        "format": "pseudobulk_log"
+      }
+    ]
+  },
+  "parameters": {
+    "sample_col": {
+      "type": "string",
+      "doc": "obs column holding donor/animal identity (biological unit)"
+    },
+    "celltype_col": {
+      "type": "string",
+      "doc": "obs column holding cell type annotation"
+    },
+    "min_cells": {
+      "type": "int",
+      "default": 10,
+      "min": 1,
+      "doc": "drop pseudobulk groups with fewer cells"
+    },
+    "layer": {
+      "type": "string",
+      "optional": true,
+      "doc": "h5ad layer to aggregate; empty = .X"
+    },
+    "schema": {
+      "type": "string",
+      "default": "deseq2",
+      "doc": "output headers: deseq2 (gene_id/sample_id/condition, DESeq2-ready) | legacy (pre-F07 gene/pseudobulk_id)"
+    },
+    "allow_non_integer": {
+      "type": "bool",
+      "default": false,
+      "doc": "aggregate non-integer (e.g. normalised) layers as-is with a WARN instead of failing"
+    },
+    "condition_column": {
+      "type": "string",
+      "optional": true,
+      "doc": "obs column holding the design condition; required by schema=deseq2, must be constant within each pseudobulk group"
+    },
+    "id_schema": {
+      "type": "string",
+      "default": "sample__celltype",
+      "doc": "pseudobulk id pattern (informational; fixed join)"
+    }
+  },
+  "resources_unchanged": {
+    "network": "isolated",
+    "cpus": 4,
+    "memory": "8g",
+    "pull_policy": "never"
+  },
+  "method_proof": {
+    "author": "Official Scanpy 1.11.3 get.aggregate(...,func=sum)",
+    "positive_cases": 13,
+    "independence": "Independent author API in original reference image;fresh official module byte match and separate arbitrary-precision Python integer sums;not a newly installed entire runtime",
+    "gene_order_sample_ID_group_keys_conditions_ncells_matrix_dimensions_checked": true,
+    "integer_outputs_exact": true,
+    "float_atol": 1e-12,
+    "float_rtol": 0,
+    "author_reference_versions": {
+      "scanpy": "1.11.3",
+      "anndata": "0.11.4",
+      "numpy": "2.1.3",
+      "scipy": "1.14.1",
+      "pandas": "2.2.3"
+    },
+    "production_versions": {
+      "anndata": "0.12.19",
+      "numpy": "2.4.6",
+      "scipy": "1.17.1",
+      "pandas": "2.3.3"
+    },
+    "primary_docs": [
+      "https://scanpy.readthedocs.io/en/stable/generated/scanpy.get.aggregate.html"
+    ]
+  },
+  "method_scope": "Explicit X or named layer summed by donor/sample x celltype;all genes retained;min_cells excludes logged groups;missing labels logged. Default rejects negative/nonfinite/noninteger data;int64 values and sums exact including noncanonical sparse duplicates. Explicit noninteger branch sums as-is with warning,not raw counts. Deseq2/legacy schemas keep exact sample alignment.",
+  "implementation": {
+    "manifest_sha256": "sha256:17a2be2eac2e1bf8e8ff3556a8fa5c059d8755d6eb4f650cd4e98aad1bc5dcdc",
+    "script": "scripts/pseudobulk_counts.py",
+    "script_sha256": "sha256:38258d9685a335f0157ad9682d71b39aec6e31dc5df926b863d3039d55f3feba",
+    "image": "ghcr.io/zj-2002/biotools-py@sha256:7ad6aeafa87672699d28b61b6bed12fc81fcdbfc43222a0abf17e2d56fb806f5",
+    "image_unchanged": true,
+    "original_other_nodes_definitions_and_scripts_unchanged": true
+  },
+  "engineering_proof": {
+    "actual_original_defects": "Exact integer group overflow;TAB gene corrupted TSV;existing output overwritten",
+    "refusal_cases": 21,
+    "mandatory_combined_catalog_tests": 71,
+    "mandatory_compiled_family_contracts": null,
+    "no_overwrite_and_ordinary_publication_rollback": true,
+    "skipped_tests": 0
+  },
+  "isolated_DAG_proof": {
+    "submissions": 6,
+    "whole_reference_comparisons": 3,
+    "specific_refusals": 3,
+    "all_original_ports_materialized_read_and_hashed": true,
+    "source": "/home/zj-normal/Work/autonomics/results/cachexia-v4.3.2/b-core-integration-v1-20261012/COMBINED_NATIVE_DAG_PROOF_final-v3.json",
+    "scope": "Current merged plugin manifest/script and preserved native SDK,not latest whole engine/resident daemon"
+  },
+  "agent_evidence_dependency": "/home/zj-normal/Work/autonomics/results/cachexia-v4.3.2/canonical-pseudobulk-agent-v1-20261012",
+  "proof_packet": "/home/zj-normal/Work/autonomics/results/cachexia-v4.3.2/b-core-integration-v1-20261012",
+  "plan_contract": "NOT_IMPLEMENTATION_LOCKED;NOT_GRANTED;study qualification and complete donor/count/family contracts are separate",
+  "remaining": [
+    "Actual raw-count identity/layer freeze and biological independent-unit eligibility",
+    "Planned zero/low-cell groups,technical-library/pool rules and detailed cell exclusion ledger",
+    "Condition consistency across donor celltypes and DESeq2 narrower integer range",
+    "Full discovery universe,models,contrasts,complete family and failure propagation",
+    "Large scale/current whole-engine/resident/global quota/cache/recovery/crash atomicity/scientific implementation lock/G0"
+  ],
+  "production_deployed": false,
+  "G0": false
+}

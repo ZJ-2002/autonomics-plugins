@@ -1,0 +1,91 @@
+{
+  "schema_version": "1.0",
+  "canonical_kind": "h5ad_subset_by_obs",
+  "status": "PROVEN_SCOPED",
+  "provider": "Original canonical plugin family,not replacement adapter",
+  "family": "single-cell",
+  "role": "Full-object observation subset",
+  "inputs_outputs": {
+    "inputs": [
+      {
+        "type": "file",
+        "label": "h5ad"
+      },
+      {
+        "type": "file",
+        "label": "selection_parquet"
+      }
+    ],
+    "outputs": [
+      {
+        "path": "output.h5ad",
+        "format": "h5ad"
+      },
+      {
+        "path": "report.json",
+        "format": "single_cell_workflow_report_json"
+      }
+    ]
+  },
+  "parameters": {
+    "join_column": {
+      "type": "string",
+      "default": "cell_id",
+      "doc": "Parquet column selecting obs_names (cell_id) or another obs column to match on"
+    }
+  },
+  "resources_unchanged": {
+    "cpus": 2.0,
+    "memory": "8Gi",
+    "pids_limit": 512,
+    "shm_size": "1Gi"
+  },
+  "method_proof": {
+    "author": "AnnData 0.11.4 slicing and pandas lexical membership",
+    "positive_cases": 10,
+    "whole_X_raw_layers_graphs_embeddings_axis_metadata_checked": true,
+    "independence": "Direct official API outside node;five inherited sealed fresh-author payload hashes and freshly verified PyArrow wheel;no new independent installation",
+    "author_payload_files_exact": 4716,
+    "comparison_mutants_refused": 4,
+    "primary_docs": [
+      "https://anndata.readthedocs.io/en/stable/generated/anndata.AnnData.html"
+    ]
+  },
+  "method_scope": "Unique lexical axes and request values;all requests must match;cell_id refers to obs_names;other string obs groups may select many cells;preserve H5AD input order and whole AnnData slice. No recalculation of graphs,normalization,QC,mapping or count selection;full materialization is not full-scale qualification.",
+  "implementation": {
+    "manifest_sha256": "sha256:1d17525b0561391cc9aee9aab444eabe0a4627160fac4945c8a3e5a0ddfe60c5",
+    "script": "scripts/subset_by_obs.py",
+    "script_sha256": "sha256:0db6f4caadbb28f679f2d813c60de33d3c74ca1111934f01389b182306b088ec",
+    "image": "ghcr.io/zj-2002/single-cell-preprocessor@sha256:e2f9fcd5ccf9e97b0f0129466df5abb21ae47ed32f123f6953b79fd83d915e20",
+    "image_unchanged": true,
+    "original_other_nodes_definitions_and_scripts_unchanged": true
+  },
+  "engineering_proof": {
+    "actual_original_defects": "Unknown/duplicate requests silently accepted;group selection reported negative missing_cells",
+    "refusal_cases": 24,
+    "mandatory_combined_catalog_tests": 71,
+    "mandatory_compiled_family_contracts": 6,
+    "no_overwrite_and_ordinary_publication_rollback": true,
+    "skipped_tests": 0
+  },
+  "isolated_DAG_proof": {
+    "submissions": 6,
+    "whole_reference_comparisons": 4,
+    "specific_refusals": 2,
+    "all_original_ports_materialized_read_and_hashed": true,
+    "source": "/home/zj-normal/Work/autonomics/results/cachexia-v4.3.2/b-core-integration-v1-20261012/COMBINED_NATIVE_DAG_PROOF_final-v3.json",
+    "scope": "Current merged plugin manifest/script and preserved native SDK,not latest whole engine/resident daemon"
+  },
+  "agent_evidence_dependency": "/home/zj-normal/Work/autonomics/results/cachexia-v4.3.2/canonical-h5ad-subset-agent-v1-20261012",
+  "proof_packet": "/home/zj-normal/Work/autonomics/results/cachexia-v4.3.2/b-core-integration-v1-20261012",
+  "plan_contract": "NOT_IMPLEMENTATION_LOCKED;NOT_GRANTED;study qualification and complete donor/count/family contracts are separate",
+  "remaining": [
+    "Other identifier dtypes and future packages/platforms",
+    "Large H5AD memory/current whole-engine/resident deployment",
+    "Scientific cell/sample eligibility and donor independence",
+    "Recalculation/eligibility of inherited graphs and annotations",
+    "Global quotas/cache/recovery/crash atomicity/scientific implementation lock/G0"
+  ],
+  "production_deployed": false,
+  "G0": false
+}

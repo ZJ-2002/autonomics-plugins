@@ -4,7 +4,7 @@ plugin_name = "pseudobulk"
 [image]
 reference = "ghcr.io/zj-2002/biotools-py@sha256:7ad6aeafa87672699d28b61b6bed12fc81fcdbfc43222a0abf17e2d56fb806f5"
 tag = "v1"
-upstream = "anndata 0.11 + scipy sparse"
+upstream = "Frozen biotools-py: anndata 0.12.19, numpy 2.4.6, scipy 1.17.1, pandas 2.3.3; exact runtime is fixed by image digest"
 license = "BSD-3-Clause"
 
 # 说明：供者×细胞类型 pseudobulk 聚合（方案 §15.3 统计单位规则）。
