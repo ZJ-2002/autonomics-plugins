@@ -437,6 +437,24 @@
       }
     },
     {
+      "path": "plugins/pseudobulk/scripts/h5ad_export_matrix.py",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/pseudobulk-plugin.git",
+        "revision": "5dcc53b3763096c59421b32fef6e18fb077deac3",
+        "sha256": "f5b0c0fa08a1d608d64aad5aa18f26f460b3a5247e75c17cb6774a615d7afb2f",
+        "bytes": 4512,
+        "git_blob": "50e257536c9d7b888746d3702d385998c69f1a18"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "ad4bc841a48f889fc1583db71148ef38a0d62434",
+        "path": "plugins/pseudobulk/scripts/h5ad_export_matrix.py",
+        "sha256": "16f4b050431a1be81de7518b03f9a80764e76c354205ab1ae93a28baa5d44e04",
+        "bytes": 10738,
+        "git_blob": "0e55962d852c13c14e6f5dfaca031d0734a0ae10"
+      }
+    },
+    {
       "path": "plugins/pseudobulk/scripts/pseudobulk_counts.py",
       "original": {
         "repository": "https://github.com/ZJ-2002/pseudobulk-plugin.git",
@@ -519,11 +537,11 @@
       },
       "current": {
         "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
-        "revision": "403c783e8f080bd20db3a4b0f62db848c2324b45",
+        "revision": "f38c02c89801e511248a66af5a69b230c1b0a592",
         "path": "plugins/single-cell/manifest.toml",
-        "sha256": "1d17525b0561391cc9aee9aab444eabe0a4627160fac4945c8a3e5a0ddfe60c5",
-        "bytes": 23273,
-        "git_blob": "a468860a5e98328c88368b02b09798e0f008d473"
+        "sha256": "938a74f0d59478e527cc6e5a051c73b536f1a9c83abffb2ffd99b65669cdfb52",
+        "bytes": 24035,
+        "git_blob": "c211fd0cc0cb972111fc36d00fbd469b86066bbf"
       }
     },
     {
