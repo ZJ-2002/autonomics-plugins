@@ -537,11 +537,11 @@
       },
       "current": {
         "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
-        "revision": "f38c02c89801e511248a66af5a69b230c1b0a592",
+        "revision": "f5ecdd3fe1841319b11abb821acbe9c3ab644e0e",
         "path": "plugins/single-cell/manifest.toml",
-        "sha256": "938a74f0d59478e527cc6e5a051c73b536f1a9c83abffb2ffd99b65669cdfb52",
-        "bytes": 24035,
-        "git_blob": "c211fd0cc0cb972111fc36d00fbd469b86066bbf"
+        "sha256": "5288e9c7ac552f318b93c67f107fd45dcddf12d9396c38e00e6950e3bede9c42",
+        "bytes": 24720,
+        "git_blob": "43767bec4fe12972c287fe94fbd501a463ed75e1"
       }
     },
     {
