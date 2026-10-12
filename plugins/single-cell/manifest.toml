@@ -271,6 +271,8 @@ doc = """
 Input ports are H5AD then selection Parquet. Output ports are output.h5ad
 then report.json. By default the Parquet cell_id column selects obs_names;
 join_column may name any obs column to match on instead.
+Requests must be unique nonempty strings and all must match. Group columns
+may select multiple cells; cell order remains the input H5AD order.
 """
 timeout_secs = 3600
 artifact_prefix = "/artifacts/h5ad_subset_by_obs"
@@ -290,7 +292,7 @@ join_column = { type = "string", default = "cell_id", doc = "Parquet column sele
 
 [nodes.command]
 interpreter = "python"
-script_file = "scripts/run_workflow.py"
+script_file = "scripts/subset_by_obs.py"
 
 [nodes.command.env]
 AUTONOMICS_SINGLE_CELL_WORKFLOW = "subset_by_obs"
