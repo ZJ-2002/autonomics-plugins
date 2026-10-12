@@ -87,6 +87,8 @@
     "tests.test_source_evolution.SourceEvolutionTests.test_fake_commit_and_unrelated_real_commit_are_rejected",
     "tests.test_source_evolution.SourceEvolutionTests.test_ledger_cannot_grant_scientific_certification_or_auto_enable",
     "tests.test_source_evolution.SourceEvolutionTests.test_original_identity_mismatch_and_duplicate_path_fail_closed",
-    "tests.test_source_evolution.SourceEvolutionTests.test_original_import_is_preserved_and_new_source_is_independently_verified"
+    "tests.test_source_evolution.SourceEvolutionTests.test_original_import_is_preserved_and_new_source_is_independently_verified",
+    "tests.test_r_output_publication.ROutputPublicationTests.test_deseq2_actual_publication_component_preserves_foreign_outputs",
+    "tests.test_r_output_publication.ROutputPublicationTests.test_limma_actual_publication_component_preserves_foreign_outputs"
   ]
 }
