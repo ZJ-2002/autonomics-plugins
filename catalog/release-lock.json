@@ -14212,6 +14212,12 @@
           "executable": false
         },
         {
+          "path": "EXPORT_ASSURANCE.md",
+          "sha256": "e99f3a947e46c7804e2687a59f951ca15202d9fd1d7dd312495293e5964c6ca3",
+          "bytes": 3437,
+          "executable": false
+        },
+        {
           "path": "README.md",
           "sha256": "483f3f3aadecd8068e3682175e05b7d15870ec250a0685dcdf505582ac2e64ae",
           "bytes": 7901,
@@ -14225,8 +14231,8 @@
         },
         {
           "path": "scripts/h5ad_export_matrix.py",
-          "sha256": "f5b0c0fa08a1d608d64aad5aa18f26f460b3a5247e75c17cb6774a615d7afb2f",
-          "bytes": 4512,
+          "sha256": "16f4b050431a1be81de7518b03f9a80764e76c354205ab1ae93a28baa5d44e04",
+          "bytes": 10738,
           "executable": false
         },
         {
@@ -14248,9 +14254,27 @@
           "executable": false
         },
         {
+          "path": "tests/check_export_mutants.py",
+          "sha256": "7417daacc44a3e59f08855fa0aa27705ab59a087befcfb1fc09b8d02532e5f62",
+          "bytes": 2175,
+          "executable": false
+        },
+        {
           "path": "tests/test_assurance.py",
           "sha256": "537b732e245339cf9cf4c674e5b2ebd918df0c9d3c3d5e0f3c9a88d6db0f55a3",
           "bytes": 10221,
+          "executable": false
+        },
+        {
+          "path": "tests/test_export_assurance.py",
+          "sha256": "5724c9f9cf2d22de744f15766c95b09bf6e7d05cb4ba3839e8cdd84ed7e3a4a8",
+          "bytes": 13238,
+          "executable": false
+        },
+        {
+          "path": "tests/test_export_ownership.py",
+          "sha256": "2e3b775c33d01e30263d25e62c19c992dd4afa677413bc7ff143733af1254bfb",
+          "bytes": 2569,
           "executable": false
         },
         {
@@ -14344,9 +14368,21 @@
           "executable": false
         },
         {
+          "path": "CLUSTER_MEAN_ASSURANCE.md",
+          "sha256": "afe95d404f283373ecbaa0ca3bb174d574e4cd9e860b85dd986cc9d4d86e5678",
+          "bytes": 5118,
+          "executable": false
+        },
+        {
           "path": "Containerfile.assured",
           "sha256": "20d15ac33d5d1b7a8d33ca8dbd4636f875680e2651efcc15823cf8d9afdd224f",
           "bytes": 253,
+          "executable": false
+        },
+        {
+          "path": "DENSE_INGEST_ASSURANCE.md",
+          "sha256": "12ac9716cc155dc9c92bd78a7d266aa459b01a20c7788f068b99e79384a1506b",
+          "bytes": 4348,
           "executable": false
         },
         {
@@ -14375,8 +14411,8 @@
         },
         {
           "path": "manifest.toml",
-          "sha256": "1d17525b0561391cc9aee9aab444eabe0a4627160fac4945c8a3e5a0ddfe60c5",
-          "bytes": 23273,
+          "sha256": "938a74f0d59478e527cc6e5a051c73b536f1a9c83abffb2ffd99b65669cdfb52",
+          "bytes": 24035,
           "executable": false
         },
         {
@@ -14395,6 +14431,18 @@
           "path": "scripts/celltypist_annotate.py",
           "sha256": "dd95cdeb167a52c8ffbde69e212a6624a63660f7651b1da9d9c800f818855502",
           "bytes": 11812,
+          "executable": false
+        },
+        {
+          "path": "scripts/cluster_mean_expression.py",
+          "sha256": "b31d2b9b42bd9b2a537355716aca7676da70167467091460c41c826963c2a661",
+          "bytes": 10860,
+          "executable": false
+        },
+        {
+          "path": "scripts/dense_ingest.py",
+          "sha256": "a8a2f2f2d5d6faaeea5316b569646b9c05b137975f71953fe0b5136ed25b579a",
+          "bytes": 9866,
           "executable": false
         },
         {
@@ -14431,6 +14479,18 @@
           "path": "test_celltypist_assurance.sh",
           "sha256": "9826a462b1ccaee71a157bc4a0766d625bbbf514ac5e0418e061c9ff307422e3",
           "bytes": 2636,
+          "executable": false
+        },
+        {
+          "path": "test_cluster_mean_assurance.sh",
+          "sha256": "cc40b5c543786752bd54bc2526d34786174463c2064af311ecc5a5bfc08b935d",
+          "bytes": 921,
+          "executable": false
+        },
+        {
+          "path": "test_dense_ingest_assurance.sh",
+          "sha256": "0516128c094e3ffa797d7b0e128cbc6f684f1f3b711726ae0631e08a62b8ee16",
+          "bytes": 1221,
           "executable": false
         },
         {
@@ -14494,6 +14554,12 @@
           "executable": false
         },
         {
+          "path": "tests/dense_ingest_reference.py",
+          "sha256": "86335a826ada2b4866b66f908fcde98f44916342df8f1d54f4067282724888d0",
+          "bytes": 1688,
+          "executable": false
+        },
+        {
           "path": "tests/embedding_compare.py",
           "sha256": "bbf6bdabc6652eba93d08dda4c67c4013e37e75230a0517a18195a6152adbd5b",
           "bytes": 6379,
@@ -14545,6 +14611,18 @@
           "path": "tests/test_celltypist_container.py",
           "sha256": "b9587ad56d9339eb1f888fc21904193644b4b6a0143884df148f62c94083893f",
           "bytes": 4494,
+          "executable": false
+        },
+        {
+          "path": "tests/test_cluster_mean_expression.py",
+          "sha256": "e1372170b8d42c7b782028a7bb724fd03e93d29fc352e16bdf759067babbfbd3",
+          "bytes": 15527,
+          "executable": false
+        },
+        {
+          "path": "tests/test_dense_ingest_assurance.py",
+          "sha256": "45b95df52ffd4580daa8f21a1f3d8b82b8827942151530d6380c6ba2384de082",
+          "bytes": 12092,
           "executable": false
         },
         {

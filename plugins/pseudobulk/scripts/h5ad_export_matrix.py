@@ -171,7 +171,7 @@ def run():
     except BaseException:
         for staging, target in reversed(published):
             try:
-                if os.path.samestat(staging.stat(), target.stat()):
+                if os.path.samestat(staging.stat(), target.lstat()):
                     target.unlink()
             except FileNotFoundError:
                 pass

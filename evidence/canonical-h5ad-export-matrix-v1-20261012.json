@@ -1,0 +1,356 @@
+{
+  "schema_version": "1.0",
+  "canonical_kind": "h5ad_export_matrix",
+  "status": "PROVEN_SCOPED",
+  "provider": "Original canonical plugin family,not replacement adapter",
+  "family": "pseudobulk",
+  "role": "Faithful selected H5AD matrix and metadata transport",
+  "inputs_outputs": {
+    "inputs": [
+      {
+        "type": "file"
+      }
+    ],
+    "outputs": [
+      {
+        "path": "x_matrix.long.parquet",
+        "format": "x_matrix_long_parquet"
+      },
+      {
+        "path": "obs.tsv",
+        "format": "h5ad_obs_table"
+      },
+      {
+        "path": "var.tsv",
+        "format": "h5ad_var_table"
+      },
+      {
+        "path": "h5ad_export.log",
+        "format": "pseudobulk_log"
+      }
+    ]
+  },
+  "parameters": {
+    "layer": {
+      "type": "string",
+      "default": "X",
+      "doc": "X or layers/<name>"
+    },
+    "chunk": {
+      "type": "int",
+      "default": 2000,
+      "min": 100.0,
+      "doc": "cells per parquet row group"
+    }
+  },
+  "resources_unchanged": {
+    "network": "isolated",
+    "cpus": 2,
+    "memory": "8g",
+    "pull_policy": "never"
+  },
+  "method_proof": {
+    "author": "AnnData read_h5ad/read_elem/sparse_dataset and pandas serialization",
+    "positive_cases": 16,
+    "selected_matrix_coordinates_values_complete_metadata_exact": true,
+    "float64_integer_representability_and_NaN_masks_checked": true,
+    "fresh_author_payload_identity": {
+      "status": "ALL_PRIMARY_ANNDATA_WHEEL_PACKAGE_PAYLOADS_EQUAL_ACTUAL_IMAGE",
+      "wheel_sha256": "5bd95f3b96a815b61de87020e755d42f1c62404e8c4808ab81cb0e8d63152ed7",
+      "payload_count": 49,
+      "records": [
+        {
+          "path": "anndata/__init__.py",
+          "bytes": 1710,
+          "sha256": "75a03363c186a2e27109edf42dcaf6a65f49c28d9d7065c73e2ed6c671e9b8e1"
+        },
+        {
+          "path": "anndata/_settings.py",
+          "bytes": 18163,
+          "sha256": "ac284678011a227b31fcf4efc01f0c6796418c513b8bbf7185d7621478a66ed3"
+        },
+        {
+          "path": "anndata/_settings.pyi",
+          "bytes": 1747,
+          "sha256": "a5b0fd776cfbf9a43579230337acf448c68971431df018c6576070aecf069ee5"
+        },
+        {
+          "path": "anndata/_types.py",
+          "bytes": 5596,
+          "sha256": "fb65131b49c38042b1f9a840fc124207c18622971efca64e95c90df28ba9a3c5"
+        },
+        {
+          "path": "anndata/_warnings.py",
+          "bytes": 702,
+          "sha256": "8855daf44ccfcae3dbcd1033a06d38a135c0ca39d78506b9cf100c65db062f03"
+        },
+        {
+          "path": "anndata/abc.py",
+          "bytes": 1846,
+          "sha256": "5482a244803a2f48f4002b67d32fd375ddf82ef6ba3f447daba4a28389373a06"
+        },
+        {
+          "path": "anndata/io.py",
+          "bytes": 698,
+          "sha256": "0eb228f8553aa9badd9396952a850806832db5968ee5058fe1ba304bdc5a79b2"
+        },
+        {
+          "path": "anndata/logging.py",
+          "bytes": 1662,
+          "sha256": "13a9e53e5f849b4c818cbe69f847101668474c8522ae19d96df5db42d49549e9"
+        },
+        {
+          "path": "anndata/types.py",
+          "bytes": 554,
+          "sha256": "7a00d214a57255d131642ed60ecf8b2aedbd4d2eb55dc570effe336c298e4a97"
+        },
+        {
+          "path": "anndata/typing.py",
+          "bytes": 1555,
+          "sha256": "b11880835e9ab239cac979352f806d296820c8730f2e8c57cf14c3997de2ecc6"
+        },
+        {
+          "path": "anndata/utils.py",
+          "bytes": 13678,
+          "sha256": "dcb997b46edb62dc390cd0b7e650e50a2038ebd2adc02b9ad8b23411e4678078"
+        },
+        {
+          "path": "anndata/_core/__init__.py",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "anndata/_core/access.py",
+          "bytes": 873,
+          "sha256": "a6db3b7c650a806640352b2efea000ecbd74a8733e8d3d7321e85b977e38d4e6"
+        },
+        {
+          "path": "anndata/_core/aligned_df.py",
+          "bytes": 4278,
+          "sha256": "6ccf649041544512de50e50c93dd16c559d10be66c5c6103c77ea40e3e600bd2"
+        },
+        {
+          "path": "anndata/_core/aligned_mapping.py",
+          "bytes": 14457,
+          "sha256": "104e2d1c2d12ac49f7c5c7b8fa15050db4025154015261e7821feee44009fe0b"
+        },
+        {
+          "path": "anndata/_core/anndata.py",
+          "bytes": 82426,
+          "sha256": "1ab6fc72a2211dfe0f4ac4b49766710c1558a56dc25c513861bf1b0fa2fcbc3d"
+        },
+        {
+          "path": "anndata/_core/extensions.py",
+          "bytes": 766,
+          "sha256": "43b09e06c1e21c4798dc9ea0b1284da3a085f93c2a179ed0f3c474fc3be17f93"
+        },
+        {
+          "path": "anndata/_core/file_backing.py",
+          "bytes": 5603,
+          "sha256": "e838417cb40f0c50e9a1eeb04a09ce16da42e079db87e52038f6eabd80f19bc8"
+        },
+        {
+          "path": "anndata/_core/index.py",
+          "bytes": 13350,
+          "sha256": "773da386b925c6c3480cdfaad168625e1c70b4eade2be4fc21ab5ef8c197a47d"
+        },
+        {
+          "path": "anndata/_core/merge.py",
+          "bytes": 61622,
+          "sha256": "8d83d8455fdb2d629f9f2c21b0a72c78d391b3f910da12ed655dd7a1a0d3ff32"
+        },
+        {
+          "path": "anndata/_core/raw.py",
+          "bytes": 8429,
+          "sha256": "b5dbbe6faf9def8c9959348a7a1a940f28b3edc292af428f60b8e6c53dcba448"
+        },
+        {
+          "path": "anndata/_core/sparse_dataset.py",
+          "bytes": 27280,
+          "sha256": "47605e48b891122c24f4536374b091dd57db61ab73fbb04ad25d85f57a828939"
+        },
+        {
+          "path": "anndata/_core/storage.py",
+          "bytes": 2555,
+          "sha256": "987ceaa7b60127eac6405ba5300c7ffc3f99ef2e289873f26f570fed8c5f6c51"
+        },
+        {
+          "path": "anndata/_core/views.py",
+          "bytes": 15067,
+          "sha256": "fad894c2e830d1b4585f37b0aee854d315d3ee79c32dd61fe028850722e5df8c"
+        },
+        {
+          "path": "anndata/_core/xarray.py",
+          "bytes": 18224,
+          "sha256": "cb2c81f0bc725858d41fb91c95a6a9336e62135322b1220d873c2551015b6879"
+        },
+        {
+          "path": "anndata/_io/__init__.py",
+          "bytes": 346,
+          "sha256": "19335e519f1df1a037b0ae0fdf7b7296321ceb429aa4b6e4a810ba275cb797d5"
+        },
+        {
+          "path": "anndata/_io/h5ad.py",
+          "bytes": 13986,
+          "sha256": "20f3365ab4ba5e0dbe2d19326b7b9578d74205c8d097110528761d70622d83d7"
+        },
+        {
+          "path": "anndata/_io/read.py",
+          "bytes": 16247,
+          "sha256": "33bd1f278efc8998a19a67b0663331ff54446a9176c20406bcfbe12feb8f6a34"
+        },
+        {
+          "path": "anndata/_io/utils.py",
+          "bytes": 10327,
+          "sha256": "267ddedde540af727e9f893875951a8e57583d65ae7977de3c032d6b41be1dd7"
+        },
+        {
+          "path": "anndata/_io/write.py",
+          "bytes": 4811,
+          "sha256": "af9e70eb23c822e5122d6f70c982fc1a79331c741d031cbac62084c3d7000b7f"
+        },
+        {
+          "path": "anndata/_io/zarr.py",
+          "bytes": 5813,
+          "sha256": "93486160ac5fec5c20a585320c5c1fa4b3ab5938f1e410d6d57517e9cf3185cb"
+        },
+        {
+          "path": "anndata/_io/specs/__init__.py",
+          "bytes": 427,
+          "sha256": "67a97cc6a6bb078f34537a6aacd220e3e7e152fa415bce70e310378b799a0143"
+        },
+        {
+          "path": "anndata/_io/specs/lazy_methods.py",
+          "bytes": 13597,
+          "sha256": "c6b7ad3fd4748ea9e1b6a1e2203a588aed8012405df86ba41f7d4c2ce49f90c2"
+        },
+        {
+          "path": "anndata/_io/specs/methods.py",
+          "bytes": 50908,
+          "sha256": "4d9bb9b376575e6bc1128315ac86501c12c4ad72744daaf4bc24152cf97226a3"
+        },
+        {
+          "path": "anndata/_io/specs/registry.py",
+          "bytes": 17628,
+          "sha256": "8b4a910c55a22a09101e6799866ab46c857b34f82bd60e150f59a53833477339"
+        },
+        {
+          "path": "anndata/compat/__init__.py",
+          "bytes": 15878,
+          "sha256": "138f18d778486f863ed5d9c72df73b1d4069bfa38e84faf314877cdf391026a3"
+        },
+        {
+          "path": "anndata/experimental/__init__.py",
+          "bytes": 1648,
+          "sha256": "a68948c6b88491bcb4884ab0f885e4533a7c934c29f76069618e3397806c1c7d"
+        },
+        {
+          "path": "anndata/experimental/_dispatch_io.py",
+          "bytes": 1858,
+          "sha256": "81bf4951c812d5c204463c4cd4f0695835df3e42a031ebe82c5d1022765f0be8"
+        },
+        {
+          "path": "anndata/experimental/merge.py",
+          "bytes": 25120,
+          "sha256": "6fdaeb02d134b79533714ba573d9971fdbbb456ebca7f4982053c93aa53148d6"
+        },
+        {
+          "path": "anndata/experimental/backed/__init__.py",
+          "bytes": 230,
+          "sha256": "e1d73d33ffbf4a57d489d0eb6d6b7c3d1c83ffc6d88f2a4727ce88a5d4e11eeb"
+        },
+        {
+          "path": "anndata/experimental/backed/_compat.py",
+          "bytes": 519,
+          "sha256": "accec29d2244642928e703c11517ef640f592944a968e55c585cb9bb4f69d60a"
+        },
+        {
+          "path": "anndata/experimental/backed/_io.py",
+          "bytes": 6960,
+          "sha256": "534923ed3c48236e875c328a0e9e9e81381fc9a4c7276cf73a8a4f900282f2c2"
+        },
+        {
+          "path": "anndata/experimental/backed/_lazy_arrays.py",
+          "bytes": 7509,
+          "sha256": "9b0728bd3df50285dd55fa1eca83739aa0972f549298a177de160af1fb54c4cd"
+        },
+        {
+          "path": "anndata/experimental/multi_files/__init__.py",
+          "bytes": 107,
+          "sha256": "4fb88d2e545b7be2a72d3de8ed36fbfe7138232fe12e41bae948c13af8f6063f"
+        },
+        {
+          "path": "anndata/experimental/multi_files/_anncollection.py",
+          "bytes": 35264,
+          "sha256": "45af00e0ccf215696277944977471cd9de1225e499d875f3de874a4aa01b0a1c"
+        },
+        {
+          "path": "anndata/experimental/pytorch/__init__.py",
+          "bytes": 95,
+          "sha256": "e02920ada84b3bc29cfacd9b9afea55507c3c5b3b7214c95d2fe328010e4b6d6"
+        },
+        {
+          "path": "anndata/experimental/pytorch/_annloader.py",
+          "bytes": 8221,
+          "sha256": "616a1fffb00050bb78e3f5fd35bd93ccd77e9a38a2e36b0fddef1480606966a0"
+        },
+        {
+          "path": "anndata/tests/__init__.py",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "anndata/tests/helpers.py",
+          "bytes": 37837,
+          "sha256": "15467e86777837b55cb13ab4a9d1c728c0c07731ede4908f553aa8661bc3b689"
+        }
+      ],
+      "other_dependency_payloads_freshly_verified_this_agent": false,
+      "not_full_stack_or_scientific_certification": true
+    },
+    "independence": "Direct author API outside producer plus independent matrix coordinate enumeration;not a fresh entire environment",
+    "primary_docs": [
+      "https://anndata.readthedocs.io/en/stable/generated/anndata.io.read_elem.html"
+    ]
+  },
+  "method_scope": "Selected dense/backed CSR/CSC X or named layer; nonzero Float64 long Parquet plus complete quoted axes TSV and typed metadata/null/category log. Exact representable wide integer transport; dtype overflow/rounding refuses. Nonfinite floats preserved and reported, not certified estimable. All-zero and empty matrices are valid transport, not valid inference.",
+  "implementation": {
+    "manifest_sha256": "sha256:17a2be2eac2e1bf8e8ff3556a8fa5c059d8755d6eb4f650cd4e98aad1bc5dcdc",
+    "script": "scripts/h5ad_export_matrix.py",
+    "script_sha256": "sha256:16f4b050431a1be81de7518b03f9a80764e76c354205ab1ae93a28baa5d44e04",
+    "image": "ghcr.io/zj-2002/biotools-py@sha256:7ad6aeafa87672699d28b61b6bed12fc81fcdbfc43222a0abf17e2d56fb806f5",
+    "image_unchanged": true,
+    "image_access": "Authorized existing cached image;not anonymous clean-install proof",
+    "unrelated_sibling_definitions_and_scripts_unchanged": true,
+    "co_reviewed_sibling_kinds_this_batch": [],
+    "helper_environment_added_only_for_cluster_means": false
+  },
+  "engineering_proof": {
+    "actual_original_defects": "Actual original integer rounding, ID collisions/duplication, sparse cancellation, layer selection, overwrite and invalid chunk;root rollback replacement-symlink ownership counterexample",
+    "refusal_cases": 23,
+    "mandatory_combined_catalog_tests": 75,
+    "mandatory_compiled_family_contracts": 6,
+    "no_overwrite_and_ordinary_publication_rollback_not_crash_atomicity": true,
+    "skipped_tests": 0
+  },
+  "isolated_DAG_proof": {
+    "submissions": 12,
+    "whole_reference_comparisons": 8,
+    "specific_refusals": 4,
+    "all_original_ports_materialized_read_and_hashed": true,
+    "source": "/home/zj-normal/Work/autonomics/results/cachexia-v4.3.2/b-preprocessing-integration-v1-20261012/COMBINED_NATIVE_DAG_PROOF_final-v1.json",
+    "scope": "Current merged manifests/scripts with preserved native SDK,not latest whole engine/resident daemon"
+  },
+  "agent_evidence_dependency": "/home/zj-normal/Work/autonomics/results/cachexia-v4.3.2/canonical-h5ad-export-agent-v1-20261012",
+  "proof_packet": "/home/zj-normal/Work/autonomics/results/cachexia-v4.3.2/b-preprocessing-integration-v1-20261012",
+  "plan_contract": "NOT_IMPLEMENTATION_LOCKED;NOT_GRANTED;synthetic technical tests do not qualify real B study",
+  "remaining": [
+    "Future encodings/dtypes/packages/platforms and actual full-scale resource qualification",
+    "Frozen input scale/provenance/species/genes/cells and independent donor/library eligibility",
+    "Statistical model/family/contrasts and protected complete B study contracts",
+    "Current whole-engine/resident deployment,global quotas/cache/persistent recovery/crash atomicity",
+    "Scientific implementation lock and G0 remain ungranted"
+  ],
+  "production_deployed": false,
+  "G0": false
+}

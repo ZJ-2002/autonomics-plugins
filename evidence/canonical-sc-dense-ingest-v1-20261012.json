@@ -1,0 +1,222 @@
+{
+  "schema_version": "1.0",
+  "canonical_kind": "sc_dense_ingest",
+  "status": "PROVEN_SCOPED",
+  "provider": "Original canonical plugin family,not replacement adapter",
+  "family": "single-cell",
+  "role": "Exact count-table ingestion with declared cell/gene axes",
+  "inputs_outputs": {
+    "inputs": [
+      {
+        "type": "file",
+        "label": "count_matrix"
+      }
+    ],
+    "outputs": [
+      {
+        "path": "output.h5ad",
+        "format": "h5ad"
+      },
+      {
+        "path": "report.json",
+        "format": "single_cell_workflow_report_json"
+      }
+    ]
+  },
+  "parameters": {
+    "orientation": {
+      "type": "string",
+      "doc": "Matrix layout: genes_by_cells or cells_by_genes"
+    },
+    "delimiter": {
+      "type": "string",
+      "default": "auto",
+      "doc": "Field separator: auto, tab, comma, semicolon, pipe, or any single character"
+    },
+    "has_header": {
+      "type": "bool",
+      "default": true,
+      "doc": "First row is the gene/column header"
+    },
+    "min_genes": {
+      "type": "int",
+      "default": 0,
+      "min": 0.0,
+      "doc": "Keep cells with at least this many detected genes (0 disables)"
+    },
+    "min_cells": {
+      "type": "int",
+      "default": 0,
+      "min": 0.0,
+      "doc": "Keep genes detected in at least this many cells (0 disables)"
+    },
+    "sample_label": {
+      "type": "string",
+      "optional": true,
+      "doc": "Optional constant written to the sample obs column"
+    },
+    "condition_label": {
+      "type": "string",
+      "optional": true,
+      "doc": "Optional constant written to the condition obs column"
+    }
+  },
+  "resources_unchanged": {
+    "cpus": 2.0,
+    "memory": "8Gi",
+    "pids_limit": 512,
+    "shm_size": "1Gi"
+  },
+  "method_proof": {
+    "author": "AnnData 0.11.4 construction and Scanpy 1.11.3 sequential cell/gene filters",
+    "positive_cases": 20,
+    "whole_AnnData_and_HDF5_dtypes_axes_attributes_exact": true,
+    "independence": "Separately declared exact matrices;official subprocess in inherited sealed readonly prefix,not node/parser;no new install",
+    "inherited_reference_verified": {
+      "inherited_read_only_prefix": "/home/zj-normal/Work/autonomics/results/cachexia-v4.3.2/canonical-h5ad-celltypist-v1-20261012/official-reference-python",
+      "sealed_prefix_files_exact": 6377,
+      "packages": [
+        {
+          "package": "scanpy",
+          "version": "1.11.3",
+          "payloads_exact": 136
+        },
+        {
+          "package": "anndata",
+          "version": "0.11.4",
+          "payloads_exact": 46
+        },
+        {
+          "package": "scikit-learn",
+          "version": "1.9.1",
+          "payloads_exact": 1003
+        },
+        {
+          "package": "umap-learn",
+          "version": "0.5.12",
+          "payloads_exact": 11
+        },
+        {
+          "package": "pynndescent",
+          "version": "0.6.0",
+          "payloads_exact": 10
+        },
+        {
+          "package": "igraph",
+          "version": "1.0.0",
+          "payloads_exact": 79
+        },
+        {
+          "package": "numpy",
+          "version": "2.1.3",
+          "payloads_exact": 941
+        },
+        {
+          "package": "scipy",
+          "version": "1.14.1",
+          "payloads_exact": 1384
+        },
+        {
+          "package": "pandas",
+          "version": "2.2.3",
+          "payloads_exact": 1504
+        },
+        {
+          "package": "h5py",
+          "version": "3.16.0",
+          "payloads_exact": 93
+        },
+        {
+          "package": "numba",
+          "version": "0.67.0",
+          "payloads_exact": 809
+        },
+        {
+          "package": "llvmlite",
+          "version": "0.49.0",
+          "payloads_exact": 39
+        },
+        {
+          "package": "joblib",
+          "version": "1.6.0",
+          "payloads_exact": 136
+        },
+        {
+          "package": "threadpoolctl",
+          "version": "3.6.0",
+          "payloads_exact": 1
+        },
+        {
+          "package": "texttable",
+          "version": "1.7.0",
+          "payloads_exact": 1
+        },
+        {
+          "package": "celltypist",
+          "version": "1.7.1",
+          "payloads_exact": 21
+        },
+        {
+          "package": "leidenalg",
+          "version": "0.12.0",
+          "payloads_exact": 11
+        }
+      ],
+      "required_payloads_exact": 6225,
+      "prior_sealed_stack_identity_sha256": "1eb7693ce138f5b1dac5d0e35183ceb25f8f0c1d0c7a301f42c51a167c11bc75",
+      "fresh_primary_module_bodies_match_inherited_packages": [
+        "anndata-0.11.4.py",
+        "scanpy-1.11.3-simple.py"
+      ],
+      "new_package_installation": false,
+      "whole_frozen_image_OS_ABI_unchanged": true,
+      "G0": false
+    },
+    "primary_docs": [
+      "https://scanpy.readthedocs.io/en/1.11.x/generated/scanpy.pp.filter_cells.html",
+      "https://scanpy.readthedocs.io/en/1.11.x/generated/scanpy.pp.filter_genes.html"
+    ]
+  },
+  "method_scope": "Original advertised count-table contract, both orientations and declared delimiters/gzip/headerless; literal unique IDs and finite nonnegative int64 counts exact. Cell filter precedes gene filter via official API. No normalized-expression ingestion or raw biological provenance inferred from integrality; synthetic headerless column IDs explicit.",
+  "implementation": {
+    "manifest_sha256": "sha256:938a74f0d59478e527cc6e5a051c73b536f1a9c83abffb2ffd99b65669cdfb52",
+    "script": "scripts/dense_ingest.py",
+    "script_sha256": "sha256:a8a2f2f2d5d6faaeea5316b569646b9c05b137975f71953fe0b5136ed25b579a",
+    "image": "ghcr.io/zj-2002/single-cell-preprocessor@sha256:e2f9fcd5ccf9e97b0f0129466df5abb21ae47ed32f123f6953b79fd83d915e20",
+    "image_unchanged": true,
+    "image_access": "Authorized existing cached image;not anonymous clean-install proof",
+    "unrelated_sibling_definitions_and_scripts_unchanged": true,
+    "co_reviewed_sibling_kinds_this_batch": [
+      "h5ad_cluster_mean_expression"
+    ],
+    "helper_environment_added_only_for_cluster_means": false
+  },
+  "engineering_proof": {
+    "actual_original_defects": "Actual original gene/cell axis inversion, duplicate header mangling, leading-zero IDs, fractional/negative counts and integer precision loss",
+    "refusal_cases": 22,
+    "mandatory_combined_catalog_tests": 75,
+    "mandatory_compiled_family_contracts": 6,
+    "no_overwrite_and_ordinary_publication_rollback_not_crash_atomicity": true,
+    "skipped_tests": 0
+  },
+  "isolated_DAG_proof": {
+    "submissions": 8,
+    "whole_reference_comparisons": 5,
+    "specific_refusals": 3,
+    "all_original_ports_materialized_read_and_hashed": true,
+    "source": "/home/zj-normal/Work/autonomics/results/cachexia-v4.3.2/b-preprocessing-integration-v1-20261012/COMBINED_NATIVE_DAG_PROOF_final-v1.json",
+    "scope": "Current merged manifests/scripts with preserved native SDK,not latest whole engine/resident daemon"
+  },
+  "agent_evidence_dependency": "/home/zj-normal/Work/autonomics/results/cachexia-v4.3.2/canonical-sc-dense-agent-v1-20261012",
+  "proof_packet": "/home/zj-normal/Work/autonomics/results/cachexia-v4.3.2/b-preprocessing-integration-v1-20261012",
+  "plan_contract": "NOT_IMPLEMENTATION_LOCKED;NOT_GRANTED;synthetic technical tests do not qualify real B study",
+  "remaining": [
+    "Future encodings/dtypes/packages/platforms and actual full-scale resource qualification",
+    "Frozen input scale/provenance/species/genes/cells and independent donor/library eligibility",
+    "Statistical model/family/contrasts and protected complete B study contracts",
+    "Current whole-engine/resident deployment,global quotas/cache/persistent recovery/crash atomicity",
+    "Scientific implementation lock and G0 remain ungranted"
+  ],
+  "production_deployed": false,
+  "G0": false
+}
