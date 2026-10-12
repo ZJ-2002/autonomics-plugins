@@ -1,0 +1,149 @@
+{
+  "scope": "PEER_SOURCE_EVOLUTION_MERGE_NOT_METHOD_CERTIFICATION",
+  "merged_source_revision": "3819d4c8a4c6a7ef602d06c6aa215262e87f2bd9",
+  "merged_parents": [
+    "437244cec5c3aaf68c76adc046b9fa235a88126b",
+    "97ffb9f91def67e75d85f4dca7b9e8d6c2b98ddb"
+  ],
+  "source_index_identity": {
+    "sha256": "7efd0b31b0b7f58eb6c3f389c51d1db444f01b07be2e9843ad2faa4aabc7446b",
+    "bytes": 687081,
+    "git_blob": "56dae770f369b9b0d0d25616c9cd1efad7d5b595"
+  },
+  "original_source_index_bytes_preserved": true,
+  "previous_ledger_identity": {
+    "sha256": "5b396242b140d083418bada0076806bb28210da27702632df82e7dac7f1e3e8e",
+    "bytes": 29218,
+    "git_blob": "c7ebaf2538434dd51ea95ae1358314dfd516613a"
+  },
+  "previous_ledger_git_blob": "c7ebaf2538434dd51ea95ae1358314dfd516613a",
+  "previous_ledger_retrievable_from_merged_source_revision": true,
+  "updated_or_added_original_import_paths": [
+    {
+      "path": "plugins/pseudobulk/README.md",
+      "prior_evolution_entry": null,
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "6b8562a90ea8c2456608b94c6ffcb5bce271ec14",
+        "path": "plugins/pseudobulk/README.md",
+        "sha256": "483f3f3aadecd8068e3682175e05b7d15870ec250a0685dcdf505582ac2e64ae",
+        "bytes": 7901,
+        "git_blob": "64e6e6e3d7cf7beabcb42fa3b724ab68e4884114"
+      }
+    },
+    {
+      "path": "plugins/pseudobulk/manifest.toml",
+      "prior_evolution_entry": null,
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "97ffb9f91def67e75d85f4dca7b9e8d6c2b98ddb",
+        "path": "plugins/pseudobulk/manifest.toml",
+        "sha256": "17a2be2eac2e1bf8e8ff3556a8fa5c059d8755d6eb4f650cd4e98aad1bc5dcdc",
+        "bytes": 6795,
+        "git_blob": "ed2bbbad8f512724429e5196cb1454ff72261b84"
+      }
+    },
+    {
+      "path": "plugins/pseudobulk/scripts/pseudobulk_counts.py",
+      "prior_evolution_entry": null,
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "6b8562a90ea8c2456608b94c6ffcb5bce271ec14",
+        "path": "plugins/pseudobulk/scripts/pseudobulk_counts.py",
+        "sha256": "38258d9685a335f0157ad9682d71b39aec6e31dc5df926b863d3039d55f3feba",
+        "bytes": 15451,
+        "git_blob": "9e1d4133dc419baf34c844fc5882f7f31078a8a2"
+      }
+    },
+    {
+      "path": "plugins/single-cell/README.md",
+      "prior_evolution_entry": {
+        "path": "plugins/single-cell/README.md",
+        "original": {
+          "repository": "https://github.com/ZJ-2002/single-cell-plugin.git",
+          "revision": "ced1d0cf78be5b5dd8731752d6d796f253bcaf40",
+          "sha256": "b830007403239084ee0231b56d729348252d63879589a634642d5eb65ceea27f",
+          "bytes": 8856,
+          "git_blob": "82d27ddae85ff32230fe10fad8fffe0ad3979654"
+        },
+        "current": {
+          "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+          "revision": "f4d2c91e0111c2b8d384c0340fb27494b8755dc5",
+          "path": "plugins/single-cell/README.md",
+          "sha256": "dc0552cbdf4d9645eece7e3abf3d5f0fa79d985eeff9ce810823f0b5baacbc65",
+          "bytes": 18718,
+          "git_blob": "d9f29b312fe46dc1273538e5bb2c5f51aef9c229"
+        }
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "9dfcc698277264f72ecc2f3ec5a629c108291b3c",
+        "path": "plugins/single-cell/README.md",
+        "sha256": "85a6715ddb6dbc11d27d63e47a82b2eeaba5cf24a6f3d9a9d9e97191e36a87e2",
+        "bytes": 19562,
+        "git_blob": "4341bdbcfe683c95a0d4c604d32bfca455da486b"
+      }
+    },
+    {
+      "path": "plugins/single-cell/manifest.toml",
+      "prior_evolution_entry": {
+        "path": "plugins/single-cell/manifest.toml",
+        "original": {
+          "repository": "https://github.com/ZJ-2002/single-cell-plugin.git",
+          "revision": "ced1d0cf78be5b5dd8731752d6d796f253bcaf40",
+          "sha256": "2bd47da29ed3d254c95797b5b4d3463f2a816b98f0e939b2ec03d864458760cd",
+          "bytes": 21860,
+          "git_blob": "f839c1488d9fba0156602384881b129b9f0801db"
+        },
+        "current": {
+          "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+          "revision": "f4d2c91e0111c2b8d384c0340fb27494b8755dc5",
+          "path": "plugins/single-cell/manifest.toml",
+          "sha256": "fa830426bbb2a38e056b425faddd9addabd61060c25bf2166a6664920d5e5e35",
+          "bytes": 24435,
+          "git_blob": "bc12e846b9287549faabec9e561d1811d0120dec"
+        }
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "403c783e8f080bd20db3a4b0f62db848c2324b45",
+        "path": "plugins/single-cell/manifest.toml",
+        "sha256": "1d17525b0561391cc9aee9aab444eabe0a4627160fac4945c8a3e5a0ddfe60c5",
+        "bytes": 23273,
+        "git_blob": "a468860a5e98328c88368b02b09798e0f008d473"
+      }
+    },
+    {
+      "path": "plugins/single-cell/workflow.py",
+      "prior_evolution_entry": null,
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "9dfcc698277264f72ecc2f3ec5a629c108291b3c",
+        "path": "plugins/single-cell/workflow.py",
+        "sha256": "f0309d433465f388d341825c361f03213fb81c8ec4211fc4c60eaff5c1c1dbae",
+        "bytes": 36821,
+        "git_blob": "492c4aadaa1c5ec59012e8a58e41f58a2099ec77"
+      }
+    }
+  ],
+  "current_release_lock_identity": {
+    "sha256": "e587c4e2632fa4e70eb8e91576312ff4bb0eabb1553e04d3ee43b0236b623e96",
+    "bytes": 644913,
+    "git_blob": "107d3713ad7e1040796d32642db03e86500b1b0d"
+  },
+  "current_release_lock_refresh_needed": false,
+  "verification": {
+    "imported_files_verified": 2476,
+    "original_import_files_verified": 2435,
+    "recorded_source_evolution_files_verified": 41,
+    "git_object_verification_required_for_evolution": true,
+    "scientific_method_certified": false,
+    "auto_enable": false,
+    "G0": false,
+    "current_source_inventory_files_verified": 2686,
+    "current_source_inventory_matches_release_lock": true
+  },
+  "scientific_method_certified": false,
+  "auto_enable": false,
+  "G0": false
+}
