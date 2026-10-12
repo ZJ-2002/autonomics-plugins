@@ -782,69 +782,7 @@ def marker_annotate(params: dict[str, Any]) -> tuple[ad.AnnData, Path, Path]:
 
 
 def ucell_score(params: dict[str, Any]) -> tuple[ad.AnnData, Path, Path]:
-    from scipy.stats import rankdata
-
-    input_path = required_path(H5AD_INPUT)
-    output_path = required_output(H5AD_OUTPUT)
-    report_path = required_output(REPORT_OUTPUT)
-    gene_sets = params.get("gene_sets")
-    if not isinstance(gene_sets, dict) or not gene_sets:
-        raise ContractError("gene_sets must be a nonempty object")
-    adata = read_h5ad(input_path)
-    known = set(str(value) for value in adata.var_names)
-    summaries: dict[str, dict[str, Any]] = {}
-    indices: dict[str, np.ndarray] = {}
-    for name, genes in gene_sets.items():
-        if not isinstance(name, str) or not name or name in adata.obs:
-            raise ContractError(f"gene set name `{name}` is empty or already present in obs")
-        if not isinstance(genes, list) or any(not isinstance(gene, str) or not gene for gene in genes):
-            raise ContractError(f"gene set `{name}` must be an array of nonempty strings")
-        present = [gene for gene in genes if gene in known]
-        if not present:
-            raise ContractError(f"gene set `{name}` has no genes present in the H5AD")
-        indices[name] = np.asarray([adata.var_names.get_loc(gene) for gene in present], dtype=int)
-        missing = sorted(set(genes) - known)
-        summaries[name] = {
-            "genes_requested": int(len(genes)),
-            "genes_present": int(len(present)),
-            "missing_genes": missing,
-        }
-    n_genes = int(adata.n_vars)
-    scores = {name: np.empty(adata.n_obs, dtype=float) for name in indices}
-    chunk_cells = max(1, min(1000, adata.n_obs))
-    for start in range(0, adata.n_obs, chunk_cells):
-        stop = min(start + chunk_cells, adata.n_obs)
-        block = adata.X[start:stop]
-        dense = (
-            block.toarray().astype(np.float64)
-            if sp.issparse(block)
-            else np.asarray(block, dtype=np.float64)
-        )
-        # UCell: rank genes within each cell, rank 1 = highest expression
-        # (average ranks break ties), then score = mean(margin/(margin+rank))
-        # over the signature with margin = (n_genes - signature size) / 2.
-        descending = (n_genes + 1) - rankdata(dense, axis=1, method="average")
-        for name, index in indices.items():
-            rank_margin = max(1.0, (n_genes - len(index)) / 2.0)
-            contribution = rank_margin / (rank_margin + descending[:, index])
-            scores[name][start:stop] = contribution.mean(axis=1)
-    for name, values in scores.items():
-        adata.obs[name] = values
-        summaries[name]["mean"] = float(np.mean(values))
-        summaries[name].update(percentile_summary(values))
-    adata.uns["ucell_params"] = {
-        "method": "ucell",
-        "gene_sets": {name: int(len(index)) for name, index in indices.items()},
-    }
-    report = {
-        "schema_version": "1.0",
-        "operation": "ucell_score",
-        "cells": int(adata.n_obs),
-        "genes": n_genes,
-        "gene_sets": summaries,
-    }
-    write_json(report, report_path)
-    return adata, output_path, report_path
+    raise ContractError("ucell_score moved to the official R-backed ucell-h5ad plugin; the legacy approximate formula is retired")
 
 
 def gene_set_score(params: dict[str, Any]) -> tuple[ad.AnnData, Path, Path]:

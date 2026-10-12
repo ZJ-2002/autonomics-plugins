@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "scope": "SOURCE_AND_INTERFACE_INVENTORY_NOT_METHOD_CERTIFICATION",
-  "canonical_families": 30,
+  "canonical_families": 31,
   "canonical_kinds": 62,
   "families": [
     {
@@ -14321,8 +14321,7 @@
         "h5ad_rank_genes_groups",
         "h5ad_cluster_mean_expression",
         "gene_set_score",
-        "h5ad_marker_annotate",
-        "h5ad_ucell_score"
+        "h5ad_marker_annotate"
       ],
       "image_reference": "ghcr.io/zj-2002/single-cell-preprocessor@sha256:e2f9fcd5ccf9e97b0f0129466df5abb21ae47ed32f123f6953b79fd83d915e20",
       "files": [
@@ -14352,14 +14351,14 @@
         },
         {
           "path": "README.md",
-          "sha256": "dc0552cbdf4d9645eece7e3abf3d5f0fa79d985eeff9ce810823f0b5baacbc65",
-          "bytes": 18718,
+          "sha256": "85a6715ddb6dbc11d27d63e47a82b2eeaba5cf24a6f3d9a9d9e97191e36a87e2",
+          "bytes": 19562,
           "executable": false
         },
         {
           "path": "manifest.toml",
-          "sha256": "fa830426bbb2a38e056b425faddd9addabd61060c25bf2166a6664920d5e5e35",
-          "bytes": 24435,
+          "sha256": "31c26c10e798381f0b17c1e4a12d27d8fdee750fa9e949a197cd5d66053f77fe",
+          "bytes": 23129,
           "executable": false
         },
         {
@@ -14574,8 +14573,8 @@
         },
         {
           "path": "workflow.py",
-          "sha256": "0936dd22196356cfcdbed2a100f35a7a2238fae5c51276a8327849ecb63817a1",
-          "bytes": 39715,
+          "sha256": "f0309d433465f388d341825c361f03213fb81c8ec4211fc4c60eaff5c1c1dbae",
+          "bytes": 36821,
           "executable": false
         }
       ],
@@ -14968,6 +14967,73 @@
           "path": "tests/test_contract.py",
           "sha256": "218036afdad572b0edb79d2847fcd2682c653bf7f5e169453828140debacada2",
           "bytes": 1952,
+          "executable": false
+        }
+      ],
+      "source_inventory_only": true,
+      "scientific_certified": false,
+      "auto_enable": false
+    },
+    {
+      "directory": "plugins/ucell-h5ad",
+      "plugin_name": "ucell-h5ad",
+      "kinds": [
+        "h5ad_ucell_score"
+      ],
+      "image_reference": "ghcr.io/zj-2002/ucell-h5ad-official@sha256:e18149dc957c70161029c3451584d7285ab08af2174926c593b8ae285f2dd133",
+      "files": [
+        {
+          "path": "Containerfile",
+          "sha256": "aa61ecdb4e8624ceb8242186306cff826516df54debd400be8358ed6ad9800c0",
+          "bytes": 964,
+          "executable": false
+        },
+        {
+          "path": "README.md",
+          "sha256": "2d9f976931acdfcf638debea0106e0e63773dc1380793de28aee383b00ae0ca4",
+          "bytes": 3141,
+          "executable": false
+        },
+        {
+          "path": "manifest.toml",
+          "sha256": "337439a2100332e95888a7c833baffadfd53836c4d49f334a85d8b2a3a6b9f6e",
+          "bytes": 2640,
+          "executable": false
+        },
+        {
+          "path": "scripts/score.py",
+          "sha256": "a7a9dff18744e702c9caffa5d12076cd0fa008511892237b972e590d27f3b861",
+          "bytes": 14757,
+          "executable": false
+        },
+        {
+          "path": "test_assurance.sh",
+          "sha256": "61362b9709360cb6c5d748e62d3756fd8ae4805170b2d42275cbe17b22cd4ef7",
+          "bytes": 2358,
+          "executable": false
+        },
+        {
+          "path": "tests/reference.R",
+          "sha256": "7fef74fc82ee9bfb0a3007dff87da4ddf9e02c679191cdc759f1789785b7bfe2",
+          "bytes": 1462,
+          "executable": false
+        },
+        {
+          "path": "tests/test_boundaries.py",
+          "sha256": "5151b55c0df7beb4cf1fd4a317d6c400784a4d676c802615b576f4aaf891ed67",
+          "bytes": 6781,
+          "executable": false
+        },
+        {
+          "path": "tests/test_comparison.py",
+          "sha256": "c9dbf1a21813ac7b675553614f9f5458a706d0e1e9b19a0be6e0dc1cf4fbddb8",
+          "bytes": 2424,
+          "executable": false
+        },
+        {
+          "path": "tests/test_official.py",
+          "sha256": "bb7a37e3159d4e890f283ed18447a850d8e52675e362e20d5fdbbe4fdef16b2f",
+          "bytes": 11496,
           "executable": false
         }
       ],

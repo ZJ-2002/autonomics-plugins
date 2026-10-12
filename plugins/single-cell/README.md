@@ -1,15 +1,16 @@
 # single-cell plugin
 
 Migrated from the legacy `single_cell_container` (10x preprocessor) and
-`single_cell_h5ad` (ten H5AD workflow variants) wrappers in nodes-io. One
+`single_cell_h5ad` wrappers in nodes-io. The original UCell kind now belongs
+to the separate official R-backed `ucell-h5ad` family. One
 directory = one plugin family = one git-able unit, one image
-(`single-cell-preprocessor`), eleven `[[nodes]]` entries.
+(`single-cell-preprocessor`), ten remaining `[[nodes]]` entries.
 
 ## Layout
 
-- `manifest.toml` — the eleven-node contract: params, ports, panel, image
+- `manifest.toml` — the ten-node contract: params, ports, panel, image
   provenance
-- `scripts/run_workflow.py` — shared runner shim for six H5AD nodes;
+- `scripts/run_workflow.py` — shared runner shim for five remaining workflows;
   rebuilds the legacy `params.json` from `SC_P_*` env vars and execs the
   workflow runner baked into the image
 - `Dockerfile`, `.dockerignore`, `requirements.txt`, `preprocess.py`,
@@ -37,12 +38,24 @@ directory = one plugin family = one git-able unit, one image
 | `h5ad_cluster_mean_expression` | `cluster_mean_expression` | 3600 | 2 CPU / 8Gi / shm 1Gi | `cluster_mean_expression.parquet` |
 | `gene_set_score` | `gene_set_score` | 3600 | 2 CPU / 8Gi / shm 1Gi | `output.h5ad`, `report.json` |
 | `h5ad_marker_annotate` | `marker_annotate` | 3600 | 2 CPU / 8Gi / shm 1Gi | `output.h5ad`, `report.json` |
-| `h5ad_ucell_score` | `ucell_score` | 3600 | 2 CPU / 8Gi / shm 1Gi | `output.h5ad`, `report.json` |
 
 Every node runs isolated (no network) with a read-only root filesystem and
 `PullPolicy::Missing`, exactly like the legacy wrappers.
 
 ## Execution shape
+
+### UCell ownership migration (2026-10-12)
+
+The canonical `h5ad_ucell_score` kind, JSON parameter, input/output ports and
+resource declaration are preserved in `../ucell-h5ad`. Its actual scoring
+calls official UCell 2.16.0 R code; the original pinned single-cell image has
+no UCell workflow branch or R runtime. The host workflow's unrelated
+`mean(margin/(margin+rank))` approximation is retired and refuses execution.
+Installing only this ten-node family does not install the moved kind. Both
+families must be selected explicitly where required, without duplicate kinds;
+no frozen deployment/profile or scientific method choice is auto-edited.
+The image and definitions/scripts of the other ten original kinds remain
+unchanged. Their numerical evidence is inherited, not newly counted.
 
 ### CellTypist assurance candidate (2026-10-12)
 
@@ -223,8 +236,8 @@ Contract tests are `python -m unittest discover -s tests -p
 'test_score_genes_contract.py' -v`. Run `tests/test_score_genes_container.py`
 inside the manifest's pinned image for official-package comparisons.
 These tests do not certify the complete family, the resident daemon, or
-scientific interpretation. In particular, the legacy `h5ad_ucell_score`
-implementation is not certified as official UCell. The family-level
+scientific interpretation. The distinct `ucell-h5ad` implementation has its
+own official-method and deployment evidence, not this scorer's. The family-level
 CellTypist panel is still a deployment prerequisite for all nodes.
 
 - `single_cell_preprocessor` is a **script-injected** node: the compiled argv
@@ -310,9 +323,10 @@ semantically. Deliberate deltas, all preserving runtime behaviour:
   the legacy `validate` enforced, now enforced where the value is
   consumed.
 
-The family panel (CellTypist model) is attached to all eleven nodes
+The family panel (CellTypist model) is attached to all ten remaining nodes
 because the DSL binds panels per family, not per node — the ldsc munge
-precedent; ten of the nodes never read the mount.
+precedent; nine of the nodes never read the mount. The moved UCell kind no
+longer needs the unused panel.
 
 ## Build and baselines
 

@@ -1,0 +1,111 @@
+{
+  "schema_version": "1.0",
+  "canonical_kind": "h5ad_ucell_score",
+  "status": "PROVEN_SCOPED",
+  "provider": "Original canonical kind;family ownership migrated from single-cell to generic ucell-h5ad",
+  "role": "Within-cell signature ranking with actual official UCell R package",
+  "inputs": [
+    "0:File H5AD;X explicitly;unique lexical axes;finite real values;exact R-double integers"
+  ],
+  "outputs": [
+    "0:output.h5ad with obs score columns and explicit ucell_params",
+    "1:report.json schema2.0 with exact IDs,signatures,missing genes,parameters and batch identities"
+  ],
+  "parameters": [
+    "gene_sets"
+  ],
+  "resources_unchanged": {
+    "cpus": 2.0,
+    "memory": "8Gi",
+    "pids_limit": 512,
+    "shm_size": "1Gi"
+  },
+  "official": {
+    "UCell": "2.16.0",
+    "source": {
+      "archive": {
+        "package": "UCell",
+        "version": "2.16.0",
+        "url": "https://bioconductor.org/packages/3.23/bioc/src/contrib/UCell_2.16.0.tar.gz",
+        "archive": "UCell_2.16.0.tar.gz",
+        "sha256": "816526fc4fb2958ecac6432f8c574c2bd51a6ff2c179d6ec8d2d6bcb1e9f5c9c",
+        "official_index_md5": "a5527df722e0d4d7926047764917f99f"
+      },
+      "download_http403_not_accepted_as_fresh_primary_proof": true,
+      "source": "Hash-verified preserved raw official source archive in frozen image;independent source installation still required",
+      "G0": false
+    },
+    "fresh_raw_author_source_install": true,
+    "all_15_namespace_bodies_and_formals_exact": true,
+    "R_dependency_versions": {
+      "UCell": "2.16.0",
+      "data.table": "1.18.6.1",
+      "Matrix": "1.7.5",
+      "BiocParallel": "1.46.0",
+      "BiocNeighbors": "2.6.0",
+      "SingleCellExperiment": "1.34.0",
+      "SummarizedExperiment": "1.42.0"
+    },
+    "inherited_Python_packages": 17,
+    "inherited_Python_payloads_exact": 6225,
+    "Python_inheritance_not_new_independent_downloads": true,
+    "independence": "Fresh raw author-source install and direct R API outside wrapper;independent SciPy rank mathematics;shared frozen platform and R dependencies",
+    "primary_docs": [
+      "https://bioconductor.org/packages/3.23/bioc/html/UCell.html",
+      "https://github.com/carmonalab/UCell"
+    ]
+  },
+  "implementation": {
+    "manifest_sha256": "sha256:337439a2100332e95888a7c833baffadfd53836c4d49f334a85d8b2a3a6b9f6e",
+    "script": "scripts/score.py",
+    "script_sha256": "sha256:a7a9dff18744e702c9caffa5d12076cd0fa008511892237b972e590d27f3b861",
+    "image": "ghcr.io/zj-2002/ucell-h5ad-official@sha256:e18149dc957c70161029c3451584d7285ab08af2174926c593b8ae285f2dd133",
+    "image_config_sha256": "bcae27f4aa71408c3ef31ce00ad35777031a3c7d3efc0cf64e1cdc51cfee94a8",
+    "package_visibility": "private",
+    "anonymous_install_proven": false,
+    "image_build": "Frozen official R environment plus exact inherited Python3.11 payload;Ubuntu24 rather than original Debian12"
+  },
+  "method_proof": {
+    "whole_author_cases": 20,
+    "finite_values_checked": 148165,
+    "integer_fields_exact": true,
+    "float_atol": 1e-12,
+    "float_rtol": 0,
+    "whole_HDF5_AnnData_raw_layers_graphs_metadata_and_scores_checked": true,
+    "signed_negative_only_missing_impute_average_ties_rank_cutoff_and_chunking": true,
+    "synthetic_cases_not_qualified_study_cohort": true
+  },
+  "engineering_proof": {
+    "actual_original_baked_failure": true,
+    "actual_image_refusals": 34,
+    "comparison_mutants_refused": 4,
+    "mandatory_compiled_contract_tests": 6,
+    "mandatory_catalog_tests": 71,
+    "skips": 0,
+    "input_and_output_hashes_and_exact_lexical_axes": true,
+    "ordinary_second_publication_failure_injected": true,
+    "crash_or_resume_claim": false
+  },
+  "isolated_DAG_proof": {
+    "canonical_kind": "h5ad_ucell_score",
+    "submissions": 10,
+    "whole_author_replays": 6,
+    "specific_failures": 4,
+    "both_ports_materialized_read_and_hashed": true,
+    "scope": "Native component/frozen SDK with current tracked plugin;not current whole-engine or resident daemon"
+  },
+  "method_scope": "Explicit official defaults:maxRank1500 capped by n_genes,w_neg1,missing_genes impute,average ties,SerialParam/ncores1,chunk100,name empty;X selected without mapping/normalization. Full signatures including signed arms;negative-only default zero is not reverse enrichment. At least one matching member and nonambiguous members required;undefined official outputs refused.",
+  "publication": "No overwrite;staged two outputs and ordinary inode-specific rollback,not crash atomicity/persistent resume",
+  "plan_contract": "NOT_IMPLEMENTATION_LOCKED;NOT_GRANTED;technical recipe does not freeze gene background/signatures/mapping/matrix/cell/donor eligibility or confer specificity",
+  "remaining": [
+    "Other parameters/smoothing/future packages/platforms",
+    "Study signatures/species/mapping/gene background/X scale/cell and donor eligibility",
+    "Biological specificity/calibration and independently qualified cohort",
+    "Explicit new family installation/current whole-engine/resident/full-scale resource acceptance",
+    "Private registry anonymous installation/global quotas/cache/recovery/crash atomicity",
+    "Scientific signoff and G0"
+  ],
+  "proof_packet": "/home/zj-normal/Work/autonomics/results/cachexia-v4.3.2/canonical-h5ad-ucell-v1-20261012",
+  "production_deployed": false,
+  "G0": false
+}
