@@ -75,6 +75,18 @@
     "tests.test_h5ad_export_interface.H5ADExportInterfaceTests.test_original_four_ports_and_parameters_remain",
     "tests.test_h5ad_export_interface.H5ADExportInterfaceTests.test_direct_official_selected_element_and_exact_values",
     "tests.test_h5ad_export_interface.H5ADExportInterfaceTests.test_publication_and_complete_metadata_diagnostics",
-    "tests.test_h5ad_export_interface.H5ADExportInterfaceTests.test_required_actual_runtime_driver_has_no_skip"
+    "tests.test_h5ad_export_interface.H5ADExportInterfaceTests.test_required_actual_runtime_driver_has_no_skip",
+    "tests.test_mrlap_contract_transport.MRlapContractTransportTests.test_actual_base_r_protocol_and_parent_abi_refuses_both_mismatches",
+    "tests.test_mrlap_contract_transport.MRlapContractTransportTests.test_exact_independent_kind_ports_and_source_transport",
+    "tests.test_mrlap_contract_transport.MRlapContractTransportTests.test_generated_shell_preserves_ten_inputs_and_five_outputs",
+    "tests.test_mrlap_contract_transport.MRlapContractTransportTests.test_missing_or_modified_method_component_is_never_repaired_or_accepted",
+    "tests.test_mrlap_contract_transport.MRlapContractTransportTests.test_release_inventory_and_new_source_index_bind_exact_adapter_bytes",
+    "tests.test_mrlap_contract_transport.MRlapContractTransportTests.test_rooted_renderer_argument_cannot_redirect_to_a_different_family",
+    "tests.test_source_evolution.SourceEvolutionTests.test_actual_drift_and_source_snapshot_without_git_refuse_evolution",
+    "tests.test_source_evolution.SourceEvolutionTests.test_fake_blob_cannot_be_accepted_by_self_reported_ledger_sha",
+    "tests.test_source_evolution.SourceEvolutionTests.test_fake_commit_and_unrelated_real_commit_are_rejected",
+    "tests.test_source_evolution.SourceEvolutionTests.test_ledger_cannot_grant_scientific_certification_or_auto_enable",
+    "tests.test_source_evolution.SourceEvolutionTests.test_original_identity_mismatch_and_duplicate_path_fail_closed",
+    "tests.test_source_evolution.SourceEvolutionTests.test_original_import_is_preserved_and_new_source_is_independently_verified"
   ]
 }
