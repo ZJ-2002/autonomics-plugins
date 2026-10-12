@@ -14,7 +14,7 @@
 | counts 首列 | `gene_id` | `gene` |
 | samples 首列 | `sample_id` | `pseudobulk_id` |
 | samples 条件列 | 含 `condition`（取自 `condition_column` 参数） | 无 |
-| 非整数矩阵 | **退出 2**（`allow_non_integer=true` 才放行 + WARN） | WARN 后按原值求和 |
+| 非整数矩阵 | **退出 2**（`allow_non_integer=true` 才放行 + WARN） | **同样默认退出 2**（须显式 `allow_non_integer=true`） |
 
 旧 DAG 若依赖旧表头，须显式传 `schema="legacy"`；下游 DESeq2/limma-voom
 节点按 deseq2 表头直读（首列作 row.names / rownames）。
@@ -45,7 +45,39 @@ pseudobulk/
 └── tests/            # pytest 套件 + 基准脚本（宿主跑，不进镜像）
 ```
 
-镜像：`localhost/autonomics/biotools-py@sha256:21e14c1582a9d4c261c0a23a11864293313ee2b49b9b7d85bcabc89210b48c7e`。
+镜像：`ghcr.io/zj-2002/biotools-py@sha256:7ad6aeafa87672699d28b61b6bed12fc81fcdbfc43222a0abf17e2d56fb806f5`。
+实际版本以运行态为准；该摘要的已核环境为 Python 3.11、AnnData 0.12.19、
+SciPy 1.17.1、NumPy 2.4.6、pandas 2.3.3，不是 manifest 历史简写中的 AnnData 0.11。
+
+## 整数与写出合同（2026-10-12）
+
+`pseudobulk_counts` 实施 raw-count 求和，不实施均值、标准化、批次校正或
+DE 推断。官方方法对照入口是 `scanpy.get.aggregate(..., func="sum")`；
+本脚本不是 Scanpy 的全部聚合 API 实现。指定层、标签缺失剔除及 `min_cells`
+是本插件的独立工程合同，不能以官方包默认行为掩盖差异。
+
+输入整数的单值与每个供者×细胞类型×基因的总和必须在非负 int64 范围内。
+风险路径以 Python 任意精度整数核查，包含重复稀疏坐标；不能靠单值阈值、
+`float64` 总和或聚合后的正负号来排除溢出。允许的非整数分支始终不是
+raw counts，聚合结果必须有限且非负。
+
+基因名必须唯一、非空且无 TSV 控制字符。三输出路径须独立且不存在，
+包括悬空链接；产物完成写入后以无覆盖链接发布。普通异常会按 inode
+核对回滚本次发布，并清理临时文件；这不等于多文件 crash 原子性或持久恢复。
+
+现有 `condition_column` 合同只检查供者×细胞类型组内恒定；它不自动证明
+跨细胞类型的供者级设计合法。科学流程须独立审核供者身份、条件、库合并、
+生物学重复及对比资格。也不能仅由矩阵数值判定 `.X` 一定是原始 counts：
+正式研究须明确冻结 raw-count 层及输入来源。
+
+隔离容器的小型验收入口（无缺依赖跳过）：
+
+```bash
+python3 tests/test_assurance.py /writable/evidence
+```
+
+该入口必须在 manifest 固定镜像中运行；完整作者对照、原失败复现与 native
+DAG 证据另归档。已有宿主 pytest、合成小型对照均不构成真实规模验收或 G0。
 
 ## 口径（对齐 §15.3/§16，F07 收口后）
 
