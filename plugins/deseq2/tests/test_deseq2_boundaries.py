@@ -293,10 +293,39 @@ class DESeq2Boundaries(unittest.TestCase):
     def test_literal_gene_axes(self):
         directory = self.check(fixture=self.counts(lambda text: text.replace('\ngene1\t', '\n00001\t').replace('\ngene2\t', '\nNA\t')),
             succeed=True)
-        rows = (directory / 'results.tsv').read_text().splitlines()
-        self.assertEqual(rows[1].split('\t')[0], '00001')
-        self.assertEqual(rows[2].split('\t')[0], 'NA')
+        with (directory / 'results.tsv').open(newline='') as handle:
+            rows = list(csv.reader(handle, delimiter='\t', strict=True))
+        self.assertEqual(rows[1][0], '00001')
+        self.assertEqual(rows[2][0], 'NA')
         self.assertEqual(json.loads((directory / 'report.json').read_text())['analysis']['node'], 'deseq2_de')
+
+    def test_quoted_gene_and_sample_axes(self):
+        def fixture(directory):
+            replacements = {'gene1': chr(34) + 'leading', 'gene2': "O'Gene", 's1': 's' + chr(34) + 'middle', 's2': '0001'}
+            for name in ['counts.tsv', 'metadata.tsv']:
+                filename = directory / name
+                with filename.open(newline='') as handle:
+                    rows = [[replacements.get(value, value) for value in row] for row in csv.reader(handle, delimiter='\t')]
+                with filename.open('w', newline='') as handle:
+                    csv.writer(handle, delimiter='\t', lineterminator='\n').writerows(rows)
+            return []
+        directory = self.check(fixture=fixture, succeed=True)
+        with (directory / 'normalized.tsv').open(newline='') as handle:
+            rows = list(csv.reader(handle, delimiter='\t', strict=True))
+        self.assertEqual(rows[0][1:3], ['s' + chr(34) + 'middle', '0001'])
+        self.assertEqual([row[0] for row in rows[1:3]], [chr(34) + 'leading', "O'Gene"])
+
+    def test_unclosed_quoted_field(self):
+        self.check(fixture=self.counts(lambda text: text.replace('\ngene1\t', '\n' + chr(34) + 'gene1\t')),
+            diagnostic='unclosed quote')
+
+    def test_bare_quote_in_field(self):
+        self.check(fixture=self.counts(lambda text: text.replace('\ngene1\t', '\ngene' + chr(34) + '1\t')),
+            diagnostic='bare quote')
+
+    def test_characters_after_closing_quote(self):
+        self.check(fixture=self.counts(lambda text: text.replace('\ngene1\t', '\n' + chr(34) + 'gene1' + chr(34) + 'x\t')),
+            diagnostic='after a closing quote')
 
     def test_exact_scientific_integer(self):
         self.check(fixture=self.token('.5e1'), succeed=True)

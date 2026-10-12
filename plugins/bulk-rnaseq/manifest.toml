@@ -23,6 +23,11 @@ are rejected. The report retains all kept and excluded gene IDs. BH values
 cover only genes retained by filterByExpr, not a study's frozen family.
 No reference panel is required. No study eligibility or scientific release
 is granted by successful execution.
+Both input and output tables use standard double-quoted TSV with doubled
+embedded double quotes. Lexical IDs are preserved before method-specific
+validation; malformed quotes and ambiguous legacy bare quotes are rejected.
+Consumers must decode quoted TSV and keep identity columns as strings;
+default type inference is not a general lexical-identity guarantee.
 """
 timeout_secs = 3600
 artifact_prefix = "/artifacts/limma_voom"

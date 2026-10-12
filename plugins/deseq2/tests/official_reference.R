@@ -8,8 +8,8 @@ stopifnot(packageVersion("DESeq2") == "1.50.2", packageVersion("apeglm") == "1.3
 for (package in c("DESeq2", "apeglm")) {
   stopifnot(startsWith(find.package(package), Sys.getenv("REFERENCE_LIBRARY")))
 }
-counts_table <- read.delim(config$counts_path, check.names = FALSE, colClasses = "character", na.strings = character())
-metadata <- read.delim(config$metadata_path, check.names = FALSE, colClasses = "character", na.strings = character())
+counts_table <- read.delim(config$counts_path, check.names = FALSE, colClasses = "character", na.strings = character(), quote = intToUtf8(34L))
+metadata <- read.delim(config$metadata_path, check.names = FALSE, colClasses = "character", na.strings = character(), quote = intToUtf8(34L))
 counts <- matrix(as.numeric(as.matrix(counts_table[, -1])), nrow = nrow(counts_table),
                  dimnames = list(counts_table[[1]], names(counts_table)[-1]))
 metadata <- metadata[match(colnames(counts), metadata$sample_id), , drop = FALSE]
@@ -36,13 +36,13 @@ if (config$lfc_shrink == "apeglm") {
   result$lfcSE <- shrunk$lfcSE
 }
 write.table(data.frame(gene_id = rownames(result), as.data.frame(result), check.names = FALSE),
-            file.path(config$output, "results.tsv"), sep = "\t", quote = FALSE, row.names = FALSE)
+            file.path(config$output, "results.tsv"), sep = "\t", quote = TRUE, qmethod = "double", row.names = FALSE)
 normalized <- DESeq2::counts(dds, normalized = TRUE)
 write.table(data.frame(gene_id = rownames(normalized), as.data.frame(normalized), check.names = FALSE),
-            file.path(config$output, "normalized.tsv"), sep = "\t", quote = FALSE, row.names = FALSE)
+            file.path(config$output, "normalized.tsv"), sep = "\t", quote = TRUE, qmethod = "double", row.names = FALSE)
 factors <- DESeq2::sizeFactors(dds)
 write.table(data.frame(sample_id = names(factors), size_factor = unname(factors)),
-            file.path(config$output, "size_factors.tsv"), sep = "\t", quote = FALSE, row.names = FALSE)
+            file.path(config$output, "size_factors.tsv"), sep = "\t", quote = TRUE, qmethod = "double", row.names = FALSE)
 saveRDS(list(dds = dds, unshrunk = unshrunk, final = result), file.path(config$output, "complete-author-intermediates.RDS"))
 node_dds <- readRDS(config$node_dataset)
 numerical_fields <- 0L

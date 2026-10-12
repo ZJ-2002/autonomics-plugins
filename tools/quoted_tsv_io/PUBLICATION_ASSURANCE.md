@@ -1,0 +1,9 @@
+# R result publication scope
+
+Both R runners stage each complete output in a mode-0700 private directory inside that output's existing normalized parent. Distinct output directories and filesystems remain supported. `file.link` publishes an individual complete file without overwriting an existing destination. GNU `/usr/bin/stat -c %d:%i --`, without `-L`, identifies the staged and destination device/inode as strings. Rollback only unlinks a destination whose observed identity still matches the owned staged inode; foreign regular-file or symlink replacement is preserved. Stage-directory cleanup also checks its recorded identity.
+
+The required tests execute the actual production publication components, including real hard links, injected third-link failure, foreign regular/symlink replacement, a destination appearing at link time, alias and existing-path refusal, and multiple output parents. They are host component tests, not statistical computation, a container test, scientific certification or daemon recovery. Fixed-image full entrypoint and independent author numerical/ID/RDS validation are separately recorded in the release evidence; a unit-test PASS alone cannot certify those layers.
+
+This is per-file no-overwrite publication, not an atomic five-file transaction or a durable commit protocol. The identity-check-then-unlink interval does not eliminate hostile TOCTOU races. Same-path concurrent statistical runs, private-directory tree replacement, kill/power-loss recovery, and cross-process reuse require separate evidence. Identity-check failures conservatively avoid deleting an unverified object and cannot establish complete rollback cleanup.
+
+No method parameters, input semantics, output ports, numeric goldens, tolerances, image digests, resource declarations, or research admission are changed by the publication repair.

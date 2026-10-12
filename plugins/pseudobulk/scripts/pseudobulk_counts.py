@@ -17,6 +17,7 @@
 # 资源边界：聚合保持稀疏（onehot @ matrix），导出按基因分块稠密化写 TSV，
 # 峰值内存受 块基因数×组数 控制，与 细胞数×基因数 全量稠密化脱钩。
 # 解释边界：本节点不做 QC、不做批次校正、不注释细胞类型；输出仅是计数层。
+import csv
 import os
 from pathlib import Path
 import sys
@@ -285,18 +286,21 @@ try:
         os.close(descriptor)
         staged.append(Path(temporary_name))
     with staged[0].open("w", encoding="utf-8", newline="\n") as handle:
-        handle.write(first_col + "\t" + "\t".join(ids) + "\n")
+        writer = csv.writer(handle, delimiter="\t", doublequote=True, lineterminator="\n")
+        writer.writerow([first_col] + ids)
         rows_per_chunk = max(1, min(len(genes), 10_000_000 // max(1, len(kept))))
         for start in range(0, len(genes), rows_per_chunk):
             stop = min(start + rows_per_chunk, len(genes))
             block = counts_sparse[start:stop].toarray()
             for row_offset in range(block.shape[0]):
                 gene_name = genes[start + row_offset]
-                values = "\t".join(str(value) for value in block[row_offset].tolist())
-                handle.write(f"{gene_name}\t{values}\n")
+                writer.writerow([gene_name] + block[row_offset].tolist())
         handle.flush()
         os.fsync(handle.fileno())
-    pd.DataFrame(sample_rows, columns=metadata_columns).to_csv(staged[1], sep="\t", index=False)
+    with staged[1].open("w", encoding="utf-8", newline="\n") as handle:
+        writer = csv.writer(handle, delimiter="\t", doublequote=True, lineterminator="\n")
+        writer.writerow(metadata_columns)
+        writer.writerows(sample_rows)
     staged[2].write_text("\n".join(log_lines) + "\n", encoding="utf-8")
     for temporary in staged[1:]:
         with temporary.open("rb") as handle:

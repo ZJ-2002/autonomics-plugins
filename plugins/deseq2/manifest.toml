@@ -23,6 +23,11 @@ model, shrinks log2 fold changes with apeglm (posterior estimates; set
 lfc_shrink=none for raw MLE coefficients), and publishes the full result
 table, normalized counts, size factors, the fitted DESeqDataSet (RDS), and
 a run report with input/output checksums. No reference panel is required.
+Both input and output tables use standard double-quoted TSV with doubled
+embedded double quotes. The input reader preserves lexical strings before
+method-specific validation, rejects malformed quotes, and never repairs
+ambiguous legacy bare quotes. Consumers must decode quoted TSV and preserve
+identity columns as strings; default type inference is not an ID contract.
 """
 timeout_secs = 3600
 artifact_prefix = "/artifacts/deseq2_de"

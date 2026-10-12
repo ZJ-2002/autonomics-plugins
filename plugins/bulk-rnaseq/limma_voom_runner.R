@@ -38,10 +38,53 @@ read_literal_tsv <- function(filename) {
   if (length(lines) < 2L || any(!nzchar(lines))) {
     stop("input must contain a header and nonempty data rows", call. = FALSE)
   }
-  fields <- lapply(lines, function(line) {
-    tokens <- strsplit(paste0(line, "\t__END__"), "\t", fixed = TRUE)[[1]]
-    tokens[-length(tokens)]
-  })
+  parse_record <- function(line) {
+    quote_character <- intToUtf8(34L)
+    if (!grepl(quote_character, line, fixed = TRUE)) {
+      tokens <- strsplit(paste0(line, "\t__END__"), "\t", fixed = TRUE)[[1]]
+      return(tokens[-length(tokens)])
+    }
+    characters <- strsplit(line, "", fixed = TRUE)[[1]]
+    buffer <- character(length(characters))
+    size <- 0L
+    tokens <- character()
+    state <- "start"
+    position <- 1L
+    while (position <= length(characters)) {
+      character <- characters[[position]]
+      if (state == "quoted") {
+        if (character == quote_character) {
+          if (position < length(characters) && characters[[position + 1L]] == quote_character) {
+            size <- size + 1L
+            buffer[[size]] <- character
+            position <- position + 1L
+          } else {
+            state <- "closed"
+          }
+        } else {
+          size <- size + 1L
+          buffer[[size]] <- character
+        }
+      } else if (character == "\t") {
+        tokens <- c(tokens, paste0(buffer[seq_len(size)], collapse = ""))
+        size <- 0L
+        state <- "start"
+      } else if (state == "closed") {
+        stop("quoted TSV has characters after a closing quote", call. = FALSE)
+      } else if (character == quote_character) {
+        if (state != "start") stop("quoted TSV has a bare quote inside an unquoted field", call. = FALSE)
+        state <- "quoted"
+      } else {
+        size <- size + 1L
+        buffer[[size]] <- character
+        state <- "unquoted"
+      }
+      position <- position + 1L
+    }
+    if (state == "quoted") stop("quoted TSV has an unclosed quote or multiline field", call. = FALSE)
+    c(tokens, paste0(buffer[seq_len(size)], collapse = ""))
+  }
+  fields <- lapply(lines, parse_record)
   header <- fields[[1]]
   if (any(grepl("[[:cntrl:]]", unlist(fields, use.names = FALSE)))) {
     stop("input fields must not contain control characters", call. = FALSE)
@@ -81,6 +124,13 @@ exact_integer_token <- function(token) {
   nchar(digits) < 16L || (nchar(digits) == 16L && digits <= "9007199254740991")
 }
 
+publication_identity <- function(filename) {
+  identity <- suppressWarnings(system2("/usr/bin/stat", c("-c", shQuote("%d:%i"), "--", shQuote(filename)), stdout = TRUE, stderr = FALSE))
+  status <- attr(identity, "status")
+  if ((!is.null(status) && status != 0L) || length(identity) != 1L || !grepl("^[0-9]+:[0-9]+$", identity)) return(NA_character_)
+  unname(identity)
+}
+
 main <- function() {
 required_env("AUTONOMICS_INPUT0")
 required_env("AUTONOMICS_INPUT1")
@@ -114,15 +164,32 @@ if (any(file.access(dirname(outputs), 2L) != 0L)) {
   stop("output parent directories must be writable", call. = FALSE)
 }
 output_targets <- outputs
-stage <- tempfile(pattern = "limma-voom-publication-")
-if (!dir.create(stage)) stop("cannot create private publication staging", call. = FALSE)
-published <- character()
+if (!file.exists("/usr/bin/stat")) stop("GNU stat is required for publication identity checks", call. = FALSE)
+stages <- character()
+stage_identities <- character()
+staged_identities <- rep(NA_character_, length(output_targets))
+published <- integer()
 complete <- FALSE
 on.exit({
-  if (!complete && length(published)) unlink(published)
-  unlink(stage, recursive = TRUE)
+  if (!complete && length(published)) {
+    for (index in published) {
+      identity <- publication_identity(output_targets[[index]])
+      if (!is.na(identity) && identical(identity, staged_identities[[index]])) unlink(output_targets[[index]])
+    }
+  }
+  for (index in seq_along(stages)) {
+    identity <- publication_identity(stages[[index]])
+    if (!is.na(identity) && identical(identity, stage_identities[[index]])) unlink(stages[[index]], recursive = TRUE)
+  }
 }, add = TRUE)
-staged_outputs <- file.path(stage, paste0("port", seq_along(outputs)))
+for (index in seq_along(output_targets)) {
+  stage <- tempfile(pattern = ".limma-voom-publication-", tmpdir = normalizePath(dirname(output_targets[[index]]), mustWork = TRUE))
+  if (!dir.create(stage, mode = "0700")) stop("cannot create private publication staging", call. = FALSE)
+  stages <- c(stages, stage)
+  stage_identities <- c(stage_identities, publication_identity(stage))
+  if (is.na(stage_identities[[index]])) stop("cannot verify private staging identity", call. = FALSE)
+}
+staged_outputs <- file.path(stages, paste0("port", seq_along(output_targets)))
 results_path <- staged_outputs[[1]]
 weights_path <- staged_outputs[[2]]
 normalized_path <- staged_outputs[[3]]
@@ -372,7 +439,7 @@ results_frame <- data.frame(
   check.names = FALSE,
   stringsAsFactors = FALSE
 )
-write.table(results_frame, results_path, sep = "\t", quote = FALSE, row.names = FALSE)
+write.table(results_frame, results_path, sep = "\t", quote = TRUE, qmethod = "double", row.names = FALSE)
 
 weights_frame <- data.frame(
   gene_id = rownames(v$E),
@@ -381,7 +448,7 @@ weights_frame <- data.frame(
   stringsAsFactors = FALSE
 )
 colnames(weights_frame)[-1] <- colnames(v$E)
-write.table(weights_frame, weights_path, sep = "\t", quote = FALSE, row.names = FALSE)
+write.table(weights_frame, weights_path, sep = "\t", quote = TRUE, qmethod = "double", row.names = FALSE)
 
 normalized_frame <- data.frame(
   gene_id = rownames(v$E),
@@ -389,7 +456,7 @@ normalized_frame <- data.frame(
   check.names = FALSE,
   stringsAsFactors = FALSE
 )
-write.table(normalized_frame, normalized_path, sep = "\t", quote = FALSE, row.names = FALSE)
+write.table(normalized_frame, normalized_path, sep = "\t", quote = TRUE, qmethod = "double", row.names = FALSE)
 
 contrast_summary <- data.frame(
   outcome_mode = outcome_mode,
@@ -405,7 +472,7 @@ contrast_summary <- data.frame(
   threads = threads,
   stringsAsFactors = FALSE
 )
-write.table(contrast_summary, contrast_summary_path, sep = "\t", quote = FALSE, row.names = FALSE)
+write.table(contrast_summary, contrast_summary_path, sep = "\t", quote = TRUE, qmethod = "double", row.names = FALSE)
 
 file_checksum <- function(path) unname(tools::md5sum(path))
 
@@ -470,10 +537,14 @@ if (any(file.exists(output_targets)) || any(!is.na(Sys.readlink(output_targets))
   stop("output appeared during execution; publication refused", call. = FALSE)
 }
 for (index in seq_along(staged_outputs)) {
-  if (!file.copy(staged_outputs[[index]], output_targets[[index]], overwrite = FALSE)) {
+  staged_identities[[index]] <- publication_identity(staged_outputs[[index]])
+  if (is.na(staged_identities[[index]])) stop("cannot verify staged output identity", call. = FALSE)
+}
+for (index in seq_along(staged_outputs)) {
+  if (!file.link(staged_outputs[[index]], output_targets[[index]])) {
     stop("output publication failed", call. = FALSE)
   }
-  published <- c(published, output_targets[[index]])
+  published <- c(published, index)
 }
 complete <- TRUE
 

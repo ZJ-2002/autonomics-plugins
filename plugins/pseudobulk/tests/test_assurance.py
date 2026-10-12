@@ -135,6 +135,13 @@ def main(root):
     data = fixture()
     data.X = data.X.astype(float) / 3
     records.append(run(root, "explicit-noninteger-not-counts", data, allow="true"))
+    for name, identifier in [("leading-double-quote", chr(34) + "leading"),
+            ("middle-double-quote", "middle" + chr(34) + "quote"),
+            ("single-quote", "O'Gene"), ("comma", "gene,comma"),
+            ("literal-NA", "NA"), ("leading-zero", "0001"), ("unicode", "中文基因")]:
+        data = fixture(genes=[identifier, "g2", "g3"])
+        data.obs["donor"] = [identifier] * 3 + ["d2"] * 3
+        records.append(run(root, name, data))
     for name, value, error in [("nan", np.nan, "non-finite"), ("inf", np.inf, "non-finite"),
             ("negative", -1, "negative"), ("noninteger", 0.5, "non-integer entries")]:
         data = fixture()

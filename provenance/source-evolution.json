@@ -33,11 +33,11 @@
       },
       "current": {
         "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
-        "revision": "43396ed9a2eb487298e1a2e7a9c09eaa29b2ee19",
+        "revision": "3510156aab7b8a9606d4291020be0d60deb92bac",
         "path": "plugins/deseq2/deseq2_runner.R",
-        "sha256": "5fb4026e22dd951b51ca068af97c6ada5460a347deddcd4ba80377687626d370",
-        "bytes": 17080,
-        "git_blob": "c981030095f982c9de2a70663d7980a7b83f7ad1"
+        "sha256": "cb019c599face7715089df4c16157851b0403bef5f61a3166123ba913ba170f1",
+        "bytes": 20263,
+        "git_blob": "e831a72d4a64bf3006770741c323c5d329951e0b"
       }
     },
     {
@@ -51,11 +51,11 @@
       },
       "current": {
         "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
-        "revision": "43396ed9a2eb487298e1a2e7a9c09eaa29b2ee19",
+        "revision": "623d2ea570128df2c0886b5dc9b89fac00aa150e",
         "path": "plugins/deseq2/manifest.toml",
-        "sha256": "7dd4f51093fee5ae63cc76caf06186ca209a2dda790df58b27b1b4a41f59e8f1",
-        "bytes": 4779,
-        "git_blob": "a0c247979f4e343b2a5186225921c9b1ba0b5dc1"
+        "sha256": "5720eeff4b44cd1285129b2f05d1a2fab780b150efa2c9d1a05421eae0f01782",
+        "bytes": 5149,
+        "git_blob": "4a2d775c3742aa2ca960c17f8b8ae35a80488b78"
       }
     },
     {
@@ -429,11 +429,11 @@
       },
       "current": {
         "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
-        "revision": "97ffb9f91def67e75d85f4dca7b9e8d6c2b98ddb",
+        "revision": "623d2ea570128df2c0886b5dc9b89fac00aa150e",
         "path": "plugins/pseudobulk/manifest.toml",
-        "sha256": "17a2be2eac2e1bf8e8ff3556a8fa5c059d8755d6eb4f650cd4e98aad1bc5dcdc",
-        "bytes": 6795,
-        "git_blob": "ed2bbbad8f512724429e5196cb1454ff72261b84"
+        "sha256": "2c1a5d0105617aabed47b3950dfa751a94e3b47dfa7d98a805f9c5d1a66033c8",
+        "bytes": 7057,
+        "git_blob": "ca4214f35f314a755d07605b83914a08578178a2"
       }
     },
     {
@@ -465,11 +465,11 @@
       },
       "current": {
         "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
-        "revision": "6b8562a90ea8c2456608b94c6ffcb5bce271ec14",
+        "revision": "623d2ea570128df2c0886b5dc9b89fac00aa150e",
         "path": "plugins/pseudobulk/scripts/pseudobulk_counts.py",
-        "sha256": "38258d9685a335f0157ad9682d71b39aec6e31dc5df926b863d3039d55f3feba",
-        "bytes": 15451,
-        "git_blob": "9e1d4133dc419baf34c844fc5882f7f31078a8a2"
+        "sha256": "77884036871586b1be564a8c25f9ab72b2939a987db112aecd328cc86e44c83d",
+        "bytes": 15609,
+        "git_blob": "617b2a252e309c41d62de586c50c1f90db6649a4"
       }
     },
     {

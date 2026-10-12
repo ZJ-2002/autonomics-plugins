@@ -87,6 +87,14 @@
     "tests.test_source_evolution.SourceEvolutionTests.test_fake_commit_and_unrelated_real_commit_are_rejected",
     "tests.test_source_evolution.SourceEvolutionTests.test_ledger_cannot_grant_scientific_certification_or_auto_enable",
     "tests.test_source_evolution.SourceEvolutionTests.test_original_identity_mismatch_and_duplicate_path_fail_closed",
-    "tests.test_source_evolution.SourceEvolutionTests.test_original_import_is_preserved_and_new_source_is_independently_verified"
+    "tests.test_source_evolution.SourceEvolutionTests.test_original_import_is_preserved_and_new_source_is_independently_verified",
+    "tests.test_r_output_publication.ROutputPublicationTests.test_deseq2_actual_publication_component_preserves_foreign_outputs",
+    "tests.test_r_output_publication.ROutputPublicationTests.test_limma_actual_publication_component_preserves_foreign_outputs",
+    "tests.test_governance_transport.GovernanceTransportTests.test_all10_original_manifests_scripts_readmes_have_exact_git_blob_identity",
+    "tests.test_governance_transport.GovernanceTransportTests.test_changed_measured_source_or_removed_hash_cannot_be_repaired_or_accepted",
+    "tests.test_governance_transport.GovernanceTransportTests.test_exact11_optin_families18_unique_kinds_canonical_scope_unchanged",
+    "tests.test_governance_transport.GovernanceTransportTests.test_normalized_fixed_ports_vanilla_copy_and_all8_installed_source_shas",
+    "tests.test_governance_transport.GovernanceTransportTests.test_source_or_science_autoenable_promotion_is_refused",
+    "tests.test_governance_transport.GovernanceTransportTests.test_unpinned_wrong_digest_wrong_ports_or_unsafe_resource_mutations_refused"
   ]
 }
