@@ -369,7 +369,11 @@ doc = """
 Input port 0 is H5AD. Outputs are rank_genes_groups.parquet, report.json,
 and output.h5ad with the Scanpy result stored in uns. method must be one
 of wilcoxon, t-test, t-test_overestim_var, or logreg (enforced inside the
-workflow runner, as in the legacy wrapper).
+dedicated runner). Uses X with use_raw=false and no layer or feature filtering;
+raw is preserved but never selected. Preserves official full H5AD results and
+an explicit complete gene universe versus top-n view in the report. Tidy views
+also expose available official logfoldchanges; logreg supplies coefficients,
+not gene P values. Cell-level exploratory markers are not donor disease tests.
 """
 timeout_secs = 3600
 artifact_prefix = "/artifacts/h5ad_rank_genes_groups"
@@ -390,7 +394,7 @@ n_genes = { type = "int", default = 100, min = 1.0, doc = "Markers per group to 
 
 [nodes.command]
 interpreter = "python"
-script_file = "scripts/run_workflow.py"
+script_file = "scripts/rank_genes_groups.py"
 
 [nodes.command.env]
 AUTONOMICS_SINGLE_CELL_WORKFLOW = "rank_genes_groups"
@@ -508,7 +512,11 @@ label to its marker gene panel. Each set is scored per cell (mean marker
 expression after normalization; groupby averages over cluster members
 instead) and the best label wins: obs gains marker_label, marker_score,
 and marker_margin; labels whose best score is not above min_score fall
-back to unknown_label. normalize must be log_cp10k or none.
+back to unknown_label. normalize must be log_cp10k or none. This is a custom
+arithmetic marker rule, not an official UCell, CellTypist or Seurat classifier;
+scores and margins are not probabilities or donor-level disease tests. Repeated
+signature members retain their original weighting and missing members are
+disclosed. X alone is scored; raw and layers are preserved but not selected.
 """
 timeout_secs = 3600
 artifact_prefix = "/artifacts/h5ad_marker_annotate"
@@ -529,7 +537,7 @@ unknown_label = { type = "string", default = "Unknown", doc = "Label assigned wh
 
 [nodes.command]
 interpreter = "python"
-script_file = "scripts/run_workflow.py"
+script_file = "scripts/marker_annotate.py"
 
 [nodes.command.env]
 AUTONOMICS_SINGLE_CELL_WORKFLOW = "marker_annotate"

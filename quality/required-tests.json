@@ -1,6 +1,12 @@
 {
   "scope": "CATALOG_TESTS_NOT_SCIENTIFIC_CERTIFICATES",
   "test_ids": [
+    "tests.test_h5ad_rank_interface.H5ADRankInterfaceTests.test_original_three_ports_and_four_parameters",
+    "tests.test_h5ad_rank_interface.H5ADRankInterfaceTests.test_explicit_original_X_recipe_and_complete_result_audit",
+    "tests.test_h5ad_rank_interface.H5ADRankInterfaceTests.test_public_whole_author_and_boundary_drivers_are_not_skipped",
+    "tests.test_h5ad_marker_interface.H5ADMarkerInterfaceTests.test_original_five_parameters_and_two_ports",
+    "tests.test_h5ad_marker_interface.H5ADMarkerInterfaceTests.test_custom_method_identity_multiplicity_and_publication_guards",
+    "tests.test_h5ad_marker_interface.H5ADMarkerInterfaceTests.test_independent_math_and_real_boundary_tests_do_not_skip",
     "tests.test_catalog.CatalogTests.test_added_source_fails_lock",
     "tests.test_catalog.CatalogTests.test_changed_source_fails_lock",
     "tests.test_catalog.CatalogTests.test_duplicate_canonical_kind_fails",

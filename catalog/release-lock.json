@@ -14410,6 +14410,18 @@
           "executable": false
         },
         {
+          "path": "MARKER_ASSURANCE.md",
+          "sha256": "14e8b506a66e1f9c6d8c70166b06516ac1d07782ab12dccc6729e458824cec52",
+          "bytes": 2964,
+          "executable": false
+        },
+        {
+          "path": "RANK_ASSURANCE.md",
+          "sha256": "8a2a2e2c97df131c5bf1a59d04393e4e8a83d3e4da4bba89ab066ab9023d368f",
+          "bytes": 3578,
+          "executable": false
+        },
+        {
           "path": "README.md",
           "sha256": "85a6715ddb6dbc11d27d63e47a82b2eeaba5cf24a6f3d9a9d9e97191e36a87e2",
           "bytes": 19562,
@@ -14423,8 +14435,8 @@
         },
         {
           "path": "manifest.toml",
-          "sha256": "938a74f0d59478e527cc6e5a051c73b536f1a9c83abffb2ffd99b65669cdfb52",
-          "bytes": 24035,
+          "sha256": "5288e9c7ac552f318b93c67f107fd45dcddf12d9396c38e00e6950e3bede9c42",
+          "bytes": 24720,
           "executable": false
         },
         {
@@ -14464,9 +14476,21 @@
           "executable": false
         },
         {
+          "path": "scripts/marker_annotate.py",
+          "sha256": "b75edbe5d5bae3287475fcc215e2ef7c1744a095fd4ba0b1a9b2e6b91c4e5cfd",
+          "bytes": 14153,
+          "executable": false
+        },
+        {
           "path": "scripts/qc_filter.py",
           "sha256": "60c36e9731ee010b3fd6b27fd2cf6ec2b98ac02004d5a4402705740a04f8eaa7",
           "bytes": 11846,
+          "executable": false
+        },
+        {
+          "path": "scripts/rank_genes_groups.py",
+          "sha256": "1f1613be1398db555ab9ccf3184219dc200ed20ca54531a9756d2231bb93d9c0",
+          "bytes": 8646,
           "executable": false
         },
         {
@@ -14566,6 +14590,18 @@
           "executable": false
         },
         {
+          "path": "tests/check_marker_mutants.py",
+          "sha256": "a5dbda022f4bb965ac2710181edb262ba9edbbfa5e73872ecf20743fd9ff3cdb",
+          "bytes": 1641,
+          "executable": false
+        },
+        {
+          "path": "tests/check_rank_mutants.py",
+          "sha256": "35cb2f408056fd99da08db166aaf97e2f2cf98a256d1596f773d14fff93a5483",
+          "bytes": 2084,
+          "executable": false
+        },
+        {
           "path": "tests/dense_ingest_reference.py",
           "sha256": "86335a826ada2b4866b66f908fcde98f44916342df8f1d54f4067282724888d0",
           "bytes": 1688,
@@ -14581,6 +14617,12 @@
           "path": "tests/embedding_reference.py",
           "sha256": "b7971589fed6ccba369b8bc16c4eb7426f1ec2a1a53d9f62441c1c73f3745e7a",
           "bytes": 2650,
+          "executable": false
+        },
+        {
+          "path": "tests/marker_reference.py",
+          "sha256": "1798c2a953338fb5d77dab87c2a525bfdd1ccdb5d40718e2f4789700b94c2ed5",
+          "bytes": 4004,
           "executable": false
         },
         {
@@ -14605,6 +14647,24 @@
           "path": "tests/qc_reference.py",
           "sha256": "49e44742c9697e3ad9df7f79b332f523b746c30db8c3d725a1f878d8ee3dd56b",
           "bytes": 2498,
+          "executable": false
+        },
+        {
+          "path": "tests/rank_compare.py",
+          "sha256": "69fd7b2d037038292ccf6e6144058fad3515a31c8142e0014b7a7255e992bc63",
+          "bytes": 4919,
+          "executable": false
+        },
+        {
+          "path": "tests/rank_fixtures.py",
+          "sha256": "3c425728a0b79218b914c9714c5fda428bd0ed86483ebbc441ae3c0e5b5b53ba",
+          "bytes": 2091,
+          "executable": false
+        },
+        {
+          "path": "tests/rank_reference.py",
+          "sha256": "deebda4a6fa6e6896070a220502c393905a5f13f9a1d891a434652bdc01b6581",
+          "bytes": 2200,
           "executable": false
         },
         {
@@ -14650,6 +14710,12 @@
           "executable": false
         },
         {
+          "path": "tests/test_marker_assurance.py",
+          "sha256": "fa2dcf8faa18ccf4f0a8b3cb9dd2a828427e54bb153a2ebbb3d7efd827c0a015",
+          "bytes": 15310,
+          "executable": false
+        },
+        {
           "path": "tests/test_preprocess_boundaries.py",
           "sha256": "4f282d94c498bc9a2ee744375c30c8de48214d0eb2745dc2a71ae6d2622816d3",
           "bytes": 9386,
@@ -14677,6 +14743,18 @@
           "path": "tests/test_qc_container.py",
           "sha256": "ff8dbb0ba703425dcb6b37814529f3cc6be40139e0dc03546de1706571c90089",
           "bytes": 7687,
+          "executable": false
+        },
+        {
+          "path": "tests/test_rank_boundaries.py",
+          "sha256": "b55139a762d5783cecbe4b67f137876cd5cdaa237fcd712183cb75692b01c1cb",
+          "bytes": 7261,
+          "executable": false
+        },
+        {
+          "path": "tests/test_rank_container.py",
+          "sha256": "776ba3faddc8a9ab9cf7c6c7abb0082c91a29a770ad3966624a27fe6bbc3210e",
+          "bytes": 3144,
           "executable": false
         },
         {
