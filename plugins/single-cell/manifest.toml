@@ -414,6 +414,8 @@ Input port 0 is H5AD. The single output is a long Parquet table with
 cluster, gene, mean_expression, and (default on) pct_expressed columns.
 genes selects var_names; leave it empty to score every gene. normalize
 must be cp10k or none (cp10k prefers the counts layer).
+This is descriptive cell-level aggregation, never donor pseudobulk counts.
+cp10k uses the full gene background before selecting requested genes.
 """
 timeout_secs = 3600
 artifact_prefix = "/artifacts/h5ad_cluster_mean_expression"
@@ -432,7 +434,7 @@ include_percent_expressed = { type = "bool", default = true, doc = "Add the frac
 
 [nodes.command]
 interpreter = "python"
-script_file = "scripts/run_workflow.py"
+script_file = "scripts/cluster_mean_expression.py"
 
 [nodes.command.env]
 AUTONOMICS_SINGLE_CELL_WORKFLOW = "cluster_mean_expression"
@@ -441,6 +443,11 @@ SC_P_STR_GROUPBY = "{{ groupby }}"
 SC_P_LST_GENES = "{{ genes }}"
 SC_P_STR_NORMALIZE = "{{ normalize }}"
 SC_P_BOOL_INCLUDE_PERCENT_EXPRESSED = "{{ include_percent_expressed }}"
+NUMBA_NUM_THREADS = "1"
+NUMBA_CACHE_DIR = "/tmp/numba"
+
+[nodes.command.env_r_arrays]
+SC_P_R_ARRAY_GENES = "genes"
 
 [nodes.resources]
 cpus = 2.0
