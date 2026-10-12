@@ -3,6 +3,7 @@ import hashlib
 import json
 from pathlib import Path, PurePosixPath
 import re
+import subprocess
 import tomllib
 
 
@@ -107,24 +108,134 @@ def check_lock(root):
     return current
 
 
-def verify_import(root):
+EVOLUTION_REPOSITORY = 'https://github.com/ZJ-2002/autonomics-plugins.git'
+EVOLUTION_SCOPE = 'RECORDED_GIT_SOURCE_EVOLUTION_NOT_METHOD_CERTIFICATION'
+
+
+def _git(root, *arguments):
+    result = subprocess.run(['git', '-C', str(root), *arguments], capture_output=True, timeout=30)
+    if result.returncode:
+        raise ValueError('Independent Git object verification unavailable or failed')
+    return result.stdout
+
+
+def _identity(content):
+    return {'sha256': hashlib.sha256(content).hexdigest(), 'bytes': len(content),
+            'git_blob': hashlib.sha1(b'blob ' + str(len(content)).encode() + b'\0' + content).hexdigest()}
+
+
+def _original_sources(root):
     index = json.loads((root / 'provenance/source-index.json').read_text())
-    checked = 0
     sources = index['plugins'] + index['research_adapters']
     shared = root / 'provenance/shared-image-sources.json'
     if shared.is_file():
         sources += [json.loads(shared.read_text())]
-    for source in sources:
-        directory = root.joinpath(*safe_relative(source['directory']).parts)
+    return sources
+
+
+def verify_import_detailed(root):
+    """Preserve import history and independently verify explicitly evolved Git bytes.
+
+    An evolved source requires the original identity and actual immutable Git
+    commit/blob objects from this checkout. A source-only checkout without Git
+    fails closed for evolution; the ledger alone never proves new provenance.
+    """
+    root = Path(root)
+    originals = {}
+    for source in _original_sources(root):
         for record in source['files']:
-            filename = contained_file(directory, record['path'])
-            content = filename.read_bytes()
-            if len(content) != record['bytes'] or hashlib.sha256(content).hexdigest() != record['sha256']:
-                raise ValueError('Imported bytes differ: ' + str(filename))
-            checked += 1
+            path = str(safe_relative(source['directory'])) + '/' + str(safe_relative(record['path']))
+            if path in originals:
+                raise ValueError('Duplicate original import path')
+            originals[path] = (source, record)
+    evolution_path = root/'provenance/source-evolution.json'
+    evolutions = {}
+    if evolution_path.is_file():
+        if evolution_path.is_symlink():
+            raise ValueError('Regular source evolution ledger required')
+        ledger = json.loads(evolution_path.read_text())
+        if (set(ledger) != {'schema_version', 'scope', 'scientific_certified', 'auto_enable', 'changes'} or
+                ledger['schema_version'] != 1 or ledger['scope'] != EVOLUTION_SCOPE or
+                ledger['scientific_certified'] is not False or ledger['auto_enable'] is not False or
+                not isinstance(ledger['changes'], list)):
+            raise ValueError('Explicit unapproved source evolution ledger required')
+        if ledger['changes']:
+            top = _git(root, 'rev-parse', '--show-toplevel').decode().strip()
+            if Path(top).resolve() != root.resolve():
+                raise ValueError('Exact repository Git object store required for source evolution')
+        for change in ledger['changes']:
+            if set(change) != {'path', 'original', 'current'}:
+                raise ValueError('Exact original/current source evolution fields required')
+            path = str(safe_relative(change['path']))
+            if path in evolutions:
+                raise ValueError('Duplicate source evolution path')
+            if path not in originals:
+                raise ValueError('Source evolution does not name an original import path')
+            source, record = originals[path]
+            expected = {'repository': source['repository'], 'revision': source['revision'],
+                        **{key: record[key] for key in ['sha256', 'bytes', 'git_blob']}}
+            if change['original'] != expected:
+                raise ValueError('Source evolution original identity differs from preserved import record')
+            current = change['current']
+            if (not isinstance(current, dict) or set(current) !=
+                    {'repository', 'revision', 'path', 'sha256', 'bytes', 'git_blob'} or
+                    current['repository'] != EVOLUTION_REPOSITORY or current['path'] != path or
+                    not isinstance(current['revision'], str) or
+                    not re.fullmatch('[0-9a-f]{40}', current['revision']) or
+                    not isinstance(current['git_blob'], str) or
+                    not re.fullmatch('[0-9a-f]{40}', current['git_blob']) or
+                    not isinstance(current['sha256'], str) or
+                    not re.fullmatch('[0-9a-f]{64}', current['sha256']) or
+                    type(current['bytes']) is not int or current['bytes'] < 0):
+                raise ValueError('Complete current Git source identity required')
+            revision = current['revision']
+            if _git(root, 'cat-file', '-t', revision).strip() != b'commit':
+                raise ValueError('Actual Git commit object required')
+            _git(root, 'merge-base', '--is-ancestor', revision, 'HEAD')
+            tree = _git(root, 'ls-tree', revision, '--', path).decode().strip().split('\t')
+            if (len(tree) != 2 or tree[1] != path or
+                    tree[0].split() not in [['100644', 'blob', current['git_blob']],
+                                           ['100755', 'blob', current['git_blob']]]):
+                raise ValueError('Current path/blob differs from actual Git commit tree')
+            raw = _git(root, 'cat-file', 'blob', current['git_blob'])
+            if _identity(raw) != {key: current[key] for key in ['sha256', 'bytes', 'git_blob']}:
+                raise ValueError('Current identity differs from independently read Git blob')
+            old = _git(root, 'cat-file', 'blob', expected['git_blob'])
+            if _identity(old) != {key: expected[key] for key in ['sha256', 'bytes', 'git_blob']}:
+                raise ValueError('Preserved original identity differs from independent Git blob')
+            evolutions[path] = current
+    unchanged, evolved = 0, 0
+    for path, (source, record) in originals.items():
+        content = contained_file(root, path).read_bytes()
+        current = evolutions.get(path)
+        if current:
+            if _identity(content) != {key: current[key] for key in ['sha256', 'bytes', 'git_blob']}:
+                raise ValueError('Current source differs from independently verified evolution: ' + path)
+            evolved += 1
+        else:
+            if (len(content) != record['bytes'] or hashlib.sha256(content).hexdigest() != record['sha256'] or
+                    ('git_blob' in record and _identity(content)['git_blob'] != record['git_blob'])):
+                raise ValueError('Imported bytes differ without recorded Git source evolution: ' + path)
+            unchanged += 1
+    checked = unchanged + evolved
     if not checked:
         raise ValueError('No imported files verified')
-    return checked
+    report = {'imported_files_verified': checked, 'original_import_files_verified': unchanged,
+            'recorded_source_evolution_files_verified': evolved,
+            'git_object_verification_required_for_evolution': True,
+            'scientific_method_certified': False, 'auto_enable': False, 'G0': False}
+    # Also measure the complete current inventory (including new peer-added
+    # source files), while keeping original-import/evolution counts distinct.
+    if (root/'catalog/release-lock.json').is_file():
+        current = check_lock(root)
+        report['current_source_inventory_files_verified'] = sum(
+            len(row['files']) for row in current['families']) + len(current['shared_image_source_files'])
+        report['current_source_inventory_matches_release_lock'] = True
+    return report
+
+
+def verify_import(root):
+    return verify_import_detailed(root)['imported_files_verified']
 
 
 def render_profile(catalog, revision, selected):
@@ -157,7 +268,7 @@ if __name__ == '__main__':
         target.write_text(json.dumps(inventory(arguments.root), indent=2) + '\n')
         print('Refreshed source inventory; inspect the diff. No scientific certificate issued.')
     elif arguments.action == 'verify-import':
-        print(json.dumps(dict(imported_files_verified=verify_import(arguments.root), G0=False)))
+        print(json.dumps(verify_import_detailed(arguments.root)))
     elif arguments.action == 'check':
         current = check_lock(arguments.root)
         print(json.dumps(dict(canonical_families=current['canonical_families'], canonical_kinds=current['canonical_kinds'],

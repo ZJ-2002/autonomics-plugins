@@ -1,0 +1,674 @@
+{
+  "schema_version": 1,
+  "scope": "RECORDED_GIT_SOURCE_EVOLUTION_NOT_METHOD_CERTIFICATION",
+  "scientific_certified": false,
+  "auto_enable": false,
+  "changes": [
+    {
+      "path": "plugins/deseq2/README.md",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/deseq2-plugin.git",
+        "revision": "b4ef7606cbc7c14b259fee16a22ed5882a517db4",
+        "sha256": "10b2a26b77cd65ae232da2265a2881b96ae531b0cc6a725c4b4e1821bd6f657d",
+        "bytes": 5704,
+        "git_blob": "9628a186bc7d97f053bdf95eda9e44c65826c391"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "43396ed9a2eb487298e1a2e7a9c09eaa29b2ee19",
+        "path": "plugins/deseq2/README.md",
+        "sha256": "77e3b30ba458925ef633ed453946a17244d76157000342e394e2f61f46f196ce",
+        "bytes": 4845,
+        "git_blob": "a41f95933c35c74812e60cfdcea50346d3aec8ce"
+      }
+    },
+    {
+      "path": "plugins/deseq2/deseq2_runner.R",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/deseq2-plugin.git",
+        "revision": "b4ef7606cbc7c14b259fee16a22ed5882a517db4",
+        "sha256": "7b76e0045f8088253cbaf2d04859e5ed874fbc3b704783475e72dc5d91566e6f",
+        "bytes": 10896,
+        "git_blob": "004d8e96992a78715107cd421192559a4618af81"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "43396ed9a2eb487298e1a2e7a9c09eaa29b2ee19",
+        "path": "plugins/deseq2/deseq2_runner.R",
+        "sha256": "5fb4026e22dd951b51ca068af97c6ada5460a347deddcd4ba80377687626d370",
+        "bytes": 17080,
+        "git_blob": "c981030095f982c9de2a70663d7980a7b83f7ad1"
+      }
+    },
+    {
+      "path": "plugins/deseq2/manifest.toml",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/deseq2-plugin.git",
+        "revision": "b4ef7606cbc7c14b259fee16a22ed5882a517db4",
+        "sha256": "0c81a7d84b6bde752de8643ad0f4ad522fb519f4dca910f9bfaf81cba76922d2",
+        "bytes": 5452,
+        "git_blob": "115f4ce478cd613a766ff01025831ab10631529c"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "43396ed9a2eb487298e1a2e7a9c09eaa29b2ee19",
+        "path": "plugins/deseq2/manifest.toml",
+        "sha256": "7dd4f51093fee5ae63cc76caf06186ca209a2dda790df58b27b1b4a41f59e8f1",
+        "bytes": 4779,
+        "git_blob": "a0c247979f4e343b2a5186225921c9b1ba0b5dc1"
+      }
+    },
+    {
+      "path": "plugins/deseq2/test_deseq2.sh",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/deseq2-plugin.git",
+        "revision": "b4ef7606cbc7c14b259fee16a22ed5882a517db4",
+        "sha256": "0278474b56b5cff6244b20230a4e223030120f7789ff35d6d6dc132e0e992566",
+        "bytes": 11253,
+        "git_blob": "704e163778c9a8441388bcd96e2289bbcd7832fb"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "43396ed9a2eb487298e1a2e7a9c09eaa29b2ee19",
+        "path": "plugins/deseq2/test_deseq2.sh",
+        "sha256": "7783bedfcacc5731ff3582e8f8cf5f7019a5d2f39d42bdff838d345af2d6fa92",
+        "bytes": 1935,
+        "git_blob": "6622b063e0ddc776a2b01b48cc55f864ba4f642f"
+      }
+    },
+    {
+      "path": "plugins/deseq2/test_deseq2_data_boundary.sh",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/deseq2-plugin.git",
+        "revision": "b4ef7606cbc7c14b259fee16a22ed5882a517db4",
+        "sha256": "acee5b1cbdd3bc6d8cdbb532c3263937454787fea9071d35313d531abefe65f7",
+        "bytes": 1065,
+        "git_blob": "9d30f3269adc1ae9b2f8ec3ffd441d26548eca7c"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "43396ed9a2eb487298e1a2e7a9c09eaa29b2ee19",
+        "path": "plugins/deseq2/test_deseq2_data_boundary.sh",
+        "sha256": "19778f7e64443f55c31b6026812fa6efd528d56d249c6800966d056c634a6a71",
+        "bytes": 1516,
+        "git_blob": "1487a4943014ec1c5d8a0a279c100bc047c65f74"
+      }
+    },
+    {
+      "path": "plugins/ldsc/README.md",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/ldsc-plugin.git",
+        "revision": "4b1a02711dbf09dfcb2282f896a30ec7b23f66c2",
+        "sha256": "dabfc095d69409e977c5dd2dd897362753b5c9fbc92c9e619b6b50199fdbb92b",
+        "bytes": 996,
+        "git_blob": "b4ece97daff9c942aa48aa338720d2241b0435e1"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "e0062897a5a34c2c852e552931b5e53e0e0a1843",
+        "path": "plugins/ldsc/README.md",
+        "sha256": "f0702f0f0f48140f2e9f8f1c26c0c3d3b7faf4335182040c9fac7e062f3e5cf3",
+        "bytes": 4249,
+        "git_blob": "178bf5673f9edacc5bdd13ff14d4da914a238ed2"
+      }
+    },
+    {
+      "path": "plugins/ldsc/manifest.toml",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/ldsc-plugin.git",
+        "revision": "4b1a02711dbf09dfcb2282f896a30ec7b23f66c2",
+        "sha256": "f497dff96bebad37ab0422a94657e0643280eae3f0e816fce1851666df36e592",
+        "bytes": 5721,
+        "git_blob": "10b78f171c55979725405b52e2bf3641170375c4"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "c6416ff3c10ca349ee1e5c99d6943a28763d107a",
+        "path": "plugins/ldsc/manifest.toml",
+        "sha256": "b4d5aa33236bc80ce7187eabc299636845c856576ef48fc08c7237cb41dfebb1",
+        "bytes": 6269,
+        "git_blob": "75d786336dee7d29894ca99d217aa1268e7a9aec"
+      }
+    },
+    {
+      "path": "plugins/ldsc/scripts/h2.sh",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/ldsc-plugin.git",
+        "revision": "4b1a02711dbf09dfcb2282f896a30ec7b23f66c2",
+        "sha256": "6ac9a48e708554eaecc1a4e11dc4c7101e18a10b98c55953f0325e876beb6b9b",
+        "bytes": 893,
+        "git_blob": "91cd47c86d9d33a0c8c0db0e5320f0aec7d9894f"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "c6416ff3c10ca349ee1e5c99d6943a28763d107a",
+        "path": "plugins/ldsc/scripts/h2.sh",
+        "sha256": "24f74ef33cbeeb38242c4abfe06dd3d32b8c79f31677489d4e8dcdcbc1370d54",
+        "bytes": 1023,
+        "git_blob": "01a05b46433e65a9e3d410ff743084c3839c1fc9"
+      }
+    },
+    {
+      "path": "plugins/ldsc/scripts/munge.sh",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/ldsc-plugin.git",
+        "revision": "4b1a02711dbf09dfcb2282f896a30ec7b23f66c2",
+        "sha256": "b2430f126c649f95334e0b9765a3692984ab9aaf026369ea3ebfd31d0ad81f62",
+        "bytes": 1585,
+        "git_blob": "542aeedeb890f52f23ee8df4ed5de3278df6e0f2"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "c6416ff3c10ca349ee1e5c99d6943a28763d107a",
+        "path": "plugins/ldsc/scripts/munge.sh",
+        "sha256": "db217c54d672ace1a7e27746601ac303bed55c7981b56e4be548c13ac207432a",
+        "bytes": 2729,
+        "git_blob": "9056312691f4f9023942afa321796b8ace80e292"
+      }
+    },
+    {
+      "path": "plugins/ldsc/scripts/rg.sh",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/ldsc-plugin.git",
+        "revision": "4b1a02711dbf09dfcb2282f896a30ec7b23f66c2",
+        "sha256": "cfb2312ff4816ed6df13c24ca4635d4d3e7064a18a059a50c947ed17a0251501",
+        "bytes": 800,
+        "git_blob": "eccf23cbcfc0f11af92a11d19ba46ecad28079d6"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "c6416ff3c10ca349ee1e5c99d6943a28763d107a",
+        "path": "plugins/ldsc/scripts/rg.sh",
+        "sha256": "d0d2b38fa99ec654f2506e305028b58145e5ce40cb216f474a90394389935f49",
+        "bytes": 1326,
+        "git_blob": "f8a09ba288d25c17b7cf3eb1eba06da33f7681f6"
+      }
+    },
+    {
+      "path": "plugins/lme4/README.md",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/lme4-plugin.git",
+        "revision": "04ea4dd4b91146ae837e6df7b314e68c4080aa9f",
+        "sha256": "a87c23e907cd01021aa18b115393ef31fc6e5533698473bc9ff77fc89fdaba5f",
+        "bytes": 3393,
+        "git_blob": "4bf018392929f25aa5e5541d9f68c4858dee4673"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "a191da40e668bff15962f41ad6c09c3f85dfb7cd",
+        "path": "plugins/lme4/README.md",
+        "sha256": "6a7b3d41c31c05edcf52f9a76e743dbed5207c9866bb052a5d392b8603a1926e",
+        "bytes": 5344,
+        "git_blob": "be62ed0f42a7a6e5d4fb5370e52518633a73fb9d"
+      }
+    },
+    {
+      "path": "plugins/lme4/manifest.toml",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/lme4-plugin.git",
+        "revision": "04ea4dd4b91146ae837e6df7b314e68c4080aa9f",
+        "sha256": "f8aa1babce1aa07189f88f9dface08b477d397f7fd0233a2cb36ddfcce73b097",
+        "bytes": 3651,
+        "git_blob": "524820e43e8863dacb8398d6dddb8894149d8bc9"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "a191da40e668bff15962f41ad6c09c3f85dfb7cd",
+        "path": "plugins/lme4/manifest.toml",
+        "sha256": "471c6042dbeb59a73019d0d21e84baa4337ecd5948c75bd545f5a74108764919",
+        "bytes": 4286,
+        "git_blob": "409b65415483ba620f8bd19e668123804b966d6d"
+      }
+    },
+    {
+      "path": "plugins/lme4/scripts/lme4_fit.R",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/lme4-plugin.git",
+        "revision": "04ea4dd4b91146ae837e6df7b314e68c4080aa9f",
+        "sha256": "ec05e89a6883a8b8956c57493448e200b75f4bbf401e592eb011af3f16525ca6",
+        "bytes": 6476,
+        "git_blob": "c445aacee60d5324a18873a9c84d92063dfb1ba5"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "a191da40e668bff15962f41ad6c09c3f85dfb7cd",
+        "path": "plugins/lme4/scripts/lme4_fit.R",
+        "sha256": "52738b2439fdbb13fa3149d4bb06c4759a310b3f9fe41d1d8962c5b74e77e284",
+        "bytes": 8338,
+        "git_blob": "8d9c914bdb21967188408362861d977e12d6d944"
+      }
+    },
+    {
+      "path": "plugins/lme4/tests/test_lme4_fit.R",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/lme4-plugin.git",
+        "revision": "04ea4dd4b91146ae837e6df7b314e68c4080aa9f",
+        "sha256": "ce7a1a9bcc81b5b27b43c300bb9af15211443f82e3b40b3fbecdbd652b6d0dc8",
+        "bytes": 6515,
+        "git_blob": "cb8b990797d40e45cb05cfcc88c53b7901b4d72c"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "a191da40e668bff15962f41ad6c09c3f85dfb7cd",
+        "path": "plugins/lme4/tests/test_lme4_fit.R",
+        "sha256": "8f264d55219656f17414174aa2be6a182f09d1a56d5590be53c7f7e34e720f37",
+        "bytes": 8390,
+        "git_blob": "83111f76445ae1d5fa3f6120273c070869a069f6"
+      }
+    },
+    {
+      "path": "plugins/mrlap/README.md",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/mrlap-plugin.git",
+        "revision": "f3b35ccff7ce48ac7fd159a7326f64f4066ae8c4",
+        "sha256": "dac34e4184f8396fb667d9acc5edf590a232859b3fb90249e09f565b68a42d84",
+        "bytes": 4494,
+        "git_blob": "35592166f65d1887c4867a4cfa347e1f5cd04ecb"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "794cb7ebd39c3f5aa49dee46fa0c47b91846ebd4",
+        "path": "plugins/mrlap/README.md",
+        "sha256": "7e0a9bffe07c01768a2ba64eea0781dc5df80f19039956ce0512f8a2c1945396",
+        "bytes": 5258,
+        "git_blob": "10d2de0d69a62fbff9bf8234b095d77c6b5cd44c"
+      }
+    },
+    {
+      "path": "plugins/mrlap/manifest.toml",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/mrlap-plugin.git",
+        "revision": "f3b35ccff7ce48ac7fd159a7326f64f4066ae8c4",
+        "sha256": "3c0f1316b06ba1fbf665eefee1143be7b45b9b4164071941f2cc058b6e01d87c",
+        "bytes": 5122,
+        "git_blob": "8a1d6e576a5d9c444d4477cb22d00bded042c1c6"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "794cb7ebd39c3f5aa49dee46fa0c47b91846ebd4",
+        "path": "plugins/mrlap/manifest.toml",
+        "sha256": "8dcc2b973b844150f660b9fcd9209b564d4642f118ed716fc219cc4a072c81c6",
+        "bytes": 3868,
+        "git_blob": "e52d70f25a7553d65dbb78c24d66739f1527bf13"
+      }
+    },
+    {
+      "path": "plugins/mrlap/scripts/mrlap.sh",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/mrlap-plugin.git",
+        "revision": "f3b35ccff7ce48ac7fd159a7326f64f4066ae8c4",
+        "sha256": "39c1a8b24114166caf54dec932de1831b033f225ab730999948893873954908e",
+        "bytes": 4364,
+        "git_blob": "54d33d46a216911fbf348dd0cfc6bdd2d270a2a1"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "794cb7ebd39c3f5aa49dee46fa0c47b91846ebd4",
+        "path": "plugins/mrlap/scripts/mrlap.sh",
+        "sha256": "16d4c48bb5724f597b23b0f4054689f871fb934f9cf56c1e6176a58256025dc6",
+        "bytes": 7041,
+        "git_blob": "f1ca39f99d944038d3ba87f587d56b9cd26c8afb"
+      }
+    },
+    {
+      "path": "plugins/mrlap/test_mrlap_official.sh",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/mrlap-plugin.git",
+        "revision": "f3b35ccff7ce48ac7fd159a7326f64f4066ae8c4",
+        "sha256": "8bc83eb2dbbdd1cd866ea9efba4d057aa3a558f2b0cc3bec5e9160073232d0e7",
+        "bytes": 3836,
+        "git_blob": "2e7a0004366747f60ad8a4b3a3e6b3c72e1ee5fb"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "794cb7ebd39c3f5aa49dee46fa0c47b91846ebd4",
+        "path": "plugins/mrlap/test_mrlap_official.sh",
+        "sha256": "f4787622465a537428f8e6aa7f15cef5614e8222e754181ee0bdc854e81c26a7",
+        "bytes": 3315,
+        "git_blob": "a9e04be566786fb12e905d3e232f811ad7328bf9"
+      }
+    },
+    {
+      "path": "plugins/mvmr/README.md",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/mvmr-plugin.git",
+        "revision": "ab8bfe0a7b5f484ce4264a7b8a87e25d7f66da23",
+        "sha256": "77c3549a6bb325301f0cecb4f8dcdcf4c14d6f61a38c57db15bd0103829162c7",
+        "bytes": 4318,
+        "git_blob": "9de68104f06405f6913d5256afc0661f0e306eb8"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "62f4d75de8f928dbe8c08231fb4c53d3806daaaf",
+        "path": "plugins/mvmr/README.md",
+        "sha256": "6a61df32b804889d67562220cc44492c54602c9e7da82aa3ccb81e2b0b871f5d",
+        "bytes": 4556,
+        "git_blob": "a0316e5e5133ac9df61f4099d556a9e03da12540"
+      }
+    },
+    {
+      "path": "plugins/mvmr/manifest.toml",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/mvmr-plugin.git",
+        "revision": "ab8bfe0a7b5f484ce4264a7b8a87e25d7f66da23",
+        "sha256": "c4bb49d4a354696460d1e7f6c199b6ed23bea64de6e99fd34e1d26cb73320c7c",
+        "bytes": 3588,
+        "git_blob": "e1526e03db32e9aa5e277d44b115d5991a32e568"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "62f4d75de8f928dbe8c08231fb4c53d3806daaaf",
+        "path": "plugins/mvmr/manifest.toml",
+        "sha256": "1fbfc67878b9fbc6c6415ba44a05a42e897b99b603dd03b1aa5fece81d111292",
+        "bytes": 4425,
+        "git_blob": "cf5fa5dcba1b9944f87990b57d03529a77be220c"
+      }
+    },
+    {
+      "path": "plugins/mvmr/scripts/mvmr.R",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/mvmr-plugin.git",
+        "revision": "ab8bfe0a7b5f484ce4264a7b8a87e25d7f66da23",
+        "sha256": "02d59f9c1042dfc2cb70c12b0d5f45168e09d7f7307b141968db8561e02f3531",
+        "bytes": 3792,
+        "git_blob": "4579464699f131ad4930b70802167f5d76bb07b0"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "62f4d75de8f928dbe8c08231fb4c53d3806daaaf",
+        "path": "plugins/mvmr/scripts/mvmr.R",
+        "sha256": "9f761ec73ec0291653d6484589508db8fc390a4950c43c0e17dc9957d7d1c2a9",
+        "bytes": 8484,
+        "git_blob": "30bdb49b290a0831c137b098d683c722352a806e"
+      }
+    },
+    {
+      "path": "plugins/mvmr/test_mvmr.sh",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/mvmr-plugin.git",
+        "revision": "ab8bfe0a7b5f484ce4264a7b8a87e25d7f66da23",
+        "sha256": "b60ee12cfef1e6a93327e9d11c0d56bff39d326cfeee16948982cd2327b5d159",
+        "bytes": 2136,
+        "git_blob": "6b2eeb507787807567a60e6d877fa926b8cb4df9"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "62f4d75de8f928dbe8c08231fb4c53d3806daaaf",
+        "path": "plugins/mvmr/test_mvmr.sh",
+        "sha256": "a6d3344aa18bf740468491eaac5be54285f34119a350084e5ea180c1e03e7f80",
+        "bytes": 666,
+        "git_blob": "905d543af0cc08c09dda1259bf6ec91166e56f16"
+      }
+    },
+    {
+      "path": "plugins/single-cell/.dockerignore",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/single-cell-plugin.git",
+        "revision": "ced1d0cf78be5b5dd8731752d6d796f253bcaf40",
+        "sha256": "2478f65ef7d577e6d182bf26e652c2d61a2c4d26199ca731a2c6a653ebeea44b",
+        "bytes": 60,
+        "git_blob": "6686bbd0ce09155e293535e93264cca47e052b97"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "669861ee4ca3369bf674dfab663782150a8c341f",
+        "path": "plugins/single-cell/.dockerignore",
+        "sha256": "7e094d8a37e133491accee4e8e8d42d0f4047dd1acbfc3bd4c66c52c3f727195",
+        "bytes": 83,
+        "git_blob": "6c874491223c3e08134c3e6e6090d9d4b73d6b91"
+      }
+    },
+    {
+      "path": "plugins/single-cell/IMAGE.md",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/single-cell-plugin.git",
+        "revision": "ced1d0cf78be5b5dd8731752d6d796f253bcaf40",
+        "sha256": "587bb76770b0b0d5625d460c0388c0fe79b5d9c786c8efdc808aba8e56b2257e",
+        "bytes": 3887,
+        "git_blob": "faec07e4e03a499f5b9d87f92d0ad805e476dff8"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "669861ee4ca3369bf674dfab663782150a8c341f",
+        "path": "plugins/single-cell/IMAGE.md",
+        "sha256": "2d56ce87911e48133854c610eaa1a2b3d21ecb86c1d6391ecc7f52a498fe4c00",
+        "bytes": 4619,
+        "git_blob": "c876f12da701b597fff86883fd48fe612abdf6af"
+      }
+    },
+    {
+      "path": "plugins/single-cell/README.md",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/single-cell-plugin.git",
+        "revision": "ced1d0cf78be5b5dd8731752d6d796f253bcaf40",
+        "sha256": "b830007403239084ee0231b56d729348252d63879589a634642d5eb65ceea27f",
+        "bytes": 8856,
+        "git_blob": "82d27ddae85ff32230fe10fad8fffe0ad3979654"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "f4d2c91e0111c2b8d384c0340fb27494b8755dc5",
+        "path": "plugins/single-cell/README.md",
+        "sha256": "dc0552cbdf4d9645eece7e3abf3d5f0fa79d985eeff9ce810823f0b5baacbc65",
+        "bytes": 18718,
+        "git_blob": "d9f29b312fe46dc1273538e5bb2c5f51aef9c229"
+      }
+    },
+    {
+      "path": "plugins/single-cell/manifest.toml",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/single-cell-plugin.git",
+        "revision": "ced1d0cf78be5b5dd8731752d6d796f253bcaf40",
+        "sha256": "2bd47da29ed3d254c95797b5b4d3463f2a816b98f0e939b2ec03d864458760cd",
+        "bytes": 21860,
+        "git_blob": "f839c1488d9fba0156602384881b129b9f0801db"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "f4d2c91e0111c2b8d384c0340fb27494b8755dc5",
+        "path": "plugins/single-cell/manifest.toml",
+        "sha256": "fa830426bbb2a38e056b425faddd9addabd61060c25bf2166a6664920d5e5e35",
+        "bytes": 24435,
+        "git_blob": "bc12e846b9287549faabec9e561d1811d0120dec"
+      }
+    },
+    {
+      "path": "plugins/single-cell/preprocess.py",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/single-cell-plugin.git",
+        "revision": "ced1d0cf78be5b5dd8731752d6d796f253bcaf40",
+        "sha256": "ec93eb735eb6567c1d74d1295273948697276018e996370cf0334a2750f73d7e",
+        "bytes": 14491,
+        "git_blob": "5a24dd7eb0fe074a5f52459bbe879f19bdc6e765"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "669861ee4ca3369bf674dfab663782150a8c341f",
+        "path": "plugins/single-cell/preprocess.py",
+        "sha256": "89625ca09356f61bcb59993d6152f85be749181b47610e3360f9c83d7d2596a2",
+        "bytes": 20160,
+        "git_blob": "0bd6b62eab0aeee739501fd0a88dd725828e4a08"
+      }
+    },
+    {
+      "path": "plugins/singscore/README.md",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/singscore-plugin.git",
+        "revision": "cbc3240a5203c7f1ebb0161b8aa0684a5e256ab5",
+        "sha256": "ae86b8ffb853011173cf581fbf19f289964b4909eaecaf1514c80baff82aa0ee",
+        "bytes": 2630,
+        "git_blob": "be0929f4a3345c0283f78e0ed3e423aff8ceda2b"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "02052214f6615a50d67127b9985ed171c7871683",
+        "path": "plugins/singscore/README.md",
+        "sha256": "8e5f8f3a2eac7f46676bdd9d8dd70adc5571d4828d869e4dfa75f2fb67a5a22d",
+        "bytes": 5349,
+        "git_blob": "f3ea159e905bb540be3ec8dfafae443012609e30"
+      }
+    },
+    {
+      "path": "plugins/singscore/manifest.toml",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/singscore-plugin.git",
+        "revision": "cbc3240a5203c7f1ebb0161b8aa0684a5e256ab5",
+        "sha256": "9ec31bb89f30e0e06c9d00ebb5487d796cddbbc7bff6ad429f0edcfbaea6f81a",
+        "bytes": 2346,
+        "git_blob": "afce931235f5702f375c54d183452b10d4908c00"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "02052214f6615a50d67127b9985ed171c7871683",
+        "path": "plugins/singscore/manifest.toml",
+        "sha256": "acb7240150d80d3af965210855468782f975c2e3ec8878503e1fe9f9473ffa61",
+        "bytes": 2657,
+        "git_blob": "748a398a5db8a0bd1b3836ac2085f5d9fb1a1d3c"
+      }
+    },
+    {
+      "path": "plugins/singscore/scripts/singscore.sh",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/singscore-plugin.git",
+        "revision": "cbc3240a5203c7f1ebb0161b8aa0684a5e256ab5",
+        "sha256": "c27a05195780d13f23aa5f60b91c0901fa364f232cac7187097262b811f1527a",
+        "bytes": 4991,
+        "git_blob": "3a9a5f6a856248fd09ac28d2ce593cb63113cf27"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "02052214f6615a50d67127b9985ed171c7871683",
+        "path": "plugins/singscore/scripts/singscore.sh",
+        "sha256": "0ccfea285f042f05af15f61dd5de3ef8ff2d924387d8a6d07bf3852eac5a59b2",
+        "bytes": 6539,
+        "git_blob": "49c912ec72d6120b3b38a355bbb7138c238708f3"
+      }
+    },
+    {
+      "path": "plugins/singscore/test_singscore_smoke.sh",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/singscore-plugin.git",
+        "revision": "cbc3240a5203c7f1ebb0161b8aa0684a5e256ab5",
+        "sha256": "e80fc144f4933bab273e427b517c58c8a796364f7408c5de9fc35496d63501c2",
+        "bytes": 1766,
+        "git_blob": "3438b3c58ece7a2b4301484d1e0c69dfacb543b0"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "02052214f6615a50d67127b9985ed171c7871683",
+        "path": "plugins/singscore/test_singscore_smoke.sh",
+        "sha256": "e6091c13c5bf8b16deb1f10ba2f44a4950f545e8cd0880b106df5f525056d9e6",
+        "bytes": 1350,
+        "git_blob": "9051fdd1a57644a2c4eeb661dd7bde905c86d0ba"
+      }
+    },
+    {
+      "path": "plugins/susie/README.md",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/susie-plugin.git",
+        "revision": "2d702dba6f33128e2e648f24f992b4871293ba94",
+        "sha256": "0edd85c1d0292c6986b6f7d2493b1644bd0a1e98380f83474781d89060ae8b29",
+        "bytes": 5307,
+        "git_blob": "e70ebb36321f738483c3dc9dad448fbe53f6869b"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "3c61b1ce25e8414582a29b8684285d6dd1127527",
+        "path": "plugins/susie/README.md",
+        "sha256": "edde57c02d011af9103c6027448ba53134a48e2334edab0d8664c7b77b80ad51",
+        "bytes": 6779,
+        "git_blob": "095b6ae0725328aa16caa963377fe4a2c8f17c70"
+      }
+    },
+    {
+      "path": "plugins/susie/manifest.toml",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/susie-plugin.git",
+        "revision": "2d702dba6f33128e2e648f24f992b4871293ba94",
+        "sha256": "dbea7202e20368b6d8c47c0dbb5cb334e7a355bac5977317b6b8dd684814685c",
+        "bytes": 6157,
+        "git_blob": "f6e143152c40c6169059933497a8c83d6940583f"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "3c61b1ce25e8414582a29b8684285d6dd1127527",
+        "path": "plugins/susie/manifest.toml",
+        "sha256": "a6cc84c36c1f234cc0b331de939ed22992f2fe598f13fe685e1dcd7e006821d1",
+        "bytes": 7254,
+        "git_blob": "f0582168b569ddd7f8840199496f35ccf292377a"
+      }
+    },
+    {
+      "path": "plugins/susie/scripts/run_susie_rss.R.sh",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/susie-plugin.git",
+        "revision": "2d702dba6f33128e2e648f24f992b4871293ba94",
+        "sha256": "02897fb5f908d422b102849cc60dd2cef81e0c9175ec31329d4a9e806419a6ac",
+        "bytes": 7762,
+        "git_blob": "0a205a75bdb9cd7004f8db4431072140c57c1b1c"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "3c61b1ce25e8414582a29b8684285d6dd1127527",
+        "path": "plugins/susie/scripts/run_susie_rss.R.sh",
+        "sha256": "e99787726c4f923071245ed971a4960c7be77de9aa1e3a411350d0ba74587953",
+        "bytes": 16788,
+        "git_blob": "824a2471f8034221159bc0659cef34bc5aac310d"
+      }
+    },
+    {
+      "path": "plugins/susie/test_susie_rss.sh",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/susie-plugin.git",
+        "revision": "2d702dba6f33128e2e648f24f992b4871293ba94",
+        "sha256": "cf8961c3b2ece15385ce8cd47222f4d33225e9cfc7fd1bfefd3ad64328db959c",
+        "bytes": 3196,
+        "git_blob": "ad11128786b8944e6baec8bcb741a1b4264277a0"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "3c61b1ce25e8414582a29b8684285d6dd1127527",
+        "path": "plugins/susie/test_susie_rss.sh",
+        "sha256": "212115e05acf5acf9aadbf0316b7bd9e0feb79507c7884dca43d07bfb689b92b",
+        "bytes": 615,
+        "git_blob": "b9c9c81ea9e201e7b56e09b1c254993a6b3dd12c"
+      }
+    },
+    {
+      "path": "research-adapters/cachexia-contracts/manifest.toml",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/autonomics.git",
+        "revision": "bdedf129011789e6eec3a594252d6515b6a67618",
+        "sha256": "0ec897cd3b173f0cc12f9c10fbf9e7673f89974aafaebbaff262751ec3afeae6",
+        "bytes": 6891,
+        "git_blob": "1a240b837bcbf84ab1bf01aceb693487909fbe33"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "1bfd675580929a2dd211a84e86cd4bf1ca03eece",
+        "path": "research-adapters/cachexia-contracts/manifest.toml",
+        "sha256": "d8e3204ac3ab65336b781e13be26a5f8275ba1e476fbedf7b0c994736a261613",
+        "bytes": 7311,
+        "git_blob": "83209d812e693969d047e98d4121f7d90268307a"
+      }
+    },
+    {
+      "path": "research-adapters/cachexia-contracts/scripts/guards.py",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/autonomics.git",
+        "revision": "bdedf129011789e6eec3a594252d6515b6a67618",
+        "sha256": "c9c4e080037d1724557c8e7a81af187c80a4144c5e484bce2c710659cc98226f",
+        "bytes": 24465,
+        "git_blob": "1cb071749c654189724742bdf4982846c687949e"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "1bfd675580929a2dd211a84e86cd4bf1ca03eece",
+        "path": "research-adapters/cachexia-contracts/scripts/guards.py",
+        "sha256": "f12dfbfc7ca168903f16efa1410399ea982521534a243dbc96dc365de79113ca",
+        "bytes": 24578,
+        "git_blob": "8bb924b03d460e7c5c028bca7fec39f4ca42dfaf"
+      }
+    }
+  ]
+}
