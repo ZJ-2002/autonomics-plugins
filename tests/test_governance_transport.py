@@ -44,6 +44,18 @@ class GovernanceTransportTests(unittest.TestCase):
             path.write_text(body)
             with self.assertRaises(ValueError):check_family(self.family,normalized=True)
         path.write_text(original)
+    def test_historical_full_syn_caps_or_rds_format_cannot_replace_micro_manifest(self):
+        path=self.family/'manifest.toml';original=path.read_text()
+        substitutions=[('cpus = 1.0','cpus = 2.0'),('memory = "1Gi"','memory = "2Gi"'),
+            ('pids_limit = 64','pids_limit = 128'),('timeout_secs = 1200','timeout_secs = 3600'),
+            ('format="r_rds"','format="rds"')]
+        for old,new in substitutions:
+            self.assertIn(old,original)
+            with self.subTest(field=old):
+                path.write_text(original.replace(old,new))
+                with self.assertRaises(ValueError):check_family(self.family,normalized=True)
+        path.write_text(original)
+
     def test_changed_measured_source_or_removed_hash_cannot_be_repaired_or_accepted(self):
         path=self.family/'image-source/SOURCE_LOCK.json';before=path.read_bytes();path.write_bytes(before+b'\n')
         with self.assertRaisesRegex(ValueError,'image-source bytes'):check_family(self.family,normalized=True)

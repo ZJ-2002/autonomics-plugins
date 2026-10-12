@@ -45,7 +45,7 @@ def check_family(directory,*,normalized=False):
             require(node['command']=={'interpreter':'/opt/b-bulk/bin/Rscript-vanilla','script_file':'scripts/run-'+stage.lower()+'.R'},'fixed vanilla command/entry differs')
             require(node['stage_in_mode']=='copy' and node['timeout_secs']==1200,'fixed stage/timeout differs')
             require(node['resources']=={'network':'isolated','read_only_rootfs':True,'pull_policy':'never','cpus':1.0,'memory':'1Gi','pids_limit':64},'offline read-only fixed resources differ')
-            require(node['ports']['inputs']==[{'type':'file'}]*n_inputs and [o['path'] for o in node['ports']['outputs']]==outputs,'actual input/output port order differs')
+            require(node['ports']['inputs']==[{'type':'file'}]*n_inputs and node['ports']['outputs']==[{'path':name,'format':('json' if name.endswith('.json') else 'r_rds' if name.endswith('.rds') else 'tsv')} for name in outputs],'actual input/output port order or format differs')
             wrapper=regular(directory,node['command']['script_file']).decode()
             encoded=wrapper.split('eval(parse(text=',1)[1].split('),envir=bulk)',1)[0]
             require(json.loads(encoded).encode()==regular(directory,'scripts/bulk-limma.R'),'full embedded unchanged limma component differs')

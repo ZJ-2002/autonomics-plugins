@@ -1,0 +1,183 @@
+{
+  "blockers": [
+    "FULL_SYN_PLAN_DOES_NOT_BIND_SELECTED_MANIFEST_OR_NATIVE_IMPLEMENTATION_IDENTITIES",
+    "FULL_SYN_GENERATION_AND_FULL_GRAPH_COMPILE_NOT_PERFORMED",
+    "AGGREGATE4GI_PLUS_PHYSICAL2GI_RESERVE_DOES_NOT_OVERRIDE_LEAF_LIMITS_OR_MEASURE_PEAKS",
+    "EXACT_CURRENT_WORKER_REGISTRATION_AND_SIGNED_ENGINEERING_RUN_AUTHORIZATION_UNPROVEN"
+  ],
+  "constructed_node_kinds": 18,
+  "container_executed": false,
+  "current_store_image_existence_verified": false,
+  "differences": [
+    "FULL_SYN_UNREGISTERED_METADATA_CPU2_MEMORY2GI_PIDS128_TIMEOUT3600_VS_SELECTED_MICRO_CPU1_MEMORY1GI_PIDS64_TIMEOUT1200",
+    "FULL_SYN_UNREGISTERED_RDS_FORMAT_rds_VS_NATIVE_SELECTED_r_rds"
+  ],
+  "formal_authorized": false,
+  "full_b_unattended_ready": false,
+  "full_method_qualification_verified": false,
+  "full_syn_budget_candidate": {
+    "cpus": 2,
+    "disk_reserve_fraction": 0.1,
+    "max_concurrency": 1,
+    "memory_available_reserve_bytes": 2147483648,
+    "memory_bytes": 4294967296,
+    "peak_disk_bytes": 2147483648,
+    "timeout_ms": 14400000
+  },
+  "full_syn_leaf_metadata": {
+    "b_bulk_frozen_design": {
+      "outputs": [
+        {
+          "format": "json",
+          "path": "audit.json"
+        }
+      ],
+      "resources": {
+        "cpus": 2.0,
+        "memory": "2Gi",
+        "network": "isolated",
+        "pids_limit": 128,
+        "pull_policy": "never",
+        "read_only_rootfs": true
+      },
+      "timeout_secs": 3600
+    },
+    "b_bulk_frozen_limma": {
+      "outputs": [
+        {
+          "format": "tsv",
+          "path": "results.tsv"
+        },
+        {
+          "format": "json",
+          "path": "audit.json"
+        },
+        {
+          "format": "rds",
+          "path": "official.rds"
+        }
+      ],
+      "resources": {
+        "cpus": 2.0,
+        "memory": "2Gi",
+        "network": "isolated",
+        "pids_limit": 128,
+        "pull_policy": "never",
+        "read_only_rootfs": true
+      },
+      "timeout_secs": 3600
+    }
+  },
+  "full_syn_plan_source_identities_verified": 11,
+  "full_syn_status": "PLAN_ONLY_NOT_GENERATED_OR_EXECUTED",
+  "image_packages_verified_by_this_observation": false,
+  "live_cgroups_measured": false,
+  "method_acceptance_verified": false,
+  "native_registry_construction_verified": true,
+  "normalized_nodes": {
+    "b-bulk-limma-contract/b_bulk_frozen_design": {
+      "implementation": {
+        "image_reference": "localhost/autonomics/b-bulk-limma@sha256:6932fcead69397d2d6dc941c45aca1e74e84c11a098bd0a510f73ec7fd4301c2",
+        "manifest_sha256": "sha256:ed45c9cdeb79e869cc5eb25f1fa220a2cf2e7d46a0c6a34a4c8c9d408e9451a8",
+        "panels": [],
+        "script_sha256": "sha256:b1f7cc7b2d8e8a94244b148ea651fa4a4b286f2a69da093b05c4541a82a73a2e"
+      },
+      "manifest_resources": {
+        "cpus": 1.0,
+        "memory": "1Gi",
+        "network": "isolated",
+        "pids_limit": 64,
+        "pull_policy": "never",
+        "read_only_rootfs": true
+      },
+      "manifest_timeout_secs": 1200,
+      "output_ports": [
+        {
+          "format": "json",
+          "path": "audit.json"
+        }
+      ],
+      "required_file_inputs": 5,
+      "resource_observation_scope": "HASH_BOUND_MANIFEST_METADATA_NOT_LIVE_CONTAINER_CGROUP",
+      "spec": {}
+    },
+    "b-bulk-limma-contract/b_bulk_frozen_limma": {
+      "implementation": {
+        "image_reference": "localhost/autonomics/b-bulk-limma@sha256:6932fcead69397d2d6dc941c45aca1e74e84c11a098bd0a510f73ec7fd4301c2",
+        "manifest_sha256": "sha256:ed45c9cdeb79e869cc5eb25f1fa220a2cf2e7d46a0c6a34a4c8c9d408e9451a8",
+        "panels": [],
+        "script_sha256": "sha256:cddc93770a8ceafa4ffe4f98c0f1584463666b6f1601acae342ca0988f5dbc99"
+      },
+      "manifest_resources": {
+        "cpus": 1.0,
+        "memory": "1Gi",
+        "network": "isolated",
+        "pids_limit": 64,
+        "pull_policy": "never",
+        "read_only_rootfs": true
+      },
+      "manifest_timeout_secs": 1200,
+      "output_ports": [
+        {
+          "format": "tsv",
+          "path": "results.tsv"
+        },
+        {
+          "format": "json",
+          "path": "audit.json"
+        },
+        {
+          "format": "r_rds",
+          "path": "official.rds"
+        }
+      ],
+      "required_file_inputs": 6,
+      "resource_observation_scope": "HASH_BOUND_MANIFEST_METADATA_NOT_LIVE_CONTAINER_CGROUP",
+      "spec": {}
+    }
+  },
+  "old_signed_B_contract_and_remaining_launch_modified": false,
+  "original_full_syn_manifest": {
+    "bytes": 2054,
+    "path": "/home/zj-normal/.cache/autonomics-team-20261012/b-bulk-full-syn-qualification-plan-v2/engineering-only.manifest.toml",
+    "sha256": "cd386bd0ef0daac57e719c7d6fc13c2d23b712c60f13ce5f045fe42940266215"
+  },
+  "original_full_syn_plan": {
+    "bytes": 24209,
+    "path": "/home/zj-normal/.cache/autonomics-team-20261012/b-bulk-full-syn-qualification-plan-v2/PLAN.json",
+    "sha256": "0b090b339ed2f5e6cd74f9e86be482baa56a5ce55d35ee3b60d86b1223b5495e"
+  },
+  "original_manifest_preparation": {
+    "bytes": 2689,
+    "path": "/home/zj-normal/.cache/autonomics-team-20261012/b-bulk-full-syn-qualification-plan-v2/MANIFEST_PREPARATION.json",
+    "sha256": "8cb0a8e038e37f83503e74068f07511577f4e4c32a89e9d346628e084a076c07"
+  },
+  "original_observation": {
+    "bytes": 54446,
+    "path": "/home/zj-normal/.cache/autonomics-team-20261012/p0-load-native-registry-root-v1/OBSERVATION.json",
+    "sha256": "121638c4e55b3ece475bd4191148ccfc2f697ce8947766fe8bf39ad46676e2fb"
+  },
+  "original_plan_manifest_budget_modified": false,
+  "original_result": {
+    "bytes": 15703,
+    "path": "/home/zj-normal/.cache/autonomics-team-20261012/p0-load-native-registry-root-v1/RESULT.json",
+    "sha256": "2ff7bd47d0ec0a9d6787e8ef7070d9cfdbc9281bd194cea864f399e435db34cc"
+  },
+  "plugin_source_revision": "c7ba55cbecf1d3c18fbaaa17b7c067eb70ea9757",
+  "probe_binary_measurement_from_original_result": {
+    "bytes": 232841552,
+    "path": "/home/zj-normal/Work/autonomics/.research-execution-sandbox/cargo-target/debug/examples/research_manifest_registry_probe",
+    "sha256": "b26e7377e43ada9054cec6f3113eb2f4cf2645806e8f38fab3e0df871f03f734"
+  },
+  "probe_source_revision": "c7e7a506cd057901a202648f2f8e17f001307973",
+  "production_deployed": false,
+  "schema_version": 1,
+  "scientific_G0_granted": false,
+  "scope": "ACTUAL_NATIVE_REGISTRY_CONSTRUCTION_AND_READ_ONLY_RESOURCE_METADATA_COMPARISON_NOT_EXECUTION_OR_AUTHORIZATION",
+  "selected_manifests": 11,
+  "selected_source_files_byte_verified": 83,
+  "source_current_head_at_comparison": "12a0634b40b16f93339a79af2ebc5b95296f3606",
+  "source_current_head_at_root_observation": "30946d38958a30289f2536d4f4e2c5f88b774e67",
+  "source_distribution_provenance_qualified": false,
+  "worker_registration_verified": false
+}
