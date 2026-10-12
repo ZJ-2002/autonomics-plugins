@@ -1,0 +1,47 @@
+schema_version = 1
+plugin_name = "mrlap-contract"
+
+[image]
+# Controlled OCI export of cached image config 29415250...ea84c. The original
+# registry digest 78f195b8...cd063d currently returns manifest unknown. The
+# different OCI serialization is measured independently, never relabeled.
+# Image metadata identity does not qualify package dependencies or this adapter.
+reference = "ghcr.io/zj-2002/mrlap-official@sha256:e6e10cddfa1cba8046ee6fbc1492b94cbd70d66b097f5f415845d56f9f925434"
+tag = "cached-qualification-v1"
+upstream = "Official MRlap 0.0.3.3 at 660f026864f8bfbbad5a8206bdff7d58f5d5d05b; separate qualification candidate"
+license = "GPL-2 (MRlap); GPL-3.0 (GenomicSEM)"
+
+[[panels]]
+binding = "ldsc_assets"
+mount = "/panels/mrlap_ldsc"
+bundle = "ZJ-2002/catalog-mrlap-ldsc-eur-w-ld-hm3-no-mhc"
+
+[[nodes]]
+kind = "mrlap_official_frozen"
+desc = "Candidate: frozen full GWAS, N source, upstream direct IVs, official cross-trait LDSC/MRlap."
+doc = "Ten frozen inputs bind full normalized GWAS, complete N provenance, selected source tables, upstream harmonic ledger/audit/config and panel identity. O1 only; no internal clumping, reverse selection, IVW fallback or scientific authorization. Official method source/image and applicability require separate acceptance. This candidate is not yet admitted by the formal worker."
+timeout_secs = 3600
+artifact_prefix = "/artifacts/mrlap_official_frozen"
+[nodes.resources]
+network = "isolated"
+read_only_rootfs = true
+pull_policy = "never"
+cpus = 2.0
+memory = "8Gi"
+pids_limit = 128
+[nodes.ports]
+inputs = [{ type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }]
+outputs = [
+  { path = "estimates.tsv", format = "tsv" },
+  { path = "retention.tsv", format = "tsv" },
+  { path = "audit.json", format = "json" },
+  { path = "result.rds", format = "r_rds" },
+  { path = "diagnostics.tar", format = "tar" },
+]
+[nodes.command]
+interpreter = "sh"
+script_file = "scripts/run-mrlap.sh"
+[nodes.command.env]
+OMP_NUM_THREADS = "1"
+OPENBLAS_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"

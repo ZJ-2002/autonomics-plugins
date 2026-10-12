@@ -17,6 +17,7 @@ FAMILIES = (
     'mr-contract', 'clump-contract', 'mr-sensitivity-contract', 'mvmr-contract',
     'mvmr-joint-contract', 'mvmr-joint-clump-contract',
     'mvmr-covariance-contract', 'mvmr-orientation-contract',
+    'mrlap-contract',
 )
 
 
@@ -107,17 +108,23 @@ def check_family(family):
     # Executing via compile/exec avoids import-generated __pycache__ mutations.
     hashes = {}
     for program, descriptor in lock['programs'].items():
+        rooted_mrlap = (family.name == 'mrlap-contract' and descriptor == {
+            'generator': 'scripts/generate_mrlap_contract_wrapper.py',
+            'function': 'wrapper', 'argument': 'study_plugins/mrlap-contract'})
         if (set(descriptor) != {'generator', 'function', 'argument'} or
                 descriptor['generator'] not in lock['component_files'] or
-                descriptor['function'] not in {'render', 'rendered'} or
-                descriptor['argument'] not in {None, 'union', 'clump', 'harmonise'}):
+                (not rooted_mrlap and (descriptor['function'] not in {'render', 'rendered'} or
+                descriptor['argument'] not in {None, 'union', 'clump', 'harmonise'}))):
             raise ValueError('Explicit complete renderer required')
         path = regular(component_root, descriptor['generator'])
         module = types.ModuleType('qualified_frozen_method_renderer')
         module.__file__ = str(path)
         exec(compile(path.read_bytes(), str(path), 'exec'), module.__dict__)
         function = getattr(module, descriptor['function'])
-        expected = function() if descriptor['argument'] is None else function(descriptor['argument'])
+        if rooted_mrlap:
+            expected = function(component_root/'study_plugins/mrlap-contract')
+        else:
+            expected = function() if descriptor['argument'] is None else function(descriptor['argument'])
         if not isinstance(expected, str) or original[program] != expected.encode():
             raise ValueError('Runnable method differs from complete original components')
         hashes[program] = hashlib.sha256(original[program]).hexdigest()

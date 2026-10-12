@@ -16800,6 +16800,67 @@
       "auto_enable": false
     },
     {
+      "directory": "research-adapters/mrlap-contract",
+      "plugin_name": "mrlap-contract",
+      "kinds": [
+        "mrlap_official_frozen"
+      ],
+      "image_reference": "ghcr.io/zj-2002/mrlap-official@sha256:e6e10cddfa1cba8046ee6fbc1492b94cbd70d66b097f5f415845d56f9f925434",
+      "files": [
+        {
+          "path": "README.md",
+          "sha256": "9aa73554456ae51ffa6cf980cbda349584e259a0e62376f490f0a8f5b5e87bf1",
+          "bytes": 5015,
+          "executable": false
+        },
+        {
+          "path": "SOURCE-README.txt",
+          "sha256": "5be5ecec1a7e63b2adeea105b05e0c948b31d8e4df541e83e70b299a108459d5",
+          "bytes": 1870,
+          "executable": false
+        },
+        {
+          "path": "component-source.json",
+          "sha256": "c9aeaaabce0189256906a3cebe247015f4cc12b2a77a55d055b44513c0d9b5e3",
+          "bytes": 2434,
+          "executable": false
+        },
+        {
+          "path": "components/scripts/generate_mrlap_contract_wrapper.py",
+          "sha256": "ea1e6ed8c311414defe5a38196c10ce63de0c1d066fe07e82d1c644e983c6dab",
+          "bytes": 1152,
+          "executable": false
+        },
+        {
+          "path": "components/study_plugins/mrlap-contract/scripts/mrlap.R",
+          "sha256": "1e663717ac9c02762ea4bb3a2a27e7b81257c7864f4c6d8b746cc4089cb8141b",
+          "bytes": 22354,
+          "executable": false
+        },
+        {
+          "path": "manifest.toml",
+          "sha256": "4a01e417d089e391155f633600c376d25a943c110383618f2beab246878d9128",
+          "bytes": 2150,
+          "executable": false
+        },
+        {
+          "path": "scripts/mrlap.R",
+          "sha256": "1e663717ac9c02762ea4bb3a2a27e7b81257c7864f4c6d8b746cc4089cb8141b",
+          "bytes": 22354,
+          "executable": false
+        },
+        {
+          "path": "scripts/run-mrlap.sh",
+          "sha256": "bb58843eb478fbd952e8ef78d600771ec7b24a31689ba1c3787a602bd0dd9abb",
+          "bytes": 23049,
+          "executable": true
+        }
+      ],
+      "source_inventory_only": true,
+      "scientific_certified": false,
+      "auto_enable": false
+    },
+    {
       "directory": "research-adapters/mvmr-contract",
       "plugin_name": "mvmr-contract",
       "kinds": [

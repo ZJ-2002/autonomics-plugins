@@ -1,0 +1,164 @@
+{
+  "blockers": [],
+  "canonical_three_input_mrlap_is_not_research_adapter": true,
+  "container_started": false,
+  "document_type": "CORE_A_PLUGIN_SOURCE_ABI_CHECK_NOT_METHOD_ACCEPTANCE",
+  "execution_ready": false,
+  "formal_authorized": false,
+  "global_verify_import": {
+    "existing_baseline_difference": "plugins/deseq2/README.md differs from original source-index identity; unrelated canonical files were not modified",
+    "passed": false
+  },
+  "image_metadata": [
+    {
+      "digest": "sha256:e6e10cddfa1cba8046ee6fbc1492b94cbd70d66b097f5f415845d56f9f925434",
+      "image_id": "294152508a320bf7bbefa9ba53a095a121535cc3643e79a842950609843ea84c",
+      "labels": {
+        "io.buildah.version": "1.45.1",
+        "org.opencontainers.image.authors": "Carl Boettiger <cboettig@ropensci.org>",
+        "org.opencontainers.image.base.name": "docker.io/library/ubuntu:noble",
+        "org.opencontainers.image.description": "Reproducible builds to fixed version of R",
+        "org.opencontainers.image.license": "GPL-3",
+        "org.opencontainers.image.licenses": "GPL-2.0-or-later",
+        "org.opencontainers.image.revision": "660f026864f8bfbbad5a8206bdff7d58f5d5d05b",
+        "org.opencontainers.image.source": "https://github.com/n-mounier/MRlap",
+        "org.opencontainers.image.title": "autonomics-mrlap-official",
+        "org.opencontainers.image.vendor": "Rocker Project",
+        "org.opencontainers.image.version": "0.0.3.3"
+      },
+      "metadata_identity_verified": true,
+      "package_dependencies_verified": false,
+      "present": true,
+      "reference": "ghcr.io/zj-2002/mrlap-official@sha256:e6e10cddfa1cba8046ee6fbc1492b94cbd70d66b097f5f415845d56f9f925434"
+    },
+    {
+      "digest": "sha256:4ffdb4669c558228a74895bf843bc723341e8837e7fdd367108654b5514e3f99",
+      "image_id": "ca258dfcfae8dc24de8463e2b8080cc5bca9d39fd8cfeb4d6bce2c1c5526d8ce",
+      "labels": {
+        "io.buildah.version": "1.45.1",
+        "org.opencontainers.image.authors": "Carl Boettiger <cboettig@ropensci.org>",
+        "org.opencontainers.image.base.name": "docker.io/library/ubuntu:noble",
+        "org.opencontainers.image.description": "Reproducible builds to fixed version of R",
+        "org.opencontainers.image.license": "MIT",
+        "org.opencontainers.image.licenses": "GPL-2.0-or-later",
+        "org.opencontainers.image.ref.name": "ubuntu",
+        "org.opencontainers.image.revision": "3d119f20d6fc164b0c7f710f5590fee9580f2c7b",
+        "org.opencontainers.image.source": "https://github.com/MRCIEU/TwoSampleMR",
+        "org.opencontainers.image.title": "autonomics-twosamplemr-original",
+        "org.opencontainers.image.vendor": "Rocker Project",
+        "org.opencontainers.image.version": "0.7.9"
+      },
+      "metadata_identity_verified": true,
+      "package_dependencies_verified": false,
+      "present": true,
+      "reference": "ghcr.io/zj-2002/twosamplemr@sha256:4ffdb4669c558228a74895bf843bc723341e8837e7fdd367108654b5514e3f99"
+    }
+  ],
+  "image_packages_verified": false,
+  "loaded_worker_registration_verified": false,
+  "methods": [
+    {
+      "byte_exact_source_matches": true,
+      "directory": "research-adapters/clump-contract",
+      "entrypoint_identity": {
+        "bytes": 27776,
+        "sha256": "37b38f8c88b4738c23bdc333ca5a413cf753ab47650b2ba3c8c53b9b001111db"
+      },
+      "image_reference": "ghcr.io/zj-2002/twosamplemr@sha256:4ffdb4669c558228a74895bf843bc723341e8837e7fdd367108654b5514e3f99",
+      "inputs": 5,
+      "kind": "mr_frozen_exposure_clump",
+      "loaded_runtime_kind_verified": false,
+      "manifest_identity": {
+        "bytes": 3071,
+        "sha256": "267527b2588056dd99bb9ac4018a9223657b9fbd17f798c940d16df2254e7974"
+      },
+      "outputs": [
+        "selected.tsv",
+        "selection.json",
+        "qc.tsv",
+        "audit.json",
+        "ld-evidence.tar"
+      ],
+      "present": true,
+      "scientific_authorization": false
+    },
+    {
+      "byte_exact_source_matches": true,
+      "directory": "research-adapters/mr-contract",
+      "entrypoint_identity": {
+        "bytes": 22513,
+        "sha256": "835cf78eebd26a8369930e3fd4ec17af2eee8146493bcdec90d8c9a5a2a39bf2"
+      },
+      "image_reference": "ghcr.io/zj-2002/twosamplemr@sha256:4ffdb4669c558228a74895bf843bc723341e8837e7fdd367108654b5514e3f99",
+      "inputs": 6,
+      "kind": "mr_frozen_harmonise_ivw",
+      "loaded_runtime_kind_verified": false,
+      "manifest_identity": {
+        "bytes": 2178,
+        "sha256": "7caa7c7fb6f3a5b9ebfa5d15b848fb4403b4cf5eb347a16e2aed5b43f15a8821"
+      },
+      "outputs": [
+        "estimates.tsv",
+        "harmonised.tsv",
+        "variants.tsv",
+        "audit.json"
+      ],
+      "present": true,
+      "scientific_authorization": false
+    },
+    {
+      "byte_exact_source_matches": true,
+      "directory": "research-adapters/mr-sensitivity-contract",
+      "entrypoint_identity": {
+        "bytes": 37425,
+        "sha256": "4ee73d98dfbff95ebd4057fcbd4d05033b907b64d654fbedfa4313324cf5ac25"
+      },
+      "image_reference": "ghcr.io/zj-2002/twosamplemr@sha256:4ffdb4669c558228a74895bf843bc723341e8837e7fdd367108654b5514e3f99",
+      "inputs": 7,
+      "kind": "mr_frozen_supporting_sensitivity",
+      "loaded_runtime_kind_verified": false,
+      "manifest_identity": {
+        "bytes": 2016,
+        "sha256": "f6a1dfd2e31b827a00eafa4c861d02ba6466e36f5bccbafa8a413106df7d35f9"
+      },
+      "outputs": [
+        "estimates.tsv",
+        "heterogeneity.tsv",
+        "leave-one-out.tsv",
+        "audit.json"
+      ],
+      "present": true,
+      "scientific_authorization": false
+    },
+    {
+      "byte_exact_source_matches": true,
+      "directory": "research-adapters/mrlap-contract",
+      "entrypoint_identity": {
+        "bytes": 23049,
+        "sha256": "bb58843eb478fbd952e8ef78d600771ec7b24a31689ba1c3787a602bd0dd9abb"
+      },
+      "image_reference": "ghcr.io/zj-2002/mrlap-official@sha256:e6e10cddfa1cba8046ee6fbc1492b94cbd70d66b097f5f415845d56f9f925434",
+      "inputs": 10,
+      "kind": "mrlap_official_frozen",
+      "loaded_runtime_kind_verified": false,
+      "manifest_identity": {
+        "bytes": 2150,
+        "sha256": "4a01e417d089e391155f633600c376d25a943c110383618f2beab246878d9128"
+      },
+      "outputs": [
+        "estimates.tsv",
+        "retention.tsv",
+        "audit.json",
+        "result.rds",
+        "diagnostics.tar"
+      ],
+      "present": true,
+      "scientific_authorization": false
+    }
+  ],
+  "plugin_repository_base_revision": "f4d2c91e0111c2b8d384c0340fb27494b8755dc5",
+  "resource_admission_verified": false,
+  "scientific_authorization": false,
+  "source_abi_compatible": true,
+  "transport_source_revision": "f3d7bdfe5cbdb96ae7771e6e2247f43b5df6f311"
+}

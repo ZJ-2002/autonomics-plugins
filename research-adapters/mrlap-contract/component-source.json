@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "source_repository": "https://github.com/ZJ-2002/autonomics",
+  "source_commit": "f3d7bdfe5cbdb96ae7771e6e2247f43b5df6f311",
+  "source_family": "study_plugins/mrlap-contract",
+  "transport_scope": "BYTE_EXACT_COMPLETE_METHOD_TRANSPORT_NOT_PRODUCER_OR_SCIENTIFIC_QUALIFICATION",
+  "scientific_authorization": false,
+  "auto_enable": false,
+  "imported_files": {
+    "README.md": {
+      "source_path": "study_plugins/mrlap-contract/README.md",
+      "sha256": "9aa73554456ae51ffa6cf980cbda349584e259a0e62376f490f0a8f5b5e87bf1",
+      "bytes": 5015,
+      "git_blob": "1fa8db3fb0e8f51e58d5f66b516ff65bddb07ce3",
+      "executable": false
+    },
+    "manifest.toml": {
+      "source_path": "study_plugins/mrlap-contract/manifest.toml",
+      "sha256": "4a01e417d089e391155f633600c376d25a943c110383618f2beab246878d9128",
+      "bytes": 2150,
+      "git_blob": "32921f6c55824ec75acb978b98f51a5c58d7057a",
+      "executable": false
+    },
+    "scripts/mrlap.R": {
+      "source_path": "study_plugins/mrlap-contract/scripts/mrlap.R",
+      "sha256": "1e663717ac9c02762ea4bb3a2a27e7b81257c7864f4c6d8b746cc4089cb8141b",
+      "bytes": 22354,
+      "git_blob": "9182f18994d61f181177681882d818e8a3b4b443",
+      "executable": false
+    },
+    "scripts/run-mrlap.sh": {
+      "source_path": "study_plugins/mrlap-contract/scripts/run-mrlap.sh",
+      "sha256": "bb58843eb478fbd952e8ef78d600771ec7b24a31689ba1c3787a602bd0dd9abb",
+      "bytes": 23049,
+      "git_blob": "c163bfc2a18c4bf6fc723466b921e170e4ec8f83",
+      "executable": true
+    }
+  },
+  "component_files": {
+    "scripts/generate_mrlap_contract_wrapper.py": {
+      "source_path": "scripts/generate_mrlap_contract_wrapper.py",
+      "sha256": "ea1e6ed8c311414defe5a38196c10ce63de0c1d066fe07e82d1c644e983c6dab",
+      "bytes": 1152,
+      "git_blob": "5c8b9b0d4f9b3799fe12e9742ff201ed75589a0e",
+      "executable": false
+    },
+    "study_plugins/mrlap-contract/scripts/mrlap.R": {
+      "source_path": "study_plugins/mrlap-contract/scripts/mrlap.R",
+      "sha256": "1e663717ac9c02762ea4bb3a2a27e7b81257c7864f4c6d8b746cc4089cb8141b",
+      "bytes": 22354,
+      "git_blob": "9182f18994d61f181177681882d818e8a3b4b443",
+      "executable": false
+    }
+  },
+  "programs": {
+    "scripts/run-mrlap.sh": {
+      "generator": "scripts/generate_mrlap_contract_wrapper.py",
+      "function": "wrapper",
+      "argument": "study_plugins/mrlap-contract"
+    }
+  }
+}

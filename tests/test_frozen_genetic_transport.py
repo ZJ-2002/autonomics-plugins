@@ -22,8 +22,8 @@ class FrozenGeneticTransportTests(unittest.TestCase):
         before = {p.relative_to(ROOT).as_posix(): p.read_bytes() for name in FAMILIES
                   for p in (ROOT/'research-adapters'/name).rglob('*') if p.is_file()}
         reports = check_all(ROOT)
-        self.assertEqual(len(reports), 8)
-        self.assertEqual(sum(len(r['kinds']) for r in reports), 9)
+        self.assertEqual(len(reports), 9)
+        self.assertEqual(sum(len(r['kinds']) for r in reports), 10)
         self.assertTrue(all(not r['auto_enable'] and not r['scientific_authorization'] for r in reports))
         after = {p.relative_to(ROOT).as_posix(): p.read_bytes() for name in FAMILIES
                  for p in (ROOT/'research-adapters'/name).rglob('*') if p.is_file()}
