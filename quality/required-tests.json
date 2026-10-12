@@ -71,6 +71,10 @@
     "ldsc_precision_contract_tests.PrecisionContractTests.test_output_json_roundtrip_is_full_precision_no_overwrite_no_nonfinite",
     "ldsc_precision_contract_tests.PrecisionContractTests.test_swallowed_method_failure_and_invalid_p_refused",
     "ldsc_precision_contract_tests.PrecisionContractTests.test_unknown_extra_missing_duplicate_and_nonfinite_configuration_refused",
-    "ldsc_precision_contract_tests.PrecisionContractTests.test_unrounded_official_p_and_raw_returned_values_retained"
+    "ldsc_precision_contract_tests.PrecisionContractTests.test_unrounded_official_p_and_raw_returned_values_retained",
+    "tests.test_h5ad_export_interface.H5ADExportInterfaceTests.test_original_four_ports_and_parameters_remain",
+    "tests.test_h5ad_export_interface.H5ADExportInterfaceTests.test_direct_official_selected_element_and_exact_values",
+    "tests.test_h5ad_export_interface.H5ADExportInterfaceTests.test_publication_and_complete_metadata_diagnostics",
+    "tests.test_h5ad_export_interface.H5ADExportInterfaceTests.test_required_actual_runtime_driver_has_no_skip"
   ]
 }
