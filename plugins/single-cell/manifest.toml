@@ -271,6 +271,8 @@ doc = """
 Input ports are H5AD then selection Parquet. Output ports are output.h5ad
 then report.json. By default the Parquet cell_id column selects obs_names;
 join_column may name any obs column to match on instead.
+Requests must be unique nonempty strings and all must match. Group columns
+may select multiple cells; cell order remains the input H5AD order.
 """
 timeout_secs = 3600
 artifact_prefix = "/artifacts/h5ad_subset_by_obs"
@@ -290,7 +292,7 @@ join_column = { type = "string", default = "cell_id", doc = "Parquet column sele
 
 [nodes.command]
 interpreter = "python"
-script_file = "scripts/run_workflow.py"
+script_file = "scripts/subset_by_obs.py"
 
 [nodes.command.env]
 AUTONOMICS_SINGLE_CELL_WORKFLOW = "subset_by_obs"
@@ -523,45 +525,6 @@ SC_P_STR_GROUPBY = "{{ groupby }}"
 SC_P_STR_NORMALIZE = "{{ normalize }}"
 SC_P_NUM_MIN_SCORE = "{{ min_score }}"
 SC_P_STR_UNKNOWN_LABEL = "{{ unknown_label }}"
-
-[nodes.resources]
-cpus = 2.0
-memory = "8Gi"
-pids_limit = 512
-shm_size = "1Gi"
-
-[[nodes]]
-kind = "h5ad_ucell_score"
-desc = "Scores per-cell gene sets with rank-based UCell statistics."
-doc = """
-Input port 0 is H5AD. Output ports are output.h5ad then report.json.
-gene_sets is a JSON object (passed as a string) mapping gene-set name to
-its signature genes; each gets a UCell rank-based score in obs: mean of
-margin/(margin+rank) over the signature (rank 1 = highest expression,
-margin = (n_genes - signature size)/2), bounded 0-1, library-size
-independent, computed on the raw matrix without normalization.
-"""
-timeout_secs = 3600
-artifact_prefix = "/artifacts/h5ad_ucell_score"
-
-[nodes.ports]
-inputs = [{ type = "file", label = "h5ad" }]
-outputs = [
-  { path = "output.h5ad", format = "h5ad" },
-  { path = "report.json", format = "single_cell_workflow_report_json" },
-]
-
-[nodes.params]
-gene_sets = { type = "string", doc = "JSON object mapping gene-set name to signature gene array, e.g. \"{\\\"cytotoxic\\\": [\\\"NKG7\\\", \\\"GNLY\\\"]}\"" }
-
-[nodes.command]
-interpreter = "python"
-script_file = "scripts/run_workflow.py"
-
-[nodes.command.env]
-AUTONOMICS_SINGLE_CELL_WORKFLOW = "ucell_score"
-AUTONOMICS_SINGLE_CELL_PARAMS = "/work/.autonomics/files/params.json"
-SC_P_JSON_GENE_SETS = "{{ gene_sets }}"
 
 [nodes.resources]
 cpus = 2.0

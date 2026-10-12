@@ -1,0 +1,59 @@
+schema_version = 1
+plugin_name = "ucell-h5ad"
+
+[image]
+reference = "ghcr.io/zj-2002/ucell-h5ad-official@sha256:e18149dc957c70161029c3451584d7285ab08af2174926c593b8ae285f2dd133"
+tag = "2.16.0-assurance-candidate"
+upstream = "Official UCell2.16.0/Bioc3.23 R image plus frozen Python3.11/AnnData0.11.4 payload;canonical kind ownership migrated from single-cell;not production or scientific approval"
+license = "GPL-3"
+
+[[nodes]]
+kind = "h5ad_ucell_score"
+desc = "Scores H5AD X with the actual official UCell R package."
+doc = """
+Original canonical kind, gene_sets JSON-string parameter, H5AD input,
+output.h5ad/report.json ports and resource declaration are preserved.
+Family ownership moves from single-cell to ucell-h5ad; installing only the
+old family does not install this implementation. No deployment is auto-edited.
+Calls UCell2.16.0 ScoreSignatures_UCell with explicit package defaults:
+maxRank1500 (officially capped by matrix gene count), w_neg1, missing_genes
+impute, average ties, SerialParam, no score-column suffix. This is not the
+legacy mean(margin/(margin+rank)) approximation. Scores use X, not raw or an
+inferred counts layer, and preserve other AnnData contents. Signed +/- members
+follow official semantics;negative-only default scores are zero, not inverted
+enrichment. Missing genes are reported, not silently deleted from signatures.
+At least one matching gene per signature is required;no identifier/species
+mapping or normalization is guessed. Finite real X and exact R-double integer
+inputs, unique lexical axes and unambiguous signatures are required. Existing
+obs score columns or output files are refused. Ordinary publication failure
+rolls back;crash-atomicity/resume is not promised. All input, output and method
+identities are reported. Technical defaults do not lock study parameters,
+background, cell/donor eligibility or signatures, nor grant scientific/G0 approval.
+"""
+timeout_secs = 3600
+artifact_prefix = "/artifacts/h5ad_ucell_score"
+
+[nodes.ports]
+inputs = [{ type = "file", label = "h5ad" }]
+outputs = [
+  { path = "output.h5ad", format = "h5ad" },
+  { path = "report.json", format = "single_cell_workflow_report_json" },
+]
+
+[nodes.params]
+gene_sets = { type = "string", doc = "JSON object mapping signature names to gene arrays with official optional +/- suffixes" }
+
+[nodes.command]
+interpreter = "python"
+script_file = "scripts/score.py"
+
+[nodes.command.env]
+AUTONOMICS_SINGLE_CELL_WORKFLOW = "ucell_score"
+AUTONOMICS_SINGLE_CELL_PARAMS = "/work/.autonomics/files/params.json"
+SC_P_JSON_GENE_SETS = "{{ gene_sets }}"
+
+[nodes.resources]
+cpus = 2.0
+memory = "8Gi"
+pids_limit = 512
+shm_size = "1Gi"

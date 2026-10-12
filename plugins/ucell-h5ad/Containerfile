@@ -1,0 +1,14 @@
+FROM ghcr.io/zj-2002/single-cell-preprocessor@sha256:e2f9fcd5ccf9e97b0f0129466df5abb21ae47ed32f123f6953b79fd83d915e20 AS python_runtime
+FROM ghcr.io/zj-2002/cachexia-ucell-official@sha256:f5310020240016e9069783498aebbd1849c73c6ae4918058614803fe3b6bfca1
+
+USER root
+COPY --from=python_runtime /usr/local/lib/python3.11 /usr/local/lib/python3.11
+COPY --from=python_runtime /usr/local/lib/libpython3.11.so.1.0 /usr/local/lib/libpython3.11.so.1.0
+COPY --from=python_runtime /usr/local/bin/python3.11 /usr/local/bin/python3.11
+RUN ln -s python3.11 /usr/local/bin/python && ln -s python3.11 /usr/local/bin/python3 && ldconfig
+ENV PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 NUMBA_NUM_THREADS=1
+RUN python -c 'import anndata, numpy, scipy, pandas, h5py; assert anndata.__version__ == "0.11.4"'
+RUN Rscript --vanilla -e 'stopifnot(as.character(packageVersion("UCell")) == "2.16.0"); library(UCell)'
+USER 1000:1000
+WORKDIR /work
+ENTRYPOINT ["python"]

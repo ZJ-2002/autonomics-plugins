@@ -18,7 +18,9 @@
 # 峰值内存受 块基因数×组数 控制，与 细胞数×基因数 全量稠密化脱钩。
 # 解释边界：本节点不做 QC、不做批次校正、不注释细胞类型；输出仅是计数层。
 import os
+from pathlib import Path
 import sys
+import tempfile
 from urllib.parse import quote
 
 import anndata as ad
@@ -48,6 +50,18 @@ def fail(message):
 
 if SCHEMA not in ("deseq2", "legacy"):
     fail(f"unsupported schema: {SCHEMA} (expected deseq2|legacy)")
+if MIN_CELLS < 1:
+    fail("min_cells must be a positive integer")
+if os.environ.get("PB_ALLOW_NON_INTEGER", "false").strip().lower() not in ("true", "false"):
+    fail("allow_non_integer must be true or false")
+output_paths = [Path(value).absolute() for value in (OUT_COUNTS, OUT_SAMPLES, OUT_LOG)]
+if len({path.resolve() for path in output_paths}) != len(output_paths):
+    fail("output paths must be distinct")
+for path in output_paths:
+    if os.path.lexists(path):
+        fail(f"output already exists; refusing overwrite: {path}")
+    if not path.parent.is_dir():
+        fail(f"output parent does not exist: {path.parent}")
 
 adata = ad.read_h5ad(INPUT)
 log_lines.append(f"input\t{INPUT}\tcells={adata.n_obs}\tgenes={adata.n_vars}")
@@ -68,12 +82,21 @@ if adata.n_obs == 0 or adata.n_vars == 0:
     fail(f"empty matrix: cells={adata.n_obs} genes={adata.n_vars}")
 
 genes = pd.Index(adata.var_names).astype(str)
+if any(not gene.strip() or any(character in gene for character in "\t\r\n") for gene in genes):
+    fail("gene names must be nonempty and cannot contain tab/newline characters")
 if not genes.is_unique:
     duplicates = genes[genes.duplicated(keep=False)].unique().tolist()[:5]
     fail(f"gene names are not unique ({int(genes.duplicated().sum())} duplicated entries), e.g.: {duplicates}")
 
+if matrix is None:
+    fail("selected matrix is absent")
+if getattr(matrix, "dtype", np.dtype("O")).kind not in "biuf":
+    fail("matrix must have a real numeric dtype")
 if sp.issparse(matrix):
-    matrix = matrix.tocsr()
+    try:
+        matrix.check_format(full_check=True)
+    except (ValueError, TypeError) as error:
+        fail(f"invalid sparse matrix: {error}")
 else:
     matrix = sp.csr_matrix(np.asarray(matrix))
 
@@ -88,7 +111,7 @@ if data.size:
     if negative.any():
         bad = int(negative.sum())
         fail(f"matrix has {bad} negative entries; counts cannot be negative (normalised layers must be re-derived, not aggregated)")
-    non_integer = data != np.rint(data)
+    non_integer = data != np.rint(data) if data.dtype.kind == "f" else np.zeros(data.size, dtype=bool)
     is_integer = not non_integer.any()
     n_non_integer = int(non_integer.sum())
 else:
@@ -96,23 +119,26 @@ else:
     n_non_integer = 0
 
 if is_integer:
-    if data.size and float(np.max(np.abs(data))) > 2.0**62:
+    if data.size and int(np.max(data)) > np.iinfo(np.int64).max:
         fail("integer values exceed int64-safe range; refusing lossy aggregation")
     log_lines.append("validation\tinteger=ok\tentries_checked=%d" % data.size)
-    matrix = matrix.astype(np.int64)
+    matrix = matrix.copy()
+    matrix.data = matrix.data.astype(np.int64)
 elif ALLOW_NON_INTEGER:
     log_lines.append(
         f"WARN matrix has {n_non_integer}/{data.size} non-integer entries; aggregating as-is "
         "(allow_non_integer=true). If values were normalised downstream must NOT model them "
         "as raw counts (plan §15.3)."
     )
-    matrix = matrix.astype(np.float64)
+    matrix = matrix.copy()
+    matrix.data = matrix.data.astype(np.float64)
 else:
     fail(
         f"matrix has {n_non_integer} non-integer entries (of {data.size} stored); "
         "this looks like a normalised layer, not raw counts. Set allow_non_integer=true "
         "to aggregate as-is with a WARN (plan §15.3: downstream must not model it as counts)."
     )
+matrix = matrix.tocsr()
 
 # obs 标签缺失（NaN/None/空白串）：显式剔除进 log，缺失率 100% 才报错。
 def label_mask(series):
@@ -198,6 +224,8 @@ if SCHEMA == "deseq2":
         missing_n = int(condition_missing[participating_rows].sum())
         fail(f"obs[{CONDITION_COL}] has {missing_n} missing values among aggregated cells; a design variable cannot be missing")
     condition_values = condition_series.astype(str).to_numpy()[participating_rows]
+    if any(any(character in value for character in "\t\r\n") for value in condition_values):
+        fail("condition values cannot contain tab/newline characters")
     condition_sets = [set() for _ in kept]
     for group_code, condition_value in zip(codes.tolist(), condition_values):
         condition_sets[group_code].add(condition_value)
@@ -215,25 +243,27 @@ if len(participating_rows) == adata.n_obs:
     matrix_used = matrix
 else:
     matrix_used = matrix[participating_rows, :]
+if is_integer and matrix_used.data.size:
+    integer_limit = int(np.iinfo(np.int64).max)
+    if int(np.max(matrix_used.data)) * int(matrix_used.data.size) > integer_limit:
+        exact_totals = {}
+        for row_index, group_code in enumerate(codes):
+            for position in range(matrix_used.indptr[row_index], matrix_used.indptr[row_index + 1]):
+                key = (int(group_code), int(matrix_used.indices[position]))
+                total = exact_totals.get(key, 0) + int(matrix_used.data[position])
+                if total > integer_limit:
+                    fail("pseudobulk group sum exceeds int64-safe range; refusing overflow")
+                exact_totals[key] = total
 onehot = sp.csr_matrix(
     (np.ones(len(codes), dtype=matrix_used.dtype), (codes, np.arange(len(codes), dtype=np.int64))),
     shape=(len(kept), matrix_used.shape[0]),
 )
 counts_sparse = (onehot @ matrix_used).T.tocsr()  # genes × groups
+if not np.isfinite(counts_sparse.data).all() or (counts_sparse.data < 0).any():
+    fail("aggregated values must remain finite and nonnegative")
 
 # 导出按基因分块稠密化：峰值内存 ≈ 块行数 × 组数，而非 基因数 × 全量稠密矩阵。
 first_col = "gene_id" if SCHEMA == "deseq2" else "gene"
-with open(OUT_COUNTS, "w", encoding="utf-8", newline="\n") as handle:
-    handle.write(first_col + "\t" + "\t".join(ids) + "\n")
-    rows_per_chunk = max(1, min(len(genes), 10_000_000 // max(1, len(kept))))
-    for start in range(0, len(genes), rows_per_chunk):
-        stop = min(start + rows_per_chunk, len(genes))
-        block = counts_sparse[start:stop].toarray()
-        for row_offset in range(block.shape[0]):
-            gene_name = genes[start + row_offset]
-            values = "\t".join(str(value) for value in block[row_offset].tolist())
-            handle.write(f"{gene_name}\t{values}\n")
-
 sample_rows = []
 for position, key in enumerate(kept):
     if SCHEMA == "deseq2":
@@ -245,9 +275,44 @@ metadata_columns = (
     if SCHEMA == "deseq2"
     else ["pseudobulk_id", "sample", "celltype", "n_cells"]
 )
-pd.DataFrame(sample_rows, columns=metadata_columns).to_csv(OUT_SAMPLES, sep="\t", index=False)
-
 log_lines.append(f"schema\t{SCHEMA}")
 log_lines.append(f"groups_kept={len(kept)}\tgenes={len(genes)}\tinteger={is_integer or 'warned'}")
-with open(OUT_LOG, "w", encoding="utf-8") as handle:
-    handle.write("\n".join(log_lines) + "\n")
+staged = []
+published = []
+try:
+    for path in output_paths:
+        descriptor, temporary_name = tempfile.mkstemp(prefix=".pseudobulk-", dir=path.parent)
+        os.close(descriptor)
+        staged.append(Path(temporary_name))
+    with staged[0].open("w", encoding="utf-8", newline="\n") as handle:
+        handle.write(first_col + "\t" + "\t".join(ids) + "\n")
+        rows_per_chunk = max(1, min(len(genes), 10_000_000 // max(1, len(kept))))
+        for start in range(0, len(genes), rows_per_chunk):
+            stop = min(start + rows_per_chunk, len(genes))
+            block = counts_sparse[start:stop].toarray()
+            for row_offset in range(block.shape[0]):
+                gene_name = genes[start + row_offset]
+                values = "\t".join(str(value) for value in block[row_offset].tolist())
+                handle.write(f"{gene_name}\t{values}\n")
+        handle.flush()
+        os.fsync(handle.fileno())
+    pd.DataFrame(sample_rows, columns=metadata_columns).to_csv(staged[1], sep="\t", index=False)
+    staged[2].write_text("\n".join(log_lines) + "\n", encoding="utf-8")
+    for temporary in staged[1:]:
+        with temporary.open("rb") as handle:
+            os.fsync(handle.fileno())
+    for temporary, destination in zip(staged, output_paths):
+        os.link(temporary, destination)
+        published.append((destination, temporary.stat().st_dev, temporary.stat().st_ino))
+except BaseException:
+    for destination, device, inode in published:
+        try:
+            current = destination.lstat()
+            if current.st_dev == device and current.st_ino == inode:
+                destination.unlink()
+        except FileNotFoundError:
+            pass
+    raise
+finally:
+    for temporary in staged:
+        temporary.unlink(missing_ok=True)

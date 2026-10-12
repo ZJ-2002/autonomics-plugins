@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "scope": "SOURCE_AND_INTERFACE_INVENTORY_NOT_METHOD_CERTIFICATION",
-  "canonical_families": 30,
+  "canonical_families": 31,
   "canonical_kinds": 62,
   "families": [
     {
@@ -14213,14 +14213,14 @@
         },
         {
           "path": "README.md",
-          "sha256": "441f7646bb4a8348b229b63d64108a9aba24add37b359426ee44a9a52afa4676",
-          "bytes": 5942,
+          "sha256": "483f3f3aadecd8068e3682175e05b7d15870ec250a0685dcdf505582ac2e64ae",
+          "bytes": 7901,
           "executable": false
         },
         {
           "path": "manifest.toml",
-          "sha256": "22a4a36d679fab0bf2464d2ac03494ef4479f658fa617124bb885135dd76a2a2",
-          "bytes": 6224,
+          "sha256": "17a2be2eac2e1bf8e8ff3556a8fa5c059d8755d6eb4f650cd4e98aad1bc5dcdc",
+          "bytes": 6795,
           "executable": false
         },
         {
@@ -14231,14 +14231,26 @@
         },
         {
           "path": "scripts/pseudobulk_counts.py",
-          "sha256": "b73a2b2f6ef2052a0b00ba3694d562781b1927deb19303837698b7dbf01cca27",
-          "bytes": 12170,
+          "sha256": "38258d9685a335f0157ad9682d71b39aec6e31dc5df926b863d3039d55f3feba",
+          "bytes": 15451,
+          "executable": false
+        },
+        {
+          "path": "test_assurance.sh",
+          "sha256": "b48078fe744cbd8d648b93ed99da7efd21bc2cf91af1c693cfa5249f2d8dc057",
+          "bytes": 913,
           "executable": false
         },
         {
           "path": "tests/bench_pseudobulk.py",
           "sha256": "6a643833e643e1fbae029c25b3029271e6504c011ced60469e0bfad291368456",
           "bytes": 2646,
+          "executable": false
+        },
+        {
+          "path": "tests/test_assurance.py",
+          "sha256": "537b732e245339cf9cf4c674e5b2ebd918df0c9d3c3d5e0f3c9a88d6db0f55a3",
+          "bytes": 10221,
           "executable": false
         },
         {
@@ -14321,8 +14333,7 @@
         "h5ad_rank_genes_groups",
         "h5ad_cluster_mean_expression",
         "gene_set_score",
-        "h5ad_marker_annotate",
-        "h5ad_ucell_score"
+        "h5ad_marker_annotate"
       ],
       "image_reference": "ghcr.io/zj-2002/single-cell-preprocessor@sha256:e2f9fcd5ccf9e97b0f0129466df5abb21ae47ed32f123f6953b79fd83d915e20",
       "files": [
@@ -14352,14 +14363,20 @@
         },
         {
           "path": "README.md",
-          "sha256": "dc0552cbdf4d9645eece7e3abf3d5f0fa79d985eeff9ce810823f0b5baacbc65",
-          "bytes": 18718,
+          "sha256": "85a6715ddb6dbc11d27d63e47a82b2eeaba5cf24a6f3d9a9d9e97191e36a87e2",
+          "bytes": 19562,
+          "executable": false
+        },
+        {
+          "path": "SUBSET_ASSURANCE.md",
+          "sha256": "8a97218cf1a07c84dc85f637f59de5d99ce7085bf94ed982ffde18e0b18d5470",
+          "bytes": 3833,
           "executable": false
         },
         {
           "path": "manifest.toml",
-          "sha256": "fa830426bbb2a38e056b425faddd9addabd61060c25bf2166a6664920d5e5e35",
-          "bytes": 24435,
+          "sha256": "1d17525b0561391cc9aee9aab444eabe0a4627160fac4945c8a3e5a0ddfe60c5",
+          "bytes": 23273,
           "executable": false
         },
         {
@@ -14405,6 +14422,12 @@
           "executable": false
         },
         {
+          "path": "scripts/subset_by_obs.py",
+          "sha256": "0db6f4caadbb28f679f2d813c60de33d3c74ca1111934f01389b182306b088ec",
+          "bytes": 7731,
+          "executable": false
+        },
+        {
           "path": "test_celltypist_assurance.sh",
           "sha256": "9826a462b1ccaee71a157bc4a0766d625bbbf514ac5e0418e061c9ff307422e3",
           "bytes": 2636,
@@ -14444,6 +14467,12 @@
           "path": "test_single_cell_workflow.sh",
           "sha256": "602284104de982a7730cf849e103d4ef1bfbbd359b0c498fb8d3b37b75f182d8",
           "bytes": 4417,
+          "executable": false
+        },
+        {
+          "path": "test_subset_assurance.sh",
+          "sha256": "43281195f4fbdd87b2b2d163943fcc6b8089abd9ab38d736205be0e8711a6f86",
+          "bytes": 805,
           "executable": false
         },
         {
@@ -14573,9 +14602,15 @@
           "executable": false
         },
         {
+          "path": "tests/test_subset_by_obs.py",
+          "sha256": "c88766868a9c747ac1dd8b3308956603923dde877023af20e48a1a0e24cdcf81",
+          "bytes": 14640,
+          "executable": false
+        },
+        {
           "path": "workflow.py",
-          "sha256": "0936dd22196356cfcdbed2a100f35a7a2238fae5c51276a8327849ecb63817a1",
-          "bytes": 39715,
+          "sha256": "f0309d433465f388d341825c361f03213fb81c8ec4211fc4c60eaff5c1c1dbae",
+          "bytes": 36821,
           "executable": false
         }
       ],
@@ -14968,6 +15003,73 @@
           "path": "tests/test_contract.py",
           "sha256": "218036afdad572b0edb79d2847fcd2682c653bf7f5e169453828140debacada2",
           "bytes": 1952,
+          "executable": false
+        }
+      ],
+      "source_inventory_only": true,
+      "scientific_certified": false,
+      "auto_enable": false
+    },
+    {
+      "directory": "plugins/ucell-h5ad",
+      "plugin_name": "ucell-h5ad",
+      "kinds": [
+        "h5ad_ucell_score"
+      ],
+      "image_reference": "ghcr.io/zj-2002/ucell-h5ad-official@sha256:e18149dc957c70161029c3451584d7285ab08af2174926c593b8ae285f2dd133",
+      "files": [
+        {
+          "path": "Containerfile",
+          "sha256": "aa61ecdb4e8624ceb8242186306cff826516df54debd400be8358ed6ad9800c0",
+          "bytes": 964,
+          "executable": false
+        },
+        {
+          "path": "README.md",
+          "sha256": "2d9f976931acdfcf638debea0106e0e63773dc1380793de28aee383b00ae0ca4",
+          "bytes": 3141,
+          "executable": false
+        },
+        {
+          "path": "manifest.toml",
+          "sha256": "337439a2100332e95888a7c833baffadfd53836c4d49f334a85d8b2a3a6b9f6e",
+          "bytes": 2640,
+          "executable": false
+        },
+        {
+          "path": "scripts/score.py",
+          "sha256": "a7a9dff18744e702c9caffa5d12076cd0fa008511892237b972e590d27f3b861",
+          "bytes": 14757,
+          "executable": false
+        },
+        {
+          "path": "test_assurance.sh",
+          "sha256": "61362b9709360cb6c5d748e62d3756fd8ae4805170b2d42275cbe17b22cd4ef7",
+          "bytes": 2358,
+          "executable": false
+        },
+        {
+          "path": "tests/reference.R",
+          "sha256": "7fef74fc82ee9bfb0a3007dff87da4ddf9e02c679191cdc759f1789785b7bfe2",
+          "bytes": 1462,
+          "executable": false
+        },
+        {
+          "path": "tests/test_boundaries.py",
+          "sha256": "5151b55c0df7beb4cf1fd4a317d6c400784a4d676c802615b576f4aaf891ed67",
+          "bytes": 6781,
+          "executable": false
+        },
+        {
+          "path": "tests/test_comparison.py",
+          "sha256": "c9dbf1a21813ac7b675553614f9f5458a706d0e1e9b19a0be6e0dc1cf4fbddb8",
+          "bytes": 2424,
+          "executable": false
+        },
+        {
+          "path": "tests/test_official.py",
+          "sha256": "bb7a37e3159d4e890f283ed18447a850d8e52675e362e20d5fdbbe4fdef16b2f",
+          "bytes": 11496,
           "executable": false
         }
       ],
