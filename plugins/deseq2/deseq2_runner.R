@@ -27,10 +27,53 @@ read_literal_tsv <- function(filename) {
   if (length(lines) < 2L || any(!nzchar(lines))) {
     stop("input must contain a header and nonempty data rows", call. = FALSE)
   }
-  fields <- lapply(lines, function(line) {
-    tokens <- strsplit(paste0(line, "\t__END__"), "\t", fixed = TRUE)[[1]]
-    tokens[-length(tokens)]
-  })
+  parse_record <- function(line) {
+    quote_character <- intToUtf8(34L)
+    if (!grepl(quote_character, line, fixed = TRUE)) {
+      tokens <- strsplit(paste0(line, "\t__END__"), "\t", fixed = TRUE)[[1]]
+      return(tokens[-length(tokens)])
+    }
+    characters <- strsplit(line, "", fixed = TRUE)[[1]]
+    buffer <- character(length(characters))
+    size <- 0L
+    tokens <- character()
+    state <- "start"
+    position <- 1L
+    while (position <= length(characters)) {
+      character <- characters[[position]]
+      if (state == "quoted") {
+        if (character == quote_character) {
+          if (position < length(characters) && characters[[position + 1L]] == quote_character) {
+            size <- size + 1L
+            buffer[[size]] <- character
+            position <- position + 1L
+          } else {
+            state <- "closed"
+          }
+        } else {
+          size <- size + 1L
+          buffer[[size]] <- character
+        }
+      } else if (character == "\t") {
+        tokens <- c(tokens, paste0(buffer[seq_len(size)], collapse = ""))
+        size <- 0L
+        state <- "start"
+      } else if (state == "closed") {
+        stop("quoted TSV has characters after a closing quote", call. = FALSE)
+      } else if (character == quote_character) {
+        if (state != "start") stop("quoted TSV has a bare quote inside an unquoted field", call. = FALSE)
+        state <- "quoted"
+      } else {
+        size <- size + 1L
+        buffer[[size]] <- character
+        state <- "unquoted"
+      }
+      position <- position + 1L
+    }
+    if (state == "quoted") stop("quoted TSV has an unclosed quote or multiline field", call. = FALSE)
+    c(tokens, paste0(buffer[seq_len(size)], collapse = ""))
+  }
+  fields <- lapply(lines, parse_record)
   header <- fields[[1]]
   if (any(grepl("[[:cntrl:]]", unlist(fields, use.names = FALSE)))) {
     stop("input fields must not contain control characters", call. = FALSE)
@@ -330,7 +373,8 @@ write.table(
   result_frame,
   results_path,
   sep = "\t",
-  quote = FALSE,
+  quote = TRUE,
+  qmethod = "double",
   row.names = FALSE
 )
 
@@ -346,7 +390,8 @@ write.table(
   normalized_frame,
   normalized_path,
   sep = "\t",
-  quote = FALSE,
+  quote = TRUE,
+  qmethod = "double",
   row.names = FALSE
 )
 
@@ -360,7 +405,8 @@ write.table(
   size_factor_frame,
   size_factors_path,
   sep = "\t",
-  quote = FALSE,
+  quote = TRUE,
+  qmethod = "double",
   row.names = FALSE
 )
 

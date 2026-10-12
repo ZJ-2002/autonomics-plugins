@@ -1,3 +1,4 @@
+import csv
 import hashlib
 import json
 import os
@@ -292,10 +293,12 @@ class LimmaBoundaries(unittest.TestCase):
     def test_literal_ids_and_sample_weight_labels(self):
         directory = self.check(fixture=self.alter_counts(lambda text: text.replace('\ngene1\t', '\n00001\t')
             .replace('\ngene2\t', '\nNA\t')), succeed=True)
-        identifiers = [line.split('\t')[0] for line in (directory / 'results.tsv').read_text().splitlines()[1:]]
+        with (directory / 'results.tsv').open(newline='') as handle:
+            identifiers = [row[0] for row in list(csv.reader(handle, delimiter='\t', strict=True))[1:]]
         self.assertEqual(identifiers[:2], ['00001', 'NA'])
-        self.assertEqual((directory / 'weights.tsv').read_text().splitlines()[0],
-            'gene_id\t' + '\t'.join('s' + str(index) for index in range(1, 9)))
+        with (directory / 'weights.tsv').open(newline='') as handle:
+            self.assertEqual(next(csv.reader(handle, delimiter='\t', strict=True)),
+                ['gene_id', *['s' + str(index) for index in range(1, 9)]])
 
     def test_numeric_sample_ids_and_reordered_metadata(self):
         def fixture(directory):
@@ -309,8 +312,37 @@ class LimmaBoundaries(unittest.TestCase):
                 filename.write_text(text)
             return []
         directory = self.check(fixture=fixture, succeed=True)
-        self.assertEqual((directory / 'normalized.tsv').read_text().splitlines()[0],
-            'gene_id\t' + '\t'.join(str(index).zfill(2) for index in range(1, 9)))
+        with (directory / 'normalized.tsv').open(newline='') as handle:
+            self.assertEqual(next(csv.reader(handle, delimiter='\t', strict=True)),
+                ['gene_id', *[str(index).zfill(2) for index in range(1, 9)]])
+
+    def test_quoted_gene_and_sample_axes(self):
+        def fixture(directory):
+            replacements = {'gene1': chr(34) + 'leading', 'gene2': "O'Gene", 's1': 's' + chr(34) + 'middle', 's2': '0001'}
+            for name in ['counts.tsv', 'metadata.tsv']:
+                filename = directory / name
+                with filename.open(newline='') as handle:
+                    rows = [[replacements.get(value, value) for value in row] for row in csv.reader(handle, delimiter='\t')]
+                with filename.open('w', newline='') as handle:
+                    csv.writer(handle, delimiter='\t', lineterminator='\n').writerows(rows)
+            return []
+        directory = self.check(fixture=fixture, succeed=True)
+        with (directory / 'normalized.tsv').open(newline='') as handle:
+            rows = list(csv.reader(handle, delimiter='\t', strict=True))
+        self.assertEqual(rows[0][1:3], ['s' + chr(34) + 'middle', '0001'])
+        self.assertEqual([row[0] for row in rows[1:3]], [chr(34) + 'leading', "O'Gene"])
+
+    def test_unclosed_quoted_field(self):
+        self.check(fixture=self.alter_counts(lambda text: text.replace('\ngene1\t', '\n' + chr(34) + 'gene1\t')),
+            diagnostic='unclosed quote')
+
+    def test_bare_quote_in_field(self):
+        self.check(fixture=self.alter_counts(lambda text: text.replace('\ngene1\t', '\ngene' + chr(34) + '1\t')),
+            diagnostic='bare quote')
+
+    def test_characters_after_closing_quote(self):
+        self.check(fixture=self.alter_counts(lambda text: text.replace('\ngene1\t', '\n' + chr(34) + 'gene1' + chr(34) + 'x\t')),
+            diagnostic='after a closing quote')
 
     def test_filter_ledger_retains_excluded_ids(self):
         directory = self.check(fixture=self.alter_counts(lambda text: text + 'excluded\t' + '\t'.join(['0'] * 8) + '\n'), succeed=True)
