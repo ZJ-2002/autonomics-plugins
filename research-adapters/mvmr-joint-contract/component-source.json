@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "source_repository": "https://github.com/ZJ-2002/autonomics",
-  "source_commit": "f5e3eeaee117241c92c30e48523ece6c20a2814e",
+  "source_commit": "51d34d0b03be32eff443cddb6e1f4be089585464",
   "source_family": "study_plugins/mvmr-joint-contract",
   "transport_scope": "BYTE_EXACT_COMPLETE_METHOD_TRANSPORT_NOT_PRODUCER_OR_SCIENTIFIC_QUALIFICATION",
   "scientific_authorization": false,
@@ -74,9 +74,9 @@
     },
     "study_plugins/clump-contract/scripts/clump.R": {
       "source_path": "study_plugins/clump-contract/scripts/clump.R",
-      "sha256": "4cb77955c791b84678173b8c9087b6eb2649bde9a67f6e37d634a6a244e105e5",
-      "bytes": 20787,
-      "git_blob": "4694de55fd1f0392d130ba6fb81e1a7357400eb3",
+      "sha256": "4b6942139081e8ad9c8b836f484869409123faf4c7175ebb7e0238263122f212",
+      "bytes": 21267,
+      "git_blob": "47dfe9180106f1c6870aaf648aa291c029361128",
       "executable": false
     },
     "study_plugins/mvmr-joint-contract/scripts/union.R": {

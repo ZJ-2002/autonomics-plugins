@@ -96,6 +96,23 @@ normalization_receipt <- function(path, recipe_path, normalized_path, recipe_sha
 
 # 官方 TwoSampleMR 的冻结工具输入适配器；本文件不做 clumping、不签署 G0。
 # 工具选择必须由已验收的独立上游完成，不能从 outcome 的可用行反选工具。
+# Formatting only: preserve double values across a TSV parse without changing
+# the input frame, scientific calculations, thresholds or missing-value rules.
+write_lossless_tsv <- function(x, file, ...) {
+  if (!is.data.frame(x)) stop("lossless TSV output requires a data frame", call. = FALSE)
+  encoded <- x
+  for (i in seq_along(encoded)) {
+    value <- encoded[[i]]
+    if (is.double(value) && !is.object(value)) {
+      text <- sprintf("%.17g", value)
+      text[is.na(value)] <- NA_character_
+      encoded[[i]] <- text
+    }
+  }
+  utils::write.table(encoded, file, sep = "\t", quote = FALSE,
+    row.names = FALSE, na = "NA", ...)
+}
+
 fail <- function(message) stop(message, call. = FALSE)
 check <- function(ok, message) if (!isTRUE(ok)) fail(message)
 sha <- function(path) digest::digest(file = path, algo = "sha256")
@@ -304,7 +321,7 @@ main <- function(args) {
   check(!anyDuplicated(outputs) && !any(file.exists(outputs)) &&
     !any(vapply(outputs, function(p) { t <- Sys.readlink(p); !is.na(t) && nzchar(t) }, logical(1))), "output exists or duplicates another output")
   result <- mr_frozen(args[1L], args[2L], args[3L], args[4L], args[5L], args[6L])
-  for (i in 1:3) utils::write.table(result[[i]], outputs[i], sep = "\t", quote = FALSE, row.names = FALSE, na = "NA")
+  for (i in 1:3) write_lossless_tsv(result[[i]], outputs[i])
   jsonlite::write_json(result$audit, outputs[4L], pretty = TRUE, auto_unbox = TRUE, null = "null", na = "null", digits = NA)
 }
 

@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "scope": "LOSSLESS_GENETIC_TSV_SOURCE_TRANSPORT_NOT_METHOD_CERTIFICATION",
+  "source_repository": "https://github.com/ZJ-2002/autonomics",
+  "source_commit": "51d34d0b03be32eff443cddb6e1f4be089585464",
+  "prior_plugin_commit": "e183e70a6b70851d94da946b80089b8456904e90",
+  "changes": [
+    {
+      "path": "research-adapters/clump-contract/scripts/clump.R",
+      "prior_sha256": "4cb77955c791b84678173b8c9087b6eb2649bde9a67f6e37d634a6a244e105e5",
+      "current_sha256": "4b6942139081e8ad9c8b836f484869409123faf4c7175ebb7e0238263122f212",
+      "bytes": 21267,
+      "source_path": "study_plugins/clump-contract/scripts/clump.R"
+    },
+    {
+      "path": "research-adapters/clump-contract/scripts/run-clump.sh",
+      "prior_sha256": "37b38f8c88b4738c23bdc333ca5a413cf753ab47650b2ba3c8c53b9b001111db",
+      "current_sha256": "c73585f6e52576c04385a7518a96ddc7d878992d0700bea48d6af0fb4afb10f3",
+      "bytes": 28256,
+      "source_path": "study_plugins/clump-contract/scripts/run-clump.sh"
+    },
+    {
+      "path": "research-adapters/clump-contract/components/study_plugins/clump-contract/scripts/clump.R",
+      "prior_sha256": "4cb77955c791b84678173b8c9087b6eb2649bde9a67f6e37d634a6a244e105e5",
+      "current_sha256": "4b6942139081e8ad9c8b836f484869409123faf4c7175ebb7e0238263122f212",
+      "bytes": 21267,
+      "source_path": "study_plugins/clump-contract/scripts/clump.R"
+    },
+    {
+      "path": "research-adapters/mr-contract/scripts/mr.R",
+      "prior_sha256": "b3b80cb5d1e246d3ef20f9891dce49b16627fa044bd4bf783a60ab28704bab79",
+      "current_sha256": "32247d711b74bbaa7650a217cbc108274587682cadc3f4df0b4d8e3e846b6de1",
+      "bytes": 16173,
+      "source_path": "study_plugins/mr-contract/scripts/mr.R"
+    },
+    {
+      "path": "research-adapters/mr-contract/scripts/run-mr.sh",
+      "prior_sha256": "835cf78eebd26a8369930e3fd4ec17af2eee8146493bcdec90d8c9a5a2a39bf2",
+      "current_sha256": "d7e00b84df4789c696d600f2b452c98c9b9b5188612691393f095d30aeda9b1d",
+      "bytes": 23096,
+      "source_path": "study_plugins/mr-contract/scripts/run-mr.sh"
+    },
+    {
+      "path": "research-adapters/mr-contract/components/study_plugins/mr-contract/scripts/mr.R",
+      "prior_sha256": "b3b80cb5d1e246d3ef20f9891dce49b16627fa044bd4bf783a60ab28704bab79",
+      "current_sha256": "32247d711b74bbaa7650a217cbc108274587682cadc3f4df0b4d8e3e846b6de1",
+      "bytes": 16173,
+      "source_path": "study_plugins/mr-contract/scripts/mr.R"
+    },
+    {
+      "path": "research-adapters/mr-sensitivity-contract/scripts/run-sensitivity.sh",
+      "prior_sha256": "4ee73d98dfbff95ebd4057fcbd4d05033b907b64d654fbedfa4313324cf5ac25",
+      "current_sha256": "8cd217cda8434d2c93ffd3ad1744c132ef6f4a3790fd7c9da5a5d2715004134f",
+      "bytes": 38008,
+      "source_path": "study_plugins/mr-sensitivity-contract/scripts/run-sensitivity.sh"
+    },
+    {
+      "path": "research-adapters/mr-sensitivity-contract/components/study_plugins/mr-contract/scripts/mr.R",
+      "prior_sha256": "b3b80cb5d1e246d3ef20f9891dce49b16627fa044bd4bf783a60ab28704bab79",
+      "current_sha256": "32247d711b74bbaa7650a217cbc108274587682cadc3f4df0b4d8e3e846b6de1",
+      "bytes": 16173,
+      "source_path": "study_plugins/mr-contract/scripts/mr.R"
+    },
+    {
+      "path": "research-adapters/mvmr-joint-clump-contract/scripts/run-clump.sh",
+      "prior_sha256": "861997e7cf07286408d30cfb03bb8130a82c88a7dee80dab213751c1a0d7ceaf",
+      "current_sha256": "20fb4c4cedd4c9301148cc641417e6f97ac1851e9e6da58f8b7c15c9798d130b",
+      "bytes": 43633,
+      "source_path": "study_plugins/mvmr-joint-clump-contract/scripts/run-clump.sh"
+    },
+    {
+      "path": "research-adapters/mvmr-joint-clump-contract/components/study_plugins/clump-contract/scripts/clump.R",
+      "prior_sha256": "4cb77955c791b84678173b8c9087b6eb2649bde9a67f6e37d634a6a244e105e5",
+      "current_sha256": "4b6942139081e8ad9c8b836f484869409123faf4c7175ebb7e0238263122f212",
+      "bytes": 21267,
+      "source_path": "study_plugins/clump-contract/scripts/clump.R"
+    },
+    {
+      "path": "research-adapters/mvmr-joint-contract/components/study_plugins/clump-contract/scripts/clump.R",
+      "prior_sha256": "4cb77955c791b84678173b8c9087b6eb2649bde9a67f6e37d634a6a244e105e5",
+      "current_sha256": "4b6942139081e8ad9c8b836f484869409123faf4c7175ebb7e0238263122f212",
+      "bytes": 21267,
+      "source_path": "study_plugins/clump-contract/scripts/clump.R"
+    }
+  ],
+  "core_host_IO_tests": {
+    "passed": 5,
+    "skipped": 0,
+    "fitting_executed": false
+  },
+  "old_method_evidence_reusable_for_new_scripts": false,
+  "method_acceptance_verified": false,
+  "full_producer_chain_qualified": false,
+  "scientific_authorization": false,
+  "auto_enable": false,
+  "production_deployed": false
+}

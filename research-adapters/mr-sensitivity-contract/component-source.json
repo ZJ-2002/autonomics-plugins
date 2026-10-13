@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "source_repository": "https://github.com/ZJ-2002/autonomics",
-  "source_commit": "f5e3eeaee117241c92c30e48523ece6c20a2814e",
+  "source_commit": "51d34d0b03be32eff443cddb6e1f4be089585464",
   "source_family": "study_plugins/mr-sensitivity-contract",
   "transport_scope": "BYTE_EXACT_COMPLETE_METHOD_TRANSPORT_NOT_PRODUCER_OR_SCIENTIFIC_QUALIFICATION",
   "scientific_authorization": false,
@@ -23,9 +23,9 @@
     },
     "scripts/run-sensitivity.sh": {
       "source_path": "study_plugins/mr-sensitivity-contract/scripts/run-sensitivity.sh",
-      "sha256": "4ee73d98dfbff95ebd4057fcbd4d05033b907b64d654fbedfa4313324cf5ac25",
-      "bytes": 37425,
-      "git_blob": "b4900354502d54922f56b393ea87e225c40b6a18",
+      "sha256": "8cd217cda8434d2c93ffd3ad1744c132ef6f4a3790fd7c9da5a5d2715004134f",
+      "bytes": 38008,
+      "git_blob": "ce184136a02801c7ccdfeb5f743dc53688300836",
       "executable": true
     },
     "scripts/sensitivity.R": {
@@ -53,9 +53,9 @@
     },
     "study_plugins/mr-contract/scripts/mr.R": {
       "source_path": "study_plugins/mr-contract/scripts/mr.R",
-      "sha256": "b3b80cb5d1e246d3ef20f9891dce49b16627fa044bd4bf783a60ab28704bab79",
-      "bytes": 15590,
-      "git_blob": "e7c4847e1077f25f05b6f8b2dad9e3b0fb6918f0",
+      "sha256": "32247d711b74bbaa7650a217cbc108274587682cadc3f4df0b4d8e3e846b6de1",
+      "bytes": 16173,
+      "git_blob": "7065a901870d1c066fe7e30988357a9c5d08f2bb",
       "executable": false
     },
     "study_plugins/mr-sensitivity-contract/scripts/sensitivity.R": {

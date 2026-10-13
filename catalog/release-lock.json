@@ -17409,7 +17409,7 @@
         },
         {
           "path": "component-source.json",
-          "sha256": "735d2dfc955494ff1519f925d242b49a052ee3a637b49112ae28c0d5479a753a",
+          "sha256": "e6cb90feade4602032127e559ec4676a1a81faa11fa91d7b0c6d514faa98c25a",
           "bytes": 2742,
           "executable": false
         },
@@ -17421,8 +17421,8 @@
         },
         {
           "path": "components/study_plugins/clump-contract/scripts/clump.R",
-          "sha256": "4cb77955c791b84678173b8c9087b6eb2649bde9a67f6e37d634a6a244e105e5",
-          "bytes": 20787,
+          "sha256": "4b6942139081e8ad9c8b836f484869409123faf4c7175ebb7e0238263122f212",
+          "bytes": 21267,
           "executable": false
         },
         {
@@ -17439,14 +17439,14 @@
         },
         {
           "path": "scripts/clump.R",
-          "sha256": "4cb77955c791b84678173b8c9087b6eb2649bde9a67f6e37d634a6a244e105e5",
-          "bytes": 20787,
+          "sha256": "4b6942139081e8ad9c8b836f484869409123faf4c7175ebb7e0238263122f212",
+          "bytes": 21267,
           "executable": false
         },
         {
           "path": "scripts/run-clump.sh",
-          "sha256": "37b38f8c88b4738c23bdc333ca5a413cf753ab47650b2ba3c8c53b9b001111db",
-          "bytes": 27776,
+          "sha256": "c73585f6e52576c04385a7518a96ddc7d878992d0700bea48d6af0fb4afb10f3",
+          "bytes": 28256,
           "executable": false
         }
       ],
@@ -17476,7 +17476,7 @@
         },
         {
           "path": "component-source.json",
-          "sha256": "c1b97a0306b28829d8cea4df064004d89b3f4b4a739cb52ff705da3213b4e4a8",
+          "sha256": "fef81e17561d4de75ca86806af81f9713f542396365d30ab74bc267a105cffc0",
           "bytes": 2691,
           "executable": false
         },
@@ -17488,8 +17488,8 @@
         },
         {
           "path": "components/study_plugins/mr-contract/scripts/mr.R",
-          "sha256": "b3b80cb5d1e246d3ef20f9891dce49b16627fa044bd4bf783a60ab28704bab79",
-          "bytes": 15590,
+          "sha256": "32247d711b74bbaa7650a217cbc108274587682cadc3f4df0b4d8e3e846b6de1",
+          "bytes": 16173,
           "executable": false
         },
         {
@@ -17506,14 +17506,14 @@
         },
         {
           "path": "scripts/mr.R",
-          "sha256": "b3b80cb5d1e246d3ef20f9891dce49b16627fa044bd4bf783a60ab28704bab79",
-          "bytes": 15590,
+          "sha256": "32247d711b74bbaa7650a217cbc108274587682cadc3f4df0b4d8e3e846b6de1",
+          "bytes": 16173,
           "executable": false
         },
         {
           "path": "scripts/run-mr.sh",
-          "sha256": "835cf78eebd26a8369930e3fd4ec17af2eee8146493bcdec90d8c9a5a2a39bf2",
-          "bytes": 22513,
+          "sha256": "d7e00b84df4789c696d600f2b452c98c9b9b5188612691393f095d30aeda9b1d",
+          "bytes": 23096,
           "executable": false
         }
       ],
@@ -17543,7 +17543,7 @@
         },
         {
           "path": "component-source.json",
-          "sha256": "a6723d6ac85ad86e0547b93f4db82323bec9075fd3beeae674804b03d233fce4",
+          "sha256": "2562e810693a9067beed238e20ec1627497d625cf7eac020550466c553896a0f",
           "bytes": 3148,
           "executable": false
         },
@@ -17555,8 +17555,8 @@
         },
         {
           "path": "components/study_plugins/mr-contract/scripts/mr.R",
-          "sha256": "b3b80cb5d1e246d3ef20f9891dce49b16627fa044bd4bf783a60ab28704bab79",
-          "bytes": 15590,
+          "sha256": "32247d711b74bbaa7650a217cbc108274587682cadc3f4df0b4d8e3e846b6de1",
+          "bytes": 16173,
           "executable": false
         },
         {
@@ -17579,8 +17579,8 @@
         },
         {
           "path": "scripts/run-sensitivity.sh",
-          "sha256": "4ee73d98dfbff95ebd4057fcbd4d05033b907b64d654fbedfa4313324cf5ac25",
-          "bytes": 37425,
+          "sha256": "8cd217cda8434d2c93ffd3ad1744c132ef6f4a3790fd7c9da5a5d2715004134f",
+          "bytes": 38008,
           "executable": true
         },
         {
@@ -17799,7 +17799,7 @@
         },
         {
           "path": "component-source.json",
-          "sha256": "7ee982fec1d87db70aaeaa99ebb507ad9a5dae84d43429384aafa188287294bc",
+          "sha256": "cca7cb51c450de76ed527425b67b6bf2eb2d7f3aed085da0ee50d65517c69fdd",
           "bytes": 3500,
           "executable": false
         },
@@ -17811,8 +17811,8 @@
         },
         {
           "path": "components/study_plugins/clump-contract/scripts/clump.R",
-          "sha256": "4cb77955c791b84678173b8c9087b6eb2649bde9a67f6e37d634a6a244e105e5",
-          "bytes": 20787,
+          "sha256": "4b6942139081e8ad9c8b836f484869409123faf4c7175ebb7e0238263122f212",
+          "bytes": 21267,
           "executable": false
         },
         {
@@ -17847,8 +17847,8 @@
         },
         {
           "path": "scripts/run-clump.sh",
-          "sha256": "861997e7cf07286408d30cfb03bb8130a82c88a7dee80dab213751c1a0d7ceaf",
-          "bytes": 43153,
+          "sha256": "20fb4c4cedd4c9301148cc641417e6f97ac1851e9e6da58f8b7c15c9798d130b",
+          "bytes": 43633,
           "executable": true
         }
       ],
@@ -17879,7 +17879,7 @@
         },
         {
           "path": "component-source.json",
-          "sha256": "315e10bd07ee7d217c0505868875bce250d35646c738003d14c3292e6bace87d",
+          "sha256": "1216e784bcfb2d311051a212f9886b6b6dbec83c3c373bbb6579f79161b811d1",
           "bytes": 4877,
           "executable": false
         },
@@ -17891,8 +17891,8 @@
         },
         {
           "path": "components/study_plugins/clump-contract/scripts/clump.R",
-          "sha256": "4cb77955c791b84678173b8c9087b6eb2649bde9a67f6e37d634a6a244e105e5",
-          "bytes": 20787,
+          "sha256": "4b6942139081e8ad9c8b836f484869409123faf4c7175ebb7e0238263122f212",
+          "bytes": 21267,
           "executable": false
         },
         {

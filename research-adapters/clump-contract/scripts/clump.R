@@ -1,5 +1,22 @@
 # 仅按 exposure 选择工具：流式读取合格输入，再调用官方 PLINK2。
 # 本层不接收 outcome，不生成科学签署；正式面板仍须引擎内容准入。
+# Formatting only: preserve double values across a TSV parse without changing
+# the input frame, scientific calculations, thresholds or missing-value rules.
+write_lossless_tsv <- function(x, file, ...) {
+  if (!is.data.frame(x)) stop("lossless TSV output requires a data frame", call. = FALSE)
+  encoded <- x
+  for (i in seq_along(encoded)) {
+    value <- encoded[[i]]
+    if (is.double(value) && !is.object(value)) {
+      text <- sprintf("%.17g", value)
+      text[is.na(value)] <- NA_character_
+      encoded[[i]] <- text
+    }
+  }
+  utils::write.table(encoded, file, sep = "\t", quote = FALSE,
+    row.names = FALSE, na = "NA", ...)
+}
+
 fail <- function(message) stop(message, call. = FALSE)
 check <- function(ok, message) if (!isTRUE(ok)) fail(message)
 sha <- function(path) digest::digest(file = path, algo = "sha256")
@@ -165,7 +182,7 @@ clump_frozen <- function(config_path, exposure_path, panel_path, normalization_p
     check(all(c("#CHROM", "POS", "ID") %in% names(pvar)) && setequal(pvar$ID, sub$snp) &&
       identical(order(as.integer(pvar[["#CHROM"]]), pvar$POS, pvar$ID, method = "radix"), seq_len(nrow(pvar))), "sorted reference variant order differs")
     association <- file.path(work, paste0("chr", chr, ".assoc"))
-    utils::write.table(data.frame(SNP = sub$snp, P = sub$pval), association, sep = "\t", row.names = FALSE, quote = FALSE)
+    write_lossless_tsv(data.frame(SNP = sub$snp, P = sub$pval), association)
     result <- file.path(work, paste0("chr", chr, ".clump"))
     invoke(plink, c("--pfile", pfile, "--clump", association, "--clump-id-field", "SNP", "--clump-p-field", "P",
       "--clump-p1", "5e-8", "--clump-p2", "5e-8", "--clump-r2", effective_r2, "--clump-kb", "10000",
@@ -213,7 +230,7 @@ clump_frozen <- function(config_path, exposure_path, panel_path, normalization_p
   }
   selected <- candidate[candidate$snp %in% kept, , drop = FALSE]
   check(!anyDuplicated(kept) && setequal(selected$snp, kept), "selected instrument universe differs")
-  utils::write.table(selected, outputs[1L], sep = "\t", row.names = FALSE, quote = FALSE, na = "NA")
+  write_lossless_tsv(selected, outputs[1L])
   # 完整原始 QC 保留；候选的最后状态是独立追加账本，不覆盖原始行。
   final <- data.frame(snp = candidate$snp, phase = rep("CLUMP_FINAL", nrow(candidate)),
     status = ifelse(candidate$snp %in% kept, "RETAINED", "EXCLUDED"), reason = rep("", nrow(candidate)))
@@ -222,7 +239,7 @@ clump_frozen <- function(config_path, exposure_path, panel_path, normalization_p
     final$reason[match(e$snp, final$snp)] <- e$reason
   }
   check(file.copy(qc_path, outputs[3L], overwrite = FALSE), "cannot publish complete variant QC")
-  utils::write.table(final, outputs[3L], sep = "\t", row.names = FALSE, quote = FALSE, na = "NA", col.names = FALSE, append = TRUE)
+  write_lossless_tsv(final, outputs[3L], col.names = FALSE, append = TRUE)
   # 原始官方矩阵和顺序表也是发布产物，供检查点恢复后独立重推。
   ld_manifest <- file.path(work, "ld-evidence.json")
   jsonlite::write_json(list(schema_version = 1L, input_sha256 = hashes,
