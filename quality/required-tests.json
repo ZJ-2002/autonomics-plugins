@@ -117,6 +117,8 @@
     "tests.test_frozen_a_project_dag.FrozenAProjectDagTests.test_cli_creates_request_exclusively_without_opening_study_files",
     "tests.test_frozen_a_project_dag.FrozenAProjectDagTests.test_graph_binds_the_fixed_five_hash_enabled_inputs_in_method_port_order",
     "tests.test_frozen_a_project_dag.FrozenAProjectDagTests.test_method_manifest_declares_actual_r_entry_and_all_nine_outputs",
-    "tests.test_frozen_a_project_dag.FrozenAProjectDagTests.test_prefix_is_the_only_graph_customization_and_cannot_inject_script"
+    "tests.test_frozen_a_project_dag.FrozenAProjectDagTests.test_prefix_is_the_only_graph_customization_and_cannot_inject_script",
+    "tests.test_frozen_b_project.FrozenProjectTests.test_model_role_config_and_actual_design_mutations_are_rejected",
+    "tests.test_frozen_b_project.FrozenProjectTests.test_three_models_keep_complete_separate_denominators_and_fields"
   ]
 }

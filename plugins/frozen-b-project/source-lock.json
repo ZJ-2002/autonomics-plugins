@@ -49,6 +49,10 @@
     "tools/verify_frozen_b_models.py": {
       "sha256": "998a1f1a736a5ee484153821a76e15c7c5cf1863c1028a6e2827092646c60fc6",
       "bytes": 6148
+    },
+    "quality/required-tests.json": {
+      "sha256": "8ac602058fda4f059c3940aa440722223e9cb1773f6d037b3f166cebbce5cc5d",
+      "bytes": 13735
     }
   }
 }
