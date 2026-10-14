@@ -21,9 +21,9 @@ class ContractTests(unittest.TestCase):
         self.assertEqual(set(node["params"]), {"max_rank", "negative_weight", "missing_genes"})
         self.assertTrue(all("default" not in parameter for parameter in node["params"].values()))
 
-    def test_wrapper_immutable_proved_bytes(self):
+    def test_wrapper_matches_requalified_io_revision(self):
         self.assertEqual(hashlib.sha256((ROOT / "scripts/ucell.R").read_bytes()).hexdigest(),
-            "43ca20c8a63417c4ef26d8c56a61b65b064fbe71f4974add726b75998b8624d0")
+            "0ee592ccb766d784451a8d429f13d4cda3d7d2ea774ad7397b3ba6915ed582fd")
 
     def test_official_source_lock_and_recipe(self):
         lock = json.loads((ROOT / "source-lock.json").read_text())

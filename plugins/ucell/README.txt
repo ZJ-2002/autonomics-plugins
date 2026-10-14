@@ -1,6 +1,7 @@
 Scoped official UCell adapter for Autonomics
 
-Canonical repository: https://github.com/ZJ-2002/ucell-plugin
+Canonical source: https://github.com/ZJ-2002/autonomics-plugins/tree/main/plugins/ucell
+Historical repository: https://github.com/ZJ-2002/ucell-plugin
 Renamed from cachexia-ucell-plugin on 2026-10-10 to reflect the generic
 method. The repository rename does not alter the validated wrapper,
 manifest plugin_name, node kind, image identity or frozen deployments.
@@ -38,10 +39,11 @@ recipe, not a claim to reproduce image bytes across future build systems.
 
 Checks:
   python -m unittest discover -s tests -p 'test_contract.py' -v
-  Run tests/official_container_v2.R using the pinned image, mounting this
+  Historical numerical probe tests/official_container_v2.R used the pinned image, mounting this
   repository read-only at /plugin and a writable tmpfs at /tmp. This
-  compares the actual wrapper against a separate direct official call.
-  It is not an independent human scientific review or a complete DAG.
+  compared the old wrapper against a separate direct official call.
+  It is not the current I/O acceptance test: its destructive deletion-on-error
+  assertion is obsolete and retained as history, not updated into a passing claim.
   The first probe, official_container.R, is retained as a failed test
   design: it assumed insertion-order signatures although the wrapper
   emits sorted signature names. Version 2 explicitly checks that exact
@@ -53,3 +55,17 @@ Autonomics repository under docs/audits/cachexia-v4.1-2026-10-07 and
 study_plugins/cachexia-ucell-h5ad. Those local run artifacts are not
 claimed to be downloadable from this repository. Original sealed evidence
 is not rewritten for publication.
+
+2026-10-15 I/O repair: the previous error handler could delete old results or an
+aliased input; opening an aliased log could truncate input before validation.
+The current wrapper checks all paths before opening logs, refuses existing files
+and dangling links, stages normal artifacts, publishes by non-overwriting hard
+links and rolls back only matching device/inode identities. Input content is
+checked before/after computation. Failure logs are preserved only at fresh owned
+paths; a protected old log is never modified. Ordinary rollback is not crash
+atomicity, persistent resume or global concurrent-worker certification.
+
+The official scoring call and package/image pins are unchanged. Current proof:
+../../docs/ucell-tsv-io-repair-20261015.md and its linked machine-readable receipt.
+It covers 12 parameter/axis/signature cases through the current engine and actual
+filesystem/failure controls, not full-scale study eligibility or production.

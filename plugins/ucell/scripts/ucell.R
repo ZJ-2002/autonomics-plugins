@@ -1,4 +1,4 @@
-run_ucell <- function() {
+run_ucell <- function(inputs, outputs) {
   stopifnot(as.character(utils::packageVersion("UCell")) == "2.16.0")
   stopifnot(requireNamespace("digest", quietly = TRUE), requireNamespace("jsonlite", quietly = TRUE))
   rank_text <- Sys.getenv("UCELL_MAX_RANK")
@@ -10,7 +10,9 @@ run_ucell <- function() {
   lexical <- function(values) {
     !anyNA(values) && all(nzchar(values)) && all(values == trimws(values)) && !any(grepl("[\t\r\n]", values))
   }
-  read_input <- function(port) read.delim(Sys.getenv(paste0("AUTONOMICS_INPUT", port)),
+  file_hash <- function(filename) digest::digest(file = filename, algo = "sha256")
+  input_hashes <- vapply(inputs, file_hash, character(1))
+  read_input <- function(port) read.delim(inputs[port + 1],
     check.names = FALSE, colClasses = "character", na.strings = NULL, quote = "", comment.char = "",
     blank.lines.skip = FALSE, fill = FALSE, stringsAsFactors = FALSE)
   table <- read_input(0)
@@ -31,30 +33,90 @@ run_ucell <- function() {
     BPPARAM = BiocParallel::SerialParam(), chunk.size = 100)
   if (nrow(scores) != ncol(expression) || !identical(rownames(scores), colnames(expression)) ||
       any(!is.finite(scores))) stop("Official score identity or finite-score contract failed")
+  if (!identical(input_hashes, vapply(inputs, file_hash, character(1)))) stop("Input changed during UCell computation")
   output <- data.frame(cell = rownames(scores), scores, check.names = FALSE)
-  write.table(output, Sys.getenv("AUTONOMICS_OUTPUT0"), sep = "\t", quote = FALSE, row.names = FALSE)
+  write.table(output, outputs[1], sep = "\t", quote = FALSE, row.names = FALSE)
   saveRDS(list(scores = scores, features = features, maxRank = maximum_rank,
-               w_neg = negative_weight, missing_genes = missing_policy), Sys.getenv("AUTONOMICS_OUTPUT1"))
-  file_hash <- function(filename) digest::digest(file = filename, algo = "sha256")
+               w_neg = negative_weight, missing_genes = missing_policy), outputs[2])
   audit <- list(execution_status = "COMPLETED", method = "UCell", version = "2.16.0", ties_method = "average",
     params = list(max_rank = maximum_rank, negative_weight = negative_weight, missing_genes = missing_policy),
-    matrix_sha256 = file_hash(Sys.getenv("AUTONOMICS_INPUT0")), signature_sha256 = file_hash(Sys.getenv("AUTONOMICS_INPUT1")),
-    scores_sha256 = file_hash(Sys.getenv("AUTONOMICS_OUTPUT0")), cell_ids = as.list(colnames(expression)),
+    matrix_sha256 = input_hashes[1], signature_sha256 = input_hashes[2],
+    scores_sha256 = file_hash(outputs[1]), cell_ids = as.list(colnames(expression)),
     gene_ids = as.list(rownames(expression)), score_columns = as.list(colnames(scores)), scientific_release = FALSE, g0_granted = FALSE)
-  jsonlite::write_json(audit, Sys.getenv("AUTONOMICS_OUTPUT3"), auto_unbox = TRUE, pretty = TRUE, digits = NA)
+  jsonlite::write_json(audit, outputs[4], auto_unbox = TRUE, pretty = TRUE, digits = NA)
   cat("UCell 2.16.0; maxRank", maximum_rank, "w_neg", negative_weight, "missing_genes", missing_policy, "\n")
   print(sessionInfo())
 }
 
-tryCatch({
-  log_connection <- file(Sys.getenv("AUTONOMICS_OUTPUT2"), open = "wt")
-  sink(log_connection, split = TRUE)
-  run_ucell()
-  sink()
-  close(log_connection)
-}, error = function(error) {
-  if (sink.number() > 0) sink()
-  for (port in c(0, 1, 3)) unlink(Sys.getenv(paste0("AUTONOMICS_OUTPUT", port)))
-  cat("BLOCKED:", conditionMessage(error), "\n", file = Sys.getenv("AUTONOMICS_OUTPUT2"), append = TRUE)
+execute_ucell <- function() {
+  input_values <- Sys.getenv(paste0("AUTONOMICS_INPUT", 0:1), unset = "")
+  output_values <- Sys.getenv(paste0("AUTONOMICS_OUTPUT", 0:3), unset = "")
+  if (any(!nzchar(c(input_values, output_values)))) stop("All declared input and output paths are required")
+  inputs <- unname(normalizePath(input_values, mustWork = TRUE))
+  if (any(!file.exists(inputs)) || any(file.info(inputs)$isdir)) stop("Inputs must be readable files")
+  parents <- normalizePath(dirname(output_values), mustWork = TRUE)
+  if (any(!dir.exists(parents))) stop("Output parents must be existing directories")
+  outputs <- unname(file.path(parents, basename(output_values)))
+  if (anyDuplicated(outputs) || any(outputs %in% inputs)) stop("Input and output paths must be distinct")
+  links <- Sys.readlink(outputs)
+  if (any(file.exists(outputs)) || any(!is.na(links) & nzchar(links))) stop("Refusing to overwrite any existing output")
+  stat_program <- Sys.which("stat")
+  if (!nzchar(stat_program)) stop("File ownership inspection requires stat")
+  inode <- function(filename) {
+    information <- suppressWarnings(system2(stat_program, c("-c", "%d:%i", "--", shQuote(filename)),
+                                             stdout = TRUE, stderr = TRUE))
+    if (!is.null(attr(information, "status")) || length(information) != 1 ||
+        !grepl("^[0-9]+:[0-9]+$", information)) stop("Cannot prove artifact file ownership")
+    information
+  }
+  staging_directories <- character()
+  published <- list()
+  completed <- FALSE
+  log_connection <- NULL
+  sink_level <- sink.number()
+  close_log <- function() {
+    while (sink.number() > sink_level) sink()
+    if (!is.null(log_connection)) {
+      close(log_connection)
+      log_connection <<- NULL
+    }
+  }
+  on.exit({
+    try(close_log(), silent = TRUE)
+    if (!completed) {
+      for (record in rev(published)) {
+        current <- tryCatch(inode(record$path), error = function(error) NA_character_)
+        if (identical(current, record$identity)) unlink(record$path)
+      }
+    }
+    for (directory in staging_directories) unlink(directory, recursive = TRUE)
+  }, add = TRUE)
+  staged <- vapply(seq_along(outputs), function(position) {
+    directory <- tempfile(".ucell-stage-", tmpdir = parents[position])
+    if (!dir.create(directory, mode = "0700")) stop("Cannot create owned staging directory")
+    staging_directories <<- c(staging_directories, directory)
+    file.path(directory, basename(outputs[position]))
+  }, character(1))
+  tryCatch({
+    log_connection <- file(staged[3], open = "wt")
+    if (!isTRUE(suppressWarnings(file.link(staged[3], outputs[3])))) stop("Fresh log publication refused")
+    sink(log_connection, split = TRUE)
+    run_ucell(inputs, staged)
+    close_log()
+    for (position in c(1, 2, 4)) {
+      identity <- inode(staged[position])
+      if (!isTRUE(suppressWarnings(file.link(staged[position], outputs[position])))) stop("Fresh result publication refused")
+      published[[length(published) + 1]] <- list(path = outputs[position], identity = identity)
+    }
+    completed <- TRUE
+  }, error = function(error) {
+    try(close_log(), silent = TRUE)
+    cat("BLOCKED:", conditionMessage(error), "\n", file = staged[3], append = TRUE)
+    stop(error)
+  })
+}
+
+tryCatch(execute_ucell(), error = function(error) {
+  cat("BLOCKED:", conditionMessage(error), "\n", file = stderr())
   quit(save = "no", status = 2)
 })
