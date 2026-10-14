@@ -1,0 +1,434 @@
+{
+  "schema": "SINGSCORE_CURRENT_GENERIC_ENGINE_COMPLETE_OBJECT_PROOF_V1",
+  "node_kind": "singscore_bspec",
+  "status": "ACCEPTED_SCOPED_TECHNICAL_CURRENT_GENERIC_ENGINE",
+  "active_study_design": "BMC_v4.3.2_FULL_FIXED.zip",
+  "active_design_sha256": "4c5af762ab1e9768a24b9446827ea367176a80407862cfc10ca09a95f44f1151",
+  "official_implementation": {
+    "package": "singscore",
+    "version": "1.32.0",
+    "Bioconductor": "3.23",
+    "R": "4.6.1",
+    "image": "ghcr.io/zj-2002/singscore-official@sha256:04981a66d7c3fc7055a185a0102dc9f337dd63381b676681c08e52e8c22e2ca5",
+    "source_archive_sha256": "b4ffcbcb215ec99b9c8159bcf47cebba02517ff2c76c6aebabd2d7848298fd5a",
+    "rankGenes": {
+      "tiesMethod": "average",
+      "stableGenes": null
+    },
+    "simpleScore": {
+      "knownDirection": true,
+      "centerScore": true,
+      "dispersion": "stats::mad"
+    },
+    "no_native_statistical_backend_registered": true
+  },
+  "prior_reference": {
+    "files": 907,
+    "bytes": 205782032,
+    "seal_sha256": "bc29100f60061395cd96ae3b03effd988e9d763e64dd242af9f2c1e65b00b224"
+  },
+  "current_DAG": {
+    "status": "CURRENT_SINGSCORE_DAG_AND_FULL_AUTHOR_OBJECTS_PROVEN_SCOPED",
+    "engine_commit": "db83a6bb9886e4b1a3c563bef9261df782a0050c",
+    "executable_sha256": "9dae47f22c5feeca79dd005ede43c16349b3b362530646e2220fcb8d40bc0069",
+    "fixed_original_cases": 31,
+    "DAG_cases": [
+      {
+        "case": "test_all_ties_official_rank_and_all_scores",
+        "positive": true,
+        "nodes": 4,
+        "edges": 3,
+        "published_ports": 3,
+        "outcome": "COMPLETE_OFFICIAL_RANK_SIMPLE_RDS_AND_TSV_MATCHED"
+      },
+      {
+        "case": "test_bidirectional_official_rank_and_all_scores",
+        "positive": true,
+        "nodes": 4,
+        "edges": 3,
+        "published_ports": 3,
+        "outcome": "COMPLETE_OFFICIAL_RANK_SIMPLE_RDS_AND_TSV_MATCHED"
+      },
+      {
+        "case": "test_blank_group_is_rejected",
+        "positive": false,
+        "nodes": 4,
+        "edges": 3,
+        "published_ports": 0,
+        "outcome": "EXACT_METHOD_REFUSAL_PRESERVED"
+      },
+      {
+        "case": "test_blank_matrix_gene_is_rejected",
+        "positive": false,
+        "nodes": 4,
+        "edges": 3,
+        "published_ports": 0,
+        "outcome": "EXACT_METHOD_REFUSAL_PRESERVED"
+      },
+      {
+        "case": "test_blank_sample_is_rejected",
+        "positive": false,
+        "nodes": 4,
+        "edges": 3,
+        "published_ports": 0,
+        "outcome": "EXACT_METHOD_REFUSAL_PRESERVED"
+      },
+      {
+        "case": "test_degenerate_full_background_signature_is_rejected",
+        "positive": false,
+        "nodes": 4,
+        "edges": 3,
+        "published_ports": 0,
+        "outcome": "EXACT_METHOD_REFUSAL_PRESERVED"
+      },
+      {
+        "case": "test_down_only_signature_is_rejected",
+        "positive": false,
+        "nodes": 4,
+        "edges": 3,
+        "published_ports": 0,
+        "outcome": "EXACT_METHOD_REFUSAL_PRESERVED"
+      },
+      {
+        "case": "test_duplicate_matrix_gene_is_rejected",
+        "positive": false,
+        "nodes": 4,
+        "edges": 3,
+        "published_ports": 0,
+        "outcome": "EXACT_METHOD_REFUSAL_PRESERVED"
+      },
+      {
+        "case": "test_duplicate_matrix_sample_is_rejected",
+        "positive": false,
+        "nodes": 4,
+        "edges": 3,
+        "published_ports": 0,
+        "outcome": "EXACT_METHOD_REFUSAL_PRESERVED"
+      },
+      {
+        "case": "test_duplicate_sample_metadata_is_rejected",
+        "positive": false,
+        "nodes": 4,
+        "edges": 3,
+        "published_ports": 0,
+        "outcome": "EXACT_METHOD_REFUSAL_PRESERVED"
+      },
+      {
+        "case": "test_duplicate_signature_gene_is_rejected",
+        "positive": false,
+        "nodes": 4,
+        "edges": 3,
+        "published_ports": 0,
+        "outcome": "EXACT_METHOD_REFUSAL_PRESERVED"
+      },
+      {
+        "case": "test_empty_signature_is_rejected",
+        "positive": false,
+        "nodes": 4,
+        "edges": 3,
+        "published_ports": 0,
+        "outcome": "EXACT_METHOD_REFUSAL_PRESERVED"
+      },
+      {
+        "case": "test_extra_sample_metadata_is_rejected",
+        "positive": false,
+        "nodes": 4,
+        "edges": 3,
+        "published_ports": 0,
+        "outcome": "EXACT_METHOD_REFUSAL_PRESERVED"
+      },
+      {
+        "case": "test_gene_row_permutation_does_not_change_scores",
+        "positive": true,
+        "nodes": 4,
+        "edges": 3,
+        "published_ports": 3,
+        "outcome": "COMPLETE_OFFICIAL_RANK_SIMPLE_RDS_AND_TSV_MATCHED"
+      },
+      {
+        "case": "test_group_labels_do_not_enter_scores",
+        "positive": true,
+        "nodes": 4,
+        "edges": 3,
+        "published_ports": 3,
+        "outcome": "COMPLETE_OFFICIAL_RANK_SIMPLE_RDS_AND_TSV_MATCHED"
+      },
+      {
+        "case": "test_lexical_gene_sample_and_group_ids",
+        "positive": true,
+        "nodes": 4,
+        "edges": 3,
+        "published_ports": 3,
+        "outcome": "COMPLETE_OFFICIAL_RANK_SIMPLE_RDS_AND_TSV_MATCHED"
+      },
+      {
+        "case": "test_matrix_sample_order_is_preserved",
+        "positive": true,
+        "nodes": 4,
+        "edges": 3,
+        "published_ports": 3,
+        "outcome": "COMPLETE_OFFICIAL_RANK_SIMPLE_RDS_AND_TSV_MATCHED"
+      },
+      {
+        "case": "test_metadata_permutation_does_not_change_scores",
+        "positive": true,
+        "nodes": 4,
+        "edges": 3,
+        "published_ports": 3,
+        "outcome": "COMPLETE_OFFICIAL_RANK_SIMPLE_RDS_AND_TSV_MATCHED"
+      },
+      {
+        "case": "test_missing_expression_is_rejected",
+        "positive": false,
+        "nodes": 4,
+        "edges": 3,
+        "published_ports": 0,
+        "outcome": "EXACT_METHOD_REFUSAL_PRESERVED"
+      },
+      {
+        "case": "test_missing_sample_metadata_is_rejected",
+        "positive": false,
+        "nodes": 4,
+        "edges": 3,
+        "published_ports": 0,
+        "outcome": "EXACT_METHOD_REFUSAL_PRESERVED"
+      },
+      {
+        "case": "test_missing_signature_gene_is_rejected",
+        "positive": false,
+        "nodes": 4,
+        "edges": 3,
+        "published_ports": 0,
+        "outcome": "EXACT_METHOD_REFUSAL_PRESERVED"
+      },
+      {
+        "case": "test_nan_expression_is_rejected",
+        "positive": false,
+        "nodes": 4,
+        "edges": 3,
+        "published_ports": 0,
+        "outcome": "EXACT_METHOD_REFUSAL_PRESERVED"
+      },
+      {
+        "case": "test_nonfinite_expression_is_rejected",
+        "positive": false,
+        "nodes": 4,
+        "edges": 3,
+        "published_ports": 0,
+        "outcome": "EXACT_METHOD_REFUSAL_PRESERVED"
+      },
+      {
+        "case": "test_nonnumeric_expression_is_rejected",
+        "positive": false,
+        "nodes": 4,
+        "edges": 3,
+        "published_ports": 0,
+        "outcome": "EXACT_METHOD_REFUSAL_PRESERVED"
+      },
+      {
+        "case": "test_one_sample_official_rank_and_all_scores",
+        "positive": true,
+        "nodes": 4,
+        "edges": 3,
+        "published_ports": 3,
+        "outcome": "COMPLETE_OFFICIAL_RANK_SIMPLE_RDS_AND_TSV_MATCHED"
+      },
+      {
+        "case": "test_overlapping_signature_directions_are_rejected",
+        "positive": false,
+        "nodes": 4,
+        "edges": 3,
+        "published_ports": 0,
+        "outcome": "EXACT_METHOD_REFUSAL_PRESERVED"
+      },
+      {
+        "case": "test_ragged_expression_is_rejected",
+        "positive": false,
+        "nodes": 4,
+        "edges": 3,
+        "published_ports": 0,
+        "outcome": "EXACT_METHOD_REFUSAL_PRESERVED"
+      },
+      {
+        "case": "test_ragged_signature_is_rejected",
+        "positive": false,
+        "nodes": 4,
+        "edges": 3,
+        "published_ports": 0,
+        "outcome": "EXACT_METHOD_REFUSAL_PRESERVED"
+      },
+      {
+        "case": "test_unknown_signature_direction_is_rejected",
+        "positive": false,
+        "nodes": 4,
+        "edges": 3,
+        "published_ports": 0,
+        "outcome": "EXACT_METHOD_REFUSAL_PRESERVED"
+      },
+      {
+        "case": "test_up_only_official_rank_and_all_scores",
+        "positive": true,
+        "nodes": 4,
+        "edges": 3,
+        "published_ports": 3,
+        "outcome": "COMPLETE_OFFICIAL_RANK_SIMPLE_RDS_AND_TSV_MATCHED"
+      },
+      {
+        "case": "official-author-example",
+        "positive": true,
+        "nodes": 4,
+        "edges": 3,
+        "published_ports": 3,
+        "outcome": "COMPLETE_OFFICIAL_RANK_SIMPLE_RDS_AND_TSV_MATCHED"
+      }
+    ],
+    "author_example_additional": true,
+    "full_RDS_readbacks": 10,
+    "direct_no_clobber": {
+      "case": "test_preexisting_score_is_not_overwritten",
+      "exit_code": 1,
+      "sentinel_sha256": "8fede4fc1c85a2a1724d2fa3dac7a4f9a213a77d0cebec4d347d228a514be314",
+      "unchanged": true,
+      "not_claimed_as_a_DAG_case": true
+    },
+    "original_reference_seal": "bc29100f60061395cd96ae3b03effd988e9d763e64dd242af9f2c1e65b00b224",
+    "independent_reference_recomputed": false,
+    "method_sha256": "0ccfea285f042f05af15f61dd5de3ef8ff2d924387d8a6d07bf3852eac5a59b2",
+    "study_background_coverage_donor_or_platform_eligibility_qualified": false,
+    "daemon_deployed": false,
+    "formal_authorized": false,
+    "g0_granted": false,
+    "input_bindings_checked": 93
+  },
+  "preflight_graph_controls": {
+    "status": "CURRENT_SINGSCORE_GRAPH_CONTROLS_ENFORCED",
+    "engine_commit": "db83a6bb9886e4b1a3c563bef9261df782a0050c",
+    "cases": [
+      {
+        "case": "unknown-parameter",
+        "runner_exit": 1,
+        "report_written": false,
+        "normal_result_absent": true,
+        "exact_cause_verified": true
+      },
+      {
+        "case": "missing-metadata-edge",
+        "runner_exit": 1,
+        "report_written": false,
+        "normal_result_absent": true,
+        "exact_cause_verified": true
+      }
+    ],
+    "frozen_parameters_or_methods_changed": false,
+    "scientific_or_daemon_qualified": false,
+    "g0_granted": false
+  },
+  "complete_joined_object_readback": {
+    "status": "COMPLETE_SINGSCORE_RDS_LIST_FIELDS_TYPES_ATTRIBUTES_IDENTICAL",
+    "source_session": "50e4b946d8f14e38bf34c7c3e16f0980",
+    "source_manifest_sha256": "d8992bc43f98a69a71aaa5d580d190bd46f236716a03c18a79a36c099bc2eb5c",
+    "verifier_sha256": "a794d1b196659db4c2611c437d66ed89b90dd6d85bb1ec3e9ce0c95f2e3d4af0",
+    "image": "ghcr.io/zj-2002/singscore-official@sha256:04981a66d7c3fc7055a185a0102dc9f337dd63381b676681c08e52e8c22e2ca5",
+    "compared_cases": [
+      "test_all_ties_official_rank_and_all_scores",
+      "test_bidirectional_official_rank_and_all_scores",
+      "test_gene_row_permutation_does_not_change_scores",
+      "test_group_labels_do_not_enter_scores",
+      "test_lexical_gene_sample_and_group_ids",
+      "test_matrix_sample_order_is_preserved",
+      "test_metadata_permutation_does_not_change_scores",
+      "test_one_sample_official_rank_and_all_scores",
+      "test_up_only_official_rank_and_all_scores",
+      "official-author-example"
+    ],
+    "positive_complete_objects": 10,
+    "explicit_mutation_refusals": 6,
+    "mutant_fields": [
+      "group",
+      "TotalScore",
+      "extra_field",
+      "class",
+      "row_names",
+      "nonfinite"
+    ],
+    "original_sealed_outputs_or_reference_changed": false,
+    "DAG_or_method_recomputed": false,
+    "scientific_admission_granted": false,
+    "g0_granted": false
+  },
+  "corrections": [
+    "Old reader compared complete official rank/simple objects and TSV, but did not compare every joined RDS scores field. A separate stricter readback now uses identical() on the complete RDS list, including joined score fields, types, class, row names and all attributes.",
+    "Initial graph-control verifier expected an unsuitable missing-input diagnostic. Both controls actually failed before execution; the first verification session is preserved as failed. The corrected verifier requires the exact analysis node / port 2 diagnostic or exact method guard."
+  ],
+  "source_tree_sha256": {
+    "tools/prove_singscore_current_dag.py": "0b2971af461aba2b52eefbdcabeeb3484ea850459c34b6433dc61fcc03a43b41",
+    "tools/prove_singscore_graph_controls.py": "a42cce202816b4b37a62c09a5963e224e22f9a417e42267e50bbf74d3ff644ad",
+    "tools/prove_singscore_joined_readback.py": "115a965f2f73c16650de3b139faffffc5938b8729e34aa03ae4b4b8869ce96e1",
+    "tools/verify_singscore_joined.R": "a794d1b196659db4c2611c437d66ed89b90dd6d85bb1ec3e9ce0c95f2e3d4af0",
+    "tests/test_singscore_current_dag.py": "cae1207daca1a72fdd566274d9f1c1acb525f224f2c856dac024dd15b5b2196c",
+    "quality/required-tests.json": "ddf5567b4b641a6a0a0217fd606ce4c8e92fc31227896ea663381ff072ee5563",
+    "plugins/singscore/manifest.toml": "acb7240150d80d3af965210855468782f975c2e3ec8878503e1fe9f9473ffa61",
+    "plugins/singscore/scripts/singscore.sh": "0ccfea285f042f05af15f61dd5de3ef8ff2d924387d8a6d07bf3852eac5a59b2",
+    "plugins/singscore/tests/verify_outputs.R": "7e31f32cc46fd7e5cc141a2050224c7dff7c30e8552eb117246b8022d6c5ea7d",
+    "tools/prove_generic_plugin_guards.py": "6667574f3d2738755557325a50f2384462c792d437676a7171d94ce084656261",
+    "tools/prove_current_ldsc.py": "939159c038af706bca99530302eac5b6eed95d768536b29d80bd6baf2cba229d",
+    "tools/prove_ldsc_precision_dag.py": "84a1e4ee90f9c67e4daa8968ace5525034aa12aa551cc0ac327feafc962573e6"
+  },
+  "archives_reverified": [
+    {
+      "session": "0435715c9fc04ab6b5abe32be7d5c2d7",
+      "manifest_sha256": "c572a728fe9785b18250af36a18cd4736007c5dd35e24104854bb71a25402566",
+      "files": 14,
+      "bytes": 177110884
+    },
+    {
+      "session": "50e4b946d8f14e38bf34c7c3e16f0980",
+      "manifest_sha256": "d8992bc43f98a69a71aaa5d580d190bd46f236716a03c18a79a36c099bc2eb5c",
+      "files": 301,
+      "bytes": 686913
+    },
+    {
+      "session": "a6b6bdffd72a4c169b430804fee10f04",
+      "manifest_sha256": "55c402dde2a26450187399fa2c5046089b19a1af5d43360e4e29102a13388124",
+      "files": 19,
+      "bytes": 19372
+    },
+    {
+      "session": "8e13f316c98142029056114da12203e2",
+      "manifest_sha256": "c485d1ba00fe18a384d21b2e3cf9264ef95e151d2d939af4d4ee86628691fa16",
+      "files": 20,
+      "bytes": 19672
+    },
+    {
+      "session": "20dc2042c78b4b2d9aedc6c572e44e8f",
+      "manifest_sha256": "81e9323968e0e5720ae676016685b7d00d6e58f0d839a4e8f706bbc8f2ec2a94",
+      "files": 18,
+      "bytes": 18104
+    },
+    {
+      "session": "a3831ad1118e4ec5a34f7206ecc9b997",
+      "manifest_sha256": "c9e604a6b56c55da9a5c4f5f182483ec9b51a14056733c2e52c401a42033356c",
+      "files": 4,
+      "bytes": 86386
+    }
+  ],
+  "local_source_tests": {
+    "session": "a3831ad1118e4ec5a34f7206ecc9b997",
+    "complete": true,
+    "source_lock_matches": true,
+    "tests_run": 202,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "daemon_or_production_configuration_changed": false,
+  "method_or_original_certified_verifier_changed": false,
+  "independent_reference_regenerated": false,
+  "entire_research_background_species_donor_platform_or_coverage_qualified": false,
+  "all_singscore_options_versions_or_scales_qualified": false,
+  "persistent_cache_recovery_or_all_engine_entrypoints_qualified": false,
+  "unknown_node_versions_or_native_backends_allowed": false,
+  "original_function_denominator_or_276_288_696_changed": false,
+  "formal_research_authorized": false,
+  "g0_granted": false
+}

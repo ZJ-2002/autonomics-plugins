@@ -1,6 +1,10 @@
 {
   "scope": "CATALOG_TESTS_NOT_SCIENTIFIC_CERTIFICATES",
   "test_ids": [
+    "tests.test_singscore_current_dag.CurrentSingscoreDagTests.test_missing_port_control_requires_the_exact_node_and_port_or_method_guard",
+    "tests.test_singscore_current_dag.CurrentSingscoreDagTests.test_three_literal_inputs_no_parameters_and_no_panel_substitution",
+    "tests.test_singscore_current_dag.CurrentSingscoreDagTests.test_refusal_reference_requires_one_explicit_method_diagnostic",
+    "tests.test_singscore_current_dag.CurrentSingscoreDagTests.test_changed_reference_seal_cannot_be_used_as_new_gold",
     "tests.test_ldsc_precision_dag.PrecisionDagTests.test_complete_state_includes_classes_shapes_missing_reasons_and_values",
     "tests.test_ldsc_precision_dag.PrecisionDagTests.test_all_metadata_and_extensionless_inputs_require_exact_bytes",
     "tests.test_ldsc_current_dag.CurrentLdscDagContractTests.test_staged_raw_input_requires_exact_source_bytes_and_port_binding",
@@ -197,6 +201,7 @@
     "tests.test_b_normalized_contract_binding.BindingTests.test_embedded_method_verbatim_no_legacy_alias_or_transport_audit",
     "tests.test_b_normalized_contract_binding.BindingTests.test_full_abi_exact_source_and_723_candidate_does_not_authorize",
     "tests.test_b_normalized_contract_binding.BindingTests.test_gene_universe_identity_schema_order_duplicates_refuse",
-    "tests.test_b_normalized_contract_binding.BindingTests.test_scope_scale_versions_and_all_linked_metadata_refuse"
+    "tests.test_b_normalized_contract_binding.BindingTests.test_scope_scale_versions_and_all_linked_metadata_refuse",
+    "tests.test_singscore_current_dag.CurrentSingscoreDagTests.test_joined_readback_cannot_escape_or_invent_the_sealed_case"
   ]
 }
