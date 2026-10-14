@@ -1,8 +1,8 @@
 {
   "schema_version": "1.0",
   "scope": "SOURCE_AND_INTERFACE_INVENTORY_NOT_METHOD_CERTIFICATION",
-  "canonical_families": 34,
-  "canonical_kinds": 67,
+  "canonical_families": 35,
+  "canonical_kinds": 68,
   "families": [
     {
       "directory": "plugins/bulk-limma-normalized",
@@ -661,8 +661,45 @@
         },
         {
           "path": "source-lock.json",
-          "sha256": "b4b619ee031e60868577d81dc067833927239531d676d97b5966139fb9cc9cf1",
+          "sha256": "dc26426885a7ac51a3cacdbf634433dc3bfe378960eaf6ab222f5db6dca5a01b",
           "bytes": 2171,
+          "executable": false
+        }
+      ],
+      "source_inventory_only": true,
+      "scientific_certified": false,
+      "auto_enable": false
+    },
+    {
+      "directory": "plugins/frozen-project-verifier",
+      "plugin_name": "frozen-project-verifier",
+      "kinds": [
+        "frozen_v432_readonly_full_verify"
+      ],
+      "image_reference": "docker.io/library/python@sha256:a66d3a463d0be3cc537c269b0d3418746dda512417a975559a0eaa8a6406baaf",
+      "files": [
+        {
+          "path": "README.md",
+          "sha256": "729408c09d23c3bf794a7d40a45503e8c7a923ae1c01ea0f6f0567408636f9c9",
+          "bytes": 4690,
+          "executable": false
+        },
+        {
+          "path": "manifest.toml",
+          "sha256": "598a1197fe84fa5aefef9587839f2963f2d3e8ac403718ca3ad2554b45cdc130",
+          "bytes": 2010,
+          "executable": false
+        },
+        {
+          "path": "scripts/verify.py",
+          "sha256": "d0c02a935565db44a29272fd70488c01c07ad3c3fdf3124755e7a181cb87ffb3",
+          "bytes": 11670,
+          "executable": false
+        },
+        {
+          "path": "source-lock.json",
+          "sha256": "fa9a80e03c9d297d3cbc9ff9a642546e53abb52c31ce9d16cb43c60fbe225a9d",
+          "bytes": 1359,
           "executable": false
         }
       ],

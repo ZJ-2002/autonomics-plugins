@@ -1,0 +1,35 @@
+schema_version = 1
+plugin_name = "frozen-project-verifier"
+
+[image]
+reference = "docker.io/library/python@sha256:a66d3a463d0be3cc537c269b0d3418746dda512417a975559a0eaa8a6406baaf"
+tag = "3.14-slim-bookworm"
+upstream = "Existing approved official Python amd64 image; no new environment or scientific fit."
+license = "Python-2.0"
+
+[[nodes]]
+kind = "frozen_v432_readonly_full_verify"
+desc = "Execute the original locked whole-project verifier read-only on current bytes."
+doc = "Two files in exact order: approved /research/current/README_START_HERE.md and private operator registration.json from its dedicated read-only control mount. Symlink staging exposes the complete approved local ROOT through a read-only parent bind; copies and remote fallback refuse. Runs only the three source-hash-locked original Python verification modules with isolated source-only imports and trusted image stdlib. Rechecks full current content every invocation, including resumed DAGs, via server-enforced cache_policy=never. The operator must pin the real registration SHA through reviewed immutable plugin activation before this node can run. No caller root/code/command, fit, scientific gate, signature, research authorization, ledger update or G0 is granted."
+cache_policy = "never"
+timeout_secs = 1200
+stage_in_mode = "symlink"
+artifact_prefix = "/artifacts/frozen_project_verification"
+[nodes.resources]
+network = "isolated"
+read_only_rootfs = true
+pull_policy = "never"
+cpus = 1.0
+memory = "1Gi"
+pids_limit = 64
+[nodes.ports]
+inputs = [{type="file",label="approved_root_anchor"}, {type="file",label="operator_registration"}]
+outputs = [{path="technical-verification.json",format="json"}]
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/verify.py"
+[nodes.command.env]
+PYTHONDONTWRITEBYTECODE = "1"
+# Deliberately unactivated. The operator's reviewed immutable deployment must
+# replace this with the actual private registration SHA; never an agent param.
+EXPECTED_OPERATOR_REGISTRATION_SHA256 = "UNREGISTERED"

@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "scope": "READONLY_TECHNICAL_PROJECT_VERIFICATION_SOURCE_ONLY",
+  "baseline_plugin_revision": "ef729eef3b04106f154aed263208e4f0047fe7b7",
+  "scientific_authorization": false,
+  "G0": false,
+  "files": {
+    "plugins/frozen-project-verifier/manifest.toml": {
+      "sha256": "598a1197fe84fa5aefef9587839f2963f2d3e8ac403718ca3ad2554b45cdc130",
+      "bytes": 2010
+    },
+    "plugins/frozen-project-verifier/README.md": {
+      "sha256": "729408c09d23c3bf794a7d40a45503e8c7a923ae1c01ea0f6f0567408636f9c9",
+      "bytes": 4690
+    },
+    "plugins/frozen-project-verifier/scripts/verify.py": {
+      "sha256": "d0c02a935565db44a29272fd70488c01c07ad3c3fdf3124755e7a181cb87ffb3",
+      "bytes": 11670
+    },
+    "tools/register_frozen_verifier.py": {
+      "sha256": "fad066036a661615052e97eb910ea7b63507c38cd982c28d471b86c6d862d2bb",
+      "bytes": 2101
+    },
+    "tools/build_frozen_project_verifier_dag.py": {
+      "sha256": "6e7b1eb5801cddfc96b0bce2ed669acdd2bd33d5af13aa714fbfcc5052c6bc59",
+      "bytes": 1619
+    },
+    "tests/test_frozen_project_verifier.py": {
+      "sha256": "34034462ab2071a8dd889a785791f511781ce638c6dba4ce19874bba4f9f9fcb",
+      "bytes": 11486
+    },
+    "quality/required-tests.json": {
+      "sha256": "b460a4dcfc3c04fddc6397bd279294527c5e4c186b349f7d518b4013fee04a4b",
+      "bytes": 15801
+    }
+  }
+}
