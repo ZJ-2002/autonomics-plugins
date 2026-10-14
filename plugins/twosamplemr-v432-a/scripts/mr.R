@@ -5,7 +5,8 @@ Sys.setenv(OMP_NUM_THREADS = 1, OPENBLAS_NUM_THREADS = 1, MKL_NUM_THREADS = 1)
 stopifnot(as.character(getRversion()) == "4.6.1",
           as.character(packageVersion("TwoSampleMR")) == "0.7.11",
           TwoSampleMR::default_parameters()$nboot == 1000)
-paths <- vapply(0:8, function(i) Sys.getenv(paste0("AUTONOMICS_OUTPUT", i)), "")
+paths <- c(Sys.getenv("AUTONOMICS_OUTPUT0"),
+           vapply(1:8, function(i) Sys.getenv(paste0("AUTONOMICS_OUTPUT", i)), ""))
 inputs <- vapply(0:4, function(i) Sys.getenv(paste0("AUTONOMICS_INPUT", i)), "")
 stopifnot(all(nzchar(paths)), all(nzchar(inputs)))
 sha <- function(path) digest::digest(file = path, algo = "sha256", serialize = FALSE)
