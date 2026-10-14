@@ -1,0 +1,54 @@
+Core source-bound mapping proposal, against a721b8f6 (NOT APPLIED here)
+
+1. scripts/research_b_transcriptome_dag.py
+   Add optional keyword normalized_variants=None to compile_bulk_family_dag
+   and compile_family_correction; default preserves every old route.
+   Keys may be a subset of existing LIMMA_EBAYES contrasts only. Reject a
+   counts/DESeq2 contrast or an extra contrast before any method node is added.
+   For each selected contrast, recompute compile_unsigned_binding from actual
+   admitted request, method-template, full gene-registry and source-assay bytes.
+   Never accept a caller's node-kind string or prebuilt candidate JSON.
+
+   With that exact binding choose the distinct pair:
+     design_kind = b_bulk_frozen_normalized_design
+     limma_kind  = b_bulk_frozen_normalized_limma
+   Otherwise use the unchanged b_bulk_frozen_design/b_bulk_frozen_limma pair.
+   Preserve every existing source edge and port: inputs helper(9), config binder
+   (5), actual DESIGN audit -> LIMMA input5, results port0/audit port1/RDS port2.
+   Collector's binding uses the same kind pair for that same contrast, not an
+   unconstrained old-or-new kind check. Retain complete registry denominator.
+
+2. scripts/research_b_full_core_composer.py:49,65, scripts/research_b_full_core_intake.py
+   Carry the source-assay and variant metadata as admitted, byte-bound artifacts
+   and charge them to the existing metadata budget before callbacks. Preserve
+   public compile_inside's lease/kernel-cap guard. Include the mapper's actual
+   source closure, manifest/runtime-contract/wrapper identities in the draft.
+   Missing method/source/worker/resource checks remain missing module fields;
+   no fixture callback or caller boolean may set qualification true.
+
+3. crates/data-engine/src/research_b_protocol_lineage.rs and
+   crates/data-engine/src/research_b_full_content.rs:131,640
+   Decode and recompute a typed NORMALIZED_MICROARRAY_FULL_B_V1 binding from
+   contract-admitted artifacts: request/template/gene registry/assay declaration
+   SHA+size, exact original design4c, source accession/resource/contrast, exact
+   software lock, manifest and script identity, image723 and interpreter path.
+   Verify actual microarray source metadata against the admitted assay declaration;
+   declaration labels by themselves are not source qualification. Authenticate
+   actual full gene member universe through existing registry checks.
+   Enforce new DESIGN/LIMMA kinds only on that explicitly selected contrast.
+   Keep all existing same-source DESIGN/config/normalization/source checks.
+
+4. crates/data-engine/src/research_execution.rs:1839,1840,1850 and native worker
+   construction/plugin registration
+   Admit only the selected exact variant through the trusted worker Method
+   artifact and signed method/source evidence, never a global kind alias. Bind
+   runtime sources and observed image/software to this exact variant; the 693
+   receipt, LEGACY723 receipt or generic version probe cannot qualify it.
+   Keep formal_only engine, running-worker SHA, held lease, resource limits,
+   gate checks and scientific approvals. Missing qualification must still refuse.
+
+Native regression suggestions: old693 graph unchanged; mixed normalized/count
+routes preserve full denominator; unknown kind/extra contrast, assay mismatch,
+wrong source SHA, stale DESIGN, wrong image/wrapper and unsigned-method binding
+refuse before fit. This patch must not activate B_PRIMARY_STATES or invent its
+missing program hashes. No production configuration changes are part of it.

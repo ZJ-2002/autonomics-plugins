@@ -184,6 +184,11 @@
     "tests.test_frozen_project_verifier.FrozenProjectVerifierTests.test_real_pyc_and_project_stdlib_shadows_are_never_imported",
     "tests.test_frozen_project_verifier.FrozenProjectVerifierTests.test_registration_binds_real_root_identity_and_all_three_sources",
     "tests.test_frozen_project_verifier.FrozenProjectVerifierTests.test_registration_mode_hardlink_and_wrong_parent_permissions_refuse",
-    "tests.test_frozen_project_verifier.FrozenProjectVerifierTests.test_root_identity_and_scope_drift_refuse_even_when_json_hash_is_supplied"
+    "tests.test_frozen_project_verifier.FrozenProjectVerifierTests.test_root_identity_and_scope_drift_refuse_even_when_json_hash_is_supplied",
+    "tests.test_b_normalized_contract_binding.BindingTests.test_duplicate_and_caller_approval_fields_cannot_be_a_gate",
+    "tests.test_b_normalized_contract_binding.BindingTests.test_embedded_method_verbatim_no_legacy_alias_or_transport_audit",
+    "tests.test_b_normalized_contract_binding.BindingTests.test_full_abi_exact_source_and_723_candidate_does_not_authorize",
+    "tests.test_b_normalized_contract_binding.BindingTests.test_gene_universe_identity_schema_order_duplicates_refuse",
+    "tests.test_b_normalized_contract_binding.BindingTests.test_scope_scale_versions_and_all_linked_metadata_refuse"
   ]
 }

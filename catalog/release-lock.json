@@ -15683,6 +15683,68 @@
       "auto_enable": false
     },
     {
+      "directory": "research-adapters/b-bulk-normalized-contract",
+      "plugin_name": "b-bulk-normalized-contract",
+      "kinds": [
+        "b_bulk_frozen_normalized_design",
+        "b_bulk_frozen_normalized_limma"
+      ],
+      "image_reference": "localhost/autonomics/frozen-b-normalized@sha256:723904dd46c9148d75716555e2f641604d98c22909bc333d5fac832f33ebffed",
+      "files": [
+        {
+          "path": "CORE_MAPPING.txt",
+          "sha256": "7d9b00a644edd445059aa1ff27a29479c2e298f952c2034b8e4ee2eac62f316b",
+          "bytes": 3554,
+          "executable": false
+        },
+        {
+          "path": "README.md",
+          "sha256": "160380a3d56b6170828f7313d9f0164d909b317379e52ae937c8682f81c682d0",
+          "bytes": 1992,
+          "executable": false
+        },
+        {
+          "path": "manifest.toml",
+          "sha256": "ebcf4c96afe804fd01fff7734d09b9c1a18ac8bc744cd7754f2123d3f6c095a5",
+          "bytes": 3202,
+          "executable": false
+        },
+        {
+          "path": "runtime-contract.json",
+          "sha256": "b09ab8f399832974b99454241f57674660fab7e1395c94c21b7d9074e84a6451",
+          "bytes": 2846,
+          "executable": false
+        },
+        {
+          "path": "scripts/bulk-limma.R",
+          "sha256": "c5d0a5f4fe179dd79ea49ea954f439b1e08af312102ac7ba3c570a82d10f010a",
+          "bytes": 16004,
+          "executable": false
+        },
+        {
+          "path": "scripts/run-design.R",
+          "sha256": "eca6079b6c0a239e3232b2e431003643f488daee56f9ff49744fce3eb5cad2a5",
+          "bytes": 18828,
+          "executable": false
+        },
+        {
+          "path": "scripts/run-limma.R",
+          "sha256": "a81d847aec63a1ace98fe0669b01e3fd66c8dde4a5662f04411f7dae52918c1c",
+          "bytes": 18854,
+          "executable": false
+        },
+        {
+          "path": "tests/run_oci_toy.py",
+          "sha256": "985ecea2491648fcb7547c1d6a51f92d80ccbc0b50e69e6b8aa2830019398564",
+          "bytes": 9559,
+          "executable": false
+        }
+      ],
+      "source_inventory_only": true,
+      "scientific_certified": false,
+      "auto_enable": false
+    },
+    {
       "directory": "research-adapters/b-donor-contract",
       "plugin_name": "b-donor-contract",
       "kinds": [
