@@ -6,12 +6,12 @@
   "G0": false,
   "files": {
     "plugins/frozen-project-verifier/manifest.toml": {
-      "sha256": "598a1197fe84fa5aefef9587839f2963f2d3e8ac403718ca3ad2554b45cdc130",
-      "bytes": 2010
+      "sha256": "4126f5be94397345972d89ca38153b26977b327b9228d987a2830ed43bf24849",
+      "bytes": 2041
     },
     "plugins/frozen-project-verifier/README.md": {
-      "sha256": "729408c09d23c3bf794a7d40a45503e8c7a923ae1c01ea0f6f0567408636f9c9",
-      "bytes": 4690
+      "sha256": "5aa56bc8d431ac9bc5f98fdb4eb2b15700621828bba518ad8ad41dbd4aed89aa",
+      "bytes": 5130
     },
     "plugins/frozen-project-verifier/scripts/verify.py": {
       "sha256": "d0c02a935565db44a29272fd70488c01c07ad3c3fdf3124755e7a181cb87ffb3",
@@ -26,12 +26,12 @@
       "bytes": 1619
     },
     "tests/test_frozen_project_verifier.py": {
-      "sha256": "34034462ab2071a8dd889a785791f511781ce638c6dba4ce19874bba4f9f9fcb",
-      "bytes": 11486
+      "sha256": "f439631b3469812ad8ad706a6dd7dadd5d418acb21cdb7564ada142d7b0df9b8",
+      "bytes": 11546
     },
     "quality/required-tests.json": {
-      "sha256": "b460a4dcfc3c04fddc6397bd279294527c5e4c186b349f7d518b4013fee04a4b",
-      "bytes": 15801
+      "sha256": "2eb3b6f54e2429e9dd389dde4637784585e05035e6f618ab153ccd97ca03dcaf",
+      "bytes": 16892
     }
   }
 }

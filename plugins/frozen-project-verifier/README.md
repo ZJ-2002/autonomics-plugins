@@ -11,7 +11,10 @@ The whole approved local project is mounted read-only without copying its
 23,669 frozen files (5,669,779,954 manifest bytes). The two file inputs are the
 locked top-level `README_START_HERE.md` and a private operator registration.
 `stage_in_mode=symlink` uses the existing runtime's identity parent-directory
-bind. The wrapper refuses copies/remote fallback and checks actual kernel
+bind. The manifest's operator-only `canonical_input_sources=true` resolves the
+ordinary project `current` symlink to its actual physical file before that bind;
+it never edits the symlink or the VFS mapping. The wrapper refuses copies/remote
+fallback and checks actual kernel
 mountinfo for the read-only ROOT and control directory, including descendant
 mounts. Registration lives in a dedicated directory containing only its JSON;
 never place it beside credentials, payloads or inside the frozen baseline.
@@ -48,8 +51,11 @@ Operator deployment, under managed lifecycle:
    the derivative source bytes and real Git identity; do not forge an upstream
    source digest/commit or modify an existing installed snapshot. No private
    physical path or registration payload belongs in published source.
-3. Keep the existing `/research/current` local VFS whole-directory mount
-   read-only; mount only the dedicated control directory read-only at
+3. Preserve the user's existing `/research` writable VFS and its normal dynamic
+   `current` mapping. Do not add a static physical-ROOT mount at `/research/current`
+   or make the entire project read-only. This plugin's container independently
+   identity-binds the physical ROOT read-only and verifies kernel mount flags.
+   Mount only the dedicated control directory read-only at
    `/research/verification-control/NAME`. Place the artifact prefix
    `/artifacts/frozen_project_verification` outside the frozen baseline and
    bind native run ownership normally. Do not add output files to the baseline.

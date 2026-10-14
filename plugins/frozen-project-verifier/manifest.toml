@@ -12,6 +12,7 @@ kind = "frozen_v432_readonly_full_verify"
 desc = "Execute the original locked whole-project verifier read-only on current bytes."
 doc = "Two files in exact order: approved /research/current/README_START_HERE.md and private operator registration.json from its dedicated read-only control mount. Symlink staging exposes the complete approved local ROOT through a read-only parent bind; copies and remote fallback refuse. Runs only the three source-hash-locked original Python verification modules with isolated source-only imports and trusted image stdlib. Rechecks full current content every invocation, including resumed DAGs, via server-enforced cache_policy=never. The operator must pin the real registration SHA through reviewed immutable plugin activation before this node can run. No caller root/code/command, fit, scientific gate, signature, research authorization, ledger update or G0 is granted."
 cache_policy = "never"
+canonical_input_sources = true
 timeout_secs = 1200
 stage_in_mode = "symlink"
 artifact_prefix = "/artifacts/frozen_project_verification"

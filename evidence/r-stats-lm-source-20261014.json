@@ -1,0 +1,37 @@
+{
+  "schema": "OFFICIAL_RELEASE_R_FUNCTION_IDENTITY_SCOPED_V1",
+  "original_function_id": "FUNC_linear_regression",
+  "node_kind": "r_stats_lm",
+  "proof_driver_sha256": "b1ba0c67be27279767aa8a956405565d4cc6419f2757b52e2adbed9414ab15d9",
+  "release_url": "https://svn.r-project.org/R/tags/R-4-6-1/",
+  "R_version": "4.6.1",
+  "stats_version": "4.6.1",
+  "source_files": {
+    "VERSION": "16550af6f97b1dd87e9eae5809ab0345f4edd82cf28cc8fb08e8091d397455f3",
+    "src/library/stats/R/lm.R": "e3eec3d9271025b40dde96858dbbf6d2e86c73cc1e441943e1f2c9669ea287f6",
+    "src/library/stats/R/confint.R": "c1ed4e04b0c170b2a4398f6eca0595cca3828550b9b2e12466baf43e9d6fdbd4",
+    "src/library/stats/R/vcov.R": "f423a5a899b293f6e7bbd31de8c1cd41ad6945845016d185c4073db6a67c0350"
+  },
+  "all_functions_formals_and_bodies_equal": ["lm", "lm.fit", "lm.wfit", "summary.lm", "confint.lm", "vcov.lm", "vcov.summary.lm", ".vcov.aliased"],
+  "actual_image": "ghcr.io/zj-2002/mrlap-official@sha256:78f195b862a3b7c5f8d96a96576cfb2c66b08f9bd31a739da59a017726cd063d",
+  "compiled_installed_R_sha256": "6ffb43bc7de5732fe8b903205448b3b6c9d1c0ba411a2c1d04d1eb12386bc02b",
+  "compiled_installed_stats_so_sha256": "08b8bba4ef868de635b90f0a967c6041e76e38c3f66eafd5e676e992e507de2e",
+  "managed_evidence": {
+    "primary_author_fetch_and_first_identity": {"session": "8244a9daf8fc49459ff65aa84f31d28c", "exit": 0, "state": "CLEANED", "manifest_sha256": "1cc21eef0372c0746c879e661af058e34b2a15d6d7843e18b468b483353fd01b"},
+    "failed_cgroup_option_placement": {"session": "321fa381d135492a8d3e6f4175c58ce5", "exit": 1, "state": "CLEANED", "manifest_sha256": "a1c952d0607a7bf26daf433a625d65ee292a8f55abbc106eb41fd56515d63d32"},
+    "failed_transient_TLS_fetch": {"session": "009b1567ba374d6398274ab44ca57e57", "exit": 1, "state": "CLEANED", "manifest_sha256": "da0724fbcc9a60c7d983d43921391f333c550258e19093618afa1bd15943f2f5"},
+    "reused_exact_author_bytes_and_delegated_execution": {"session": "d6c686ac6a4740d0975db0bbf1791e92", "exit": 0, "state": "CLEANED", "manifest_sha256": "25c74a07b836b82b62ca25841c713ec2997e3877a0d0848f90f577a431b324c3"},
+    "actual_container_and_conmon_same_recorded_service": {"session": "c69574fcc044492db5487beebc16e8c0", "exit": 0, "state": "CLEANED", "manifest_sha256": "a11fe3596d9ac56e4e5abaca3d8579bad08e7b773bdb9fbe416fc0c5a18cdf65"},
+    "committed_runtime_candidate_92_unit_tests": {"session": "46b57c76d9cb40858ac1525ca7a75ad9", "exit": 0, "state": "CLEANED", "manifest_sha256": "685003311a22564cb2dc416752acd8be4864eeb0c75a10f0fa1112ae69631458"},
+    "plugin_source_and_reference_lock_128_tests": {"session": "5825103f82654c09a3a8ea0e854da3d0", "exit": 0, "state": "CLEANED", "manifest_sha256": "97d179183cff0ec0fcac1d2565aa378a4cfe10e236867685eaa0d0964023463a"}
+  },
+  "source_identity_run_resource_scope": {"recorded_service_memory_max": 2147483648, "container_memory_max": 1073741824, "memory_caps_and_service_descendant_verified": true, "not_full_scale_resource_acceptance": true},
+  "runtime_fix_engine_commit": "3b0dc962b93fcd5f899d64696d1f4636ed1a3158",
+  "required_source_tests": {"executed": 128, "failures": 0, "errors": 0, "skipped": 0},
+  "compiled_binary_rebuild_or_signed_provenance_verified": false,
+  "current_engine_DAG_verified": false,
+  "current_daemon_verified": false,
+  "whole_original_node_certified": false,
+  "scientific_authorized": false,
+  "g0_granted": false
+}

@@ -139,6 +139,7 @@ class FrozenProjectVerifierTests(unittest.TestCase):
         manifest=tomllib.loads((SCRIPT.parent.parent/'manifest.toml').read_text())
         node=manifest['nodes'][0]
         self.assertEqual(node['cache_policy'],'never');self.assertEqual(node['stage_in_mode'],'symlink')
+        self.assertIs(node['canonical_input_sources'],True)
         self.assertEqual(len(node['ports']['inputs']),2);self.assertEqual(len(node['ports']['outputs']),1)
         self.assertEqual(node['resources']['network'],'isolated');self.assertTrue(node['resources']['read_only_rootfs'])
         self.assertEqual(node['resources']['pull_policy'],'never');self.assertNotIn('params',node)
