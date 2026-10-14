@@ -1,5 +1,10 @@
 # Official R statistics: repaired output ownership, unchanged methods
 
+Subsequent layer update: the changed entry now has the complete 164-case
+[current fixed-engine DAG proof](current-r-stats-engine-proof-20261015.md).
+The current-DAG pending statements in this historical method checkpoint are
+superseded only for that isolated layer, not deployment or scientific use.
+
 The user's direction is official author packages rather than native Rust
 estimators. The existing `research-adapters/cachexia-r-stats` already calls
 official R/stats 4.5.1 for six vector APIs: t.test, cor.test, var.test,

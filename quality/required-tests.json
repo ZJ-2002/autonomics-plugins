@@ -1,6 +1,7 @@
 {
   "scope": "CATALOG_TESTS_NOT_SCIENTIFIC_CERTIFICATES",
   "test_ids": [
+    "tests.test_current_r_stats.CurrentOfficialStatisticsTests.test_current_scoped_evidence_binds_both_drivers_manifest_and_method_without_production_grant",
     "tests.test_current_r_stats.CurrentOfficialStatisticsTests.test_every_method_uses_exact_declared_columns_and_only_engineering_rust_nodes",
     "tests.test_current_r_stats.CurrentOfficialStatisticsTests.test_frozen_identity_order_does_not_filter_members_or_nullify_literal_na",
     "tests.test_current_r_stats.CurrentOfficialStatisticsTests.test_materialized_nulls_lexical_ids_and_boolean_values_are_checked",

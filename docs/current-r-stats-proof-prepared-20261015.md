@@ -1,5 +1,10 @@
 # Current-engine official R statistics: prepared, not accepted
 
+This is the preserved preparation/failure checkpoint. The subsequent fixed
+engine's complete 164-case result is now recorded in
+[the current proof](current-r-stats-engine-proof-20261015.md). Pending statements
+below describe this earlier checkpoint, not the latest isolated-DAG status.
+
 The guarded R/stats 4.5.1 method entry remains the already requalified SHA256
 `1ef00d41e6cb1b5a4870b5018dcfe28329bb0e9156d65e5fbfc6362aa4ef7d51`.
 This next phase uses its sealed independent 164-case reference, not freshly

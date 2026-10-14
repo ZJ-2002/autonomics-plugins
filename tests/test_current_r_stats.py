@@ -1,4 +1,6 @@
 import copy
+import hashlib
+import json
 from pathlib import Path
 import unittest
 
@@ -7,6 +9,20 @@ from tools import prove_current_r_stats as proof
 
 
 class CurrentOfficialStatisticsTests(unittest.TestCase):
+    def test_current_scoped_evidence_binds_both_drivers_manifest_and_method_without_production_grant(self):
+        root = proof.ROOT
+        evidence = json.loads((root / "evidence/r-stats-current-engine-20261015.json").read_text())
+        for name, key in [("tools/prove_current_r_stats.py", "driver_sha256"),
+                          ("tools/build_current_r_stats.py", "build_driver_sha256"),
+                          ("research-adapters/cachexia-r-stats/manifest.toml", "manifest_sha256"),
+                          ("research-adapters/cachexia-r-stats/scripts/statistics.R", "method_source_sha256")]:
+            self.assertEqual(hashlib.sha256((root / name).read_bytes()).hexdigest(), evidence[key])
+        self.assertEqual({row["kind"] for row in evidence["per_node"]}, set(proof.METHODS.values()))
+        self.assertEqual(sum(row["positive_DAGs"]+row["refusal_DAGs"] for row in evidence["per_node"]), 164)
+        self.assertEqual(evidence["layer_status"]["study_contract_and_current_deployment"], "NOT_GRANTED")
+        self.assertFalse(evidence["g0_granted"])
+        self.assertFalse(evidence["resident_daemon_or_production_configuration_changed"])
+
     def test_every_method_uses_exact_declared_columns_and_only_engineering_rust_nodes(self):
         self.assertEqual(len(proof.COLUMNS), len(set(proof.COLUMNS)))
         self.assertTrue(set(proof.NUMERIC) <= set(proof.COLUMNS))
