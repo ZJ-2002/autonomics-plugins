@@ -128,6 +128,11 @@ def main():
     (family / "scripts").mkdir()
     for method in ["h2", "rg", "munge"]:
         shutil.copyfile(ROOT / "plugins/ldsc/scripts" / (method+".sh"), family / "scripts" / (method+".sh"))
+        prior = munging / "source/munge.sh" if method == "munge" else inference / "source/scripts" / (method+".sh")
+        if digest(family / "scripts" / (method+".sh")) != digest(prior):
+            raise RuntimeError("Current adapter differs from the independently qualified source")
+    if digest(family / "manifest.toml") != digest(inference / "source/manifest.toml"):
+        raise RuntimeError("Current manifest differs from the independently qualified source")
     manifest = tomllib.loads((family / "manifest.toml").read_text())
     inventory = json.loads((inference / "verification.json").read_text())["cases"]
     cases = [(record["case"], record["kind"], inference / record["case"]) for record in inventory]
