@@ -13,10 +13,13 @@ this source preparation did not open or fit the actual assay matrix.
 The locked B entry permits LEGACY_EXPLORATORY_FULL_FEATURE_DISEASE_ASSOCIATION.
 It has no scientific signature or independent validation permission, and its
 all-project scientific gates flag remains false. The adapter records SEEN
-history and LEGACY_EXPLORATORY_PRIMARY_MODEL output roles. Numerical execution
-does not convert this into formal science. This release covers the primary
-`~group+age+sex` model; the frozen unadjusted and treatment sensitivities remain
-separate prespecified analyses and are not executed by this graph.
+history. The graph executes exactly the frozen primary `~group+age+sex`,
+unadjusted `~group` and therapy_sensitivity `~group+age+sex+treatment` models.
+The primary role is LEGACY_EXPLORATORY_PRIMARY_MODEL; both other roles are
+PRESPECIFIED_SENSITIVITY_ONLY. Each independently retains all23786 genes for
+BH/BY with missing p counted as1. Sensitivity rows never enlarge or replace
+the23786-gene primary denominator. This is the faithful narrow frozen comparison;
+it is not completion or scientific acceptance of the entire B plan.
 
 Before real execution, run the original project `02_EXECUTION/verify_g0_v432.py`
 read-only under its existing study access/ownership rules. This adapter checks
@@ -95,3 +98,22 @@ pending the actual complete-study runtime admission.
 
 All input bytes remain external frozen project files. The source lock includes
 paths and hashes, not patient maps, raw expression, study results or credentials.
+
+The generated graph has29nodes:19 unchanged frozen file references, one intake,
+and three DESIGN/LIMMA/full-family chains. Original intake outputs0..5 retain
+their config/expression/genes/samples/decisions/intake positions. Outputs6..9
+append unadjusted config/receipt and therapy_sensitivity config/receipt.
+Each family stage requires its exact prespecified model/role, derived config
+SHA256, real model columns/rank/residual df and same-input limma receipt. It
+rejects relabelling primary results as a sensitivity. The family tables retain
+the component columns and expose all original frozen full-result fields:
+gene_id, beta, moderated_se, df, lo, hi, p_raw, status, q_BH, q_BY and role.
+All three fitted objects remain available on their individual LIMMA nodes.
+For exported filenames use FULL_TRANSCRIPTOME_primary.tsv,
+FULL_TRANSCRIPTOME_unadjusted.tsv and FULL_TRANSCRIPTOME_therapy_sensitivity.tsv
+under the external results area; the frozen baseline receives no new files.
+The bounded25-gene SYN parity test compares all three models against the
+verbatim frozen f7 numerical block, including one constant NA row, full BH/BY
+and model/role mutation refusals. It does not execute the whole frozen program,
+qualify the real source, independently validate the empirical-Bayes prior, or
+authorize formal/full-plan scientific claims.

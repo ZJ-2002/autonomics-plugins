@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "scope": "FROZEN_V432_B_THREE_MODEL_TRANSPORT_SOURCE_ONLY",
+  "baseline_plugin_revision": "2506c61f45bb6015a4324e6c6243be5f52ac1c46",
+  "frozen_scientific_code_sha256": "f7e334db38e331acc30cd0117ca9f2b82831523d1c07ce742382eacbd3aff1cd",
+  "models": [
+    "primary",
+    "unadjusted",
+    "therapy_sensitivity"
+  ],
+  "primary_family_denominator": 23786,
+  "adjustment_scope": "EACH_MODEL_SEPARATELY_ALL23786_NA_AS_ONE",
+  "frozen_project_bytes_changed": false,
+  "scientific_authorization": false,
+  "G0": false,
+  "files": {
+    "plugins/frozen-b-project/manifest.toml": {
+      "sha256": "1cecd76d9c2be197b77af7294f6fb315dce94a023db6cfd7d99c9235c1d991ae",
+      "bytes": 3905
+    },
+    "plugins/frozen-b-project/scripts/project.py": {
+      "sha256": "35d0a0067b0897da96504ea42bb8f324469997295791b572ab372cbf150012f7",
+      "bytes": 22592
+    },
+    "plugins/frozen-b-project/scripts/project_lock.py": {
+      "sha256": "ff099e654b1d22ba76208995de9bc3ee8db269d33cddd83a0b57af5d2252f2b4",
+      "bytes": 3619
+    },
+    "plugins/frozen-b-project/scripts/run-intake.py": {
+      "sha256": "ca8e5d2177e18c15a3e39081173ccf3f2b5df7cabaf72eb877315249fac62a78",
+      "bytes": 26429
+    },
+    "plugins/frozen-b-project/scripts/run-family.py": {
+      "sha256": "716a538d9c776d51ebba4a5acaa0ae1d6cdd227bde631d7d69353a4bc07b9f01",
+      "bytes": 26429
+    },
+    "tools/build_frozen_b_project_dag.py": {
+      "sha256": "109e82f5d08491552f12270474e2b429a15cbe0f1df0457666103e2c8f813aed",
+      "bytes": 3551
+    },
+    "plugins/bulk-limma-normalized/tests/run_method_toy.py": {
+      "sha256": "86a05aca4d6ffe221b994bc63f35f9800e02ddbab2dc840ef4a3fea47e422cf9",
+      "bytes": 15047
+    },
+    "tests/test_frozen_b_project.py": {
+      "sha256": "d4aedfa7b0d1eeb413a9eb6a09a015d7f64277d76d680374a199ee8b932b4f43",
+      "bytes": 15437
+    },
+    "tools/verify_frozen_b_models.py": {
+      "sha256": "998a1f1a736a5ee484153821a76e15c7c5cf1863c1028a6e2827092646c60fc6",
+      "bytes": 6148
+    }
+  }
+}

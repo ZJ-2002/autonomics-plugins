@@ -2,6 +2,7 @@
 """Bounded synthetic method check using an existing locked R library."""
 import argparse
 import csv
+import copy
 import hashlib
 import io
 import json
@@ -82,17 +83,17 @@ def run(library, output, frozen_code, *, execution_scope='HOST'):
     table(output / 'decisions.tsv', ['sample_id', 'independent_unit_id', 'include', 'reason'],
           [dict(sample_id=s, independent_unit_id=s, include='YES', reason='SYNTHETIC') for s in ids])
     inputs = [output / (name + '.tsv') for name in ('expression', 'genes', 'samples', 'decisions')]
-    config = dict(schema_version=1, protocol_version='4.3.2', status='FROZEN', method='LIMMA_EBAYES',
-        expression_scale='log2_normalized', contrast_id='SYN_CONTRAST', resource_id='SYN_RESOURCE',
-        source_archive_sha256='a' * 64, software_lock=LOCK['software_lock'],
-        design=dict(numerator='case', denominator='control', family_min_units=3, qr_tolerance=1e-8,
-                    covariates=[dict(name='age', type='NUMERIC', levels=[]),
-                                dict(name='sex', type='CATEGORICAL', levels=['F', 'M'])]),
-        method_parameters=dict(trend=True, robust=True, allowed_warning_messages=[]),
-        input_sha256={name: sha(path) for name, path in zip(('expression', 'genes', 'samples', 'decisions'), inputs, strict=True)},
-        limits=dict(max_expression_elements=200, max_input_file_bytes=65536))
+    project_dir = PLUGIN.parent / 'frozen-b-project'
+    project_lock = json.loads((project_dir / 'project-lock.json').read_bytes())
+    spec = importlib.util.spec_from_file_location('frozen_b_family', project_dir / 'scripts/project.py')
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    toy_lock = copy.deepcopy(project_lock)
+    toy_lock.update(gene_count=25, primary_samples=8, case_n=4, control_n=4, residual_df=4, contrast_id='SYN_CONTRAST')
+    toy_lock['files']['manifest']['sha256'] = 'a' * 64
+    hashes = {name: sha(path) for name, path in zip(('expression','genes','samples','decisions'), inputs, strict=True)}
+    configurations = {model: module.method_config(toy_lock, hashes, model) for model in module.MODELS}
     config_path = output / 'config.json'
-    config_path.write_bytes(canonical(config))
     inputs.insert(0, config_path)
 
     def entry(stage, target, actual_inputs, expected=0):
@@ -106,32 +107,8 @@ def run(library, output, frozen_code, *, execution_scope='HOST'):
         assert result.returncode == expected, result.stderr
         return target
 
-    design = entry('design', output / 'design', inputs)
-    design_audit = json.loads((design / 'audit.json').read_text())
-    assert design_audit['design']['rank'] == 4 and design_audit['design']['residual_df'] == 4
-    fit = entry('limma', output / 'fit', [*inputs, design / 'audit.json'])
-    rows = list(csv.DictReader(io.StringIO((fit / 'results.tsv').read_text()), delimiter='\t'))
-    assert [r['gene_id'] for r in rows] == [r['gene_id'] for r in genes]
-    x = [[1., float(j < 4), float(ages[j]), float(j % 2)] for j in range(8)]
-    gram = [[math.fsum(v[a] * v[b] for v in x) for b in range(4)] for a in range(4)]
-    for source, row in zip(expression[:-1], rows[:-1], strict=True):
-        y = [float(source[s]) for s in ids]
-        beta = solve(gram, [math.fsum(v[j] * value for v, value in zip(x, y, strict=True)) for j in range(4)])
-        assert abs(beta[1] - float(row['log2_expression_difference'])) < 1e-10
-        assert row['status'] == 'ESTIMATED' and row['family_p'] == row['raw_p']
-    assert rows[-1]['raw_p'] == rows[-1]['family_p'] == 'NA'
-    assert rows[-1]['reason'] == 'CONSTANT_EXPRESSION'
-    audit = json.loads((fit / 'audit.json').read_text())
-    assert audit['design_receipt_sha256'] == sha(design / 'audit.json')
-    assert audit['method_executed'] is True and audit['formal_authorized'] is False
-    rds = subprocess.run(['Rscript', '--vanilla', '-e',
-        'x<-readRDS(commandArgs(TRUE)[1]);stopifnot(length(x$full_gene_ids)==25L,length(x$variable_gene_ids)==24L,is.list(x$fit),length(x$fit$s2.post)==24L);cat("RDS_OK")',
-        str(fit / 'official.rds')], env=env, capture_output=True, text=True, check=True)
-    assert rds.stdout == 'RDS_OK'
     # Evaluate the verbatim frozen numerical block on SYN inputs in a separate
     # R process. The original run-B source/authorization guards are not run.
-    project_dir = PLUGIN.parent / 'frozen-b-project'
-    project_lock = json.loads((project_dir / 'project-lock.json').read_bytes())
     assert sha(frozen_code) == project_lock['files']['scientific_code']['sha256']
     frozen = frozen_code.read_text()
     start = frozen.index('  for(model in c("primary","unadjusted","therapy_sensitivity")) {')
@@ -152,31 +129,66 @@ def run(library, output, frozen_code, *, execution_scope='HOST'):
         str(output / 'samples.tsv'), str(parity_dir)], env=env, capture_output=True, text=True)
     (output / 'frozen-numeric-parity-stderr.txt').write_text(parity.stderr)
     assert parity.returncode == 0, parity.stderr
-    reference = list(csv.DictReader(io.StringIO((parity_dir / 'FULL_TRANSCRIPTOME_primary.tsv').read_text()), delimiter='\t'))
-    fields = {'beta': 'log2_expression_difference', 'moderated_se': 'standard_error', 'df': 'moderated_df',
-              'lo': 'ci_lower', 'hi': 'ci_upper', 'p_raw': 'raw_p'}
-    for expected, actual in zip(reference, rows, strict=True):
-        assert expected['gene_id'] == actual['gene_id']
-        for source_name, target_name in fields.items():
-            if expected[source_name] == 'NA':
-                assert actual[target_name] == 'NA'
-            else:
-                assert math.isclose(float(expected[source_name]), float(actual[target_name]), rel_tol=1e-11, abs_tol=1e-12)
-    spec = importlib.util.spec_from_file_location('frozen_b_family', project_dir / 'scripts/project.py')
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    toy_lock = {**project_lock, 'gene_count': 25}
-    synthetic_intake = dict(family_role='LEGACY_EXPLORATORY_PRIMARY_MODEL', result_exposure='SEEN',
-        project_lock=module.identity(module.canonical(toy_lock)), gene_count=25,
-        input_sha256=config['input_sha256'], config_sha256=sha(config_path))
-    family = module.family(dict(results=(fit / 'results.tsv').read_bytes(), genes=(output / 'genes.tsv').read_bytes(),
-        intake=module.canonical(synthetic_intake), limma_audit=(fit / 'audit.json').read_bytes()), toy_lock)
-    for name, content in family.items():
-        (output / name).write_bytes(content)
-    completed = module.rows(family['family.tsv'])
-    for expected, actual in zip(reference, completed, strict=True):
-        for name in ['q_BH', 'q_BY']:
-            assert math.isclose(float(expected[name]), float(actual[name]), rel_tol=1e-11, abs_tol=1e-12)
+    model_checks = {}
+    for model in module.MODELS:
+        config = configurations[model]
+        config_path.write_bytes(canonical(config))
+        design = entry('design', output / (model + '-design'), inputs)
+        design_audit = json.loads((design / 'audit.json').read_text())
+        expected_design = module.model_record(toy_lock, model)
+        assert design_audit['design']['rank'] == expected_design['rank']
+        assert design_audit['design']['residual_df'] == expected_design['residual_df']
+        fit = entry('limma', output / (model + '-fit'), [*inputs, design / 'audit.json'])
+        rows = list(csv.DictReader(io.StringIO((fit / 'results.tsv').read_text()), delimiter='\t'))
+        assert [r['gene_id'] for r in rows] == [r['gene_id'] for r in genes]
+        x = [[1., float(j < 4)] for j in range(8)]
+        if model != 'unadjusted':
+            x = [row + [float(ages[j]), float(j % 2)] for j,row in enumerate(x)]
+        if model == 'therapy_sensitivity':
+            x = [row + [float((j // 2) % 2)] for j,row in enumerate(x)]
+        width = len(x[0])
+        gram = [[math.fsum(v[a] * v[b] for v in x) for b in range(width)] for a in range(width)]
+        for source, row in zip(expression[:-1], rows[:-1], strict=True):
+            y = [float(source[s]) for s in ids]
+            beta = solve(gram, [math.fsum(v[j] * value for v,value in zip(x,y,strict=True)) for j in range(width)])
+            assert abs(beta[1] - float(row['log2_expression_difference'])) < 1e-10
+            assert row['status'] == 'ESTIMATED' and row['family_p'] == row['raw_p']
+        assert rows[-1]['raw_p'] == rows[-1]['family_p'] == 'NA'
+        assert rows[-1]['reason'] == 'CONSTANT_EXPRESSION'
+        audit = json.loads((fit / 'audit.json').read_text())
+        assert audit['design_receipt_sha256'] == sha(design / 'audit.json')
+        assert audit['method_executed'] is True and audit['formal_authorized'] is False
+        rds = subprocess.run(['Rscript','--vanilla','-e',
+            'x<-readRDS(commandArgs(TRUE)[1]);stopifnot(length(x$full_gene_ids)==25L,length(x$variable_gene_ids)==24L,is.list(x$fit),length(x$fit$s2.post)==24L);cat("RDS_OK")',
+            str(fit / 'official.rds')], env=env, capture_output=True, text=True, check=True)
+        assert rds.stdout == 'RDS_OK'
+        reference = list(csv.DictReader(io.StringIO((parity_dir / ('FULL_TRANSCRIPTOME_' + model + '.tsv')).read_text()), delimiter='\t'))
+        synthetic_intake = dict(**expected_design, result_exposure='SEEN',
+            project_lock=module.identity(module.canonical(toy_lock)), gene_count=25,
+            input_sha256=config['input_sha256'], config_sha256=sha(config_path))
+        family_inputs = dict(results=(fit / 'results.tsv').read_bytes(), genes=(output / 'genes.tsv').read_bytes(),
+            intake=module.canonical(synthetic_intake), limma_audit=(fit / 'audit.json').read_bytes())
+        family = module.family(family_inputs, toy_lock)
+        completed = module.rows(family['family.tsv'])
+        target = output / (model + '-family'); target.mkdir()
+        for name,content in family.items(): (target / name).write_bytes(content)
+        for expected,actual in zip(reference,completed,strict=True):
+            assert expected['gene_id'] == actual['gene_id'] and expected['status'] == actual['status'] and expected['role'] == actual['role']
+            for name in ['beta','moderated_se','df','lo','hi','p_raw','q_BH','q_BY']:
+                if expected[name] == 'NA': assert actual[name] == 'NA'
+                else: assert math.isclose(float(expected[name]),float(actual[name]),rel_tol=1e-11,abs_tol=1e-12), (model,name)
+        bad_receipt = {**synthetic_intake, 'model_id':'unadjusted' if model != 'unadjusted' else 'primary'}
+        bad_role = {**synthetic_intake, 'family_role':'PRESPECIFIED_SENSITIVITY_ONLY' if model == 'primary' else 'LEGACY_EXPLORATORY_PRIMARY_MODEL'}
+        for bad in [bad_receipt,bad_role]:
+            try: module.family({**family_inputs,'intake':module.canonical(bad)},toy_lock)
+            except ValueError: pass
+            else: raise AssertionError('mutated model/role accepted')
+        model_checks[model] = dict(rank=expected_design['rank'], residual_df=expected_design['residual_df'],
+            independent_ols_coefficients_verified=True, actual_design_binding_verified=True, official_rds_readback_verified=True,
+            beta_se_df_ci_p_complete_bh_by_parity_verified=True, complete_gene_rows=25, constant_na_as_one_verified=True,
+            mutated_model_role_rejected=True)
+        if model == 'primary': primary_audit = design_audit
+    config = configurations['primary']; config_path.write_bytes(canonical(config)); design_audit = primary_audit
     for key, value in [('expression_scale', 'raw_integer_counts'), ('software_lock', {**LOCK['software_lock'], 'limma': '3.66.0'})]:
         config_path.write_bytes(canonical({**config, key: value}))
         target = entry('design', output / ('reject-' + key), inputs, 2)
@@ -193,6 +205,7 @@ def run(library, output, frozen_code, *, execution_scope='HOST'):
         frozen_numerical_block_sha256=hashlib.sha256(block.encode()).hexdigest(),
         frozen_scientific_code_sha256=sha(frozen_code),
         frozen_primary_beta_se_df_ci_p_and_complete_bh_by_parity_verified=True,
+        all_three_frozen_models_parity_verified=True, models=model_checks, primary_family_not_pooled=True,
         whole_frozen_scientific_program_executed=False,
         actual_oci_image_store_verified=False,
         actual_container_execution_verified=execution_scope == 'OCI',

@@ -80,7 +80,7 @@ The check requires a managed session, records inputs and results as permanent
 technical evidence, and fits no study assay. It checks independent least-squares
 coefficients, full row retention, constant-gene NA, exact locks, real DESIGN
 receipt binding, official RDS contents and scale/software rejection. It also evaluates the verbatim frozen numerical block in a separate SYN
-process and compares primary beta/SE/df/CI/p and complete BH/BY results.
+process and compares primary, unadjusted and therapy_sensitivity beta/SE/df/CI/p, constant-row NA and each separate complete BH/BY family.
 The whole original frozen program and its study authorization guards are not
 executed by that parity test. It does not independently qualify the
 empirical-Bayes prior or the real source.

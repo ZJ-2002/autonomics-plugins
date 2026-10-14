@@ -3,6 +3,7 @@
 No fit, normalization, clinical label inference or scientific authorization.
 """
 import csv
+import copy
 import gzip
 import hashlib
 import io
@@ -15,7 +16,18 @@ INPUTS = ['config', 'manifest', 'samples', 'features', 'scope', 'design_certific
           'software_lock', 'r_dependencies', 'r_session', 'scientific_code',
           'scientific_rules', 'scope_decision', 'matrix', 'source_metadata',
           'g0_certificate', 'family_lock', 'restore_acceptance', 'runtime_manifest', 'byte_verifier']
-OUTPUTS = ['config.json', 'expression.tsv', 'genes.tsv', 'samples.tsv', 'decisions.tsv', 'intake.json']
+OUTPUTS = ['config.json', 'expression.tsv', 'genes.tsv', 'samples.tsv', 'decisions.tsv', 'intake.json',
+           'unadjusted-config.json', 'unadjusted-intake.json',
+           'therapy_sensitivity-config.json', 'therapy_sensitivity-intake.json']
+MODELS = {
+    'primary': dict(formula='~group+age+sex', columns=['(Intercept)', 'groupcase', 'age', 'sexM'],
+                    covariates=[dict(name='age', type='NUMERIC', levels=[]), dict(name='sex', type='CATEGORICAL', levels=['F', 'M'])],
+                    role='LEGACY_EXPLORATORY_PRIMARY_MODEL'),
+    'unadjusted': dict(formula='~group', columns=['(Intercept)', 'groupcase'], covariates=[], role='PRESPECIFIED_SENSITIVITY_ONLY'),
+    'therapy_sensitivity': dict(formula='~group+age+sex+treatment', columns=['(Intercept)', 'groupcase', 'age', 'sexM', 'treatmentY'],
+                    covariates=[dict(name='age', type='NUMERIC', levels=[]), dict(name='sex', type='CATEGORICAL', levels=['F', 'M']),
+                                dict(name='treatment', type='CATEGORICAL', levels=['N', 'Y'])], role='PRESPECIFIED_SENSITIVITY_ONLY'),
+}
 SAMPLES = ('resource_id patient_id independent_unit_id independent_unit_basis sample_id assay_id group '
            'weight_loss_6mo_pct sex age diagnosis treatment tissue sampling_time measurement_date '
            'outcome_start_date outcome_end_date include reason source_metadata_file source_metadata_sha256').split()
@@ -74,6 +86,25 @@ def table(columns, data):
     return stream.getvalue().encode()
 
 
+def model_record(lock, model):
+    require(model in MODELS, 'only the three prespecified frozen models are permitted')
+    spec = MODELS[model]
+    rank = len(spec['columns'])
+    return dict(model_id=model, model_formula=spec['formula'], family_role=spec['role'],
+                model_columns=spec['columns'], rank=rank, residual_df=lock['primary_samples'] - rank)
+
+
+def method_config(lock, hashes, model):
+    model_record(lock, model)
+    return dict(schema_version=1, protocol_version='4.3.2', status='FROZEN', method='LIMMA_EBAYES',
+        expression_scale='log2_normalized', contrast_id=lock['contrast_id'], resource_id='GSE130563',
+        source_archive_sha256=lock['files']['manifest']['sha256'], software_lock=lock['software_lock'],
+        design=dict(numerator='case', denominator='control', covariates=copy.deepcopy(MODELS[model]['covariates']),
+                    family_min_units=3, qr_tolerance=1e-8),
+        method_parameters=dict(trend=True, robust=True, allowed_warning_messages=[]), input_sha256=hashes,
+        limits=dict(max_expression_elements=10000000, max_input_file_bytes=64 * 1024 ** 2))
+
+
 def intake(paths, lock):
     require(set(paths) == set(INPUTS), 'all actual project/source files required')
     paths = {name: regular(p) for name, p in paths.items()}
@@ -85,6 +116,7 @@ def intake(paths, lock):
     require(cfg['family_ids'] == ['B_TRANSCRIPTOME'] and cfg['resource_ids'] == [], 'current minimum scope differs; old ZIP registry cannot substitute')
     require(cfg['contrast_id'] == lock['contrast_id'] and cfg['estimand_id'] == 'E_B_DIS', 'contrast/estimand differs')
     require(cfg['model_formula'] == '~group+age+sex' and cfg['model_df'] == lock['residual_df'], 'primary frozen formula/df differs')
+    require(cfg['sensitivities'] == ['unadjusted ~group', 'therapy ~group+age+sex+treatment'], 'prespecified frozen sensitivities differ')
     require(cfg['matrix_type'] == 'GENE_LEVEL_MICROARRAY_RMA_LOG2' and
             cfg['normalization'] == 'SOURCE_RMA_LOG2_NOT_RENORMALIZED_NO_RAW_COUNT_OR_GENE_LENGTH_MODEL', 'normalization/scale substitution')
     require(cfg['matrix_file'] == lock['files']['matrix']['relative_path'] and
@@ -111,6 +143,12 @@ def intake(paths, lock):
     primary = cert['designs']['primary']
     require(primary['columns'] == ['(Intercept)', 'groupcase', 'age', 'sexM'] and primary['rank'] == 4 and
             primary['residual_df'] == lock['residual_df'] and primary['identifiable'] is True, 'metadata design certificate differs')
+    for model in MODELS:
+        expected = model_record(lock, model)
+        actual = cert['designs'][model]
+        require(actual['columns'] == expected['model_columns'] and actual['rank'] == expected['rank'] and
+                actual['residual_df'] == expected['residual_df'] and actual['identifiable'] is True and
+                ''.join(actual['formula'].split()) == expected['model_formula'], 'prespecified model certificate differs')
     require(decision['investigator_scientific_signature'] is None, 'this entry is only the locked unsigned legacy scope')
     g0 = strict_json(raw['g0_certificate'])
     require(g0['status'] == 'G0_V432_MINIMUM_COMPLETE' and g0['B']['allowed'] is True and
@@ -138,7 +176,7 @@ def intake(paths, lock):
     require(len(samples) == lock['primary_samples'] and len({r['sample_id'] for r in samples}) == len(samples) and
             len({r['independent_unit_id'] for r in samples}) == len(samples), 'complete unique primary sample/unit axis required')
     require(sum(r['group'] == 'case' for r in samples) == lock['case_n'] and sum(r['group'] == 'control' for r in samples) == lock['control_n'], 'actual locked groups differ')
-    require(all(r['include'] == 'YES' and r['sex'] in ['F', 'M'] and math.isfinite(float(r['age'])) and
+    require(all(r['include'] == 'YES' and r['sex'] in ['F', 'M'] and r['treatment'] in ['N', 'Y'] and math.isfinite(float(r['age'])) and
                 r['source_metadata_sha256'] == refs['source_metadata']['sha256'] for r in samples), 'sample metadata/covariates differ')
     require(len(features) == lock['gene_count'] and len({r['feature_id'] for r in features}) == len(features) and
             len({r['source_probe_id'] for r in features}) == len(features), 'complete unique frozen gene universe required')
@@ -171,26 +209,23 @@ def intake(paths, lock):
     decisions = [dict(sample_id=r['sample_id'], independent_unit_id=r['independent_unit_id'], include='YES', reason=r['reason']) for r in samples]
     payloads = {'expression.tsv': table(['gene_id', *ids], expression), 'genes.tsv': table(GENES, genes),
                 'samples.tsv': raw['samples'], 'decisions.tsv': table(['sample_id', 'independent_unit_id', 'include', 'reason'], decisions)}
-    method = dict(schema_version=1, protocol_version='4.3.2', status='FROZEN', method='LIMMA_EBAYES',
-        expression_scale='log2_normalized', contrast_id=cfg['contrast_id'], resource_id='GSE130563',
-        source_archive_sha256=refs['manifest']['sha256'], software_lock=lock['software_lock'],
-        design=dict(numerator='case', denominator='control', covariates=[dict(name='age', type='NUMERIC', levels=[]),
-                    dict(name='sex', type='CATEGORICAL', levels=['F', 'M'])], family_min_units=3, qr_tolerance=1e-8),
-        method_parameters=dict(trend=True, robust=True, allowed_warning_messages=[]),
-        input_sha256={name: identity(payloads[name + '.tsv'])['sha256'] for name in ['expression', 'genes', 'samples', 'decisions']},
-        limits=dict(max_expression_elements=10000000, max_input_file_bytes=64 * 1024 ** 2))
-    payloads['config.json'] = canonical(method)
+    hashes = {name: identity(payloads[name + '.tsv'])['sha256'] for name in ['expression', 'genes', 'samples', 'decisions']}
     receipt = dict(scope='FROZEN_V432_B_LEGACY_SOURCE_INTAKE_NOT_QUALIFICATION', source_files=refs,
         project_lock=identity(canonical(lock)), frozen_scientific_code_executed=False,
         method_transport='EXISTING_NORMALIZED_LIMMA_COMPONENT_WITH_PARITY_REVIEW_REQUIRED',
-        input_sha256=method['input_sha256'], config_sha256=identity(payloads['config.json'])['sha256'],
+        input_sha256=hashes,
         source_samples=header[1:], primary_samples=ids, gene_count=len(genes),
-        family_role='LEGACY_EXPLORATORY_PRIMARY_MODEL', result_exposure='SEEN',
+        result_exposure='SEEN',
         original_full_project_byte_verifier_executed=False,
         original_full_project_byte_audit_verified=False,
         metadata_certificate_is_not_full_scientific_permission=True,
         scientific_authorization=False, formal_authorized=False, G0=False)
-    payloads['intake.json'] = canonical(receipt)
+    for model in MODELS:
+        config_name = 'config.json' if model == 'primary' else model + '-config.json'
+        receipt_name = 'intake.json' if model == 'primary' else model + '-intake.json'
+        payloads[config_name] = canonical(method_config(lock, hashes, model))
+        payloads[receipt_name] = canonical({**receipt, **model_record(lock, model),
+            'config_sha256': identity(payloads[config_name])['sha256']})
     require(all(identity(p.read_bytes()) == refs[name] for name, p in paths.items()), 'input changed during intake')
     return payloads
 
@@ -211,11 +246,20 @@ def family(raw, lock):
     require(set(raw) == {'results', 'genes', 'intake', 'limma_audit'}, 'four actual family inputs required')
     genes = rows(raw['genes'], GENES); results = rows(raw['results'])
     intake_receipt = strict_json(raw['intake']); audit = strict_json(raw['limma_audit'])
-    require(intake_receipt['family_role'] == 'LEGACY_EXPLORATORY_PRIMARY_MODEL' and intake_receipt['result_exposure'] == 'SEEN', 'legacy role/history required; old conditional roles forbidden')
+    model = intake_receipt['model_id']
+    expected_model = model_record(lock, model)
+    require(all(intake_receipt.get(k) == v for k, v in expected_model.items()) and intake_receipt['result_exposure'] == 'SEEN',
+            'prespecified model/role/history required; old conditional roles forbidden')
+    expected_config = identity(canonical(method_config(lock, intake_receipt['input_sha256'], model)))['sha256']
+    require(intake_receipt['config_sha256'] == expected_config, 'model must bind its exact prespecified configuration')
     require(intake_receipt['project_lock'] == identity(canonical(lock)) and intake_receipt['gene_count'] == lock['gene_count'], 'actual frozen project identity differs')
     require(identity(raw['genes'])['sha256'] == intake_receipt['input_sha256']['genes'] and audit['input_sha256'] == intake_receipt['input_sha256'] and
             audit['config_sha256'] == intake_receipt['config_sha256'] and audit['software_lock'] == lock['software_lock'], 'same actual intake/config/software audit required')
     require(audit['stage'] == 'LIMMA' and audit['method_executed'] is True and audit['formal_authorized'] is False, 'actual official limma method receipt required')
+    design = audit['design']
+    require(design['model_columns'] == expected_model['model_columns'] and design['rank'] == expected_model['rank'] and
+            design['residual_df'] == expected_model['residual_df'] and design['identifiable'] is True and
+            ''.join(audit['model_formula'].split()) == expected_model['model_formula'], 'actual prespecified model design differs')
     require(audit['plugin_transport_output_sha256']['results'] == identity(raw['results'])['sha256'], 'actual limma output hash differs')
     require(len(results) == len(genes) == lock['gene_count'] and len({r['analysis_id'] for r in genes}) == len(genes), 'complete family denominator required')
     require(all(all(g[key] == r[key] for key in GENES) for g, r in zip(genes, results, strict=True)), 'actual full gene registry/results order differs')
@@ -230,10 +274,15 @@ def family(raw, lock):
         pvalues.append(p)
     bh, by = adjust(pvalues, 'BH'), adjust(pvalues, 'BY')
     for row, qbh, qby in zip(results, bh, by, strict=True):
-        row.update(q_BH=repr(qbh), q_BY=repr(qby), role='LEGACY_EXPLORATORY_PRIMARY_MODEL',
+        row.update(q_BH=repr(qbh), q_BY=repr(qby), role=expected_model['family_role'], model_id=model,
                    status='ESTIMATED_LEGACY_ASSOCIATION' if row['status'] == 'ESTIMATED' else row['status'])
+        # Retain component columns and expose every original f7 full-result field.
+        for name, component in {'beta': 'log2_expression_difference', 'moderated_se': 'standard_error',
+                                'df': 'moderated_df', 'lo': 'ci_lower', 'hi': 'ci_upper', 'p_raw': 'raw_p'}.items():
+            row[name] = row[component]
     receipt = dict(scope='COMPLETE_FROZEN_B_LEGACY_FAMILY_BH_BY_NOT_SCIENTIFIC_AUTHORIZATION',
-        gene_count=len(results), missing_p_denominator_value=1, family_role='LEGACY_EXPLORATORY_PRIMARY_MODEL',
+        gene_count=len(results), missing_p_denominator_value=1, **expected_model,
+        primary_family_denominator=lock['gene_count'], adjustment_scope='ONE_MODEL_FULL_GENE_UNIVERSE_NOT_POOLED_ACROSS_MODELS',
         source_files={name: identity(data) for name, data in raw.items()}, project_lock=identity(canonical(lock)),
         frozen_scientific_code_executed=False, scientific_authorization=False, formal_authorized=False, G0=False)
     return {'family.tsv': table(list(results[0]), results), 'family-audit.json': canonical(receipt)}

@@ -25,7 +25,7 @@ def fixture(root):
     for i in range(8):
         row = dict.fromkeys(project.SAMPLES, 'SYNTHETIC')
         row.update(sample_id='SYN_A' + str(i), independent_unit_id='SYN_A' + str(i), group='case' if i < 4 else 'control',
-                   include='YES', age=str([25, 31, 29, 43, 28, 37, 35, 46][i]), sex='F' if i % 2 == 0 else 'M',
+                   include='YES', treatment='N' if (i // 2) % 2 == 0 else 'Y', age=str([25, 31, 29, 43, 28, 37, 35, 46][i]), sex='F' if i % 2 == 0 else 'M',
                    source_metadata_sha256=project.identity(raw['source_metadata'])['sha256'])
         samples.append(row)
     raw['samples'] = project.table(project.SAMPLES, samples)
@@ -43,7 +43,7 @@ def fixture(root):
     raw['matrix'] = gzip.compress(b'!series_matrix_table_begin\n' + matrix + b'!series_matrix_table_end\n', mtime=0)
     raw['scope'] = project.canonical(dict(N_primary=8, case_n=4, control_n=4))
     raw['design_certificate'] = project.canonical(dict(matrix_genes=4, source_samples=9, primary_samples=8, case_n=4, control_n=4,
-        designs=dict(primary=dict(columns=['(Intercept)', 'groupcase', 'age', 'sexM'], rank=4, residual_df=4, identifiable=True))))
+        designs={m: dict(formula=v['formula'], columns=v['columns'], rank=len(v['columns']), residual_df=8-len(v['columns']), identifiable=True) for m,v in project.MODELS.items()}))
     raw['scope_decision'] = project.canonical(dict(investigator_scientific_signature=None))
     raw['scientific_code'] = b'# SYNTHETIC frozen scientific code identity\n'
     raw['scientific_rules'] = b'{"scope":"SYNTHETIC"}'
@@ -65,6 +65,7 @@ def fixture(root):
         for n in ['matrix', 'source_metadata', 'samples', 'features', 'scope']])
     cfg = dict(status='LOCKED', version='4.3.2', module='B', family_ids=['B_TRANSCRIPTOME'], resource_ids=[],
         contrast_id=lock['contrast_id'], estimand_id='E_B_DIS', model_formula='~group+age+sex', model_df=4,
+        sensitivities=['unadjusted ~group', 'therapy ~group+age+sex+treatment'],
         matrix_type='GENE_LEVEL_MICROARRAY_RMA_LOG2', normalization='SOURCE_RMA_LOG2_NOT_RENORMALIZED_NO_RAW_COUNT_OR_GENE_LENGTH_MODEL',
         transcriptome_method='limma3.68.5 lmFit+eBayes(trend=TRUE,robust=TRUE)', followup_exposure_at_lock='LEGACY_EXPLORATORY',
         predefined_program_panel_enabled=False, correction='BH', sensitivity_correction='BY', q=.05, raw_missing_p='NA', adjustment_missing_p=1,
@@ -120,18 +121,21 @@ class FrozenProjectTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'old ZIP registry cannot substitute'):
             project.intake(self.paths, self.lock)
 
-    def family_inputs(self):
+    def family_inputs(self, model='primary'):
         out = project.intake(self.paths, self.lock)
-        audit = project.strict_json(out['intake.json'])
+        receipt = 'intake.json' if model == 'primary' else model + '-intake.json'
+        audit = project.strict_json(out[receipt])
         genes = project.rows(out['genes.tsv'])
         results = []
         for g, p in zip(genes, ['0.01', 'NA', '0.04', '0.03'], strict=True):
-            results.append({**g, 'status': 'NOT_ESTIMABLE' if p == 'NA' else 'ESTIMATED', 'raw_p': p, 'family_p': p})
+            numeric = {k: 'NA' if p == 'NA' else str(v) for k,v in dict(log2_expression_difference=1, standard_error=.1, moderated_df=audit['residual_df'], ci_lower=.8, ci_upper=1.2).items()}
+            results.append({**g, **numeric, 'status': 'NOT_ESTIMABLE' if p == 'NA' else 'ESTIMATED', 'raw_p': p, 'family_p': p})
         result_raw = project.table(list(results[0]), results)
         limma = dict(stage='LIMMA', method_executed=True, formal_authorized=False,
             input_sha256=audit['input_sha256'], config_sha256=audit['config_sha256'], software_lock=self.lock['software_lock'],
+            model_formula=audit['model_formula'], design=dict(model_columns=audit['model_columns'], rank=audit['rank'], residual_df=audit['residual_df'], identifiable=True),
             plugin_transport_output_sha256=dict(results=project.identity(result_raw)['sha256'], rds='a' * 64))
-        return dict(results=result_raw, genes=out['genes.tsv'], intake=out['intake.json'], limma_audit=project.canonical(limma))
+        return dict(results=result_raw, genes=out['genes.tsv'], intake=out[receipt], limma_audit=project.canonical(limma))
 
     def test_complete_bh_by_manual_expected_values_include_na_as_one(self):
         result = project.family(self.family_inputs(), self.lock)
@@ -142,6 +146,39 @@ class FrozenProjectTests(unittest.TestCase):
             self.assertEqual(row['role'], 'LEGACY_EXPLORATORY_PRIMARY_MODEL')
         self.assertEqual(completed[1]['raw_p'], 'NA')
         self.assertEqual(len(completed), 4)
+
+    def test_three_models_keep_complete_separate_denominators_and_fields(self):
+        out = project.intake(self.paths, self.lock)
+        self.assertEqual(project.OUTPUTS[:6], ['config.json','expression.tsv','genes.tsv','samples.tsv','decisions.tsv','intake.json'])
+        for model in project.MODELS:
+            result = project.family(self.family_inputs(model), self.lock)
+            completed = project.rows(result['family.tsv'])
+            self.assertEqual(len(completed), 4)
+            self.assertEqual(completed[0]['role'], project.MODELS[model]['role'])
+            self.assertEqual(completed[0]['model_id'], model)
+            self.assertEqual(completed[1]['p_raw'], 'NA')
+            self.assertEqual(float(completed[1]['q_BH']), 1.)
+            self.assertAlmostEqual(float(completed[0]['q_BY']), .04 * 25 / 12)
+            self.assertTrue(set('gene_id beta moderated_se df lo hi p_raw status q_BH q_BY role'.split()) <= set(completed[0]))
+            audit = project.strict_json(result['family-audit.json'])
+            self.assertEqual(audit['primary_family_denominator'], 4)
+            self.assertEqual(audit['gene_count'], 4)
+            self.assertFalse(audit['G0'])
+        self.assertEqual(project.strict_json(out['unadjusted-config.json'])['design']['covariates'], [])
+        self.assertEqual(project.strict_json(out['therapy_sensitivity-config.json'])['design']['covariates'][-1]['levels'], ['N','Y'])
+
+    def test_model_role_config_and_actual_design_mutations_are_rejected(self):
+        original = self.family_inputs()
+        receipt = project.strict_json(original['intake'])
+        for key, value in [('model_id','unadjusted'), ('model_id','posthoc'), ('family_role','PRESPECIFIED_SENSITIVITY_ONLY')]:
+            with self.subTest(key=key,value=value), self.assertRaises(ValueError):
+                project.family({**original,'intake':project.canonical({**receipt,key:value})},self.lock)
+        substituted = {**receipt, **project.model_record(self.lock,'unadjusted')}
+        with self.assertRaisesRegex(ValueError,'exact prespecified configuration'):
+            project.family({**original,'intake':project.canonical(substituted)},self.lock)
+        audit = project.strict_json(original['limma_audit']);audit['design']['rank']=2
+        with self.assertRaisesRegex(ValueError,'actual prespecified model design'):
+            project.family({**original,'limma_audit':project.canonical(audit)},self.lock)
 
     def test_family_refuses_output_mutation_missing_gene_and_conditional_role(self):
         original = self.family_inputs()
@@ -158,10 +195,14 @@ class FrozenProjectTests(unittest.TestCase):
     def test_generated_tui_graph_binds_all_inputs_and_actual_design_edge(self):
         built = graph.build('vfs://study_v432')
         self.assertTrue(built['dry_run'])
-        self.assertEqual(built['script'].count('node('), 23)
-        self.assertEqual(built['script'].count('edge('), 34)
+        self.assertEqual(built['script'].count('node('), 29)
+        self.assertEqual(built['script'].count('edge('), 64)
         self.assertIn('edge("frozen_b_design", 0, "frozen_b_limma", 5);', built['script'])
         self.assertIn('edge("frozen_b_intake", 5, "frozen_b_family", 2);', built['script'])
+        for model, config_port, receipt_port in [('unadjusted',6,7), ('therapy_sensitivity',8,9)]:
+            self.assertIn(f'edge("frozen_b_intake", {config_port}, "frozen_b_{model}_design", 0);', built['script'])
+            self.assertIn(f'edge("frozen_b_{model}_design", 0, "frozen_b_{model}_limma", 5);', built['script'])
+            self.assertIn(f'edge("frozen_b_intake", {receipt_port}, "frozen_b_{model}_family", 2);', built['script'])
         self.assertIn('hash_content: true', built['script'])
         for value in ['/host/study', 'vfs://study/../raw', 'vfs://study//raw']:
             with self.assertRaises(ValueError):

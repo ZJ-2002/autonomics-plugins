@@ -1,4 +1,4 @@
-"""Generate a TUI dag_shell request for the current frozen B LEGACY primary model.
+"""Generate a TUI dag_shell request for the current frozen B LEGACY three prespecified models.
 
 Only constructs source references and edges; never reads project payloads or runs a DAG.
 """
@@ -27,10 +27,12 @@ def build(project_uri, prefix='frozen_b'):
     for name in INPUTS:
         spec = '#{path: ' + json.dumps(base + '/' + LOCK['files'][name]['relative_path']) + ', hash_content: true}'
         lines.append('node(' + json.dumps(prefix + '_' + name) + ', "core/file_reference", ' + spec + ');')
-    kinds = {'intake': 'frozen-b-project/frozen_b_legacy_intake',
-             'design': 'bulk-limma-normalized/bulk_normalized_design',
-             'limma': 'bulk-limma-normalized/bulk_normalized_limma',
-             'family': 'frozen-b-project/frozen_b_legacy_family'}
+    kinds = {'intake': 'frozen-b-project/frozen_b_legacy_intake'}
+    for model in ['primary', 'unadjusted', 'therapy_sensitivity']:
+        suffix = '' if model == 'primary' else model + '_'
+        kinds.update({suffix + 'design': 'bulk-limma-normalized/bulk_normalized_design',
+                      suffix + 'limma': 'bulk-limma-normalized/bulk_normalized_limma',
+                      suffix + 'family': 'frozen-b-project/frozen_b_legacy_family'})
     for name, kind in kinds.items():
         lines.append('node(' + json.dumps(prefix + '_' + name) + ', ' + json.dumps(kind) + ', #{});')
     def edge(source, output, target, port):
@@ -38,12 +40,16 @@ def build(project_uri, prefix='frozen_b'):
                      json.dumps(prefix + '_' + target) + ', ' + str(port) + ');')
     for i, name in enumerate(INPUTS):
         edge(name, 0, 'intake', i)
-    for name in ['design', 'limma']:
-        for i in range(5):
-            edge('intake', i, name, i)
-    edge('design', 0, 'limma', 5)
-    for source, output, port in [('limma', 0, 0), ('intake', 2, 1), ('intake', 5, 2), ('limma', 1, 3)]:
-        edge(source, output, 'family', port)
+    for model, config_port, receipt_port in [('primary', 0, 5), ('unadjusted', 6, 7), ('therapy_sensitivity', 8, 9)]:
+        suffix = '' if model == 'primary' else model + '_'
+        design, limma, family = (suffix + stage for stage in ['design', 'limma', 'family'])
+        for name in [design, limma]:
+            edge('intake', config_port, name, 0)
+            for i in range(1, 5):
+                edge('intake', i, name, i)
+        edge(design, 0, limma, 5)
+        for source, output, port in [(limma, 0, 0), ('intake', 2, 1), ('intake', receipt_port, 2), (limma, 1, 3)]:
+            edge(source, output, family, port)
     lines.append('commit();')
     return {'script': '\n'.join(lines) + '\n', 'dry_run': True, 'timeout_ms': 5000}
 
