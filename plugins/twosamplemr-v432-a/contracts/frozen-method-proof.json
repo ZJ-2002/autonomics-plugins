@@ -1,0 +1,14 @@
+{
+  "scope": "FROZEN_V432_A_LEGACY",
+  "input_sha256": [
+    "9d2b7c1e7ab66b3825b1563874d98fbf2a2bc341ab0a6948537f8ee81846a2fa",
+    "8ccb70529da5c4b8494e31cbbe45e62e1b333f603d19517b671671a2fafd404f",
+    "aa8905a9d830839e88d3da1081f50732f290fbd561a832ca2a6841ca364ecbb2",
+    "8aeaa7bb2b22b2c4ae9852dc65d32d4f81cb927d875ecdd135822f2f1c2b8a56"
+  ],
+  "scientific_code_sha256": "f7e334db38e331acc30cd0117ca9f2b82831523d1c07ce742382eacbd3aff1cd",
+  "R": "4.6.1",
+  "TwoSampleMR": "0.7.11",
+  "scientific_authorization_granted": false,
+  "formal_scientific_pass_granted": false
+}
