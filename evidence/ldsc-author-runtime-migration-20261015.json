@@ -216,5 +216,16 @@
   "author_invalid_allele_failure_preserved": true,
   "full_precision_family_P_from_display_logs_allowed": false,
   "scientific_frozen_design_or_denominators_changed": false,
+  "required_source_tests": {
+    "session": "f59f9e172e92458fb618d0000cd2c90b",
+    "manifest_sha256": "65319088d27c2fcb5fcba148ca08f6c178d72ba47a9c9efc4518d5cedef003d3",
+    "executed": 174,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "complete_required_inventory": true,
+    "source_lock_matches": true,
+    "scientific_certified": false
+  },
   "g0_granted": false
 }

@@ -123,11 +123,11 @@
       },
       "current": {
         "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
-        "revision": "e0062897a5a34c2c852e552931b5e53e0e0a1843",
+        "revision": "4d99fe81bfe8b0c21d499f96d24b671a0a6d3667",
         "path": "plugins/ldsc/README.md",
-        "sha256": "f0702f0f0f48140f2e9f8f1c26c0c3d3b7faf4335182040c9fac7e062f3e5cf3",
-        "bytes": 4249,
-        "git_blob": "178bf5673f9edacc5bdd13ff14d4da914a238ed2"
+        "sha256": "32ff03bb0a1cf635ed9141fc9962d91dd5c3803ce356cbd7c4a16fd1c5d5c1cd",
+        "bytes": 6568,
+        "git_blob": "a758bb848f1afe3f5207c8427d65199a8f7429d7"
       }
     },
     {
@@ -141,11 +141,11 @@
       },
       "current": {
         "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
-        "revision": "c6416ff3c10ca349ee1e5c99d6943a28763d107a",
+        "revision": "4d99fe81bfe8b0c21d499f96d24b671a0a6d3667",
         "path": "plugins/ldsc/manifest.toml",
-        "sha256": "b4d5aa33236bc80ce7187eabc299636845c856576ef48fc08c7237cb41dfebb1",
-        "bytes": 6269,
-        "git_blob": "75d786336dee7d29894ca99d217aa1268e7a9aec"
+        "sha256": "8d9d07171fbf57ff6a49b5bde92f5ea970e6e21d2a3cfa0e6a6e11e4277b7e9c",
+        "bytes": 6386,
+        "git_blob": "e923b2abcb81ba49f303c4f5acdcd2c12df9d385"
       }
     },
     {
@@ -159,11 +159,11 @@
       },
       "current": {
         "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
-        "revision": "c6416ff3c10ca349ee1e5c99d6943a28763d107a",
+        "revision": "4d99fe81bfe8b0c21d499f96d24b671a0a6d3667",
         "path": "plugins/ldsc/scripts/h2.sh",
-        "sha256": "24f74ef33cbeeb38242c4abfe06dd3d32b8c79f31677489d4e8dcdcbc1370d54",
-        "bytes": 1023,
-        "git_blob": "01a05b46433e65a9e3d410ff743084c3839c1fc9"
+        "sha256": "cb97a4a7a7606991db84bdbf588a0851a8bb260beb9cce803ec1f77cd1e098fa",
+        "bytes": 1141,
+        "git_blob": "aee4e13c0574e221ccb7642c51074289e0905e6d"
       }
     },
     {
@@ -177,11 +177,11 @@
       },
       "current": {
         "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
-        "revision": "c6416ff3c10ca349ee1e5c99d6943a28763d107a",
+        "revision": "4d99fe81bfe8b0c21d499f96d24b671a0a6d3667",
         "path": "plugins/ldsc/scripts/munge.sh",
-        "sha256": "db217c54d672ace1a7e27746601ac303bed55c7981b56e4be548c13ac207432a",
-        "bytes": 2729,
-        "git_blob": "9056312691f4f9023942afa321796b8ace80e292"
+        "sha256": "13c5bc3489a086fd56dab4c5fc78bd2aa2d11b4098a65b80ebfa99a55385dede",
+        "bytes": 2767,
+        "git_blob": "8cea383db53858d401c61839cd93fbafba5341e3"
       }
     },
     {
@@ -195,11 +195,11 @@
       },
       "current": {
         "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
-        "revision": "c6416ff3c10ca349ee1e5c99d6943a28763d107a",
+        "revision": "4d99fe81bfe8b0c21d499f96d24b671a0a6d3667",
         "path": "plugins/ldsc/scripts/rg.sh",
-        "sha256": "d0d2b38fa99ec654f2506e305028b58145e5ce40cb216f474a90394389935f49",
-        "bytes": 1326,
-        "git_blob": "f8a09ba288d25c17b7cf3eb1eba06da33f7681f6"
+        "sha256": "43e1d83db6d0873a08c2c6338f179551dc9ed10926b31b2dff1ff8c9a180de85",
+        "bytes": 1556,
+        "git_blob": "e74a51d1694a383744986ae72c28ee62da4a5911"
       }
     },
     {
@@ -848,6 +848,24 @@
         "sha256": "5ab8923d09a8ebafb99baf5167dd4cf01ade8d14cd7cac5685df62be298515c4",
         "bytes": 28126,
         "git_blob": "9ccf1c22210a6f34146df62bf03e7b8d573b78cf"
+      }
+    },
+    {
+      "path": "plugins/ldsc/Dockerfile",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/ldsc-plugin.git",
+        "revision": "4b1a02711dbf09dfcb2282f896a30ec7b23f66c2",
+        "sha256": "cf4cfd4312f4c9916b57f5c1241b44adbd91d8e4aa160d954bf0760dfede7881",
+        "bytes": 1718,
+        "git_blob": "080d134b4e955ff54e15615251acd102933e630a"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "4d99fe81bfe8b0c21d499f96d24b671a0a6d3667",
+        "path": "plugins/ldsc/Dockerfile",
+        "sha256": "3fbb8efb18cc51b577b3b98a9a50738254d4fba6c37d1fc65ed9ed242c96385c",
+        "bytes": 98,
+        "git_blob": "a7ac3c35572bd7ed21b80616a35c72395b9cbd69"
       }
     }
   ]

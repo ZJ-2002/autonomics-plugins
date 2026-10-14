@@ -55,6 +55,10 @@ family results. Eleven success, failed and superseded archives were independentl
 rehashed with exact manifest membership. Public metadata is in
 `evidence/ldsc-author-runtime-migration-20261015.json`; private logs and raw
 archives are not published.
+All **174 required source/catalog tests** actually executed: zero failures,
+errors or skips, exact required-test inventory and source lock matched. Test
+session `f59f9e172e92458fb618d0000cd2c90b` exited 0/CLEANED; this is an engineering
+check, not additional independent statistical certification.
 
 ## Not a production certificate
 
