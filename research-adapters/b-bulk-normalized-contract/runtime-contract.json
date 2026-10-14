@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "scope": "SOURCE_BOUND_NORMALIZED_MICROARRAY_FULL_B_ABI_CANDIDATE",
+  "variant_id": "NORMALIZED_MICROARRAY_FULL_B_V1",
+  "image_reference": "localhost/autonomics/frozen-b-normalized@sha256:723904dd46c9148d75716555e2f641604d98c22909bc333d5fac832f33ebffed",
+  "interpreter": "/opt/b-bulk/bin/Rscript-vanilla",
+  "software_lock": {
+    "R": "4.6.1",
+    "digest": "0.6.39",
+    "jsonlite": "2.0.0",
+    "limma": "3.68.5",
+    "statmod": "1.5.2",
+    "stats": "4.6.1"
+  },
+  "expression_scale": "log2_normalized",
+  "method": "LIMMA_EBAYES",
+  "source_assay_type": "GENE_LEVEL_MICROARRAY_RMA_LOG2",
+  "design_kind": "b_bulk_frozen_normalized_design",
+  "limma_kind": "b_bulk_frozen_normalized_limma",
+  "design_inputs": 5,
+  "limma_inputs": 6,
+  "design_outputs": [
+    "audit.json"
+  ],
+  "limma_outputs": [
+    "results.tsv",
+    "audit.json",
+    "official.rds"
+  ],
+  "files": {
+    "scripts/bulk-limma.R": {
+      "sha256": "c5d0a5f4fe179dd79ea49ea954f439b1e08af312102ac7ba3c570a82d10f010a",
+      "bytes": 16004,
+      "source_path": "research-adapters/b-bulk-limma-contract/scripts/bulk-limma.R",
+      "original_sha256": "c5d0a5f4fe179dd79ea49ea954f439b1e08af312102ac7ba3c570a82d10f010a",
+      "adaptation": "VERBATIM"
+    },
+    "scripts/run-design.R": {
+      "sha256": "eca6079b6c0a239e3232b2e431003643f488daee56f9ff49744fce3eb5cad2a5",
+      "bytes": 18828,
+      "source_path": "research-adapters/b-bulk-limma-contract/scripts/run-design.R",
+      "original_sha256": "b1f7cc7b2d8e8a94244b148ea651fa4a4b286f2a69da093b05c4541a82a73a2e",
+      "adaptation": "REAL_PORT0_LOOKUP_ONLY"
+    },
+    "scripts/run-limma.R": {
+      "sha256": "a81d847aec63a1ace98fe0669b01e3fd66c8dde4a5662f04411f7dae52918c1c",
+      "bytes": 18854,
+      "source_path": "research-adapters/b-bulk-limma-contract/scripts/run-limma.R",
+      "original_sha256": "cddc93770a8ceafa4ffe4f98c0f1584463666b6f1601acae342ca0988f5dbc99",
+      "adaptation": "REAL_PORT0_LOOKUP_ONLY"
+    }
+  },
+  "automatic_activation": false,
+  "method_acceptance_verified": false,
+  "source_qualified": false,
+  "formal_authorized": false,
+  "scientific_authorization": false,
+  "G0": false,
+  "qualification_requirement": "Native StudyContract methods and signed method/source evidence must bind this exact image, manifest, wrappers and per-contrast request/template/assay/gene-registry bytes; candidate mapping cannot authorize execution.",
+  "legacy_node_alias": false,
+  "rna_counts_voom_deseq2_supported": false,
+  "complete_gene_universe_required": true,
+  "correction_scope": "FULL_REGISTERED_FAMILY_OUTSIDE_EACH_CONTRAST_METHOD",
+  "manifest_identity": {
+    "sha256": "ebcf4c96afe804fd01fff7734d09b9c1a18ac8bc744cd7754f2123d3f6c095a5",
+    "bytes": 3202
+  },
+  "source_design_sha256": "4c5af762ab1e9768a24b9446827ea367176a80407862cfc10ca09a95f44f1151"
+}
