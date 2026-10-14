@@ -14471,8 +14471,8 @@
         },
         {
           "path": "manifest.toml",
-          "sha256": "11cb58a8e7c097d3732793d2ef555118345416f03cda8583d17caf6cb17c21de",
-          "bytes": 2219,
+          "sha256": "7d91d00f9d966075caf1bf2ccae908fb1fe30783edf7cc3b43dcf5c44ccba755",
+          "bytes": 2242,
           "executable": false
         },
         {

@@ -16,10 +16,17 @@ FAMILY = ROOT / "plugins/r-stats-lm"
 class OfficialLinearModelTests(unittest.TestCase):
     def test_evidence_cannot_silently_cover_changed_sources_or_production(self):
         record = json.loads((ROOT / "evidence/r-stats-lm-20261014.json").read_text())
+        current = json.loads((ROOT / record["current_transport_requalification"]).read_text())
         for path, key in [(FAMILY / "scripts/lm.R", "method_source_sha256"),
-                          (FAMILY / "manifest.toml", "manifest_sha256"),
                           (ROOT / "tools/prove_r_lm.py", "proof_driver_sha256")]:
             self.assertEqual(hashlib.sha256(path.read_bytes()).hexdigest(), record[key])
+        for path, key in [(FAMILY / "scripts/lm.R", "method_source_sha256"),
+                          (FAMILY / "manifest.toml", "manifest_sha256"),
+                          (ROOT / "tools/prove_current_r_lm.py", "current_driver_sha256")]:
+            self.assertEqual(hashlib.sha256(path.read_bytes()).hexdigest(), current[key])
+        self.assertEqual(current["stage_in_mode"], "copy")
+        self.assertFalse(current["current_daemon_verified"])
+        self.assertFalse(current["g0_granted"])
         self.assertEqual(record["original_function_id"], "FUNC_linear_regression")
         self.assertEqual(record["new_original_function_slots"], 0)
         for flag in ("whole_original_node_certified", "production_configuration_changed",
@@ -33,6 +40,7 @@ class OfficialLinearModelTests(unittest.TestCase):
         self.assertEqual(len(manifest["nodes"]), 1)
         node = manifest["nodes"][0]
         self.assertEqual(node["kind"], "r_stats_lm")
+        self.assertEqual(node["stage_in_mode"], "copy")
         self.assertEqual(len(node["ports"]["inputs"]), 2)
         self.assertEqual(len(node["ports"]["outputs"]), 5)
         self.assertTrue((FAMILY / node["command"]["script_file"]).is_file())

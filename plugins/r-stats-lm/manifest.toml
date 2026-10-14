@@ -28,6 +28,7 @@ No native statistical fallback. Publication is no-clobber with ordinary-error
 rollback of owned outputs, not a crash-atomic transaction or recovery guarantee.
 """
 timeout_secs = 300
+stage_in_mode = "copy"
 artifact_prefix = "/artifacts/r_stats_lm"
 [nodes.resources]
 cpus = 1.0

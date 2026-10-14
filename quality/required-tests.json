@@ -1,6 +1,7 @@
 {
   "scope": "CATALOG_TESTS_NOT_SCIENTIFIC_CERTIFICATES",
   "test_ids": [
+    "tests.test_current_r_lm.CurrentOfficialRegressionTests.test_actual_publishdir_copies_are_hashed_without_forging_report_hashes",
     "tests.test_current_r_lm.CurrentOfficialRegressionTests.test_historical_engine_or_best_effort_hashing_cannot_pass_as_current",
     "tests.test_current_r_lm.CurrentOfficialRegressionTests.test_job_uses_original_current_plugin_and_only_engineering_rust_nodes",
     "tests.test_current_r_lm.CurrentOfficialRegressionTests.test_synthetic_failure_requires_actual_diagnostic_and_no_terminal",

@@ -97,7 +97,9 @@ def main():
     durable.chmod(0o700)
     if digest(durable) != compiled_hash or digest(executable) != compiled_hash:
         raise RuntimeError("Compiler executable changed during durable preservation")
-    record.update(executable=str(durable), compiler_cache_executable=str(executable), executable_sha256=compiled_hash,
+    archived_executable = session_path.parent / "artifacts/permanent/current-lm-build/official_lm_dag"
+    record.update(executable=str(archived_executable), staged_executable=str(durable),
+                  compiler_cache_executable=str(executable), executable_sha256=compiled_hash,
                   committed_source_files=len(before), source_unchanged=True,
                   compiler_artifacts=len(artifacts), actual_build_exit=completed.returncode,
                   current_daemon_verified=False)

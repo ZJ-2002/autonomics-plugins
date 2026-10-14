@@ -2,11 +2,39 @@ import copy
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
 
 from tools import prove_current_r_lm as proof
 
 
 class CurrentOfficialRegressionTests(unittest.TestCase):
+    def test_actual_publishdir_copies_are_hashed_without_forging_report_hashes(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            work = root / "permanent/case"
+            published = work / "artifacts/r_stats_lm/run"
+            scratch = root / "scratch/official-lm-container-workspaces/case/run"
+            published.mkdir(parents=True)
+            scratch.mkdir(parents=True)
+            ports = [{"path": name, "format": "text"} for name in ["coef", "obs", "rds", "log", "audit"]]
+            assignments = {}
+            for index, port in enumerate(ports):
+                (scratch / port["path"]).write_bytes(b"SAME ACTUAL BYTES")
+                (published / port["path"]).write_bytes(b"SAME ACTUAL BYTES")
+                assignments[str(index)] = dict(path=str(scratch / port["path"]), format="text",
+                                               fingerprint=dict(size=17, content_hash=None))
+            report = dict(engine_source_revision="a" * 40, input_hashing="ContentRequired",
+                          scope="TECHNICAL_ONLY_NOT_G0", max_concurrency=1, incremental=False, g0_granted=False,
+                          first_run=dict(errors={}, nodes=[dict(id="analysis", status="success", port_assignments=assignments)]))
+            case = dict(name="case", expected_error=None)
+            with patch.dict("os.environ", {"TMPDIR": str(root / "scratch")}):
+                record = proof.check_report(root, work, report, dict(ports=dict(outputs=ports)), case, "a" * 40)
+                self.assertEqual(len(record["independently_hashed_published_files"]), 5)
+                self.assertTrue(all(not item["report_content_hash_present"] for item in record["independently_hashed_published_files"]))
+                (published / "coef").write_bytes(b"WRONG COPY")
+                with self.assertRaisesRegex(RuntimeError, "fingerprint changed"):
+                    proof.check_report(root, work, report, dict(ports=dict(outputs=ports)), case, "a" * 40)
+
     def test_job_uses_original_current_plugin_and_only_engineering_rust_nodes(self):
         job = proof.make_job(Path("/technical/fresh"), Path("/technical/source"))
         self.assertEqual(job["scope"], "TECHNICAL_ONLY_NOT_G0")

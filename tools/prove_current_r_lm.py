@@ -103,16 +103,29 @@ def check_report(directory, work, report, definition, case, commit):
     assigned = analysis["port_assignments"]
     if set(assigned) != {str(index) for index in range(5)}:
         raise RuntimeError("Five actual output ports required")
+    record["reported_work_file_references"] = assigned
+    record["independently_hashed_published_files"] = []
+    scratch = Path(os.environ["TMPDIR"]) / "official-lm-container-workspaces" / work.name
     for index, port in enumerate(definition["ports"]["outputs"]):
         entry = assigned[str(index)]
-        if not entry["path"].startswith("vfs:///"):
-            raise RuntimeError("Unexpected current VFS port")
-        path = work / entry["path"].removeprefix("vfs:///")
-        if not path.resolve().is_relative_to(work) or path.name != port["path"] or entry["format"] != port["format"]:
+        live = Path(entry["path"])
+        if (not live.is_absolute() or live.is_symlink() or not live.resolve(strict=True).is_relative_to(scratch)
+                or live.name != port["path"] or entry["format"] != port["format"]):
             raise RuntimeError("Declared current port identity differs")
-        if digest(path) != entry["fingerprint"]["content_hash"].removeprefix("sha256:"):
+        matches = list((work / "artifacts/r_stats_lm").glob("*/" + port["path"]))
+        if len(matches) != 1 or matches[0].is_symlink() or not matches[0].resolve(strict=True).is_relative_to(work):
+            raise RuntimeError("Exactly one real published artifact per declared port required")
+        path = matches[0]
+        observed_hash = digest(path)
+        if observed_hash != digest(live) or live.stat().st_size != entry["fingerprint"]["size"]:
             raise RuntimeError("Current published port fingerprint changed")
+        declared_hash = entry["fingerprint"].get("content_hash")
+        if declared_hash is not None and observed_hash != declared_hash.removeprefix("sha256:"):
+            raise RuntimeError("Declared work-ref hash differs from actual bytes")
         record["output_paths"].append(str(path.relative_to(directory)))
+        record["independently_hashed_published_files"].append(dict(
+            port=index, sha256=observed_hash, report_content_hash_present=declared_hash is not None,
+            scope="ACTUAL_PUBLISHDIR_COPY_EQUALS_LIVE_WORK_REF_NOT_REBOUND_DAG_REFERENCE"))
     record["materialized_path"] = str((work / "materialized.tsv").relative_to(directory))
     return record
 
@@ -133,6 +146,11 @@ def main():
     build = json.loads(arguments.build_record.read_text())
     if build["engine_commit"] != arguments.engine_commit or digest(arguments.runner) != build["executable_sha256"]:
         raise RuntimeError("Current executable differs from its build evidence")
+    executable = Path(os.environ["TMPDIR"]) / "official-lm-dag-executable"
+    shutil.copyfile(arguments.runner, executable)
+    executable.chmod(0o700)
+    if digest(executable) != build["executable_sha256"] or digest(arguments.runner) != build["executable_sha256"]:
+        raise RuntimeError("Archived executable changed while preparing its owned scratch consumer")
     directory = Path(permanent) / "current-official-lm-dag"
     directory.mkdir(mode=0o700)
     source = directory / "source"
@@ -165,7 +183,7 @@ def main():
         job = make_job(work, source)
         (work / "job.json").write_text(json.dumps(job, indent=2) + "\n")
         started = time.monotonic()
-        completed = subprocess.run([str(arguments.runner), str(work / "job.json")], capture_output=True, timeout=180)
+        completed = subprocess.run([str(executable), str(work / "job.json")], capture_output=True, timeout=180)
         (work / "stdout.log").write_bytes(completed.stdout)
         (work / "stderr.log").write_bytes(completed.stderr)
         (work / "execution.json").write_text(json.dumps(dict(exit=completed.returncode, elapsed=time.monotonic()-started)) + "\n")
@@ -185,6 +203,8 @@ def main():
         raise RuntimeError("Materialized current outputs do not match sealed independent official references")
     if source_identities != {str(path.relative_to(source)): digest(path) for path in source.rglob("*") if path.is_file()}:
         raise RuntimeError("Proof source mutated during current execution")
+    if digest(executable) != build["executable_sha256"] or digest(arguments.runner) != build["executable_sha256"]:
+        raise RuntimeError("Current executable identity changed during DAG execution")
     print(json.dumps(dict(current_engine_commit=arguments.engine_commit, current_engine_dags=len(records),
                          independent_reference_recomputed=False, current_daemon_verified=False, g0_granted=False)))
 
