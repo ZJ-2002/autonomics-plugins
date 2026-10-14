@@ -51,8 +51,8 @@
         },
         {
           "path": "tests/run_method_toy.py",
-          "sha256": "86a05aca4d6ffe221b994bc63f35f9800e02ddbab2dc840ef4a3fea47e422cf9",
-          "bytes": 15047,
+          "sha256": "66db0c25271e8a88078181d1e8da9adbf4f16acc316ac09c376c76145ce18a1c",
+          "bytes": 15391,
           "executable": false
         }
       ],
@@ -661,7 +661,7 @@
         },
         {
           "path": "source-lock.json",
-          "sha256": "7a5f731aae84be99832f0fd50ca60e206115b9ceefec2c56ce3d6dfdecaf29b9",
+          "sha256": "fa2b81a888f293471cf49010c86f8d95d94a7ab48fc8fd2bb86ac4f00bee1d09",
           "bytes": 2022,
           "executable": false
         }

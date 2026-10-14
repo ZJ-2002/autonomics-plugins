@@ -39,8 +39,8 @@
       "bytes": 3551
     },
     "plugins/bulk-limma-normalized/tests/run_method_toy.py": {
-      "sha256": "86a05aca4d6ffe221b994bc63f35f9800e02ddbab2dc840ef4a3fea47e422cf9",
-      "bytes": 15047
+      "sha256": "66db0c25271e8a88078181d1e8da9adbf4f16acc316ac09c376c76145ce18a1c",
+      "bytes": 15391
     },
     "tests/test_frozen_b_project.py": {
       "sha256": "d4aedfa7b0d1eeb413a9eb6a09a015d7f64277d76d680374a199ee8b932b4f43",

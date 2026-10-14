@@ -132,6 +132,8 @@ def run(library, output, frozen_code, *, execution_scope='HOST'):
     model_checks = {}
     for model in module.MODELS:
         config = configurations[model]
+        config_path = output / (model + '-config.json')
+        inputs[0] = config_path
         config_path.write_bytes(canonical(config))
         design = entry('design', output / (model + '-design'), inputs)
         design_audit = json.loads((design / 'audit.json').read_text())
@@ -166,6 +168,7 @@ def run(library, output, frozen_code, *, execution_scope='HOST'):
         synthetic_intake = dict(**expected_design, result_exposure='SEEN',
             project_lock=module.identity(module.canonical(toy_lock)), gene_count=25,
             input_sha256=config['input_sha256'], config_sha256=sha(config_path))
+        (output / (model + '-intake.json')).write_bytes(module.canonical(synthetic_intake))
         family_inputs = dict(results=(fit / 'results.tsv').read_bytes(), genes=(output / 'genes.tsv').read_bytes(),
             intake=module.canonical(synthetic_intake), limma_audit=(fit / 'audit.json').read_bytes())
         family = module.family(family_inputs, toy_lock)
@@ -184,10 +187,12 @@ def run(library, output, frozen_code, *, execution_scope='HOST'):
             except ValueError: pass
             else: raise AssertionError('mutated model/role accepted')
         model_checks[model] = dict(rank=expected_design['rank'], residual_df=expected_design['residual_df'],
+            config_sha256=sha(config_path), intake_sha256=sha(output / (model + '-intake.json')),
             independent_ols_coefficients_verified=True, actual_design_binding_verified=True, official_rds_readback_verified=True,
             beta_se_df_ci_p_complete_bh_by_parity_verified=True, complete_gene_rows=25, constant_na_as_one_verified=True,
             mutated_model_role_rejected=True)
         if model == 'primary': primary_audit = design_audit
+    config_path = output / 'config.json'; inputs[0] = config_path
     config = configurations['primary']; config_path.write_bytes(canonical(config)); design_audit = primary_audit
     for key, value in [('expression_scale', 'raw_integer_counts'), ('software_lock', {**LOCK['software_lock'], 'limma': '3.66.0'})]:
         config_path.write_bytes(canonical({**config, key: value}))
