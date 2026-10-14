@@ -14,6 +14,7 @@ IMAGE='localhost/autonomics/b-bulk-limma@sha256:6932fcead69397d2d6dc941c45aca1e7
 CURRENT_LEGACY_PLUGINS={'bulk-limma-normalized':{'bulk_normalized_design','bulk_normalized_limma'},
     'frozen-b-project':{'frozen_b_legacy_intake','frozen_b_legacy_family'}}
 OPTIONAL_CURRENT_LEGACY_PLUGINS={'twosamplemr-v432-a':{'twosamplemr_v432_a_exploratory'}}
+CURRENT_OFFICIAL_METHOD_ADDITIONS={'r-stats-lm':{'r_stats_lm'}}
 IMAGE_SHA={
  '/opt/b-bulk-build/SOURCE_LOCK.json':'5e12f6c8573004c40bd0724c66733152f3a394a530b30d8d283476aaeebcd9c2',
  '/opt/b-bulk-build/install-source.R':'1e014a6cd11c9768910ec6fc11334ef706b85f71d845b010fde07e7ae64487b7',
@@ -73,7 +74,7 @@ def check(root=ROOT):
             if namespace=='research-adapters' and path.parent.name in [*FAMILIES,NORMALIZED]:continue
             kinds={n['kind'] for n in tomllib.loads(path.read_text())['nodes']};require(not (kinds&proposed),'new transport kind collides with existing canonical/opt-in family')
     catalog=inventory(root)
-    allowed={**CURRENT_LEGACY_PLUGINS,**OPTIONAL_CURRENT_LEGACY_PLUGINS}
+    allowed={**CURRENT_LEGACY_PLUGINS,**OPTIONAL_CURRENT_LEGACY_PLUGINS,**CURRENT_OFFICIAL_METHOD_ADDITIONS}
     additions=[r for r in catalog['families'] if r['directory'].startswith('plugins/') and r['plugin_name'] in allowed]
     actual={r['plugin_name']:set(r['kinds']) for r in additions}
     require(all(actual.get(name)==kinds for name,kinds in CURRENT_LEGACY_PLUGINS.items()) and
@@ -83,7 +84,8 @@ def check(root=ROOT):
     return {'scope':'OFFLINE_MANIFEST_SOURCE_AND_PORT_ABI_TRANSPORT_NOT_NATIVE_LOADER_IMAGE_WORKER_OR_SCIENCE_ACCEPTANCE',
         'selected_families':results,'new_unique_kinds':18,'canonical_families':31,'canonical_kinds':62,
         'current_canonical_families':catalog['canonical_families'],'current_canonical_kinds':catalog['canonical_kinds'],
-        'current_legacy_additions':sorted(actual),
+        'current_legacy_additions':sorted(set(actual)-set(CURRENT_OFFICIAL_METHOD_ADDITIONS)),
+        'current_official_method_additions':sorted(set(actual)&set(CURRENT_OFFICIAL_METHOD_ADDITIONS)),
         'native_loader_construct_verified':False,'loaded_worker_registration_verified':False,'scientific_authorization':False,'auto_enable':False}
 
 if __name__=='__main__':

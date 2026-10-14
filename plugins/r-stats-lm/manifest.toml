@@ -1,0 +1,46 @@
+schema_version = 1
+plugin_name = "r-stats-lm"
+
+[image]
+reference = "ghcr.io/zj-2002/mrlap-official@sha256:78f195b862a3b7c5f8d96a96576cfb2c66b08f9bd31a739da59a017726cd063d"
+tag = "R-4.6.1-stats-official"
+upstream = "Measured R Core stats 4.6.1 with jsonlite/digest in the existing MRlap image; MRlap and other estimators are not used"
+license = "GPL-2.0-or-later"
+
+[[nodes]]
+kind = "r_stats_lm"
+desc = "Official R stats::lm QR regression with explicit typed design and method contract."
+doc = """
+Input0: literal TSV with unique row_id and exactly the declared model columns.
+Input1: strict JSON contract binding the input SHA256, column types, factor
+levels, ordered terms, intercept, weights/offset or null, QR tolerance and CI.
+The contract scope must be TECHNICAL_ONLY_NOT_G0. Numeric predictors, factors
+with explicit treatment-reference levels, and explicit interaction terms are
+supported. Arbitrary R expressions, automatic variable selection, missing-row
+deletion, singular models and nonpositive residual df are rejected. Zero weights
+follow official lm semantics; all input identities remain in observations.tsv.
+Coefficient names, estimate/SE/t/two-sided P, official confidence intervals,
+fitted values, residuals, full lm/summary/model matrix and covariance are retained.
+NaN/Inf/NA diagnostics are not silently replaced: numeric TSV slots carry paired
+kind columns. Use an explicit typed reader before downstream Arrow computation.
+This is not a mixed model, limma/eBayes, donor-eligibility or formal-study gate.
+No native statistical fallback. Publication is no-clobber with ordinary-error
+rollback of owned outputs, not a crash-atomic transaction or recovery guarantee.
+"""
+timeout_secs = 300
+artifact_prefix = "/artifacts/r_stats_lm"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+[nodes.ports]
+inputs = [{ type = "file", label = "observations" }, { type = "file", label = "method_contract" }]
+outputs = [
+  { path = "coefficients.tsv", format = "tsv" },
+  { path = "observations.tsv", format = "tsv" },
+  { path = "model.RDS", format = "r_rds" },
+  { path = "model.log", format = "text" },
+  { path = "audit.json", format = "json" },
+]
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/lm.R"

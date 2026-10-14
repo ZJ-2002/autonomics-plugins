@@ -1,6 +1,12 @@
 {
   "scope": "CATALOG_TESTS_NOT_SCIENTIFIC_CERTIFICATES",
   "test_ids": [
+    "tests.test_r_lm_interface.OfficialLinearModelTests.test_actual_publication_preserves_existing_and_foreign_files",
+    "tests.test_r_lm_interface.OfficialLinearModelTests.test_actual_r_parser_preserves_identity_and_rejects_invalid_values",
+    "tests.test_r_lm_interface.OfficialLinearModelTests.test_every_case_has_separate_oracle_formula_or_expected_refusal",
+    "tests.test_r_lm_interface.OfficialLinearModelTests.test_evidence_cannot_silently_cover_changed_sources_or_production",
+    "tests.test_r_lm_interface.OfficialLinearModelTests.test_manifest_binds_five_real_ports_and_immutable_image",
+    "tests.test_r_lm_interface.OfficialLinearModelTests.test_official_api_and_strict_scope_are_explicit",
     "tests.test_h5ad_rank_interface.H5ADRankInterfaceTests.test_original_three_ports_and_four_parameters",
     "tests.test_h5ad_rank_interface.H5ADRankInterfaceTests.test_explicit_original_X_recipe_and_complete_result_audit",
     "tests.test_h5ad_rank_interface.H5ADRankInterfaceTests.test_public_whole_author_and_boundary_drivers_are_not_skipped",

@@ -1,0 +1,59 @@
+{
+  "schema": "SCOPED_OFFICIAL_METHOD_AND_HARNESS_EVIDENCE_V1",
+  "original_function_id": "FUNC_linear_regression",
+  "node_kind": "r_stats_lm",
+  "family": "plugins/r-stats-lm",
+  "status": "ACCEPTED_SCOPED_TECHNICAL_ALTERNATIVE_NOT_FORMAL_RESEARCH",
+  "input_ports": ["literal_observations_tsv", "explicit_method_and_input_hash_json"],
+  "output_ports": ["coefficients_tsv", "observations_tsv", "complete_model_rds", "nonempty_log", "hash_audit_json"],
+  "scientific_backend": "R Core stats::lm, summary.lm, confint.lm, vcov.lm",
+  "R_version": "4.6.1",
+  "stats_version": "4.6.1",
+  "image_reference": "ghcr.io/zj-2002/mrlap-official@sha256:78f195b862a3b7c5f8d96a96576cfb2c66b08f9bd31a739da59a017726cd063d",
+  "method_source_sha256": "86da2e2eb1e684db72a5cd6d149e48f0c6025182b148722a2c8a73a15a090d70",
+  "manifest_sha256": "11cb58a8e7c097d3732793d2ef555118345416f03cda8583d17caf6cb17c21de",
+  "proof_driver_sha256": "5e2757a4b0af206de0dbc6cbb8a39e38e9ed8e835d2cc19c5cd3b833ffd95cfe",
+  "managed_sessions": {
+    "missing_dependency_attempt": {"id": "388916cbfeb54068a6124e79c1e7a2f7", "exit": 1, "state": "CLEANED", "manifest_sha256": "aa1ab2b252c1700b885d1bdf838172c20c03f8b14ef25ee3beeb5a5911fdff46"},
+    "environment_probe": {"id": "11858357c3284ffd8cb5ff7d78284f34", "exit": 0, "state": "CLEANED", "manifest_sha256": "516ac2e790f3f6a729ad5e727e2baa2435a99a56286d3d43fbb532e5db56bca2"},
+    "direct_method": {"id": "ee3a311f52884380bf748e2ab87d9ee0", "exit": 0, "state": "CLEANED", "manifest_sha256": "6845db8bfaed1043433d37bea36caaa6e683d8ed966ce000fa81049ba07f5f43"},
+    "method_and_isolated_dag_before_nested_array_guards": {"id": "0cc0e985f0de4efca45c87575e7dd125", "exit": 0, "state": "CLEANED", "manifest_sha256": "4d3fc60872cfb46c5be8e48e18f01ee9fd1776232bc6224a7bcfad2ea92a5aa9"},
+    "final_method_and_isolated_dag": {"id": "372140b7eea947c698b1544a68888604", "exit": 0, "state": "CLEANED", "manifest_sha256": "0e69d1cdc664bc73a5091fa5c4741ad1ff68f3a3242807eaaf28c8aee6973d9b"},
+    "source_checks_before_catalog_addition_integration": {"id": "a2afa0188b0b4db9b16b2eb74b1b4d02", "exit": 1, "state": "CLEANED", "manifest_sha256": "61db7b08e245c6fc4795699d21cd8d5f309a5ad7376060fcbac03eff2c34719b"},
+    "source_checks_before_evidence_identity_guard": {"id": "f7db96c989b440afb53f49d70c81d0e4", "exit": 0, "state": "CLEANED", "manifest_sha256": "0d8826cff9548272693b241cf44166149f9043f640f4d58610074cd27a4fa0b1"},
+    "final_source_checks": {"id": "a3a5f75768d4458ca5a974d8fe7061ec", "exit": 0, "state": "CLEANED", "manifest_sha256": "432967d5c2a4c1dc81d53c23972660fde935a5ac86cae92730d90ec18203f8f0"}
+  },
+  "method": {
+    "positive_cases": 17,
+    "refusal_cases": 29,
+    "coefficient_rows": 39,
+    "absolute_tolerance": 1e-10,
+    "relative_tolerance": 1e-8,
+    "reference": "Separate direct official-package calls using independently declared formula strings, not the wrapper formula builder",
+    "scope": ["numeric regression", "no intercept", "numeric interaction", "explicit factor reference and interaction", "weights including zero rows", "offset", "weighted offset", "intercept only", "confidence level", "identity and nonfinite-kind propagation", "input and output hashes", "no-clobber rerun"],
+    "not_proved": ["all R formula/API branches", "all numerical extremes", "official R source/build provenance beyond the locked image and captured installed lm body", "ADEMP statistical behavior validation", "arbitrary-scale resource validation"]
+  },
+  "dag": {
+    "cases": 46,
+    "nodes_per_case": 5,
+    "edges_per_case": 4,
+    "positive_materialized_rereads": 17,
+    "all_five_ports_and_content_hashes_checked": true,
+    "engine_source_revision": "d8659cdf1ebf",
+    "executable_sha256": "1daf90531bda4aa5adb9956412dcf506809e5c23a7d5ec980df236d27aa3a23d",
+    "scope": "Existing hash-bound historical harness, not current engine main or resident daemon"
+  },
+  "four_layers": {
+    "official_method": "SCOPED_DIRECT_OFFICIAL_PACKAGE_COMPARISON",
+    "engineering_interface": "SCOPED_INPUT_OUTPUT_HASH_AND_PUBLICATION_PROOF",
+    "isolated_dag": "SCOPED_HISTORICAL_HARNESS_PROOF",
+    "plan_contract": "NOT_FORMALLY_AUTHORIZED_TECHNICAL_ONLY"
+  },
+  "source_checks": {"tests_run": 125, "failures": 0, "errors": 0, "skipped": 0, "complete_required_inventory": true, "source_lock_matches": true},
+  "whole_original_node_certified": false,
+  "new_original_function_slots": 0,
+  "production_configuration_changed": false,
+  "native_statistical_fallback": false,
+  "scientific_authorization_granted": false,
+  "g0_granted": false
+}
