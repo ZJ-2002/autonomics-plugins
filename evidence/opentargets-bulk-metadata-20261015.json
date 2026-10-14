@@ -1,0 +1,70 @@
+{
+  "schema": "OFFICIAL_BULK_RESOURCE_AND_SAMPLED_METADATA_AUDIT_V1",
+  "original_node_kind": "source_opentargets_associations",
+  "source_base": "https://ftp.ebi.ac.uk/pub/databases/opentargets/platform/26.09/output/",
+  "release": "26.09",
+  "scope": "RESOURCE_AND_SAMPLED_SCHEMA_AUDITED_NOT_SOURCE_COMPLETE",
+  "resources": [
+    {"dataset": "association_overall_direct", "partitions": 14, "compressed_bytes": 839148848},
+    {"dataset": "association_by_datasource_direct", "partitions": 14, "compressed_bytes": 861231637},
+    {"dataset": "association_by_datatype_direct", "partitions": 15, "compressed_bytes": 860236411},
+    {"dataset": "target", "partitions": 3, "compressed_bytes": 21633117},
+    {"dataset": "disease", "partitions": 1, "compressed_bytes": 6346458}
+  ],
+  "partitions": 47,
+  "exact_remote_compressed_bytes": 2588596471,
+  "sampled_schemas": 5,
+  "sampled_raw_footer_bytes": 32590,
+  "pyarrow_version": "25.0.1",
+  "reader_image": "ghcr.io/zj-2002/single-cell-preprocessor@sha256:e2f9fcd5ccf9e97b0f0129466df5abb21ae47ed32f123f6953b79fd83d915e20",
+  "driver_sha256": "9dbcdd9cb7e25d7d7f0e0ae6a22c0a92827bf9a2ff9be6c9879d9fb1bab7184c",
+  "final_session": {
+    "id": "5addbe9b7690453b84ee54154486ab42",
+    "state": "CLEANED",
+    "worker_exit_status": 0,
+    "manifest_sha256": "e89ad960f9fd8304724e0dc615e726c00c9ca3d768951cc054d064f7f6ef8842",
+    "files": 25,
+    "bytes": 97019,
+    "repeated_network_requests": 0
+  },
+  "preserved_initial_failure": {
+    "id": "e7d71dfad2374350adfb80c53375e427",
+    "state": "CLEANED",
+    "worker_exit_status": 1,
+    "manifest_sha256": "554a5c760f8529713dbe9bb9326cfc14a9a2e6e3c944fa7165c259fa458afd37",
+    "files": 33,
+    "bytes": 114050,
+    "reason": "Container image user could not read operator-owned mode-0700 bind directory",
+    "failure_not_reclassified": true
+  },
+  "intermediate_reader_repair": {
+    "id": "89c3f5111ed34691b4141fb9af31ee64",
+    "worker_exit_status": 0,
+    "manifest_sha256": "80a90261f00b21a7220b700eef154ea9abd46e809ced87adacd7c1d61c476f57"
+  },
+  "all_three_archive_manifests_and_contents_independently_reverified": true,
+  "required_source_tests": {
+    "session": "e6ec3d8b277b402c834f44d7fab924e7",
+    "state": "CLEANED",
+    "worker_exit_status": 0,
+    "manifest_sha256": "9323ac4f0f4a433cbfbda378e4b0638b9daeffd313651802099b8e20a5f1c60d",
+    "executed": 157,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "complete_required_inventory": true,
+    "source_lock_matches": true,
+    "not_scientific_certification": true
+  },
+  "complete_association_rows_downloaded": false,
+  "all_partition_schemas_verified": false,
+  "full_membership_verified": false,
+  "score_and_annotation_semantics_qualified": false,
+  "new_original_function_slots": 0,
+  "bulk_route_status": "PENDING_NOT_AUTOMATICALLY_SELECTED",
+  "prior_live_pagination_failure_resolved": false,
+  "production_configuration_changed": false,
+  "frozen_study_source_or_denominators_changed": false,
+  "scientific_authorized": false,
+  "g0_granted": false
+}
