@@ -69,14 +69,23 @@ output graph.
 | LIMMA | `/artifacts/bulk_normalized_limma` |
 | full family | `/artifacts/frozen_b_legacy_family` |
 
-The two environment references are official Python 3.14-slim-bookworm 48b13… and the new
+The two environment references are official Python 3.14-slim-bookworm amd64
+manifest a66d3… and the new
 normalized limma 723904… digest. The latter passed actual exported-image
 identity, Imports/ABI and bounded SYN method checks; it contains no Python
-runtime. The official Python image passed actual store identity, version and
+runtime. Official parent index 48b13… points to this linux/amd64 manifest;
+its config is 82cd6…. Original index-selected execution passed version and
 eleven SYN intake/family/interface tests, including manual BH/BY expectations
 and stale-file, role-mixing and output-mutation rejection. No actual frozen
 assay was opened or fitted. B has no exact Python version lock; the separate
-A genetic-QC Python lock is unaffected.
+A genetic-QC Python lock is unaffected. The explicit platform manifest and
+its config have since been installed and verified in the inactive private
+overlay. Three actual private-overlay interpreter probes then passed with the
+complete runtime backend, including `--tmpdir`, and exact image/config/layer
+identities; all three session containers were verified stopped. That probe used
+an independently reviewed technical runtime and did not activate the daemon.
+A supplementary direct a66d3… execution in the host cache also passed all
+eleven SYN tests and recorded the same Python3.14.8/config.
 Both need operator-approved exact
 interpreter entries (`python3` and `/opt/b-bulk/bin/Rscript-vanilla` respectively).
 Installing this source alone does not approve either environment, migrate an

@@ -615,17 +615,17 @@
         "frozen_b_legacy_intake",
         "frozen_b_legacy_family"
       ],
-      "image_reference": "docker.io/library/python@sha256:48b13b003dda20b16f9442b8475aa05fe21bf6579a8c881db92ffb4d8fd20f83",
+      "image_reference": "docker.io/library/python@sha256:a66d3a463d0be3cc537c269b0d3418746dda512417a975559a0eaa8a6406baaf",
       "files": [
         {
           "path": "README.md",
-          "sha256": "f063330edb60edc4e8ff45265dd163ecf576215d9cccdd126dd6d39160d1e2d0",
-          "bytes": 5269,
+          "sha256": "fc37fe90f4f270770630bb7a40638c093e2c0c714efd6dde34b070c21f5dab31",
+          "bytes": 5918,
           "executable": false
         },
         {
           "path": "manifest.toml",
-          "sha256": "2d45fca31241bac7b92acaff8da8d96e05892ca42b8ca556c768e2dd69856ef6",
+          "sha256": "73902e155d3a24fa3cde3b97e0e06dc4cb33d0e0f0dde3992af507e0a742abc6",
           "bytes": 3298,
           "executable": false
         },

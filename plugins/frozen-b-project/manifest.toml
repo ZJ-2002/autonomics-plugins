@@ -2,7 +2,7 @@ schema_version = 1
 plugin_name = "frozen-b-project"
 
 [image]
-reference = "docker.io/library/python@sha256:48b13b003dda20b16f9442b8475aa05fe21bf6579a8c881db92ffb4d8fd20f83"
+reference = "docker.io/library/python@sha256:a66d3a463d0be3cc537c269b0d3418746dda512417a975559a0eaa8a6406baaf"
 tag = "3.14-slim-bookworm"
 upstream = "Actual cached official Python runtime with bounded SYN intake/family and negative-case OCI tests. Operator installation and current destination store approval required."
 license = "Python-2.0"

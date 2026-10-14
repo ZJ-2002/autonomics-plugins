@@ -94,7 +94,7 @@
   "real_study_fitted": false,
   "whole_frozen_scientific_program_executed": false,
   "python_environment": {
-    "reference": "docker.io/library/python@sha256:48b13b003dda20b16f9442b8475aa05fe21bf6579a8c881db92ffb4d8fd20f83",
+    "reference": "docker.io/library/python@sha256:a66d3a463d0be3cc537c269b0d3418746dda512417a975559a0eaa8a6406baaf",
     "interpreters": [
       "python3"
     ]
@@ -120,9 +120,121 @@
     "actual_frozen_intake_executed": false,
     "scientific_authorization": false,
     "G0": false,
-    "session": "e755e089f6d140be826763035d976651"
+    "session": "e755e089f6d140be826763035d976651",
+    "reference_scope": "OBSERVED_PARENT_INDEX_RUNTIME_WITH_SAME_PLATFORM_CONFIG_NOT_DIRECT_PRIVATE_PLATFORM_ABI_PROBE"
   },
   "python_environment_approved": false,
   "python_B_exact_version_locked": false,
-  "python_A_genetic_QC_version_not_changed": "3.14.7 applies only to A genetic_summary_qc frozen SOFTWARE_LOCK row"
+  "python_A_genetic_QC_version_not_changed": "3.14.7 applies only to A genetic_summary_qc frozen SOFTWARE_LOCK row",
+  "python_parent_index_reference": "docker.io/library/python@sha256:48b13b003dda20b16f9442b8475aa05fe21bf6579a8c881db92ffb4d8fd20f83",
+  "python_platform_reference": "docker.io/library/python@sha256:a66d3a463d0be3cc537c269b0d3418746dda512417a975559a0eaa8a6406baaf",
+  "python_source_identity_correction": "48b13 is the official multiarch OCI index, not the amd64 manifest; original e755 evidence remains unchanged.",
+  "private_overlay_installation": {
+    "session": "41dee687ecd041b0aa3648a54509288f",
+    "exact_A_B_Python_entities_installed": true,
+    "python_index_bytes_preserved_and_child_descriptor_verified": true,
+    "python_source_index_digest": "sha256:48b13b003dda20b16f9442b8475aa05fe21bf6579a8c881db92ffb4d8fd20f83",
+    "python_platform_manifest_digest": "sha256:a66d3a463d0be3cc537c269b0d3418746dda512417a975559a0eaa8a6406baaf",
+    "python_config_digest": "sha256:82cd6bca489be723b62b192752c133eb7c6acbcecaeca797628725d994998c5b",
+    "private_overlay_ABI_probe_verified": true,
+    "ABI_blocker": null,
+    "daemon_activated": false,
+    "scientific_authorization": false,
+    "ABI_proof_session": "933c56cdb26e4d3089acfdac85d4dc72",
+    "independent_technical_runtime_revision": "214187845928ad81716a06dfd7e09a38a1f133da",
+    "runtime_release_sha256": "ec1a65ea60d93c76e00581b8019a8a58614f44ac3166d7763cead83076c37be3",
+    "three_container_stoppage_verified": true,
+    "runtime_backend_template": [
+      "--root",
+      "STATE_DIR/containers-overlay/storage",
+      "--runroot",
+      "STATE_DIR/containers-overlay/run",
+      "--tmpdir",
+      "STATE_DIR/containers-overlay/run/libpod-tmp",
+      "--storage-driver",
+      "overlay"
+    ]
+  },
+  "python_direct_platform_execution_proof": {
+    "scope": "ENGINEERING_SYN_PYTHON_INTAKE_FAMILY_AND_INTERFACE_NOT_REAL_STUDY",
+    "actual_backend": "HOST_DEFAULT_CACHED_OVERLAY_NOT_PRIVATE_DEPLOYMENT_STORE",
+    "image_reference": "docker.io/library/python@sha256:a66d3a463d0be3cc537c269b0d3418746dda512417a975559a0eaa8a6406baaf",
+    "image_config_id": "82cd6bca489be723b62b192752c133eb7c6acbcecaeca797628725d994998c5b",
+    "ordered_diff_ids": [
+      "sha256:e58989146fcec76699871403b9897b5c014af1ccd85f5a9300a215e7975525d7",
+      "sha256:08e075203608b4f8b242d98f108e01db067b23db2f0f1a611b02ab462250b89a",
+      "sha256:9a6dbecf1dd0bbab6f8dc7951f40fe1814eda6180322e47f2bd0bc5c798eb682",
+      "sha256:020f37c339b9fc549a11bcc5a937b81e3500281270bb62edde29022b27919d86"
+    ],
+    "actual_current_store_identity_verified": true,
+    "actual_python_runtime": {
+      "version": "3.14.8 (main, Oct  6 2026, 02:01:53) [GCC 12.2.0]",
+      "executable": "/usr/local/bin/python3"
+    },
+    "actual_synthetic_tests_verified": true,
+    "tests_run": 11,
+    "study_assay_read_or_fitted": false,
+    "actual_frozen_intake_executed": false,
+    "scientific_authorization": false,
+    "G0": false,
+    "session": "574448075f5444619d8f062ebd8fd6b2"
+  },
+  "private_overlay_ABI_probe_summary": [
+    {
+      "label": "A",
+      "reference": "ghcr.io/zj-2002/mrlap-official@sha256:78f195b862a3b7c5f8d96a96576cfb2c66b08f9bd31a739da59a017726cd063d",
+      "image_config_digest": "sha256:294152508a320bf7bbefa9ba53a095a121535cc3643e79a842950609843ea84c",
+      "actual_interpreter": "Rscript",
+      "measured": {
+        "R": "4.6.1",
+        "versions": {
+          "TwoSampleMR": "0.7.11",
+          "jsonlite": "2.0.0",
+          "digest": "0.6.39"
+        },
+        "library_paths": {
+          "TwoSampleMR": "/usr/local/lib/R/site-library/TwoSampleMR",
+          "jsonlite": "/usr/local/lib/R/site-library/jsonlite",
+          "digest": "/usr/local/lib/R/site-library/digest"
+        }
+      },
+      "ABI_verified": true
+    },
+    {
+      "label": "B",
+      "reference": "localhost/autonomics/frozen-b-normalized@sha256:723904dd46c9148d75716555e2f641604d98c22909bc333d5fac832f33ebffed",
+      "image_config_digest": "sha256:9f95389b321be12e5b89112e62fce3a7137fd3048bc84815e14260a8436c8f7d",
+      "actual_interpreter": "/opt/b-bulk/bin/Rscript-vanilla",
+      "measured": {
+        "R": "4.6.1",
+        "versions": {
+          "limma": "3.68.5",
+          "statmod": "1.5.2",
+          "jsonlite": "2.0.0",
+          "digest": "0.6.39",
+          "stats": "4.6.1"
+        },
+        "library_paths": {
+          "limma": "/opt/b-bulk-library/limma",
+          "statmod": "/opt/b-bulk-library/statmod",
+          "jsonlite": "/usr/local/lib/R/site-library/jsonlite",
+          "digest": "/usr/local/lib/R/site-library/digest",
+          "stats": "/usr/local/lib/R/library/stats"
+        }
+      },
+      "ABI_verified": true
+    },
+    {
+      "label": "Python",
+      "reference": "docker.io/library/python@sha256:a66d3a463d0be3cc537c269b0d3418746dda512417a975559a0eaa8a6406baaf",
+      "image_config_digest": "sha256:82cd6bca489be723b62b192752c133eb7c6acbcecaeca797628725d994998c5b",
+      "actual_interpreter": "python3",
+      "measured": {
+        "version": "3.14.8 (main, Oct  6 2026, 02:01:53) [GCC 12.2.0]",
+        "executable": "/usr/local/bin/python3",
+        "stdlib_loaded": true
+      },
+      "ABI_verified": true
+    }
+  ]
 }

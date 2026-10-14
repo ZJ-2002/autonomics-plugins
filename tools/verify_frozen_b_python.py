@@ -6,7 +6,7 @@ from pathlib import Path
 import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
-IMAGE = 'docker.io/library/python@sha256:48b13b003dda20b16f9442b8475aa05fe21bf6579a8c881db92ffb4d8fd20f83'
+IMAGE = 'docker.io/library/python@sha256:a66d3a463d0be3cc537c269b0d3418746dda512417a975559a0eaa8a6406baaf'
 
 
 def main():
@@ -20,8 +20,12 @@ def main():
         result.check_returncode()
         return result.stdout
     info = json.loads(execute(['podman', 'image', 'inspect', IMAGE], 'python-image-inspection'))[0]
-    if info['Digest'] != IMAGE.split('@')[1]:
-        raise ValueError('cached actual Python manifest differs')
+    raw = execute(['/usr/bin/skopeo', 'inspect', '--raw', 'containers-storage:' + IMAGE], 'python-exact-platform-manifest')
+    if 'sha256:' + hashlib.sha256(raw.encode()).hexdigest() != IMAGE.split('@')[1]:
+        raise ValueError('actual Python platform manifest differs')
+    manifest = json.loads(raw)
+    if manifest['config']['digest'] != 'sha256:' + info['Id'].removeprefix('sha256:'):
+        raise ValueError('actual Python platform config differs')
     run = ['podman', 'run', '--rm', '--pull=never', '--network=none',
            '--security-opt=no-new-privileges', '--cpus=1', '--memory=1g',
            '-e', 'PYTHONDONTWRITEBYTECODE=1', '--entrypoint=python3']
@@ -36,6 +40,7 @@ def main():
                *sorted((ROOT / 'plugins/frozen-b-project/scripts').glob('*.py')),
                ROOT / 'plugins/frozen-b-project/project-lock.json']
     record = dict(scope='ENGINEERING_SYN_PYTHON_INTAKE_FAMILY_AND_INTERFACE_NOT_REAL_STUDY',
+        actual_backend='HOST_DEFAULT_CACHED_OVERLAY_NOT_PRIVATE_DEPLOYMENT_STORE',
         image_reference=IMAGE, image_config_id=info['Id'], ordered_diff_ids=info['RootFS']['Layers'],
         actual_current_store_identity_verified=True, actual_python_runtime=runtime,
         actual_synthetic_tests_verified=True, tests_run=11, study_assay_read_or_fitted=False,
