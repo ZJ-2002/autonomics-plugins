@@ -46,3 +46,46 @@ checks, direct official full-sequence parity and seven negative contracts to
 `AUTONOMICS_VALIDATION_PERMANENT`. All containers run attached and are registered
 with the session's Podman ownership wrapper and stopped-worker audit. A successful
 toy run does not execute the real frozen 39-SNP MR.
+
+Generate the preset TUI `dag_shell` request from this repository:
+
+```sh
+python3 -B tools/build_frozen_a_project_dag.py --output frozen-a-dag-shell.json
+```
+
+The generator creates the request file exclusively and refuses to overwrite
+it. It constructs five hash-enabled `core/file_reference` nodes and the actual
+`twosamplemr-v432-a/twosamplemr_v432_a_exploratory` method node, with all five
+edges in the declared input order. It uses the fixed approved
+`vfs://research/versions/v4.3.2/bm_cachexia_v432_g0` project and
+`vfs://plugins/active/twosamplemr-v432-a/contracts/frozen-method-proof.json`.
+There is no arbitrary project replacement option. `--prefix a_review_2` can
+choose distinct node identifiers if a graph already contains the default ids.
+No study payload is read and no graph is executed by this command.
+
+Submit the JSON request to the TUI's `dag_shell` tool with its generated
+`dry_run=true` first. After the operator has installed the exact plugin and
+approved software environment, checked the mounted frozen sources with the
+original project verifier, and completed the existing study admission and
+signed execution requirements, submit the same `script` with `dry_run=false`.
+Then use the actual `run_dag` tool for an explicitly authorized analysis. The
+`commit()` in the script commits graph edits; it does not run MR. The method
+node produces all nine declared output files without hand-built sink nodes.
+
+Results use the method's native artifact prefix
+`/artifacts/twosamplemr_v432_a_exploratory`, with a separate container-run
+directory per execution. For delivery under the study's new results area, the
+operator installs an exact writable VFS mount for that prefix pointing to
+`versions/v4.3.2/bm_cachexia_v432_g0/06_RESULTS/A_LEGACY_TUI` in the project.
+That directory must be a new output namespace; existing research result
+directories are retained. This preset does not install the mount or claim that
+it already exists. Without that operator mount, artifacts remain visible in
+the runtime's normal `state/data/artifacts` storage. The builder adds no
+overwriting copy/export sinks or unsupported output-directory parameters.
+The runtime publishes each execution under its own run name, preserving earlier
+result directories.
+
+This remains the fixed X01 to M06 legacy exploratory O2 comparison. The
+raw exploratory estimates/P values, primary NA and family value 1 keep their
+distinct roles; a completed graph does not become confirmatory evidence or
+grant G0/scientific authorization.
