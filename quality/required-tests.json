@@ -1,6 +1,10 @@
 {
   "scope": "CATALOG_TESTS_NOT_SCIENTIFIC_CERTIFICATES",
   "test_ids": [
+    "tests.test_current_r_stats.CurrentOfficialStatisticsTests.test_every_method_uses_exact_declared_columns_and_only_engineering_rust_nodes",
+    "tests.test_current_r_stats.CurrentOfficialStatisticsTests.test_frozen_identity_order_does_not_filter_members_or_nullify_literal_na",
+    "tests.test_current_r_stats.CurrentOfficialStatisticsTests.test_materialized_nulls_lexical_ids_and_boolean_values_are_checked",
+    "tests.test_current_r_stats.CurrentOfficialStatisticsTests.test_old_executables_and_metadata_hashing_cannot_satisfy_current_engine",
     "tests.test_r_stats_publication.OfficialStatisticsPublicationTests.test_content_identity_ignores_access_time_but_not_mutation_or_replacement",
     "tests.test_r_stats_publication.OfficialStatisticsPublicationTests.test_every_declared_port_refuses_before_truncation_in_actual_r",
     "tests.test_r_stats_publication.OfficialStatisticsPublicationTests.test_duplicate_dangling_symlink_and_traversing_ports_refuse_in_actual_r",
