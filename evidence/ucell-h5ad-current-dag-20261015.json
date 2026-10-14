@@ -1,0 +1,840 @@
+{
+  "schema": "UCELL_H5AD_CURRENT_GENERIC_ENGINE_WHOLE_OBJECT_PROOF_V1",
+  "function_id": "FUNC_h5ad_ucell_score",
+  "node_kind": "h5ad_ucell_score",
+  "status": "ACCEPTED_SCOPED_TECHNICAL_CURRENT_GENERIC_ENGINE",
+  "active_study_design": "BMC_v4.3.2_FULL_FIXED.zip",
+  "active_design_sha256": "4c5af762ab1e9768a24b9446827ea367176a80407862cfc10ca09a95f44f1151",
+  "prior_evidence": "canonical-h5ad-ucell-v1-20261012.json",
+  "official": {
+    "package": "UCell",
+    "version": "2.16.0",
+    "Bioconductor": "3.23",
+    "source_archive_sha256": "816526fc4fb2958ecac6432f8c574c2bd51a6ff2c179d6ec8d2d6bcb1e9f5c9c",
+    "image": "ghcr.io/zj-2002/ucell-h5ad-official@sha256:e18149dc957c70161029c3451584d7285ab08af2174926c593b8ae285f2dd133",
+    "method": "UCell::ScoreSignatures_UCell",
+    "maxRank": 1500,
+    "w_neg": 1,
+    "missing_genes": "impute",
+    "ties_method": "average",
+    "parallel": "BiocParallel::SerialParam(), ncores=1",
+    "chunk_size": 100,
+    "suffix": "",
+    "negative_only_default": "zero, not inverted enrichment",
+    "source_matrix": "X only; no mapping or normalization invented",
+    "new_statistical_kernel_or_native_fallback": false
+  },
+  "counts": {
+    "original_cases": 54,
+    "executed_DAGs": 46,
+    "positive_DAGs": 20,
+    "method_refusal_DAGs": 26,
+    "original_required_parameter_preflight": 1,
+    "direct_boundary_refusals": 7,
+    "additional_graph_preflight_refusals": 2,
+    "exact_input_bindings": 46,
+    "published_output_ports": 40,
+    "complete_H5AD_and_report_readbacks": 20,
+    "finite_values_compared": 148165
+  },
+  "proof": {
+    "status": "CURRENT_UCELL_H5AD_DAG_AND_COMPLETE_AUTHOR_OBJECTS_PROVEN_SCOPED",
+    "engine_commit": "db83a6bb9886e4b1a3c563bef9261df782a0050c",
+    "executable_sha256": "9dae47f22c5feeca79dd005ede43c16349b3b362530646e2220fcb8d40bc0069",
+    "original_cases": 54,
+    "DAG_cases": [
+      {
+        "case": "dense",
+        "route": "DAG",
+        "positive": true,
+        "nodes": 2,
+        "edges": 1,
+        "published_ports": 2
+      },
+      {
+        "case": "csr",
+        "route": "DAG",
+        "positive": true,
+        "nodes": 2,
+        "edges": 1,
+        "published_ports": 2
+      },
+      {
+        "case": "csc",
+        "route": "DAG",
+        "positive": true,
+        "nodes": 2,
+        "edges": 1,
+        "published_ports": 2
+      },
+      {
+        "case": "float32",
+        "route": "DAG",
+        "positive": true,
+        "nodes": 2,
+        "edges": 1,
+        "published_ports": 2
+      },
+      {
+        "case": "integer32",
+        "route": "DAG",
+        "positive": true,
+        "nodes": 2,
+        "edges": 1,
+        "published_ports": 2
+      },
+      {
+        "case": "boolean",
+        "route": "DAG",
+        "positive": true,
+        "nodes": 2,
+        "edges": 1,
+        "published_ports": 2
+      },
+      {
+        "case": "reordered",
+        "route": "DAG",
+        "positive": true,
+        "nodes": 2,
+        "edges": 1,
+        "published_ports": 2
+      },
+      {
+        "case": "negative-values",
+        "route": "DAG",
+        "positive": true,
+        "nodes": 2,
+        "edges": 1,
+        "published_ports": 2
+      },
+      {
+        "case": "close-floating-values",
+        "route": "DAG",
+        "positive": true,
+        "nodes": 2,
+        "edges": 1,
+        "published_ports": 2
+      },
+      {
+        "case": "signed-int-edge",
+        "route": "DAG",
+        "positive": true,
+        "nodes": 2,
+        "edges": 1,
+        "published_ports": 2
+      },
+      {
+        "case": "tied-ranks",
+        "route": "DAG",
+        "positive": true,
+        "nodes": 2,
+        "edges": 1,
+        "published_ports": 2
+      },
+      {
+        "case": "flat-small-background",
+        "route": "DAG",
+        "positive": true,
+        "nodes": 2,
+        "edges": 1,
+        "published_ports": 2
+      },
+      {
+        "case": "flat-large-background",
+        "route": "DAG",
+        "positive": true,
+        "nodes": 2,
+        "edges": 1,
+        "published_ports": 2
+      },
+      {
+        "case": "rank-cutoff",
+        "route": "DAG",
+        "positive": true,
+        "nodes": 2,
+        "edges": 1,
+        "published_ports": 2
+      },
+      {
+        "case": "rank-boundary",
+        "route": "DAG",
+        "positive": true,
+        "nodes": 2,
+        "edges": 1,
+        "published_ports": 2
+      },
+      {
+        "case": "unrelated-raw",
+        "route": "DAG",
+        "positive": true,
+        "nodes": 2,
+        "edges": 1,
+        "published_ports": 2
+      },
+      {
+        "case": "old-parameters",
+        "route": "DAG",
+        "positive": true,
+        "nodes": 2,
+        "edges": 1,
+        "published_ports": 2
+      },
+      {
+        "case": "one-cell",
+        "route": "DAG",
+        "positive": true,
+        "nodes": 2,
+        "edges": 1,
+        "published_ports": 2
+      },
+      {
+        "case": "one-program",
+        "route": "DAG",
+        "positive": true,
+        "nodes": 2,
+        "edges": 1,
+        "published_ports": 2
+      },
+      {
+        "case": "multiple-batches",
+        "route": "DAG",
+        "positive": true,
+        "nodes": 2,
+        "edges": 1,
+        "published_ports": 2
+      },
+      {
+        "case": "no-X",
+        "route": "DAG",
+        "positive": false,
+        "nodes": 2,
+        "edges": 1,
+        "explicit_refusal": true,
+        "normal_result_absent": true,
+        "published_ports": 0
+      },
+      {
+        "case": "zero-cells",
+        "route": "DAG",
+        "positive": false,
+        "nodes": 2,
+        "edges": 1,
+        "explicit_refusal": true,
+        "normal_result_absent": true,
+        "published_ports": 0
+      },
+      {
+        "case": "zero-genes",
+        "route": "DAG",
+        "positive": false,
+        "nodes": 2,
+        "edges": 1,
+        "explicit_refusal": true,
+        "normal_result_absent": true,
+        "published_ports": 0
+      },
+      {
+        "case": "nan-X",
+        "route": "DAG",
+        "positive": false,
+        "nodes": 2,
+        "edges": 1,
+        "explicit_refusal": true,
+        "normal_result_absent": true,
+        "published_ports": 0
+      },
+      {
+        "case": "inf-X",
+        "route": "DAG",
+        "positive": false,
+        "nodes": 2,
+        "edges": 1,
+        "explicit_refusal": true,
+        "normal_result_absent": true,
+        "published_ports": 0
+      },
+      {
+        "case": "complex-X",
+        "route": "DAG",
+        "positive": false,
+        "nodes": 2,
+        "edges": 1,
+        "explicit_refusal": true,
+        "normal_result_absent": true,
+        "published_ports": 0
+      },
+      {
+        "case": "integer-over-53",
+        "route": "DAG",
+        "positive": false,
+        "nodes": 2,
+        "edges": 1,
+        "explicit_refusal": true,
+        "normal_result_absent": true,
+        "published_ports": 0
+      },
+      {
+        "case": "unsigned-over-53",
+        "route": "DAG",
+        "positive": false,
+        "nodes": 2,
+        "edges": 1,
+        "explicit_refusal": true,
+        "normal_result_absent": true,
+        "published_ports": 0
+      },
+      {
+        "case": "duplicate-int-over-53",
+        "route": "DAG",
+        "positive": false,
+        "nodes": 2,
+        "edges": 1,
+        "explicit_refusal": true,
+        "normal_result_absent": true,
+        "published_ports": 0
+      },
+      {
+        "case": "bad-sparse-index",
+        "route": "DAG",
+        "positive": false,
+        "nodes": 2,
+        "edges": 1,
+        "explicit_refusal": true,
+        "normal_result_absent": true,
+        "published_ports": 0
+      },
+      {
+        "case": "duplicate-cell",
+        "route": "DAG",
+        "positive": false,
+        "nodes": 2,
+        "edges": 1,
+        "explicit_refusal": true,
+        "normal_result_absent": true,
+        "published_ports": 0
+      },
+      {
+        "case": "duplicate-gene",
+        "route": "DAG",
+        "positive": false,
+        "nodes": 2,
+        "edges": 1,
+        "explicit_refusal": true,
+        "normal_result_absent": true,
+        "published_ports": 0
+      },
+      {
+        "case": "empty-cell",
+        "route": "DAG",
+        "positive": false,
+        "nodes": 2,
+        "edges": 1,
+        "explicit_refusal": true,
+        "normal_result_absent": true,
+        "published_ports": 0
+      },
+      {
+        "case": "empty-gene",
+        "route": "DAG",
+        "positive": false,
+        "nodes": 2,
+        "edges": 1,
+        "explicit_refusal": true,
+        "normal_result_absent": true,
+        "published_ports": 0
+      },
+      {
+        "case": "tab-gene",
+        "route": "DAG",
+        "positive": false,
+        "nodes": 2,
+        "edges": 1,
+        "explicit_refusal": true,
+        "normal_result_absent": true,
+        "published_ports": 0
+      },
+      {
+        "case": "missing-gene-sets",
+        "route": "GRAPH_PREFLIGHT",
+        "explicit_refusal": true,
+        "normal_result_absent": true
+      },
+      {
+        "case": "malformed-json",
+        "route": "DAG",
+        "positive": false,
+        "nodes": 2,
+        "edges": 1,
+        "explicit_refusal": true,
+        "normal_result_absent": true,
+        "published_ports": 0
+      },
+      {
+        "case": "empty-programs",
+        "route": "DAG",
+        "positive": false,
+        "nodes": 2,
+        "edges": 1,
+        "explicit_refusal": true,
+        "normal_result_absent": true,
+        "published_ports": 0
+      },
+      {
+        "case": "duplicate-json-key",
+        "route": "DAG",
+        "positive": false,
+        "nodes": 2,
+        "edges": 1,
+        "explicit_refusal": true,
+        "normal_result_absent": true,
+        "published_ports": 0
+      },
+      {
+        "case": "empty-signature",
+        "route": "DAG",
+        "positive": false,
+        "nodes": 2,
+        "edges": 1,
+        "explicit_refusal": true,
+        "normal_result_absent": true,
+        "published_ports": 0
+      },
+      {
+        "case": "numeric-member",
+        "route": "DAG",
+        "positive": false,
+        "nodes": 2,
+        "edges": 1,
+        "explicit_refusal": true,
+        "normal_result_absent": true,
+        "published_ports": 0
+      },
+      {
+        "case": "empty-name",
+        "route": "DAG",
+        "positive": false,
+        "nodes": 2,
+        "edges": 1,
+        "explicit_refusal": true,
+        "normal_result_absent": true,
+        "published_ports": 0
+      },
+      {
+        "case": "score-collision",
+        "route": "DAG",
+        "positive": false,
+        "nodes": 2,
+        "edges": 1,
+        "explicit_refusal": true,
+        "normal_result_absent": true,
+        "published_ports": 0
+      },
+      {
+        "case": "ambiguous-sign",
+        "route": "DAG",
+        "positive": false,
+        "nodes": 2,
+        "edges": 1,
+        "explicit_refusal": true,
+        "normal_result_absent": true,
+        "published_ports": 0
+      },
+      {
+        "case": "no-overlap",
+        "route": "DAG",
+        "positive": false,
+        "nodes": 2,
+        "edges": 1,
+        "explicit_refusal": true,
+        "normal_result_absent": true,
+        "published_ports": 0
+      },
+      {
+        "case": "over-maxrank",
+        "route": "DAG",
+        "positive": false,
+        "nodes": 2,
+        "edges": 1,
+        "explicit_refusal": true,
+        "normal_result_absent": true,
+        "published_ports": 0
+      },
+      {
+        "case": "undefined-official-score",
+        "route": "DAG",
+        "positive": false,
+        "nodes": 2,
+        "edges": 1,
+        "explicit_refusal": true,
+        "normal_result_absent": true,
+        "published_ports": 0
+      }
+    ],
+    "direct_cases": [
+      {
+        "case": "R-failure",
+        "exact_refusal": true,
+        "input_unchanged": true,
+        "not_a_DAG_case": true,
+        "exit_code": 2
+      },
+      {
+        "case": "dangling-output",
+        "exact_refusal": true,
+        "input_unchanged": true,
+        "not_a_DAG_case": true,
+        "exit_code": 2
+      },
+      {
+        "case": "h5ad-exists",
+        "exact_refusal": true,
+        "input_unchanged": true,
+        "not_a_DAG_case": true,
+        "exit_code": 2
+      },
+      {
+        "case": "input-overwrite",
+        "exact_refusal": true,
+        "input_unchanged": true,
+        "not_a_DAG_case": true,
+        "exit_code": 2
+      },
+      {
+        "case": "output-alias",
+        "exact_refusal": true,
+        "input_unchanged": true,
+        "not_a_DAG_case": true,
+        "exit_code": 2
+      },
+      {
+        "case": "report-exists",
+        "exact_refusal": true,
+        "input_unchanged": true,
+        "not_a_DAG_case": true,
+        "exit_code": 2
+      },
+      {
+        "case": "second-link-failure",
+        "exact_refusal": true,
+        "input_unchanged": true,
+        "not_a_DAG_case": true,
+        "exit_code": 3
+      }
+    ],
+    "author_reference_recomputed": false,
+    "sealed_DAG_stage_session": "203edd82e0914f0ebf05305f4cfd3760",
+    "sealed_DAG_stage_manifest_sha256": "d03dd60cdfb12928d7ce9fed20f55efebce8a37210642a43bd4ccf5c6414626e",
+    "DAGs_recomputed_in_finish_session": false,
+    "source_reference_seal": "633c610ae6e69e203b63d07d13d2fdc6c68a928b2b21cf458803ab261b08cd7d",
+    "daemon_or_scientific_admission_granted": false,
+    "g0_granted": false,
+    "input_bindings_checked": 46
+  },
+  "complete_object_readback": {
+    "cases": [
+      {
+        "case": "dense",
+        "finite_values_checked": 219,
+        "complete_AnnData_and_HDF5": true,
+        "complete_report_except_externally_revalidated_output_identity": true,
+        "numeric_atol": 1e-12,
+        "numeric_rtol": 0,
+        "G0": false
+      },
+      {
+        "case": "csr",
+        "finite_values_checked": 212,
+        "complete_AnnData_and_HDF5": true,
+        "complete_report_except_externally_revalidated_output_identity": true,
+        "numeric_atol": 1e-12,
+        "numeric_rtol": 0,
+        "G0": false
+      },
+      {
+        "case": "csc",
+        "finite_values_checked": 212,
+        "complete_AnnData_and_HDF5": true,
+        "complete_report_except_externally_revalidated_output_identity": true,
+        "numeric_atol": 1e-12,
+        "numeric_rtol": 0,
+        "G0": false
+      },
+      {
+        "case": "float32",
+        "finite_values_checked": 219,
+        "complete_AnnData_and_HDF5": true,
+        "complete_report_except_externally_revalidated_output_identity": true,
+        "numeric_atol": 1e-12,
+        "numeric_rtol": 0,
+        "G0": false
+      },
+      {
+        "case": "integer32",
+        "finite_values_checked": 219,
+        "complete_AnnData_and_HDF5": true,
+        "complete_report_except_externally_revalidated_output_identity": true,
+        "numeric_atol": 1e-12,
+        "numeric_rtol": 0,
+        "G0": false
+      },
+      {
+        "case": "boolean",
+        "finite_values_checked": 219,
+        "complete_AnnData_and_HDF5": true,
+        "complete_report_except_externally_revalidated_output_identity": true,
+        "numeric_atol": 1e-12,
+        "numeric_rtol": 0,
+        "G0": false
+      },
+      {
+        "case": "reordered",
+        "finite_values_checked": 219,
+        "complete_AnnData_and_HDF5": true,
+        "complete_report_except_externally_revalidated_output_identity": true,
+        "numeric_atol": 1e-12,
+        "numeric_rtol": 0,
+        "G0": false
+      },
+      {
+        "case": "negative-values",
+        "finite_values_checked": 219,
+        "complete_AnnData_and_HDF5": true,
+        "complete_report_except_externally_revalidated_output_identity": true,
+        "numeric_atol": 1e-12,
+        "numeric_rtol": 0,
+        "G0": false
+      },
+      {
+        "case": "close-floating-values",
+        "finite_values_checked": 219,
+        "complete_AnnData_and_HDF5": true,
+        "complete_report_except_externally_revalidated_output_identity": true,
+        "numeric_atol": 1e-12,
+        "numeric_rtol": 0,
+        "G0": false
+      },
+      {
+        "case": "signed-int-edge",
+        "finite_values_checked": 219,
+        "complete_AnnData_and_HDF5": true,
+        "complete_report_except_externally_revalidated_output_identity": true,
+        "numeric_atol": 1e-12,
+        "numeric_rtol": 0,
+        "G0": false
+      },
+      {
+        "case": "tied-ranks",
+        "finite_values_checked": 219,
+        "complete_AnnData_and_HDF5": true,
+        "complete_report_except_externally_revalidated_output_identity": true,
+        "numeric_atol": 1e-12,
+        "numeric_rtol": 0,
+        "G0": false
+      },
+      {
+        "case": "flat-small-background",
+        "finite_values_checked": 219,
+        "complete_AnnData_and_HDF5": true,
+        "complete_report_except_externally_revalidated_output_identity": true,
+        "numeric_atol": 1e-12,
+        "numeric_rtol": 0,
+        "G0": false
+      },
+      {
+        "case": "flat-large-background",
+        "finite_values_checked": 59450,
+        "complete_AnnData_and_HDF5": true,
+        "complete_report_except_externally_revalidated_output_identity": true,
+        "numeric_atol": 1e-12,
+        "numeric_rtol": 0,
+        "G0": false
+      },
+      {
+        "case": "rank-cutoff",
+        "finite_values_checked": 59458,
+        "complete_AnnData_and_HDF5": true,
+        "complete_report_except_externally_revalidated_output_identity": true,
+        "numeric_atol": 1e-12,
+        "numeric_rtol": 0,
+        "G0": false
+      },
+      {
+        "case": "rank-boundary",
+        "finite_values_checked": 22350,
+        "complete_AnnData_and_HDF5": true,
+        "complete_report_except_externally_revalidated_output_identity": true,
+        "numeric_atol": 1e-12,
+        "numeric_rtol": 0,
+        "G0": false
+      },
+      {
+        "case": "unrelated-raw",
+        "finite_values_checked": 273,
+        "complete_AnnData_and_HDF5": true,
+        "complete_report_except_externally_revalidated_output_identity": true,
+        "numeric_atol": 1e-12,
+        "numeric_rtol": 0,
+        "G0": false
+      },
+      {
+        "case": "old-parameters",
+        "finite_values_checked": 219,
+        "complete_AnnData_and_HDF5": true,
+        "complete_report_except_externally_revalidated_output_identity": true,
+        "numeric_atol": 1e-12,
+        "numeric_rtol": 0,
+        "G0": false
+      },
+      {
+        "case": "one-cell",
+        "finite_values_checked": 57,
+        "complete_AnnData_and_HDF5": true,
+        "complete_report_except_externally_revalidated_output_identity": true,
+        "numeric_atol": 1e-12,
+        "numeric_rtol": 0,
+        "G0": false
+      },
+      {
+        "case": "one-program",
+        "finite_values_checked": 179,
+        "complete_AnnData_and_HDF5": true,
+        "complete_report_except_externally_revalidated_output_identity": true,
+        "numeric_atol": 1e-12,
+        "numeric_rtol": 0,
+        "G0": false
+      },
+      {
+        "case": "multiple-batches",
+        "finite_values_checked": 3565,
+        "complete_AnnData_and_HDF5": true,
+        "complete_report_except_externally_revalidated_output_identity": true,
+        "numeric_atol": 1e-12,
+        "numeric_rtol": 0,
+        "G0": false
+      }
+    ],
+    "sealed_author_outputs_regenerated": false,
+    "G0": false
+  },
+  "additional_graph_controls": {
+    "status": "CURRENT_UCELL_GRAPH_PREFLIGHT_CONTROLS_ENFORCED",
+    "engine_commit": "db83a6bb9886e4b1a3c563bef9261df782a0050c",
+    "source_session": "203edd82e0914f0ebf05305f4cfd3760",
+    "source_manifest_sha256": "d03dd60cdfb12928d7ce9fed20f55efebce8a37210642a43bd4ccf5c6414626e",
+    "cases": [
+      {
+        "case": "unknown-parameter",
+        "exit_code": 1,
+        "exact_cause_verified": true,
+        "DAG_execution_not_entered": true
+      },
+      {
+        "case": "missing-input-edge",
+        "exit_code": 1,
+        "exact_cause_verified": true,
+        "DAG_execution_not_entered": true
+      }
+    ],
+    "g0_granted": false
+  },
+  "prior_reference": {
+    "files": 1901,
+    "bytes": 108033663,
+    "internal_links": 10,
+    "intentional_dangling_fixtures": 3,
+    "seal_sha256": "633c610ae6e69e203b63d07d13d2fdc6c68a928b2b21cf458803ab261b08cd7d",
+    "final_verification_sha256": "8f7efb82e743a09f0eaf9d46e1cfa4cb07dbabcffcfb5f1020e239bfb6af2d26"
+  },
+  "archives_reverified": [
+    {
+      "session": "0435715c9fc04ab6b5abe32be7d5c2d7",
+      "manifest_sha256": "c572a728fe9785b18250af36a18cd4736007c5dd35e24104854bb71a25402566",
+      "files": 14,
+      "bytes": 177110884
+    },
+    {
+      "session": "759de0a75cad48a4bac7359637ab92b8",
+      "manifest_sha256": "8f3b66dc11a3c3680fa207eeea769fe471b119363eeede5dd74ea22d38f4c955",
+      "files": 39,
+      "bytes": 699735
+    },
+    {
+      "session": "203edd82e0914f0ebf05305f4cfd3760",
+      "manifest_sha256": "d03dd60cdfb12928d7ce9fed20f55efebce8a37210642a43bd4ccf5c6414626e",
+      "files": 463,
+      "bytes": 14598127
+    },
+    {
+      "session": "3b286e44ac2e4214b0abc83643daa406",
+      "manifest_sha256": "45e56a580bd16e944ab1c75e1fa75aa552fcda1423d870afe07a8eb9a0a41fcb",
+      "files": 44,
+      "bytes": 375060
+    },
+    {
+      "session": "fd6f532bda324a81a9d133e66f4f13da",
+      "manifest_sha256": "af6fdda40963571819c025e4d24791449399d1df5a9f7503d161dabd31f72abd",
+      "files": 15,
+      "bytes": 109359
+    },
+    {
+      "session": "bd743c772df44641901e924219340466",
+      "manifest_sha256": "6d7bc4f21a3cffa526b5598fa373d53aca7bda02675b6b43ea0aec11ee424a14",
+      "files": 4,
+      "bytes": 88848
+    }
+  ],
+  "source_tree_sha256": {
+    "plugins/ucell-h5ad/manifest.toml": "337439a2100332e95888a7c833baffadfd53836c4d49f334a85d8b2a3a6b9f6e",
+    "plugins/ucell-h5ad/scripts/score.py": "a7a9dff18744e702c9caffa5d12076cd0fa008511892237b972e590d27f3b861",
+    "plugins/single-cell/tests/qc_compare.py": "d2d30324793dc33b5e438be8269a8fe7f9021d54d637a88d3aa3dd8f78d1b109",
+    "tools/prove_ucell_current_dag.py": "49ef6839d043aa4f31f055ce710ab33b6466f6184e7c7877a8e602f95f418ff5",
+    "tools/verify_ucell_current_h5ad.py": "8598a5dba88edb17c2e46baf45ea5d9844694523d2881031a6157cb2bde50658",
+    "tools/prove_ucell_graph_controls.py": "84cbafa7319b2306cd86748bad0c690188aaffff95524cf121eab397b7666a17",
+    "tests/test_ucell_current_dag.py": "94378bb1c472e21463f3b3689dc7d15a941de5a3d91624f3c4ccaf071db3f00e",
+    "quality/required-tests.json": "895ae7ba3765c02c30029362a2d4189f5fc6acd8cb62ea6c2bf103cbda5436f3",
+    "tools/prove_generic_plugin_guards.py": "6667574f3d2738755557325a50f2384462c792d437676a7171d94ce084656261",
+    "tools/prove_ldsc_precision_dag.py": "84a1e4ee90f9c67e4daa8968ace5525034aa12aa551cc0ac327feafc962573e6",
+    "tools/prove_current_ldsc.py": "939159c038af706bca99530302eac5b6eed95d768536b29d80bd6baf2cba229d"
+  },
+  "local_source_tests": {
+    "session": "bd743c772df44641901e924219340466",
+    "tests_run": 208,
+    "complete": true,
+    "source_lock_matches": true,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "failed_stage_interpretation": [
+    {
+      "session": "759de0a75cad48a4bac7359637ab92b8",
+      "status": "FAILED_VERIFIER_CHECKPOINT_IO_NOT_A_METHOD_CERTIFICATE",
+      "reason": "Two method graphs succeeded, but repeated exclusive-create of the progress checkpoint failed; checkpoint handling was corrected. These two preliminary replays are not counted again."
+    },
+    {
+      "session": "203edd82e0914f0ebf05305f4cfd3760",
+      "status": "DAG_STAGE_COMPLETE_VERIFIER_REPORT_WRITE_FAILED",
+      "reason": "All 47 original DAG/preflight cases finished. Complete-object comparison reached report writing, which failed because the standalone reader lacked keep-id mapping. Actual method statuses, ports and records remain sealed; no successful worker exit is invented."
+    },
+    {
+      "session": "3b286e44ac2e4214b0abc83643daa406",
+      "status": "FOLLOWUP_READBACK_AND_DIRECT_CONTROLS_EXIT_ZERO",
+      "reason": "Rehashed the complete sealed stage and exact method identities; re-read all 20 author objects with keep-id and readonly prior archive, then ran seven direct boundary cases. Did not rerun DAGs, change author gold, or write into the old archive."
+    }
+  ],
+  "scope_limits": [
+    "Only fixed UCell 2.16.0 defaults; maxRank=1000/2000, smoothing and other parameter branches are not qualified by this node.",
+    "Signed and missing/impute semantics match the official package; this does not satisfy a study-specific coverage or mapping gate by itself.",
+    "Real resource species, X scale/background, cell/donor and cohort eligibility remain separately ungranted.",
+    "Current generic harness is qualified only in this scope; no resident daemon, whole-cohort scale, persistent recovery or global resource certification.",
+    "Sibling TSV UCell wrapper has its own contract and is not certified by this H5AD proof.",
+    "Image anonymous availability and clean deployment are not established by cached execution.",
+    "Existing scientific locks, original 120 function slots, historical progress counters, viewing history and 276/288/696 families are unchanged."
+  ],
+  "method_or_original_sealed_reference_changed": false,
+  "production_deployment_changed": false,
+  "formal_research_authorized": false,
+  "spatial_B_S": "CONDITIONAL_NOT_READY",
+  "GS01": "OPEN",
+  "g0_granted": false
+}

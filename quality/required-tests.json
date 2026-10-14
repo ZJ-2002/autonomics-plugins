@@ -202,6 +202,12 @@
     "tests.test_b_normalized_contract_binding.BindingTests.test_full_abi_exact_source_and_723_candidate_does_not_authorize",
     "tests.test_b_normalized_contract_binding.BindingTests.test_gene_universe_identity_schema_order_duplicates_refuse",
     "tests.test_b_normalized_contract_binding.BindingTests.test_scope_scale_versions_and_all_linked_metadata_refuse",
-    "tests.test_singscore_current_dag.CurrentSingscoreDagTests.test_joined_readback_cannot_escape_or_invent_the_sealed_case"
+    "tests.test_singscore_current_dag.CurrentSingscoreDagTests.test_joined_readback_cannot_escape_or_invent_the_sealed_case",
+    "tests.test_ucell_current_dag.CurrentUCellDagTests.test_literal_h5ad_input_and_parameter_have_no_native_fallback",
+    "tests.test_ucell_current_dag.CurrentUCellDagTests.test_boundary_json_keeps_invalid_and_signed_semantics",
+    "tests.test_ucell_current_dag.CurrentUCellDagTests.test_frozen_refusal_requires_one_specific_method_line",
+    "tests.test_ucell_current_dag.CurrentUCellDagTests.test_direct_fault_and_filesystem_cases_are_not_counted_as_DAGs",
+    "tests.test_ucell_current_dag.CurrentUCellDagTests.test_changed_reference_seal_is_not_accepted_as_new_reference",
+    "tests.test_ucell_current_dag.CurrentUCellDagTests.test_graph_controls_require_the_exact_node_parameter_and_port"
   ]
 }
