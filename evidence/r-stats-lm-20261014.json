@@ -3,6 +3,7 @@
   "original_function_id": "FUNC_linear_regression",
   "node_kind": "r_stats_lm",
   "family": "plugins/r-stats-lm",
+  "release_function_source_identity_supplement": "evidence/r-stats-lm-source-20261014.json",
   "status": "ACCEPTED_SCOPED_TECHNICAL_ALTERNATIVE_NOT_FORMAL_RESEARCH",
   "input_ports": ["literal_observations_tsv", "explicit_method_and_input_hash_json"],
   "output_ports": ["coefficients_tsv", "observations_tsv", "complete_model_rds", "nonempty_log", "hash_audit_json"],

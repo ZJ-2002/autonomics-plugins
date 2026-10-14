@@ -1,6 +1,9 @@
 {
   "scope": "CATALOG_TESTS_NOT_SCIENTIFIC_CERTIFICATES",
   "test_ids": [
+    "tests.test_r_lm_source.OfficialReleaseIdentityTests.test_exact_primary_release_and_all_eight_methods_are_required",
+    "tests.test_r_lm_source.OfficialReleaseIdentityTests.test_a_self_consistent_fake_archive_is_not_official_source_evidence",
+    "tests.test_r_lm_source.OfficialReleaseIdentityTests.test_missing_and_duplicate_source_paths_cannot_satisfy_the_reference_lock",
     "tests.test_r_lm_interface.OfficialLinearModelTests.test_actual_publication_preserves_existing_and_foreign_files",
     "tests.test_r_lm_interface.OfficialLinearModelTests.test_actual_r_parser_preserves_identity_and_rejects_invalid_values",
     "tests.test_r_lm_interface.OfficialLinearModelTests.test_every_case_has_separate_oracle_formula_or_expected_refusal",
