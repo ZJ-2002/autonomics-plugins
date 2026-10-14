@@ -1,0 +1,444 @@
+{
+  "schema": "LDSC_FULL_PRECISION_CURRENT_GENERIC_DAG_PROOF_V1",
+  "proof": {
+    "status": "PRECISION_PLUGIN_DAG_PROVEN_FIXED_SYNTHETIC_CASES",
+    "engine_commit": "db83a6bb9886e4b1a3c563bef9261df782a0050c",
+    "executable_sha256": "9dae47f22c5feeca79dd005ede43c16349b3b362530646e2220fcb8d40bc0069",
+    "cases": [
+      {
+        "case": "h2-observed",
+        "kind": "ldsc_h2_frozen_precision",
+        "nodes": 4,
+        "edges": 3,
+        "input_bindings": [
+          {
+            "port": 0,
+            "sha256": "76e6cc3b164054f67f1babefcee036265915bec8e2b1947c9ea6496da979d15a",
+            "bytes": 2734
+          },
+          {
+            "port": 1,
+            "sha256": "2d516a93c384b6b3f3bb65e125a4a9ae054ad91beab29aab673fe1772f7f4db8",
+            "bytes": 79534
+          },
+          {
+            "port": 2,
+            "sha256": "d51f59084fdc94ac53149c2b6ad4466d2096ed4ca43cef5e740ccb9b86832f3a",
+            "bytes": 10752
+          }
+        ],
+        "negative": false,
+        "fields": 180,
+        "finite_fields": 136,
+        "outcome": "COMPLETE_AUTHOR_STATE_RESULT_AND_AUDIT_MATCHED",
+        "published_ports": 5
+      },
+      {
+        "case": "h2-liability",
+        "kind": "ldsc_h2_frozen_precision",
+        "nodes": 4,
+        "edges": 3,
+        "input_bindings": [
+          {
+            "port": 0,
+            "sha256": "f2b5daeea35de1ed932481ccfe12180810febb9366e19cc1b566133fc64fcf3f",
+            "bytes": 2762
+          },
+          {
+            "port": 1,
+            "sha256": "13624f8b4a8f02f2578ce695f41cde9d15bbce2591a6123f612e7f0343b0c39c",
+            "bytes": 28418
+          },
+          {
+            "port": 2,
+            "sha256": "d51f59084fdc94ac53149c2b6ad4466d2096ed4ca43cef5e740ccb9b86832f3a",
+            "bytes": 10752
+          }
+        ],
+        "negative": false,
+        "fields": 180,
+        "finite_fields": 136,
+        "outcome": "COMPLETE_AUTHOR_STATE_RESULT_AND_AUDIT_MATCHED",
+        "published_ports": 5
+      },
+      {
+        "case": "rg-observed",
+        "kind": "ldsc_rg_frozen_precision",
+        "nodes": 5,
+        "edges": 4,
+        "input_bindings": [
+          {
+            "port": 0,
+            "sha256": "71f07b114802d55999da582ae526b6b561e7c2b163cb28c96a2fdc03fc4017aa",
+            "bytes": 2844
+          },
+          {
+            "port": 1,
+            "sha256": "2d516a93c384b6b3f3bb65e125a4a9ae054ad91beab29aab673fe1772f7f4db8",
+            "bytes": 79534
+          },
+          {
+            "port": 2,
+            "sha256": "0fe896cdffe3016556bf181bdc2087cbd96a0bf031a55e0601be92242c8c188b",
+            "bytes": 79454
+          },
+          {
+            "port": 3,
+            "sha256": "d51f59084fdc94ac53149c2b6ad4466d2096ed4ca43cef5e740ccb9b86832f3a",
+            "bytes": 10752
+          }
+        ],
+        "negative": false,
+        "fields": 625,
+        "finite_fields": 476,
+        "outcome": "COMPLETE_AUTHOR_STATE_RESULT_AND_AUDIT_MATCHED",
+        "published_ports": 5
+      },
+      {
+        "case": "rg-liability",
+        "kind": "ldsc_rg_frozen_precision",
+        "nodes": 5,
+        "edges": 4,
+        "input_bindings": [
+          {
+            "port": 0,
+            "sha256": "c39daae87149c261929cd6a7ff5aff42c7749c2c1777ff5b51f6058595eaaa19",
+            "bytes": 2899
+          },
+          {
+            "port": 1,
+            "sha256": "78ebe27f83f8a2121fe86fb94558aa8dd05840e514900f1407e27b97d4241162",
+            "bytes": 28418
+          },
+          {
+            "port": 2,
+            "sha256": "f408fc7f92ab3881e7459d03cbdf4419235ca960db08da955bfb7b11bdd9d48d",
+            "bytes": 28430
+          },
+          {
+            "port": 3,
+            "sha256": "d51f59084fdc94ac53149c2b6ad4466d2096ed4ca43cef5e740ccb9b86832f3a",
+            "bytes": 10752
+          }
+        ],
+        "negative": false,
+        "fields": 625,
+        "finite_fields": 476,
+        "outcome": "COMPLETE_AUTHOR_STATE_RESULT_AND_AUDIT_MATCHED",
+        "published_ports": 5
+      },
+      {
+        "case": "rg-nonpositive_h2",
+        "kind": "ldsc_rg_frozen_precision",
+        "nodes": 5,
+        "edges": 4,
+        "input_bindings": [
+          {
+            "port": 0,
+            "sha256": "0befa9221aaf6013694095db7c5af7f236c48336361a5fd3dfb0618c486e6df0",
+            "bytes": 2850
+          },
+          {
+            "port": 1,
+            "sha256": "58fff44a0ee54ad4fd532e3007a2428505eb41a039713a4b9e79bf5cb8d8b675",
+            "bytes": 80049
+          },
+          {
+            "port": 2,
+            "sha256": "0fe896cdffe3016556bf181bdc2087cbd96a0bf031a55e0601be92242c8c188b",
+            "bytes": 79454
+          },
+          {
+            "port": 3,
+            "sha256": "d51f59084fdc94ac53149c2b6ad4466d2096ed4ca43cef5e740ccb9b86832f3a",
+            "bytes": 10752
+          }
+        ],
+        "negative": false,
+        "fields": 625,
+        "finite_fields": 469,
+        "outcome": "COMPLETE_AUTHOR_STATE_RESULT_AND_AUDIT_MATCHED",
+        "published_ports": 5
+      },
+      {
+        "case": "negative-source_digest",
+        "kind": "ldsc_rg_frozen_precision",
+        "nodes": 5,
+        "edges": 4,
+        "input_bindings": [
+          {
+            "port": 0,
+            "sha256": "1b4c8295b4f164685d0db1c47b00b5afcd0351343221e7beb5a62b55da8d205c",
+            "bytes": 2844
+          },
+          {
+            "port": 1,
+            "sha256": "2d516a93c384b6b3f3bb65e125a4a9ae054ad91beab29aab673fe1772f7f4db8",
+            "bytes": 79534
+          },
+          {
+            "port": 2,
+            "sha256": "0fe896cdffe3016556bf181bdc2087cbd96a0bf031a55e0601be92242c8c188b",
+            "bytes": 79454
+          },
+          {
+            "port": 3,
+            "sha256": "d51f59084fdc94ac53149c2b6ad4466d2096ed4ca43cef5e740ccb9b86832f3a",
+            "bytes": 10752
+          }
+        ],
+        "negative": true,
+        "outcome": "EXACT_METHOD_REFUSAL_PRESERVED",
+        "published_ports": 0,
+        "fields": 0,
+        "finite_fields": 0
+      },
+      {
+        "case": "negative-panel_missing_chr22",
+        "kind": "ldsc_rg_frozen_precision",
+        "nodes": 5,
+        "edges": 4,
+        "input_bindings": [
+          {
+            "port": 0,
+            "sha256": "9068324bff0fb175732c3eb2d95321f9b92b8796cb59cd6a0d5494428af67cc4",
+            "bytes": 2844
+          },
+          {
+            "port": 1,
+            "sha256": "2d516a93c384b6b3f3bb65e125a4a9ae054ad91beab29aab673fe1772f7f4db8",
+            "bytes": 79534
+          },
+          {
+            "port": 2,
+            "sha256": "0fe896cdffe3016556bf181bdc2087cbd96a0bf031a55e0601be92242c8c188b",
+            "bytes": 79454
+          },
+          {
+            "port": 3,
+            "sha256": "9e2d5563f87b148ab74186a0fa3607f12b8a4546304ca94fb646c5fd3f21fdcf",
+            "bytes": 11071
+          }
+        ],
+        "negative": true,
+        "outcome": "EXACT_METHOD_REFUSAL_PRESERVED",
+        "published_ports": 0,
+        "fields": 0,
+        "finite_fields": 0
+      },
+      {
+        "case": "negative-runtime_identity",
+        "kind": "ldsc_rg_frozen_precision",
+        "nodes": 5,
+        "edges": 4,
+        "input_bindings": [
+          {
+            "port": 0,
+            "sha256": "5459ed433c29ac41d9aebf735bcef41240624829da9647f65d3e2a504c944e15",
+            "bytes": 2844
+          },
+          {
+            "port": 1,
+            "sha256": "2d516a93c384b6b3f3bb65e125a4a9ae054ad91beab29aab673fe1772f7f4db8",
+            "bytes": 79534
+          },
+          {
+            "port": 2,
+            "sha256": "0fe896cdffe3016556bf181bdc2087cbd96a0bf031a55e0601be92242c8c188b",
+            "bytes": 79454
+          },
+          {
+            "port": 3,
+            "sha256": "d51f59084fdc94ac53149c2b6ad4466d2096ed4ca43cef5e740ccb9b86832f3a",
+            "bytes": 10752
+          }
+        ],
+        "negative": true,
+        "outcome": "EXACT_METHOD_REFUSAL_PRESERVED",
+        "published_ports": 0,
+        "fields": 0,
+        "finite_fields": 0
+      },
+      {
+        "case": "negative-duplicate_config_key",
+        "kind": "ldsc_rg_frozen_precision",
+        "nodes": 5,
+        "edges": 4,
+        "input_bindings": [
+          {
+            "port": 0,
+            "sha256": "5b397dc4fb047e97b2dacdf8b0d9a7acf905df778e1427ce33fbca292d6c9dd9",
+            "bytes": 2863
+          },
+          {
+            "port": 1,
+            "sha256": "2d516a93c384b6b3f3bb65e125a4a9ae054ad91beab29aab673fe1772f7f4db8",
+            "bytes": 79534
+          },
+          {
+            "port": 2,
+            "sha256": "0fe896cdffe3016556bf181bdc2087cbd96a0bf031a55e0601be92242c8c188b",
+            "bytes": 79454
+          },
+          {
+            "port": 3,
+            "sha256": "d51f59084fdc94ac53149c2b6ad4466d2096ed4ca43cef5e740ccb9b86832f3a",
+            "bytes": 10752
+          }
+        ],
+        "negative": true,
+        "outcome": "EXACT_METHOD_REFUSAL_PRESERVED",
+        "published_ports": 0,
+        "fields": 0,
+        "finite_fields": 0
+      }
+    ],
+    "independent_reference_recomputed": false,
+    "source_manifest_sha256": "cc7e29c9c25bf003404d81abfb7161a7694467338ba4b139a15d4ea55f8d16f2",
+    "method_sha256": "4ca585ec540b12cb2d16de4ffffeef0fa6466e6e8e8f11e215392512a3c182e2",
+    "actual_research_panels_qualified": false,
+    "daemon_deployed": false,
+    "formal_authorized": false,
+    "g0_granted": false
+  },
+  "build": {
+    "engine_commit": "db83a6bb9886e4b1a3c563bef9261df782a0050c",
+    "parent_commit": "ca3f5f94f7447b58618405cc1e1b3884177343b5",
+    "git_tree": "e7b9ff18f8a33d56680ef5151eb6e29e08c51ed7",
+    "probe_sha256": "733375abc659eaa191b3c066ca25e04031dadef47b8a4684fb4430f3c43b0f25",
+    "changed_paths": [
+      "crates/container-plugin/examples/official_plugin_dag.rs"
+    ],
+    "canonical_target": "/home/zj-normal/.cache/localdeploy-target",
+    "sink_sha256": null,
+    "remote_pushed": false,
+    "scientific_authorized": false,
+    "g0_granted": false,
+    "executable": "/home/zj-normal/.local/state/autonomics/validation-archives/0435715c9fc04ab6b5abe32be7d5c2d7/artifacts/permanent/current-ldsc-build/official_plugin_dag",
+    "executable_sha256": "9dae47f22c5feeca79dd005ede43c16349b3b362530646e2220fcb8d40bc0069",
+    "committed_source_files": 5509,
+    "source_unchanged": true,
+    "compiler_artifacts": 958,
+    "actual_build_exit": 0,
+    "current_daemon_verified": false
+  },
+  "published_engine_probe_commit": "2ce38d751d8a92e7025ddc4b48358b6ce824306b",
+  "preserved_concurrent_engine_parent": "3505b444b0ad99001657d2d811c1522159ef51b0",
+  "source_sha256": {
+    "tools/probes/official_plugin_dag.rs": "733375abc659eaa191b3c066ca25e04031dadef47b8a4684fb4430f3c43b0f25",
+    "tools/build_official_plugin_probe.py": "dfb51b3c80159464762679807b4fc5cfc27bf93de261d8d4a0ae8d8c127d6d2e",
+    "tools/build_current_ldsc.py": "23d06cdf1b948c11032fc4fa0d2b74bf0d02678a7fbf3431b555163c662ad04e",
+    "tools/prove_ldsc_precision_dag.py": "84a1e4ee90f9c67e4daa8968ace5525034aa12aa551cc0ac327feafc962573e6",
+    "tools/prove_generic_plugin_guards.py": "6667574f3d2738755557325a50f2384462c792d437676a7171d94ce084656261",
+    "plugins/ldsc-precision/manifest.toml": "cc7e29c9c25bf003404d81abfb7161a7694467338ba4b139a15d4ea55f8d16f2",
+    "plugins/ldsc-precision/scripts/precision.py": "4ca585ec540b12cb2d16de4ffffeef0fa6466e6e8e8f11e215392512a3c182e2",
+    "plugins/ldsc-precision/tests/run_precision_container_assurance.py": "ad27d7fb416d2fdcbb99cef6f982e343fc31b444d09629af39e406e12f72f6f1"
+  },
+  "positive_execution_cases": 5,
+  "estimated_results": 4,
+  "expected_nonestimable_results": 1,
+  "exact_input_refusal_cases": 4,
+  "complete_returned_fields_compared": 2235,
+  "finite_fields_compared": 1693,
+  "actual_input_bindings_checked": 34,
+  "live_and_published_ports_matched": 25,
+  "generic_engine_guards": {
+    "status": "GENERIC_ENGINE_GUARDS_AND_ONE_NO_PANEL_TRANSPORT_PROVEN_SCOPED",
+    "engine_commit": "db83a6bb9886e4b1a3c563bef9261df782a0050c",
+    "executable_sha256": "9dae47f22c5feeca79dd005ede43c16349b3b362530646e2220fcb8d40bc0069",
+    "refusals": [
+      {
+        "case": "manifest-hash",
+        "exit_code": 1,
+        "exact_guard_message": "canonical manifest bytes differ",
+        "DAG_execution_not_entered": true
+      },
+      {
+        "case": "plugin-name",
+        "exit_code": 1,
+        "exact_guard_message": "exact nonempty plugin identity required",
+        "DAG_execution_not_entered": true
+      },
+      {
+        "case": "native-kind",
+        "exit_code": 1,
+        "exact_guard_message": "undeclared node or native statistical fallback forbidden",
+        "DAG_execution_not_entered": true
+      },
+      {
+        "case": "engineering-collision",
+        "exit_code": 1,
+        "exact_guard_message": "plugin cannot replace an engineering factory",
+        "DAG_execution_not_entered": true
+      },
+      {
+        "case": "script-traversal",
+        "exit_code": 1,
+        "exact_guard_message": "nonlocal script path forbidden",
+        "DAG_execution_not_entered": true
+      },
+      {
+        "case": "panel-mapping",
+        "exit_code": 1,
+        "exact_guard_message": "declared panel mapping differs or is not explicitly synthetic",
+        "DAG_execution_not_entered": true
+      }
+    ],
+    "no_panel_transport": {
+      "case": "adjust-BH",
+      "nodes": 8,
+      "edges": 7,
+      "published_ports": 5,
+      "complete_typed_table_byte_equal": true,
+      "new_R_method_certificates": 0
+    },
+    "all_plugins_or_versions_qualified": false,
+    "daemon_or_study_qualified": false,
+    "g0_granted": false
+  },
+  "archives_reverified": [
+    {
+      "session": "0435715c9fc04ab6b5abe32be7d5c2d7",
+      "manifest_sha256": "c572a728fe9785b18250af36a18cd4736007c5dd35e24104854bb71a25402566",
+      "files": 14,
+      "bytes": 177110884
+    },
+    {
+      "session": "037b894e5ec94df0b41734bafc3aaaec",
+      "manifest_sha256": "cfab74e29cf8bca58094c289d4a8ef892e079e51f7eaa814e091931a3420b14d",
+      "files": 944,
+      "bytes": 2497942
+    },
+    {
+      "session": "f0dec8ce68e74669b6607d99d6507b9e",
+      "manifest_sha256": "a4624629bfd6e109ea53f7272a2bb74fe75e610fe222b62ff4940aaf4bbd8d2d",
+      "files": 55,
+      "bytes": 216047
+    },
+    {
+      "session": "0cb480043783428cb09fbeec0c1d0eca",
+      "manifest_sha256": "d9473e6e623127c0c96c423abd5bf6532f8dabb7c30f528aa0407693941af2ba",
+      "files": 4,
+      "bytes": 84121
+    }
+  ],
+  "independent_author_reference_recomputed": false,
+  "local_source_tests": {
+    "session": "0cb480043783428cb09fbeec0c1d0eca",
+    "executed": 197,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "complete": true,
+    "source_lock_matches": true
+  },
+  "no_new_R_method_certificates_from_no_panel_smoke": true,
+  "generic_helper_is_not_a_scientific_admission_gate": true,
+  "SQL_query_semantics_not_globally_certified": true,
+  "raw_transient_FileRefs_made_durable": false,
+  "actual_research_panels_or_GWAS_qualified": false,
+  "complete_frozen_family_or_persistent_recovery_qualified": false,
+  "daemon_or_production_configuration_changed": false,
+  "original_function_denominator_or_276_288_696_changed": false,
+  "g0_granted": false
+}

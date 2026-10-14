@@ -1,6 +1,8 @@
 {
   "scope": "CATALOG_TESTS_NOT_SCIENTIFIC_CERTIFICATES",
   "test_ids": [
+    "tests.test_ldsc_precision_dag.PrecisionDagTests.test_complete_state_includes_classes_shapes_missing_reasons_and_values",
+    "tests.test_ldsc_precision_dag.PrecisionDagTests.test_all_metadata_and_extensionless_inputs_require_exact_bytes",
     "tests.test_ldsc_current_dag.CurrentLdscDagContractTests.test_staged_raw_input_requires_exact_source_bytes_and_port_binding",
     "tests.test_ldsc_current_dag.CurrentLdscDagContractTests.test_gzip_input_requires_complete_materialized_plaintext",
     "tests.test_ldsc_author_reference.AuthorReferenceArchiveTests.test_generation_metadata_is_explicit_preserved_and_never_arbitrary",
