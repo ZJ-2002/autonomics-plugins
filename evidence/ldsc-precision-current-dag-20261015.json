@@ -1,5 +1,6 @@
 {
   "schema": "LDSC_FULL_PRECISION_CURRENT_GENERIC_DAG_PROOF_V1",
+  "probe_source_publication_revision": "4b1f4ede93a403fb49ce280528baa465b1c78b74",
   "proof": {
     "status": "PRECISION_PLUGIN_DAG_PROVEN_FIXED_SYNTHETIC_CASES",
     "engine_commit": "db83a6bb9886e4b1a3c563bef9261df782a0050c",

@@ -1,8 +1,10 @@
 import copy
 import gzip
 import json
+import hashlib
 from pathlib import Path
 import tempfile
+import subprocess
 import unittest
 
 from tools import prove_ldsc_precision_dag as proof
@@ -16,7 +18,11 @@ class PrecisionDagTests(unittest.TestCase):
     def test_complete_state_includes_classes_shapes_missing_reasons_and_values(self):
         evidence=json.loads((proof.ROOT/'evidence/ldsc-precision-current-dag-20261015.json').read_text())
         for name,expected in evidence['source_sha256'].items():
-            self.assertEqual(proof.digest(proof.ROOT/name),expected,name)
+            if name == 'tools/probes/official_plugin_dag.rs':
+                original=subprocess.check_output(['git','-C',str(proof.ROOT),'show',evidence['probe_source_publication_revision']+':'+name])
+                self.assertEqual(hashlib.sha256(original).hexdigest(),expected,name)
+            else:
+                self.assertEqual(proof.digest(proof.ROOT/name),expected,name)
         self.assertEqual(evidence['complete_returned_fields_compared'],2235)
         self.assertEqual(evidence['expected_nonestimable_results'],1)
         self.assertFalse(evidence['actual_research_panels_or_GWAS_qualified'])

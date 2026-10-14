@@ -1,5 +1,10 @@
 # Two full-precision LDSC variants: actual fixed-engine DAG evidence
 
+Version binding: this proof remains scoped to its recorded engine and the exact
+probe source in Git publication `4b1f4ede93a403fb49ce280528baa465b1c78b74`.
+Later engineering helper changes do not rewrite its source hash or numerical
+oracle; the current multi-manifest B-chain proof has a separate receipt.
+
 Both `ldsc_h2_frozen_precision` and `ldsc_rg_frozen_precision` now have actual
 declared-port DAG evidence using the unchanged, fixed CBIIT source and method
 adapter. All nine sealed cases were replayed without regenerating their author

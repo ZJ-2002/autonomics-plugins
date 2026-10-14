@@ -214,6 +214,11 @@
     "tests.test_ucell_tsv_repair.UCellTsvRepairTests.test_toy_fixture_keeps_literal_axes_and_two_file_ports",
     "tests.test_ucell_tsv_repair.UCellTsvRepairTests.test_fault_inventory_includes_both_owned_and_unowned_rollback_cases",
     "tests.test_ucell_tsv_repair.UCellTsvRepairTests.test_actual_scope_receipt_keeps_loss_reproduction_and_no_scientific_release",
-    "tests.test_ucell_tsv_repair.UCellTsvRepairTests.test_family_contract_suite_is_actually_run_without_skips"
+    "tests.test_ucell_tsv_repair.UCellTsvRepairTests.test_family_contract_suite_is_actually_run_without_skips",
+    "tests.test_bulk_current_chain.BulkCurrentChainTests.test_four_node_three_family_graph_has_all_five_raw_file_edges",
+    "tests.test_bulk_current_chain.BulkCurrentChainTests.test_csv_reader_keeps_quotes_leading_zero_and_literal_missing_tokens",
+    "tests.test_bulk_current_chain.BulkCurrentChainTests.test_numeric_oracle_requires_exact_ids_missing_masks_and_finite_values",
+    "tests.test_bulk_current_chain.BulkCurrentChainTests.test_stage_receipt_requires_exact_upstream_port_and_bytes",
+    "tests.test_bulk_current_chain.BulkCurrentChainTests.test_report_normalization_requires_actual_hashes_and_keeps_all_semantic_fields"
   ]
 }

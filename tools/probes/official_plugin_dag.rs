@@ -19,6 +19,52 @@ use vfs::{
     VfsManifest,
 };
 
+fn inline_scripts(
+    manifest: &mut PluginManifest,
+    manifest_path: &std::path::Path,
+    identities: &Value,
+) -> Result<(), Box<dyn std::error::Error>> {
+    let family_root = manifest_path
+        .parent()
+        .ok_or("plugin parent missing")?
+        .canonicalize()?;
+    for entry in &mut manifest.nodes {
+        let script = entry
+            .command
+            .script_file
+            .take()
+            .ok_or("actual plugin script required")?;
+        let relative = std::path::Path::new(&script);
+        if relative.is_absolute()
+            || relative.components().any(|part| {
+                matches!(
+                    part,
+                    std::path::Component::ParentDir | std::path::Component::Prefix(_)
+                )
+            })
+        {
+            return Err("nonlocal script path forbidden".into());
+        }
+        let script_path = family_root.join(relative);
+        if script_path.symlink_metadata()?.file_type().is_symlink()
+            || !script_path.canonicalize()?.starts_with(&family_root)
+        {
+            return Err("script source escapes the pinned family".into());
+        }
+        let script_bytes = std::fs::read(script_path)?;
+        if format!("{:x}", Sha256::digest(&script_bytes))
+            != identities[&script]
+                .as_str()
+                .ok_or("script identity required")?
+        {
+            return Err("actual dispatched script differs".into());
+        }
+        entry.command.script = Some(String::from_utf8(script_bytes)?);
+        container_plugin::node_definition::validate(entry)?;
+    }
+    Ok(())
+}
+
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let filename = std::env::args()
@@ -59,7 +105,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     {
         return Err("exact nonempty plugin identity required".into());
     }
-    let methods: std::collections::BTreeSet<String> = manifest
+    let mut methods: std::collections::BTreeSet<String> = manifest
         .nodes
         .iter()
         .map(|entry| entry.kind.clone())
@@ -97,46 +143,71 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         panel.bundle = data_catalog::HfRepoId::new(synthetic)?;
     }
     let synthetic_manifest_bytes = toml::to_string(&manifest)?.into_bytes();
-    for entry in &mut manifest.nodes {
-        if !methods.contains(&entry.kind) {
-            return Err("native statistical fallback forbidden".into());
-        }
-        let script = entry
-            .command
-            .script_file
-            .take()
-            .ok_or("actual plugin script required")?;
-        let relative = std::path::Path::new(&script);
-        if relative.is_absolute()
-            || relative.components().any(|part| {
-                matches!(
-                    part,
-                    std::path::Component::ParentDir | std::path::Component::Prefix(_)
-                )
-            })
+    inline_scripts(&mut manifest, &manifest_path, &job["script_sha256"])?;
+    let mut plugin_names = std::collections::BTreeSet::from([manifest.plugin_name.clone()]);
+    let mut additional_plugins = Vec::new();
+    let mut additional_identities = Vec::new();
+    if let Some(entries) = job.get("additional_plugins") {
+        for record in entries
+            .as_array()
+            .ok_or("additional plugins must be an explicit array")?
         {
-            return Err("nonlocal script path forbidden".into());
+            let path = PathBuf::from(
+                record["plugin_manifest"]
+                    .as_str()
+                    .ok_or("additional manifest required")?,
+            );
+            let bytes = std::fs::read(&path)?;
+            let hash = format!("{:x}", Sha256::digest(&bytes));
+            if hash
+                != record["plugin_manifest_sha256"]
+                    .as_str()
+                    .ok_or("additional manifest identity required")?
+            {
+                return Err("additional canonical manifest bytes differ".into());
+            }
+            let mut extra: PluginManifest = toml::from_str(std::str::from_utf8(&bytes)?)?;
+            if extra.plugin_name
+                != record["expected_plugin_name"]
+                    .as_str()
+                    .ok_or("additional plugin identity required")?
+                || extra.nodes.is_empty()
+                || !plugin_names.insert(extra.plugin_name.clone())
+            {
+                return Err("additional plugin identity empty, repeated or mismatched".into());
+            }
+            if !extra.panels.is_empty()
+                || record["panel_overrides"]
+                    .as_array()
+                    .ok_or("additional explicit empty panel mapping required")?
+                    .len()
+                    != 0
+            {
+                return Err(
+                    "additional plugins with panels are not supported by this technical probe"
+                        .into(),
+                );
+            }
+            for entry in &extra.nodes {
+                if matches!(
+                    entry.kind.as_str(),
+                    "file_reference" | "file_to_dataframe" | "dataframe_to_file" | "datafusion_sql"
+                ) {
+                    return Err("additional plugin cannot replace an engineering factory".into());
+                }
+                if !methods.insert(entry.kind.clone()) {
+                    return Err("duplicate method kind across plugin manifests".into());
+                }
+            }
+            inline_scripts(&mut extra, &path, &record["script_sha256"])?;
+            additional_identities.push(json!({
+                "plugin_name": extra.plugin_name,
+                "original_manifest_sha256": hash,
+                "script_sha256": record["script_sha256"],
+                "panels": [],
+            }));
+            additional_plugins.push((extra, bytes));
         }
-        let family_root = manifest_path
-            .parent()
-            .ok_or("plugin parent missing")?
-            .canonicalize()?;
-        let script_path = family_root.join(relative);
-        if script_path.symlink_metadata()?.file_type().is_symlink()
-            || !script_path.canonicalize()?.starts_with(&family_root)
-        {
-            return Err("script source escapes the pinned family".into());
-        }
-        let script_bytes = std::fs::read(script_path)?;
-        if format!("{:x}", Sha256::digest(&script_bytes))
-            != job["script_sha256"][&script]
-                .as_str()
-                .ok_or("script identity required")?
-        {
-            return Err("actual dispatched script differs".into());
-        }
-        entry.command.script = Some(String::from_utf8(script_bytes)?);
-        container_plugin::node_definition::validate(entry)?;
     }
     let mut bundles = BundleRegistry::new();
     for record in job["bundles"]
@@ -214,9 +285,17 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     registry.register_plugin(&Plugin::new(
         manifest,
         &synthetic_manifest_bytes,
-        runtime,
-        panel_cache,
+        runtime.clone(),
+        panel_cache.clone(),
     ));
+    for (extra, bytes) in additional_plugins {
+        registry.register_plugin(&Plugin::new(
+            extra,
+            &bytes,
+            runtime.clone(),
+            panel_cache.clone(),
+        ));
+    }
     let mut dag = DAG::default();
     for record in job["nodes"].as_array().ok_or("nodes required")? {
         let identifier = record["id"].as_str().ok_or("id required")?;
@@ -263,6 +342,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         "input_hashing": "ContentRequired",
         "current_daemon_verified": false,
         "plugin_name": job["expected_plugin_name"],
+        "additional_plugin_identities": additional_identities,
         "native_statistical_factories_registered": false,
         "original_manifest_sha256": format!("{:x}", Sha256::digest(&manifest_bytes)),
         "effective_synthetic_manifest_sha256": format!("{:x}", Sha256::digest(&synthetic_manifest_bytes)),

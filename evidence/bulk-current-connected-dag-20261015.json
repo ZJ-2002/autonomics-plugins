@@ -1,0 +1,447 @@
+{
+  "schema": "CURRENT_PSEUDOBULK_DESEQ2_LIMMA_CONNECTED_DAG_PROOF_V1",
+  "status": "ACCEPTED_SCOPED_TECHNICAL_CURRENT_THREE_FAMILY_CHAIN",
+  "original_kinds": [
+    "pseudobulk_counts",
+    "deseq2_de",
+    "limma_voom"
+  ],
+  "active_study_design": "BMC_v4.3.2_FULL_FIXED.zip",
+  "active_design_sha256": "4c5af762ab1e9768a24b9446827ea367176a80407862cfc10ca09a95f44f1151",
+  "built_engine": "4ceefbd821baab8deebb070645a2fb8b1fa8e1ba",
+  "built_parent": "c45b317c44ac9f8cc9dbef3c38936d65e7316e47",
+  "engine_publication": "c17d7a2dd6e55112bee7f40db95f66d62a4c3e5c",
+  "executable_sha256": "bbc1a387b508ba05c50e79eb95b3dc15f87cf274a6e2c3983bcd320246339481",
+  "probe_sha256": "e9c8fdcaa8d11a2460ebd8c142721c91bfd96116b2701d215fa4fd583034ea60",
+  "engine_changes": [
+    "crates/container-plugin/examples/official_plugin_dag.rs"
+  ],
+  "all_5523_committed_sources_unchanged_during_build": true,
+  "private_native_OLS_HEAD_pushed": false,
+  "scientific_method_manifest_image_parameters_or_goldens_changed": false,
+  "statistical_backends": {
+    "deseq2": "Official DESeq2 1.50.2; fitType mean, no LFC shrinkage for these fixed cases.",
+    "limma": "Official limma 3.66.0 + edgeR 4.8.2; categorical ctrl/case and TMM for these fixed cases.",
+    "pseudobulk": "Mechanical donor x celltype SUM through official SciPy sparse operations and explicit engineering grouping/guards; Scanpy is an earlier independent comparator, NOT the executed backend."
+  },
+  "counts": {
+    "complete_connected_DAGs": 2,
+    "nodes_per_DAG": 4,
+    "edges_per_DAG": 5,
+    "raw_input_bindings": 10,
+    "live_published_output_ports": 26,
+    "author_numeric_fields": 19250,
+    "R_table_readbacks": 18,
+    "DESeq2_dataset_readbacks": 2,
+    "selected_dataset_numeric_fields": 26900,
+    "direct_pseudobulk_cases": 41,
+    "direct_positive_cases": 20,
+    "direct_refusals": 21,
+    "multi_manifest_preflight_refusals": 9,
+    "additional_failed_producer_DAGs": 1,
+    "downstream_methods_not_executed_after_failure": 2,
+    "backward_compatibility_preflight_refusals": 6,
+    "backward_compatibility_R_BH_transport_DAGs": 1
+  },
+  "chain": {
+    "status": "CURRENT_THREE_FAMILY_COUNTS_DESEQ2_LIMMA_CHAIN_PROVEN_SCOPED",
+    "engine_commit": "4ceefbd821baab8deebb070645a2fb8b1fa8e1ba",
+    "executable_sha256": "bbc1a387b508ba05c50e79eb95b3dc15f87cf274a6e2c3983bcd320246339481",
+    "cases": [
+      {
+        "case": "simple-identities",
+        "nodes": 4,
+        "edges": 5,
+        "input_bindings": 5,
+        "published_ports": 13,
+        "exact_donor_counts_metadata_and_full_reports": true,
+        "numerical_comparisons": [
+          {
+            "node": "deseq2",
+            "port": 0,
+            "rows": 201,
+            "finite_fields": 1201,
+            "max_absolute_error": 0,
+            "atol": 1e-10,
+            "rtol": 1e-10
+          },
+          {
+            "node": "deseq2",
+            "port": 1,
+            "rows": 201,
+            "finite_fields": 2412,
+            "max_absolute_error": 0,
+            "atol": 1e-10,
+            "rtol": 1e-10
+          },
+          {
+            "node": "deseq2",
+            "port": 2,
+            "rows": 12,
+            "finite_fields": 12,
+            "max_absolute_error": 0,
+            "atol": 1e-10,
+            "rtol": 1e-10
+          },
+          {
+            "node": "limma",
+            "port": 0,
+            "rows": 200,
+            "finite_fields": 1200,
+            "max_absolute_error": 0,
+            "atol": 1e-12,
+            "rtol": 1e-12
+          },
+          {
+            "node": "limma",
+            "port": 1,
+            "rows": 200,
+            "finite_fields": 2400,
+            "max_absolute_error": 0,
+            "atol": 1e-12,
+            "rtol": 1e-12
+          },
+          {
+            "node": "limma",
+            "port": 2,
+            "rows": 200,
+            "finite_fields": 2400,
+            "max_absolute_error": 0,
+            "atol": 1e-12,
+            "rtol": 1e-12
+          }
+        ]
+      },
+      {
+        "case": "quoted-identities",
+        "nodes": 4,
+        "edges": 5,
+        "input_bindings": 5,
+        "published_ports": 13,
+        "exact_donor_counts_metadata_and_full_reports": true,
+        "numerical_comparisons": [
+          {
+            "node": "deseq2",
+            "port": 0,
+            "rows": 201,
+            "finite_fields": 1201,
+            "max_absolute_error": 0,
+            "atol": 1e-10,
+            "rtol": 1e-10
+          },
+          {
+            "node": "deseq2",
+            "port": 1,
+            "rows": 201,
+            "finite_fields": 2412,
+            "max_absolute_error": 0,
+            "atol": 1e-10,
+            "rtol": 1e-10
+          },
+          {
+            "node": "deseq2",
+            "port": 2,
+            "rows": 12,
+            "finite_fields": 12,
+            "max_absolute_error": 0,
+            "atol": 1e-10,
+            "rtol": 1e-10
+          },
+          {
+            "node": "limma",
+            "port": 0,
+            "rows": 200,
+            "finite_fields": 1200,
+            "max_absolute_error": 0,
+            "atol": 1e-12,
+            "rtol": 1e-12
+          },
+          {
+            "node": "limma",
+            "port": 1,
+            "rows": 200,
+            "finite_fields": 2400,
+            "max_absolute_error": 0,
+            "atol": 1e-12,
+            "rtol": 1e-12
+          },
+          {
+            "node": "limma",
+            "port": 2,
+            "rows": 200,
+            "finite_fields": 2400,
+            "max_absolute_error": 0,
+            "atol": 1e-12,
+            "rtol": 1e-12
+          }
+        ]
+      }
+    ],
+    "reference_receipts": [
+      {
+        "files": 151,
+        "internal_links": 14,
+        "intentional_fault_links": 0,
+        "seal_sha256": "81f1bdac6d4833b8597fbfc0e9ce5f542b256a6589bd76137bf769b60ea90038"
+      },
+      {
+        "files": 258,
+        "internal_links": 14,
+        "intentional_fault_links": 2,
+        "seal_sha256": "0baff3edbfd25b6ddf0e19eb8c53bf61e01ceec72d6118195092fc3174d6efe1"
+      }
+    ],
+    "inherited_fixture_payloads_rehashed": 80,
+    "independent_author_reference_recomputed": false,
+    "pure_scipy_count_aggregation_not_claimed_as_scanpy_execution": true,
+    "RDS_scope": "All DESeq2 assays, row/column identities, colData, model matrix, size factors, mcols and dispersion fit type; not every environment/slot",
+    "actual_study_or_resident_daemon_qualified": false,
+    "g0_granted": false
+  },
+  "reader_summary": {
+    "tables": 18,
+    "datasets": 2,
+    "numeric_fields": 26900
+  },
+  "pseudobulk_boundary_suite": {
+    "status": "CURRENT_PSEUDOBULK_ALL_41_CASES_PROVEN_SCOPED",
+    "positive_cases": 20,
+    "refusal_cases": 21,
+    "source_sha256": {
+      "test_assurance.sh": "b48078fe744cbd8d648b93ed99da7efd21bc2cf91af1c693cfa5249f2d8dc057",
+      "scripts/pseudobulk_counts.py": "77884036871586b1be564a8c25f9ab72b2939a987db112aecd328cc86e44c83d",
+      "tests/test_assurance.py": "885cea12225f2468b57216487fd37f14aacf780bbb64dfac5101b232aef8ad25",
+      "manifest.toml": "2c1a5d0105617aabed47b3950dfa751a94e3b47dfa7d98a805f9c5d1a66033c8"
+    },
+    "reference": "Independent arbitrary precision integer grouping and preexisting Scanpy-scoped evidence; this suite does not invoke Scanpy",
+    "actual_aggregation": "Official SciPy sparse matrix operations plus explicit engineering grouping/validation; not a statistical estimator or Rust implementation",
+    "versions": {
+      "anndata": "0.12.19",
+      "numpy": "2.4.6",
+      "scipy": "1.17.1",
+      "pandas": "2.3.3"
+    },
+    "new_study_or_daemon_qualified": false,
+    "g0_granted": false
+  },
+  "multi_manifest_controls": {
+    "status": "MULTI_PLUGIN_EXACT_GUARDS_AND_FAILED_PRODUCER_ENFORCED",
+    "engine_commit": "4ceefbd821baab8deebb070645a2fb8b1fa8e1ba",
+    "preflight_cases": [
+      {
+        "case": "extra-manifest-hash",
+        "exact_message": "additional canonical manifest bytes differ",
+        "exit_code": 1,
+        "DAG_not_entered": true
+      },
+      {
+        "case": "extra-name",
+        "exact_message": "additional plugin identity empty, repeated or mismatched",
+        "exit_code": 1,
+        "DAG_not_entered": true
+      },
+      {
+        "case": "repeated-plugin",
+        "exact_message": "additional plugin identity empty, repeated or mismatched",
+        "exit_code": 1,
+        "DAG_not_entered": true
+      },
+      {
+        "case": "duplicate-kind",
+        "exact_message": "duplicate method kind across plugin manifests",
+        "exit_code": 1,
+        "DAG_not_entered": true
+      },
+      {
+        "case": "engineering-collision",
+        "exact_message": "additional plugin cannot replace an engineering factory",
+        "exit_code": 1,
+        "DAG_not_entered": true
+      },
+      {
+        "case": "extra-script-hash",
+        "exact_message": "actual dispatched script differs",
+        "exit_code": 1,
+        "DAG_not_entered": true
+      },
+      {
+        "case": "extra-script-traversal",
+        "exact_message": "nonlocal script path forbidden",
+        "exit_code": 1,
+        "DAG_not_entered": true
+      },
+      {
+        "case": "extra-panel-mapping",
+        "exact_message": "additional plugins with panels are not supported by this technical probe",
+        "exit_code": 1,
+        "DAG_not_entered": true
+      },
+      {
+        "case": "additional-array-type",
+        "exact_message": "additional plugins must be an explicit array",
+        "exit_code": 1,
+        "DAG_not_entered": true
+      }
+    ],
+    "failed_producer": {
+      "actual_exit": 2,
+      "normal_result_absent": true,
+      "both_downstream_methods_not_executed": true
+    },
+    "g0_granted": false
+  },
+  "single_manifest_compatibility": {
+    "status": "GENERIC_ENGINE_GUARDS_AND_ONE_NO_PANEL_TRANSPORT_PROVEN_SCOPED",
+    "engine_commit": "4ceefbd821baab8deebb070645a2fb8b1fa8e1ba",
+    "executable_sha256": "bbc1a387b508ba05c50e79eb95b3dc15f87cf274a6e2c3983bcd320246339481",
+    "refusals": [
+      {
+        "case": "manifest-hash",
+        "exit_code": 1,
+        "exact_guard_message": "canonical manifest bytes differ",
+        "DAG_execution_not_entered": true
+      },
+      {
+        "case": "plugin-name",
+        "exit_code": 1,
+        "exact_guard_message": "exact nonempty plugin identity required",
+        "DAG_execution_not_entered": true
+      },
+      {
+        "case": "native-kind",
+        "exit_code": 1,
+        "exact_guard_message": "undeclared node or native statistical fallback forbidden",
+        "DAG_execution_not_entered": true
+      },
+      {
+        "case": "engineering-collision",
+        "exit_code": 1,
+        "exact_guard_message": "plugin cannot replace an engineering factory",
+        "DAG_execution_not_entered": true
+      },
+      {
+        "case": "script-traversal",
+        "exit_code": 1,
+        "exact_guard_message": "nonlocal script path forbidden",
+        "DAG_execution_not_entered": true
+      },
+      {
+        "case": "panel-mapping",
+        "exit_code": 1,
+        "exact_guard_message": "declared panel mapping differs or is not explicitly synthetic",
+        "DAG_execution_not_entered": true
+      }
+    ],
+    "no_panel_transport": {
+      "case": "adjust-BH",
+      "nodes": 8,
+      "edges": 7,
+      "published_ports": 5,
+      "complete_typed_table_byte_equal": true,
+      "new_R_method_certificates": 0
+    },
+    "all_plugins_or_versions_qualified": false,
+    "daemon_or_study_qualified": false,
+    "g0_granted": false
+  },
+  "source_sha256": {
+    "tools/probes/official_plugin_dag.rs": "e9c8fdcaa8d11a2460ebd8c142721c91bfd96116b2701d215fa4fd583034ea60",
+    "tools/prove_bulk_current_chain.py": "e6eb9156e6d8acd33f3d131f44308db9d8b124b718eab5d4ab330ff02bb1c6a3",
+    "tools/prove_multi_plugin_guards.py": "861be98bdc8ba12b8c419908ffd729e1d94a731f7af5ff63d180777128d74a78",
+    "tools/prove_pseudobulk_boundaries.py": "35cdeb5491d23970abcfa40b10c7fd9438c6847e39d61420fa27bc789c21838b",
+    "tools/repair_bulk_reader_artifact_owner.py": "88ac14010e27a7d77e1457f1d8b1ccedd176ab87cb9bd60c4dc7ff50741edbec",
+    "tests/test_bulk_current_chain.py": "2057f3986c9347120d89c20de3214fc71b1478ff46addcc727c6e5ee47ac5a48",
+    "tests/test_ldsc_precision_dag.py": "31bc05f3bbb4c33e870226ff4e5b14eda3daa3d4b5616b76a085bc773633df59",
+    "quality/required-tests.json": "05a5d8d27f682ab6b373a03d10cc00cf9be237e24fffd58631ec1c4e97db6d86",
+    "plugins/pseudobulk/manifest.toml": "2c1a5d0105617aabed47b3950dfa751a94e3b47dfa7d98a805f9c5d1a66033c8",
+    "plugins/pseudobulk/scripts/pseudobulk_counts.py": "77884036871586b1be564a8c25f9ab72b2939a987db112aecd328cc86e44c83d",
+    "plugins/deseq2/manifest.toml": "5720eeff4b44cd1285129b2f05d1a2fab780b150efa2c9d1a05421eae0f01782",
+    "plugins/deseq2/deseq2_runner.R": "cb019c599face7715089df4c16157851b0403bef5f61a3166123ba913ba170f1",
+    "plugins/bulk-rnaseq/manifest.toml": "d8c8344145cd8b75a79ed7e00ff3c399634ffc99cb7edf7d7bb58cedcd009f0e",
+    "plugins/bulk-rnaseq/limma_voom_runner.R": "4dd81e31f558b311da0fdbcc54415967d7cd237356b54d56cfed7ed284808dcf",
+    "tools/build_official_plugin_probe.py": "dfb51b3c80159464762679807b4fc5cfc27bf93de261d8d4a0ae8d8c127d6d2e",
+    "tools/build_current_ldsc.py": "23d06cdf1b948c11032fc4fa0d2b74bf0d02678a7fbf3431b555163c662ad04e"
+  },
+  "archives_reverified": [
+    {
+      "session": "f7e02ba49c024ceca6b934b4a123f751",
+      "manifest_sha256": "431dd1cdf0ea5c2ea66ce98621354b65ebdac356d03d081ee71045b0c81d4caf",
+      "files": 14,
+      "bytes": 177153327,
+      "actual_exit": 0
+    },
+    {
+      "session": "8e7ea5f5a7ab48ac8acff5c2c15e0031",
+      "manifest_sha256": "0c9697fb969218877f9bfa9306ef483549f424b1ae4b268e5cc0bd4673aa3656",
+      "files": 202,
+      "bytes": 1068383,
+      "actual_exit": 0
+    },
+    {
+      "session": "3b70f091b0f04399bf0a4b85f54ec71f",
+      "manifest_sha256": "75530acb33773020e3340971bb3bd8e99c09346605c275b3bb65ce15f6a7d47d",
+      "files": 90,
+      "bytes": 3492370,
+      "actual_exit": 0
+    },
+    {
+      "session": "fdc90ad6294c46dea69a4978653ef2bb",
+      "manifest_sha256": "2c17e953cb58e5e9626d65d0bf621c3ba0260ec1d53b0fc2cc758a8657189692",
+      "files": 55,
+      "bytes": 216085,
+      "actual_exit": 0
+    },
+    {
+      "session": "74fd10533bbc4889a2b3960f233c3dcb",
+      "manifest_sha256": "8c2377f096fc346ea0aa6b2ded0a8d2ce67be00a8539a11a47a51243a7739306",
+      "files": 55,
+      "bytes": 258338,
+      "actual_exit": 0
+    },
+    {
+      "session": "b28125ce700543d3bc5cb586ca6c97d2",
+      "manifest_sha256": "1a105a3b5bbb1ba79f8c7444003827cd32bd33e7d069652588e04058bfd98222",
+      "files": 4,
+      "bytes": 717,
+      "actual_exit": 0
+    },
+    {
+      "session": "6331f795c4694579b0ad5f018e49c2dc",
+      "manifest_sha256": "e8bf6fed0aa65be24edca60a78eb20a6187d7ad8e011a8b6e370b5d2482028ca",
+      "files": 4,
+      "bytes": 93645,
+      "actual_exit": 0
+    }
+  ],
+  "local_source_tests": {
+    "session": "6331f795c4694579b0ad5f018e49c2dc",
+    "tests_run": 219,
+    "complete": true,
+    "source_lock_matches": true,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "source_binding_note": "The old LDSC proof remains bound to its original engine and exact probe bytes in real Git publication 4b1f4ede93a403fb49ce280528baa465b1c78b74, not silently rebound to the new helper. Old numerical goldens and tolerances are unchanged.",
+  "post_terminal_correction": {
+    "session": "3b70f091b0f04399bf0a4b85f54ec71f",
+    "reason": "The independent R reader inherited the image root USER and wrote one technical JSON as host subuid 100000 despite keep-id. The actual scientific and reader computations exited zero.",
+    "action": "Under the session lease, verified inactive unit/MainPID zero, workspace and file identity, then corrected only that regular JSON owner with --from=100000:100000. Bytes, inode, mode, source and exit statuses were unchanged. A separately archived receipt records this; future standalone readers also explicitly set the operator UID/GID.",
+    "not_a_recomputed_or_inferred_success": true
+  },
+  "scope_limits": [
+    "Additional plugins must be explicitly pinned and have no panels in this probe; primary synthetic panel support remains separately guarded.",
+    "Generic probe registration and source hashes are engineering identity, not scientific admission for every declared or unused factory.",
+    "Raw File ports connect the methods. This does not certify arbitrary CSV/DataFrame type inference for leading-zero or missing-like identifiers.",
+    "RDS scope covers specified DDS assays, colData, design, size factors, mcols and fit type, not every possible S4 slot/environment or every model branch.",
+    "Report semantics remain exact after independently revalidating actual file digests and normalizing only file identity/path receipts.",
+    "Only fixed synthetic decoded author fixtures; real raw-count layer, donor/cohort eligibility, frozen universe/families/contrasts and scientific implementation locks remain separate.",
+    "Do not enable all modules or change production configuration based on this proof. Spatial B-S remains CONDITIONAL_NOT_READY and GS01 remains OPEN."
+  ],
+  "original_120_function_count_incremented": false,
+  "baseline_pending_80_rewritten": false,
+  "frozen_design_or_276_288_696_or_viewing_history_changed": false,
+  "production_deployed": false,
+  "scientific_release_granted": false,
+  "g0_granted": false
+}
