@@ -1,0 +1,132 @@
+{
+  "schema": "DIRECT_SOURCE_ACQUISITION_PROTOCOL_AND_SOFTWARE_SURFACE_AUDIT_V1",
+  "status": "PROTOCOL_TESTED_ACQUISITION_RUNNING_NOT_SOURCE_QUALIFIED",
+  "original_node_kind": "source_opentargets_associations",
+  "release": "26.09",
+  "source_base": "https://ftp.ebi.ac.uk/pub/databases/opentargets/platform/26.09/output/",
+  "selected_files": {
+    "association_overall_direct": 14,
+    "target": 3,
+    "disease": 1
+  },
+  "expected_total_files": 18,
+  "expected_complete_bytes": 867128423,
+  "not_included": [
+    "association_by_datasource_direct",
+    "association_by_datatype_direct",
+    "indirect datasets"
+  ],
+  "source_metadata_session": "5addbe9b7690453b84ee54154486ab42",
+  "source_metadata_manifest_sha256": "e89ad960f9fd8304724e0dc615e726c00c9ca3d768951cc054d064f7f6ef8842",
+  "acquisition_session": "3a35db8dda8e44018860e7e1895e9c7d",
+  "no_terminal_acquisition_receipt_claimed": true,
+  "guards": [
+    "exact official HTTPS origin/path",
+    "unchanged ETag/Last-Modified/byte length",
+    "identity encoding and no redirect/range fallback",
+    "per-file byte/time bounds",
+    "single request/no retries",
+    "ordinary Parquet framing",
+    "streaming measured SHA256",
+    "non-overwrite publication"
+  ],
+  "measured_SHA256_is_not_an_author_published_checksum": true,
+  "unit_scope": "URL/response identity, complete toy transfer, truncation/overlong/invalid framing rejection and non-overwrite; not completed official acquisition or row semantics",
+  "software_surface_snapshot": {
+    "schema": "UPLOADED_TEMPLATE_VS_ACTIVE_SOFTWARE_RECORD_READONLY_V1",
+    "source_zip_sha256": "4c5af762ab1e9768a24b9446827ea367176a80407862cfc10ca09a95f44f1151",
+    "uploaded_software_sha256": "8e1525c5e6104ca4f278d814edb8ded6e2953fe19866c609857771f50c0b0945",
+    "active_software_sha256": "3deee8b8e390fc1da21886c170241515889c06adab0cbe74bc31c9d5d87675d6",
+    "software_requirements": 18,
+    "changed_rows": [
+      {
+        "component": "genetic_summary_qc",
+        "uploaded_version": "",
+        "uploaded_status": "NOT_IMPLEMENTATION_LOCKED",
+        "active_version": "CPython3.14.7;PLINK1.90b7.2",
+        "active_status": "LOCKED_V432_MINIMUM_SCOPE"
+      },
+      {
+        "component": "TwoSampleMR_or_equivalent",
+        "uploaded_version": "",
+        "uploaded_status": "NOT_IMPLEMENTATION_LOCKED",
+        "active_version": "0.7.11@d4df21929fdabeb2f89686ffaad0db5f56973d64",
+        "active_status": "LOCKED_V432_MINIMUM_SCOPE"
+      },
+      {
+        "component": "MRlap",
+        "uploaded_version": "",
+        "uploaded_status": "NOT_IMPLEMENTATION_LOCKED",
+        "active_version": "",
+        "active_status": "NOT_ENABLED_O2_NO_QUALIFIED_DIAGNOSTICS"
+      },
+      {
+        "component": "limma_edgeR_or_DESeq2",
+        "uploaded_version": "",
+        "uploaded_status": "NOT_IMPLEMENTATION_LOCKED",
+        "active_version": "limma3.68.5;R4.6.1;statmod1.5.2",
+        "active_status": "LOCKED_V432_MINIMUM_SCOPE"
+      },
+      {
+        "component": "UCell_or_prespecified_score",
+        "uploaded_version": "",
+        "uploaded_status": "NOT_IMPLEMENTATION_LOCKED",
+        "active_version": "2.16.0",
+        "active_status": "SYNTHETIC_METHOD_ONLY;PROGRAM_BRANCH_NOT_ENABLED"
+      },
+      {
+        "component": "singscore",
+        "uploaded_version": "",
+        "uploaded_status": "NOT_IMPLEMENTATION_LOCKED",
+        "active_version": "1.32.0",
+        "active_status": "SYNTHETIC_METHOD_ONLY;PROGRAM_BRANCH_NOT_ENABLED"
+      }
+    ],
+    "active_records_are_not_replaced_by_upload_template": true,
+    "generic_plugin_versions_are_not_automatically_equivalent_to_active_method_locks": true,
+    "locked_status_is_an_observed_record_not_new_scientific_authorization": true,
+    "scientific_payloads_or_empirical_results_read": false,
+    "software_or_study_files_changed": false,
+    "g0_granted": false
+  },
+  "archives_reverified": [
+    {
+      "session": "297ef3c8b5cc4145959d4af87fefa351",
+      "manifest_sha256": "b8beecd258b17e755aaf19def470e169484aeb5392ed83349afed8e942dc8c52",
+      "files": 5,
+      "bytes": 6401
+    },
+    {
+      "session": "e4fce7e8fcf1439da6d061eda200fa5f",
+      "manifest_sha256": "8ed6c7120237594a6d2202005097b1f9163ff1a59599a9e8a98d959fff587d84",
+      "files": 4,
+      "bytes": 96833
+    }
+  ],
+  "source_sha256": {
+    "tools/acquire_opentargets_direct_reference.py": "a1552387ae492a049642b1a7f95208ecc631592380adb7e4c59692bf3c6bf812",
+    "tools/audit_study_software_surfaces.py": "881c8a863af4b133dcde9b41be62d75780e8a4cebf7e37fd979a84aad048e59d",
+    "tests/test_opentargets_direct_acquisition.py": "6ba215516564696c08c8d4cd9e321e41cd658a200d2246d655f70ab8748f1c7c",
+    "tests/test_study_software_surfaces.py": "103a3e9c99f155fbfd725ba7096a90053f5e4238e4f4551769945d5e8eab16ec",
+    "quality/required-tests.json": "79125aadc02d7239d16e0aba265acac356b74b12c3af962d6368630b67e8fecc"
+  },
+  "required_source_tests": {
+    "session": "e4fce7e8fcf1439da6d061eda200fa5f",
+    "tests_run": 226,
+    "complete": true,
+    "source_lock_matches": true,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "all_18_files_acquired_and_sealed": false,
+  "all_partition_schemas_or_reference_rows_qualified": false,
+  "bulk_API_field_or_novelty_equivalence_proven": false,
+  "live_pagination_failure_fixed": false,
+  "literature_or_other_pending_routes_certified": false,
+  "production_or_frozen_study_selection_changed": false,
+  "original_120_or_276_288_696_counts_changed": false,
+  "spatial_B_S": "CONDITIONAL_NOT_READY",
+  "GS01": "OPEN",
+  "g0_granted": false
+}

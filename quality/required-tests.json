@@ -219,6 +219,13 @@
     "tests.test_bulk_current_chain.BulkCurrentChainTests.test_csv_reader_keeps_quotes_leading_zero_and_literal_missing_tokens",
     "tests.test_bulk_current_chain.BulkCurrentChainTests.test_numeric_oracle_requires_exact_ids_missing_masks_and_finite_values",
     "tests.test_bulk_current_chain.BulkCurrentChainTests.test_stage_receipt_requires_exact_upstream_port_and_bytes",
-    "tests.test_bulk_current_chain.BulkCurrentChainTests.test_report_normalization_requires_actual_hashes_and_keeps_all_semantic_fields"
+    "tests.test_bulk_current_chain.BulkCurrentChainTests.test_report_normalization_requires_actual_hashes_and_keeps_all_semantic_fields",
+    "tests.test_opentargets_direct_acquisition.DirectAcquisitionTests.test_exact_official_origin_and_metadata_scope_are_required",
+    "tests.test_opentargets_direct_acquisition.DirectAcquisitionTests.test_partial_compressed_redirect_and_changed_identity_responses_are_refused",
+    "tests.test_opentargets_direct_acquisition.DirectAcquisitionTests.test_inventory_is_only_generic_direct_overall_and_annotation_reference",
+    "tests.test_study_software_surfaces.SoftwareSurfaceTests.test_blank_version_is_not_invented_or_promoted",
+    "tests.test_study_software_surfaces.SoftwareSurfaceTests.test_missing_duplicate_and_ragged_rows_refuse",
+    "tests.test_opentargets_direct_acquisition.DirectAcquisitionTests.test_full_toy_file_is_hashed_and_existing_destination_is_not_replaced",
+    "tests.test_opentargets_direct_acquisition.DirectAcquisitionTests.test_truncated_overlong_and_nonparquet_bodies_never_publish"
   ]
 }
