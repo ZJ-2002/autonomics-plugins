@@ -1,6 +1,8 @@
 {
   "scope": "CATALOG_TESTS_NOT_SCIENTIFIC_CERTIFICATES",
   "test_ids": [
+    "tests.test_ldsc_current_dag.CurrentLdscDagContractTests.test_staged_raw_input_requires_exact_source_bytes_and_port_binding",
+    "tests.test_ldsc_current_dag.CurrentLdscDagContractTests.test_gzip_input_requires_complete_materialized_plaintext",
     "tests.test_ldsc_author_reference.AuthorReferenceArchiveTests.test_generation_metadata_is_explicit_preserved_and_never_arbitrary",
     "tests.test_ldsc_author_reference.AuthorReferenceArchiveTests.test_every_raw_author_member_is_compared_without_extraction",
     "tests.test_ldsc_author_reference.AuthorReferenceArchiveTests.test_unsafe_or_unexpected_members_cannot_be_ignored",

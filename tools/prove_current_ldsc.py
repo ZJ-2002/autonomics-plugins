@@ -104,6 +104,32 @@ def check_ports(work, definition, analysis, scratch):
     return result
 
 
+def check_staged_inputs(work, inputs, analysis, scratch):
+    if len(analysis["inputs"]) != len(inputs):
+        raise RuntimeError("Complete actual input-binding inventory required")
+    records = []
+    for index, original in enumerate(inputs):
+        source = work/original.name
+        suffix = "."+".".join(original.name.split(".")[1:]) if original.name.startswith("input-") else ".tsv.gz" if original.name.endswith(".gz") else ".tsv"
+        matches = [path for path in scratch.rglob(f"input-{index}{suffix}") if path.parent.name=="inputs" and path.parent.parent.name==".autonomics"]
+        bound = next((item for item in analysis["inputs"] if item["to_port"]==index),None)
+        if (len(matches)!=1 or bound is None or bound["from"]!="input"+str(index)
+                or bound["path"]!="vfs:///"+original.name or bound["fingerprint"]["size"]!=source.stat().st_size
+                or not (matches[0].resolve().is_relative_to(scratch) or matches[0].resolve()==source.resolve())
+                or digest(matches[0])!=digest(original) or digest(source)!=digest(original)):
+            raise RuntimeError("Actual staged input bytes or port identity differ")
+        record=dict(port=index,source_sha256=digest(original),actual_staged_sha256=digest(matches[0]),source_bytes=source.stat().st_size)
+        if source.name.endswith(".gz"):
+            materialized=[path for path in scratch.rglob(f"input-{index}.tsv") if path.parent.name==".autonomics"]
+            with gzip.open(source,"rb") as stream:
+                expected=hashlib.file_digest(stream,"sha256").hexdigest()
+            if len(materialized)!=1 or digest(materialized[0])!=expected:
+                raise RuntimeError("Complete actual gzip materialization differs")
+            record["materialized_plaintext_sha256"]=expected
+        records.append(record)
+    return records
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--runner", required=True, type=Path)
@@ -116,6 +142,12 @@ def main():
     build = json.loads(arguments.build_record.read_text())
     if build["actual_build_exit"] != 0 or digest(arguments.runner) != build["executable_sha256"]:
         raise RuntimeError("Exact successful current compiler executable required")
+    runner = Path(os.environ["TMPDIR"])/"official_ldsc_dag"
+    with arguments.runner.open("rb") as source, runner.open("xb") as destination:
+        shutil.copyfileobj(source,destination)
+    runner.chmod(0o700)
+    if digest(runner) != build["executable_sha256"] or digest(arguments.runner) != build["executable_sha256"]:
+        raise RuntimeError("Owned executable differs from the sealed compiler artifact")
     inference = reference(arguments.archives, "inference")
     munging = reference(arguments.archives, "munge")
     output = Path(permanent) / "current-ldsc-dag"
@@ -174,7 +206,7 @@ def main():
                    bundles=bundles, panel_manifest_sha256=panel_hashes, nodes=nodes, edges=edges)
         write(work / "job.json", job)
         with (work / "runner.stdout").open("wb") as stdout, (work / "runner.stderr").open("wb") as stderr:
-            process = subprocess.run([str(arguments.runner), str(work / "job.json")], stdout=stdout, stderr=stderr, timeout=300)
+            process = subprocess.run([str(runner), str(work / "job.json")], stdout=stdout, stderr=stderr, timeout=300)
         if process.returncode:
             raise RuntimeError("Current engine runner failed; no historical substitute: "+name)
         report = json.loads((work / "dag-report.json").read_text())
@@ -193,15 +225,24 @@ def main():
             raise RuntimeError("Actual DAG dispatched a different image")
         execution_evidence = work / "execution-evidence"
         execution_evidence.mkdir()
+        unavailable_logs = []
         for label in ["stdout_log", "stderr_log", "task_manifest"]:
-            source = Path(analysis["execution"][label]["path"])
+            item = analysis["execution"].get(label)
+            if item is None:
+                if label == "task_manifest":
+                    raise RuntimeError("Actual task manifest evidence missing")
+                unavailable_logs.append(label)
+                continue
+            source = Path(item["path"])
             if source.is_symlink() or not source.is_file():
                 raise RuntimeError("Actual execution evidence missing")
             destination = execution_evidence / source.name
             shutil.copyfile(source, destination)
             if digest(source) != digest(destination):
                 raise RuntimeError("Execution evidence preservation differs")
+        write(execution_evidence/"unpublished-optional-log-fields.json",dict(fields=unavailable_logs,absence_not_inferred_as_empty_process_stream=True))
         scratch = Path(os.environ["TMPDIR"]) / "official-ldsc-container-workspaces" / name
+        input_checks = check_staged_inputs(work, inputs, analysis, scratch)
         definition = next(row for row in manifest["nodes"] if row["kind"] == kind)
         if negative:
             if not first["errors"] or analysis["status"] != "failed" or list((work / "artifacts").rglob("ldsc_rg.log")):
@@ -231,7 +272,7 @@ def main():
                 if normalize_engine_log(actual, substitutions) != normalize_engine_log(expected, substitutions):
                     raise RuntimeError("Complete materialized author inference output differs: "+name)
         results.append(dict(case=name, kind=kind, nodes=len(nodes), edges=len(edges), outcome="AUTHOR_FAILURE_PRESERVED" if negative else "FULL_AUTHOR_OUTPUT_MATCHED",
-                            synthetic_panel_bindings=True, published_ports=0 if negative else len(ports)))
+                            synthetic_panel_bindings=True, input_bindings=input_checks, published_ports=0 if negative else len(ports)))
         (output / "completed-cases.json").write_text(json.dumps(results, indent=2)+"\n")
     write(output / "verification.json", dict(status="CURRENT_CANONICAL_LDSC_DAG_PROVEN_SYNTHETIC_SCOPED", engine_commit=build["engine_commit"],
           executable_sha256=build["executable_sha256"], cases=results, source_manifest_sha256=digest(family / "manifest.toml"),

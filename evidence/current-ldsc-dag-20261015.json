@@ -1,0 +1,311 @@
+{
+  "schema": "CURRENT_CANONICAL_LDSC_ISOLATED_DAG_PROOF_V1",
+  "proof": {
+    "status": "CURRENT_CANONICAL_LDSC_DAG_PROVEN_SYNTHETIC_SCOPED",
+    "engine_commit": "9816f76eea7d73553b36db8d2e1b67f8ddc765ae",
+    "executable_sha256": "592757c14591a98ecc305923ce95eb87d7b2d4ae8a8fb3d378a2710611510ae1",
+    "cases": [
+      {
+        "case": "h2-plain",
+        "kind": "ldsc_h2",
+        "nodes": 2,
+        "edges": 1,
+        "outcome": "FULL_AUTHOR_OUTPUT_MATCHED",
+        "synthetic_panel_bindings": true,
+        "input_bindings": [
+          {
+            "port": 0,
+            "source_sha256": "2d516a93c384b6b3f3bb65e125a4a9ae054ad91beab29aab673fe1772f7f4db8",
+            "actual_staged_sha256": "2d516a93c384b6b3f3bb65e125a4a9ae054ad91beab29aab673fe1772f7f4db8",
+            "source_bytes": 79534
+          }
+        ],
+        "published_ports": 1
+      },
+      {
+        "case": "h2-gzip",
+        "kind": "ldsc_h2",
+        "nodes": 2,
+        "edges": 1,
+        "outcome": "FULL_AUTHOR_OUTPUT_MATCHED",
+        "synthetic_panel_bindings": true,
+        "input_bindings": [
+          {
+            "port": 0,
+            "source_sha256": "841f883d016e057c61562e13e7cfad3844e00d48a1d1c9529e9e4651ef7c2dd7",
+            "actual_staged_sha256": "841f883d016e057c61562e13e7cfad3844e00d48a1d1c9529e9e4651ef7c2dd7",
+            "source_bytes": 28410,
+            "materialized_plaintext_sha256": "2d516a93c384b6b3f3bb65e125a4a9ae054ad91beab29aab673fe1772f7f4db8"
+          }
+        ],
+        "published_ports": 1
+      },
+      {
+        "case": "h2-constrained",
+        "kind": "ldsc_h2",
+        "nodes": 2,
+        "edges": 1,
+        "outcome": "FULL_AUTHOR_OUTPUT_MATCHED",
+        "synthetic_panel_bindings": true,
+        "input_bindings": [
+          {
+            "port": 0,
+            "source_sha256": "2d516a93c384b6b3f3bb65e125a4a9ae054ad91beab29aab673fe1772f7f4db8",
+            "actual_staged_sha256": "2d516a93c384b6b3f3bb65e125a4a9ae054ad91beab29aab673fe1772f7f4db8",
+            "source_bytes": 79534
+          }
+        ],
+        "published_ports": 1
+      },
+      {
+        "case": "rg-plain",
+        "kind": "ldsc_rg",
+        "nodes": 3,
+        "edges": 2,
+        "outcome": "FULL_AUTHOR_OUTPUT_MATCHED",
+        "synthetic_panel_bindings": true,
+        "input_bindings": [
+          {
+            "port": 0,
+            "source_sha256": "2d516a93c384b6b3f3bb65e125a4a9ae054ad91beab29aab673fe1772f7f4db8",
+            "actual_staged_sha256": "2d516a93c384b6b3f3bb65e125a4a9ae054ad91beab29aab673fe1772f7f4db8",
+            "source_bytes": 79534
+          },
+          {
+            "port": 1,
+            "source_sha256": "0fe896cdffe3016556bf181bdc2087cbd96a0bf031a55e0601be92242c8c188b",
+            "actual_staged_sha256": "0fe896cdffe3016556bf181bdc2087cbd96a0bf031a55e0601be92242c8c188b",
+            "source_bytes": 79454
+          }
+        ],
+        "published_ports": 1
+      },
+      {
+        "case": "rg-gzip",
+        "kind": "ldsc_rg",
+        "nodes": 3,
+        "edges": 2,
+        "outcome": "FULL_AUTHOR_OUTPUT_MATCHED",
+        "synthetic_panel_bindings": true,
+        "input_bindings": [
+          {
+            "port": 0,
+            "source_sha256": "841f883d016e057c61562e13e7cfad3844e00d48a1d1c9529e9e4651ef7c2dd7",
+            "actual_staged_sha256": "841f883d016e057c61562e13e7cfad3844e00d48a1d1c9529e9e4651ef7c2dd7",
+            "source_bytes": 28410,
+            "materialized_plaintext_sha256": "2d516a93c384b6b3f3bb65e125a4a9ae054ad91beab29aab673fe1772f7f4db8"
+          },
+          {
+            "port": 1,
+            "source_sha256": "8440418b24267bc2a5680b8c8f11ac6785d7cc593ef207a468f8bfcc7c067eed",
+            "actual_staged_sha256": "8440418b24267bc2a5680b8c8f11ac6785d7cc593ef207a468f8bfcc7c067eed",
+            "source_bytes": 28422,
+            "materialized_plaintext_sha256": "0fe896cdffe3016556bf181bdc2087cbd96a0bf031a55e0601be92242c8c188b"
+          }
+        ],
+        "published_ports": 1
+      },
+      {
+        "case": "rg-nonpositive-h2",
+        "kind": "ldsc_rg",
+        "nodes": 3,
+        "edges": 2,
+        "outcome": "FULL_AUTHOR_OUTPUT_MATCHED",
+        "synthetic_panel_bindings": true,
+        "input_bindings": [
+          {
+            "port": 0,
+            "source_sha256": "58fff44a0ee54ad4fd532e3007a2428505eb41a039713a4b9e79bf5cb8d8b675",
+            "actual_staged_sha256": "58fff44a0ee54ad4fd532e3007a2428505eb41a039713a4b9e79bf5cb8d8b675",
+            "source_bytes": 80049
+          },
+          {
+            "port": 1,
+            "source_sha256": "0fe896cdffe3016556bf181bdc2087cbd96a0bf031a55e0601be92242c8c188b",
+            "actual_staged_sha256": "0fe896cdffe3016556bf181bdc2087cbd96a0bf031a55e0601be92242c8c188b",
+            "source_bytes": 79454
+          }
+        ],
+        "published_ports": 1
+      },
+      {
+        "case": "rg-invalid-allele-author-failure",
+        "kind": "ldsc_rg",
+        "nodes": 3,
+        "edges": 2,
+        "outcome": "AUTHOR_FAILURE_PRESERVED",
+        "synthetic_panel_bindings": true,
+        "input_bindings": [
+          {
+            "port": 0,
+            "source_sha256": "2d516a93c384b6b3f3bb65e125a4a9ae054ad91beab29aab673fe1772f7f4db8",
+            "actual_staged_sha256": "2d516a93c384b6b3f3bb65e125a4a9ae054ad91beab29aab673fe1772f7f4db8",
+            "source_bytes": 79534
+          },
+          {
+            "port": 1,
+            "source_sha256": "f564bf71e94f957b6d1749527c7658a80a0ceb6fbcb52f80af142664f27e7058",
+            "actual_staged_sha256": "f564bf71e94f957b6d1749527c7658a80a0ceb6fbcb52f80af142664f27e7058",
+            "source_bytes": 79454
+          }
+        ],
+        "published_ports": 0
+      },
+      {
+        "case": "munge-plain",
+        "kind": "ldsc_munge",
+        "nodes": 2,
+        "edges": 1,
+        "outcome": "FULL_AUTHOR_OUTPUT_MATCHED",
+        "synthetic_panel_bindings": true,
+        "input_bindings": [
+          {
+            "port": 0,
+            "source_sha256": "75abf8202d56d41f272e4d983042001fb75e215686a956cd10bd5786f73096f1",
+            "actual_staged_sha256": "75abf8202d56d41f272e4d983042001fb75e215686a956cd10bd5786f73096f1",
+            "source_bytes": 48483
+          }
+        ],
+        "published_ports": 2
+      },
+      {
+        "case": "munge-gzip",
+        "kind": "ldsc_munge",
+        "nodes": 2,
+        "edges": 1,
+        "outcome": "FULL_AUTHOR_OUTPUT_MATCHED",
+        "synthetic_panel_bindings": true,
+        "input_bindings": [
+          {
+            "port": 0,
+            "source_sha256": "f99ff906beb22deb607ccf2f4f246994e13459a7bf8ff3258a83d0f7121cbc1b",
+            "actual_staged_sha256": "f99ff906beb22deb607ccf2f4f246994e13459a7bf8ff3258a83d0f7121cbc1b",
+            "source_bytes": 4158,
+            "materialized_plaintext_sha256": "75abf8202d56d41f272e4d983042001fb75e215686a956cd10bd5786f73096f1"
+          }
+        ],
+        "published_ports": 2
+      }
+    ],
+    "source_manifest_sha256": "8d9d07171fbf57ff6a49b5bde92f5ea970e6e21d2a3cfa0e6a6e11e4277b7e9c",
+    "independent_reference_recomputed": false,
+    "actual_research_panels_qualified": false,
+    "daemon_deployed": false,
+    "formal_authorized": false,
+    "g0_granted": false
+  },
+  "build": {
+    "engine_commit": "9816f76eea7d73553b36db8d2e1b67f8ddc765ae",
+    "parent_commit": "a040f6c16fc723af3977909225605f83695eca91",
+    "git_tree": "e69ecd8cf1c7d24d86c7c039cd53bd9ebd7a19d6",
+    "probe_sha256": "1a8b9f22cd4e9bdeea4985c1890230c5edf999d928af5bcc3c74d848cc79e17d",
+    "changed_paths": [
+      "crates/container-plugin/examples/official_ldsc_dag.rs"
+    ],
+    "canonical_target": "/home/zj-normal/.cache/localdeploy-target",
+    "sink_sha256": null,
+    "remote_pushed": false,
+    "scientific_authorized": false,
+    "g0_granted": false,
+    "executable": "/home/zj-normal/.local/state/autonomics/validation-archives/f2d2e30bef6c4207b5d0adb09a507a06/artifacts/permanent/current-ldsc-build/official_ldsc_dag",
+    "executable_sha256": "592757c14591a98ecc305923ce95eb87d7b2d4ae8a8fb3d378a2710611510ae1",
+    "committed_source_files": 5505,
+    "source_unchanged": true,
+    "compiler_artifacts": 958,
+    "actual_build_exit": 0,
+    "current_daemon_verified": false
+  },
+  "engine_published_probe_commit": "ca3f5f94f7447b58618405cc1e1b3884177343b5",
+  "preserved_concurrent_engine_parent": "72a70779ef970d7cece66573094472635447b1fe",
+  "compiled_Rust_and_Cargo_sources_match_concurrent_parent_except_added_probe": true,
+  "source_sha256": {
+    "tools/prove_current_ldsc.py": "939159c038af706bca99530302eac5b6eed95d768536b29d80bd6baf2cba229d",
+    "tools/build_current_ldsc.py": "23d06cdf1b948c11032fc4fa0d2b74bf0d02678a7fbf3431b555163c662ad04e",
+    "tools/probes/official_ldsc_dag.rs": "1a8b9f22cd4e9bdeea4985c1890230c5edf999d928af5bcc3c74d848cc79e17d",
+    "plugins/ldsc/manifest.toml": "8d9d07171fbf57ff6a49b5bde92f5ea970e6e21d2a3cfa0e6a6e11e4277b7e9c",
+    "plugins/ldsc/scripts/h2.sh": "cb97a4a7a7606991db84bdbf588a0851a8bb260beb9cce803ec1f77cd1e098fa",
+    "plugins/ldsc/scripts/rg.sh": "43e1d83db6d0873a08c2c6338f179551dc9ed10926b31b2dff1ff8c9a180de85",
+    "plugins/ldsc/scripts/munge.sh": "13c5bc3489a086fd56dab4c5fc78bd2aa2d11b4098a65b80ebfa99a55385dede"
+  },
+  "positive_DAGs": 8,
+  "exact_author_failure_DAGs": 1,
+  "actual_input_bindings_independently_byte_checked": 13,
+  "complete_gzip_materializations_checked": 4,
+  "published_ports_independently_matched_to_live_work_files": 10,
+  "full_author_reference_recomputed": false,
+  "original_reference_archives": [
+    "d75e5074142c4003b63c55cccb0472ff",
+    "f59bb9f484d840c7a1560b91e29bc5b5"
+  ],
+  "archive_receipts": [
+    {
+      "session": "f2d2e30bef6c4207b5d0adb09a507a06",
+      "manifest_sha256": "c7971d365c9f2f8f6d3512eb87bd756a04833956d6851616ba07912875bce951",
+      "files": 12,
+      "bytes": 177139837
+    },
+    {
+      "session": "7b30a6fcd7904a88879faff309f7729a",
+      "manifest_sha256": "8d1ca4b56ac140c5a86623d66bac69e4db9087263c088a2ec02506d758b34cd4",
+      "files": 103,
+      "bytes": 189094
+    },
+    {
+      "session": "6e851b329fc740abaa2cb416d63da152",
+      "manifest_sha256": "e3da69f5dcdc30202664e29352fed18df433f6d75a077b8e7ca1d8608f9ef1cd",
+      "files": 109,
+      "bytes": 198875
+    },
+    {
+      "session": "4d53b85ce9be4c8790f125ad59d12dd7",
+      "manifest_sha256": "bb027de1c0af7112d9e8ba57f2dfc089fb8929b703f0c3e41ffaad26dfa0d86c",
+      "files": 917,
+      "bytes": 1680382
+    },
+    {
+      "session": "9cee595ea70645259406b2ca06178c24",
+      "manifest_sha256": "b12429a20824d4f2c3004525f70e42284069f74a3a80a3832d4e91c63ee9a936",
+      "files": 917,
+      "bytes": 1690682
+    },
+    {
+      "session": "7097b65947cc442c8a0ad9123d3f757c",
+      "manifest_sha256": "bc92c497cb15a9aafd1aa492206a98711401db412e44f7c7fec4a9df49cc6296",
+      "files": 4,
+      "bytes": 83251
+    }
+  ],
+  "preserved_failed_setups": [
+    {
+      "session": "7b30a6fcd7904a88879faff309f7729a",
+      "reason": "Immutable archive executable was non-executable; copied exact compiler bytes into owned scratch, never chmodded the archive"
+    },
+    {
+      "session": "6e851b329fc740abaa2cb416d63da152",
+      "reason": "Verifier assumed every optional stderr-log FileRef was present; actual successful h2 had no published stderr-log field. Absence is now explicitly recorded, not fabricated as an empty captured stream"
+    }
+  ],
+  "previous_output_proof_without_new_input_byte_ledger": "4d53b85ce9be4c8790f125ad59d12dd7",
+  "source_tests": {
+    "session": "7097b65947cc442c8a0ad9123d3f757c",
+    "executed": 195,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "complete": true,
+    "source_lock_matches": true
+  },
+  "layer_status": {
+    "method": "PROVEN_SCOPED_PINNED_CBIIT",
+    "engineering_declared_ports_and_owned_input_staging": "PROVEN_SCOPED",
+    "isolated_fixed_engine_DAG": "PROVEN_SCOPED_SYNTHETIC_PANEL_BINDINGS",
+    "study_reference_selection_and_deployment": "NOT_GRANTED"
+  },
+  "full_precision_variants_DAG_qualified_by_this_proof": false,
+  "raw_report_content_hash_fields_not_fabricated": true,
+  "raw_transient_FileRefs_made_durable": false,
+  "daemon_or_production_changed": false,
+  "full_frozen_family_or_persistent_recovery_qualified": false,
+  "original_function_denominator_or_276_288_696_changed": false,
+  "g0_granted": false
+}

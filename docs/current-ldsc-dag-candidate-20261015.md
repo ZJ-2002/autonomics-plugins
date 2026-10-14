@@ -1,5 +1,10 @@
 # Current LDSC DAG candidate: not yet executed
 
+Historical preparation record. The later
+[actual nine-case proof](current-ldsc-dag-proof-20261015.md) supersedes the pending
+build/DAG status, within its explicit synthetic scope. The preparation below is
+not retroactively presented as having executed a computation.
+
 The [author-method migration](ldsc-author-runtime-migration-20261015.md) is
 complete within its recorded synthetic scope. This separate candidate closes the
 next engineering layer; **it is not yet an isolated-DAG or deployment proof**.
