@@ -27,7 +27,22 @@
     "session": "6c469b6c101c472ba60a8b5df077d780",
     "worker_exit_status": 0,
     "state": "CLEANED",
-    "manifest_sha256": "dca66ac064d61286b5aa1519247113aa40ee720aaa64dc6a76e0c63de0b1f536"
+    "manifest_sha256": "dca66ac064d61286b5aa1519247113aa40ee720aaa64dc6a76e0c63de0b1f536",
+    "files": 1896,
+    "bytes": 673945,
+    "exact_manifest_membership_and_content_independently_reverified": true
+  },
+  "required_source_tests": {
+    "session": "884367bae7184fd08978c7ce2426a394",
+    "manifest_sha256": "879dcad7b9af601ecf760c8a59bf668fb89be5a53a3a4afeed07f898ad133b66",
+    "worker_exit_status": 0,
+    "executed": 161,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "complete_required_test_inventory": true,
+    "source_lock_matches": true,
+    "scientific_certified": false
   },
   "preserved_failures": [
     {"session": "258cb14e1b7148299cdea4696fd07f0f", "worker_exit_status": 1, "manifest_sha256": "b407bd08d674d06fe32b6c3415d89537797e585bce98ca319b9c618efcb108e6", "reason": "Access-time-sensitive source stat comparison; exact stored size/hash subsequently confirmed"},

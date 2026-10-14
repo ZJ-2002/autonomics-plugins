@@ -40,6 +40,9 @@ traversing ports, and mutation identity excluding access time only.
 
 Final managed session `6c469b6c101c472ba60a8b5df077d780` exited 0/CLEANED.
 Its manifest is `dca66ac064d61286b5aa1519247113aa40ee720aaa64dc6a76e0c63de0b1f536`.
+Its 1,896 mandatory technical files total 673,945 bytes; their complete manifest
+membership and content hashes were independently reverified. No environment
+clone, additional image build or numbered private vault was created.
 The initial source-audit attempt remains failed: the original size/hash matched,
 but comparing the complete stat object treated access-time updates as mutation.
 The corrected identity still checks device, inode, mode, links, owner, size,
@@ -65,3 +68,8 @@ Source inventory/import checks additionally require recording this source
 evolution against an actual Git commit/blob; the original import record remains
 immutable. A suite that rejects an unrecorded evolution is retained as a genuine
 failed check, not removed or counted as passing.
+After recording the real source commit/blob evolution, all 161 required source
+tests ran with zero failures/errors/skips and a matching source lock. The actual
+successful session is `884367bae7184fd08978c7ce2426a394`, manifest
+`879dcad7b9af601ecf760c8a59bf668fb89be5a53a3a4afeed07f898ad133b66`.
+These source checks are not current DAGs or scientific certifications.
