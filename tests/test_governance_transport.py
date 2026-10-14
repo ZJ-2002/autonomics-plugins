@@ -16,6 +16,11 @@ class GovernanceTransportTests(unittest.TestCase):
     def test_exact11_optin_families18_unique_kinds_canonical_scope_unchanged(self):
         report=check();self.assertEqual(len(report['selected_families']),11);self.assertEqual(report['new_unique_kinds'],18)
         self.assertEqual((report['canonical_families'],report['canonical_kinds']),(31,62))
+        with_a=(ROOT/'plugins/twosamplemr-v432-a/manifest.toml').is_file()
+        self.assertEqual((report['current_canonical_families'],report['current_canonical_kinds']),
+            (34,67) if with_a else (33,66))
+        self.assertEqual(report['current_legacy_additions'],['bulk-limma-normalized','frozen-b-project']+
+            (['twosamplemr-v432-a'] if with_a else []))
         self.assertFalse(report['auto_enable']);self.assertFalse(report['loaded_worker_registration_verified'])
         self.assertFalse(report['native_loader_construct_verified'])
     def test_all10_original_manifests_scripts_readmes_have_exact_git_blob_identity(self):

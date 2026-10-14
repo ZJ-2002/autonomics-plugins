@@ -1,0 +1,54 @@
+schema_version = 1
+plugin_name = "frozen-b-project"
+
+[image]
+reference = "docker.io/library/python@sha256:48b13b003dda20b16f9442b8475aa05fe21bf6579a8c881db92ffb4d8fd20f83"
+tag = "3.14-slim-bookworm"
+upstream = "Actual cached official Python runtime with bounded SYN intake/family and negative-case OCI tests. Operator installation and current destination store approval required."
+license = "Python-2.0"
+
+[[nodes]]
+kind = "frozen_b_legacy_intake"
+desc = "Bind the current v4.3.2 B frozen legacy project to normalized-log2 method inputs."
+doc = "Nineteen actual source/contract files in project-lock order: config, manifest, samples, features, discovery scope, design certificate, software lock, R dependencies, R session, scientific code, scientific rules, scope decision, matrix gzip, source metadata, G0 certificate, family lock, restore acceptance, runtime manifest, original byte verifier. Retains all23786 genes and all46 source columns in provenance; selects exactly locked22 assays17case5control without inferring labels or renormalizing. Returns bound config/expression/genes/samples/decisions/intake. Current LEGACY source only; old design ZIP/CONDITIONAL roles forbidden. Original full-project byte verifier must be run by the operator before scientific execution; this B-only adapter records it as unexecuted. No fit, formal authorization, new G0 or unseen qualification."
+timeout_secs = 1200
+stage_in_mode = "copy"
+artifact_prefix = "/artifacts/frozen_b_legacy_intake"
+[nodes.resources]
+network = "isolated"
+read_only_rootfs = true
+pull_policy = "never"
+cpus = 1.0
+memory = "1Gi"
+pids_limit = 64
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}, {type="file"}, {type="file"}, {type="file"}, {type="file"}, {type="file"}, {type="file"}, {type="file"}, {type="file"}, {type="file"}, {type="file"}, {type="file"}, {type="file"}, {type="file"}, {type="file"}, {type="file"}, {type="file"}, {type="file"}]
+outputs = [{path="config.json",format="json"}, {path="expression.tsv",format="tsv"}, {path="genes.tsv",format="tsv"}, {path="samples.tsv",format="tsv"}, {path="decisions.tsv",format="tsv"}, {path="intake.json",format="json"}]
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/run-intake.py"
+[nodes.command.env]
+PYTHONDONTWRITEBYTECODE = "1"
+
+[[nodes]]
+kind = "frozen_b_legacy_family"
+desc = "Complete all23786 B legacy gene rows with full-denominator BH/BY."
+doc = "Four actual files: limma results, same intake gene registry, intake audit, actual limma audit. Exact source/config/software/row identity; constant/non-estimable raw p stays NA and adjustment denominator includes value1. Outputs full family TSV and audit, original LEGACY primary model role. No old conditional-role mixing, gene selection, formal authority or unseen validation."
+timeout_secs = 1200
+stage_in_mode = "copy"
+artifact_prefix = "/artifacts/frozen_b_legacy_family"
+[nodes.resources]
+network = "isolated"
+read_only_rootfs = true
+pull_policy = "never"
+cpus = 1.0
+memory = "1Gi"
+pids_limit = 64
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}, {type="file"}, {type="file"}]
+outputs = [{path="family.tsv",format="tsv"}, {path="family-audit.json",format="json"}]
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/run-family.py"
+[nodes.command.env]
+PYTHONDONTWRITEBYTECODE = "1"

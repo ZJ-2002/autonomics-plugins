@@ -1,0 +1,99 @@
+{
+  "schema_version": 1,
+  "scope": "CURRENT_V432_FROZEN_B_LEGACY_PROJECT_SOURCE_BINDING",
+  "gene_count": 23786,
+  "source_samples": 46,
+  "primary_samples": 22,
+  "case_n": 17,
+  "control_n": 5,
+  "residual_df": 18,
+  "contrast_id": "B_GSE130563_PDAC_CACHEXIA_VS_STABLE",
+  "files": {
+    "config": {
+      "relative_path": "03_AUDIT/G0_v4.3.2_2026-10-11/B_ANALYSIS_CONFIG.json",
+      "sha256": "bc55da33e51fa25a7e54672366b8785c46803a2796f48c73e460f5cf44bce1f3"
+    },
+    "manifest": {
+      "relative_path": "03_AUDIT/G0_v4.3.2_2026-10-11/B_INPUT_MANIFEST.json",
+      "sha256": "5c8de075d9f3fc185fdd907cc21d83b69330addbf7f7d953baac27ecdfd14411"
+    },
+    "samples": {
+      "relative_path": "03_AUDIT/G0_v4.3.2_2026-10-11/B_LOCKED_SAMPLE_MAP.tsv",
+      "sha256": "ce6eff1d2924078091bd6b6ddd5afa204ce5a2e253330b73098130c88fecdf31"
+    },
+    "features": {
+      "relative_path": "03_AUDIT/G0_v4.3.2_2026-10-11/B_FEATURE_DEFINITION.tsv",
+      "sha256": "f14271f1361ec3921911f85b050531a694ad0fcd962e5317b9528419d59e98fd"
+    },
+    "scope": {
+      "relative_path": "03_AUDIT/G0_v4.3.2_2026-10-11/B_DISCOVERY_SCOPE.json",
+      "sha256": "9bc1eb0449727f35344847059415f07334e3263af142757807aea1bb4da81a77"
+    },
+    "design_certificate": {
+      "relative_path": "03_AUDIT/G0_v4.3.2_2026-10-11/B_DESIGN_QUALIFICATION.json",
+      "sha256": "94f04a8500561fb57ba3c363b3eef696bd3587164ef529636c87e8fbe9c4f675"
+    },
+    "software_lock": {
+      "relative_path": "02_EXECUTION/SOFTWARE_LOCK.tsv",
+      "sha256": "3deee8b8e390fc1da21886c170241515889c06adab0cbe74bc31c9d5d87675d6"
+    },
+    "r_dependencies": {
+      "relative_path": "03_AUDIT/G0_v4.3.2_2026-10-11/R_DEPENDENCY_LOCK.tsv",
+      "sha256": "8aeaa7bb2b22b2c4ae9852dc65d32d4f81cb927d875ecdd135822f2f1c2b8a56"
+    },
+    "r_session": {
+      "relative_path": "03_AUDIT/G0_v4.3.2_2026-10-11/R_SESSION_LOCK.txt",
+      "sha256": "067a2969bd19f65eb755508b5b71a499671ff8e2d352e39bd2067f0c46901ef7"
+    },
+    "scientific_code": {
+      "relative_path": "02_EXECUTION/g0_v432_methods.R",
+      "sha256": "f7e334db38e331acc30cd0117ca9f2b82831523d1c07ce742382eacbd3aff1cd"
+    },
+    "scientific_rules": {
+      "relative_path": "02_EXECUTION/EXECUTION_RULES_v4.3.2.json",
+      "sha256": "1ff187d5672c0448db193db4acb17ee78012ed2588f94bac580075b1cef2245b"
+    },
+    "scope_decision": {
+      "relative_path": "03_AUDIT/G0_v4.3.2_2026-10-11/SCOPE_DECISION.json",
+      "sha256": "02ee8feb0bb705aabfd94351b1ae88b3ffcb484c0bec1935ca7a3e707e2867bd"
+    },
+    "matrix": {
+      "relative_path": "03_AUDIT/G0_2026-10-11/sources/GSE130563_local_snapshot/GSE130563_series_matrix.txt.gz",
+      "sha256": "19ead42a68addd0209f8196dba60b0dee236b27ae2e8229238e6019657d7c0f1"
+    },
+    "source_metadata": {
+      "relative_path": "03_AUDIT/G0_2026-10-11/sources/GSE130563_local_snapshot/geo_samples_brief.txt",
+      "sha256": "19c153db35fcfcafcc268bf25e7c994d9e52971433181c2246f21d57721ad303"
+    },
+    "g0_certificate": {
+      "relative_path": "03_AUDIT/G0_v4.3.2_2026-10-11/G0_V432_CERTIFICATE.json",
+      "sha256": "aa8905a9d830839e88d3da1081f50732f290fbd561a832ca2a6841ca364ecbb2"
+    },
+    "family_lock": {
+      "relative_path": "01_REGISTRIES/FAMILY_LOCK_REGISTER.tsv",
+      "sha256": "d7d1a89589fba8f8d115c0eefc9cfd4d270f2216181c70f9c528c4c1da9209c3"
+    },
+    "restore_acceptance": {
+      "relative_path": "03_AUDIT/G0_v4.3.2_2026-10-11/RESTORE_ACCEPTANCE.json",
+      "sha256": "4befc9e12091afb064795e6c20cf5850bb03b6526dad2c241b422691f6bd14ad"
+    },
+    "runtime_manifest": {
+      "relative_path": "03_AUDIT/G0_RUNTIME_MANIFEST.json",
+      "sha256": "1bf0699bffde16a419a308d66654610cdca3170aa3fab2b8b50d93656e80e2a5"
+    },
+    "byte_verifier": {
+      "relative_path": "02_EXECUTION/verify_g0_v432.py",
+      "sha256": "1a928da15243316facd63358c9f33dbc69f399de41b1f7b8f341f05c647a1073"
+    }
+  },
+  "software_lock": {
+    "R": "4.6.1",
+    "limma": "3.68.5",
+    "statmod": "1.5.2",
+    "jsonlite": "2.0.0",
+    "digest": "0.6.39",
+    "stats": "4.6.1"
+  },
+  "scientific_authorization": false,
+  "G0": false
+}

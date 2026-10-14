@@ -1,0 +1,128 @@
+{
+  "schema_version": 1,
+  "scope": "REVIEWED_SYN_OCI_EVIDENCE_PROPOSED_OPERATOR_ENVIRONMENT_ADMISSION",
+  "approved": false,
+  "environment": {
+    "reference": "localhost/autonomics/frozen-b-normalized@sha256:723904dd46c9148d75716555e2f641604d98c22909bc333d5fac832f33ebffed",
+    "interpreters": [
+      "/opt/b-bulk/bin/Rscript-vanilla"
+    ]
+  },
+  "historical_image_config_id": "4e6a1a96e5625df3a3113a117acacb1736f8a1544d4595a14f1b561fa260b581",
+  "expected_software_lock": {
+    "R": "4.6.1",
+    "digest": "0.6.39",
+    "jsonlite": "2.0.0",
+    "limma": "3.68.5",
+    "statmod": "1.5.2",
+    "stats": "4.6.1"
+  },
+  "expected_launcher_sha256": "7ae0fab26e28de0bdd8ce15dc3d694dd64c383ca002867e76c63db9f4596d8c6",
+  "plugin_script_sha256": {
+    "scripts/bulk-limma.R": "c5d0a5f4fe179dd79ea49ea954f439b1e08af312102ac7ba3c570a82d10f010a",
+    "scripts/run-design.R": "eca6079b6c0a239e3232b2e431003643f488daee56f9ff49744fce3eb5cad2a5",
+    "scripts/run-limma.R": "e6510b0e5d30837951119244922cf29d13004ee1a0765269ac582e7877b935af"
+  },
+  "current_runtime_store_identity_verified": true,
+  "actual_oci_method_execution_verified": true,
+  "host_syn_method_evidence_is_not_image_identity": true,
+  "python_interpreter_in_limma_environment_approved": false,
+  "scientific_authorization": false,
+  "formal_authorized": false,
+  "G0": false,
+  "image_config_id": "9f95389b321be12e5b89112e62fce3a7137fd3048bc84815e14260a8436c8f7d",
+  "actual_python_runtime_present": false,
+  "actual_proof_session": "6d9cb5f4c9e344ebb7efb8d666a0082d",
+  "original_build_session": "8342bfe298384e80a9e98b6db09481cc",
+  "original_build_exit_successful": false,
+  "archive": {
+    "sha256": "4eb59e9d27f6c18b3c908ca6273d6837e7e95b02c835ce57309813736f17eb0c",
+    "bytes": 632273920
+  },
+  "archive_relative_path": "artifacts/permanent/frozen-b-thin-environment/frozen-b-normalized.oci.tar",
+  "offline_import_command": [
+    "skopeo",
+    "copy",
+    "--preserve-digests",
+    "oci-archive:SEALED_SOFTWARE_ARCHIVE",
+    "containers-storage:localhost/autonomics/frozen-b-normalized:v432-export-verified"
+  ],
+  "actual_software_lock": {
+    "R": "4.6.1",
+    "limma": "3.68.5",
+    "statmod": "1.5.2",
+    "jsonlite": "2.0.0",
+    "digest": "0.6.39",
+    "stats": "4.6.1"
+  },
+  "actual_package_library_paths": {
+    "limma": "/opt/b-bulk-library/limma",
+    "statmod": "/opt/b-bulk-library/statmod"
+  },
+  "actual_imports": {
+    "limma": [
+      "grDevices",
+      "graphics",
+      "stats",
+      "utils",
+      "methods",
+      "statmod"
+    ],
+    "statmod": [
+      "stats",
+      "graphics"
+    ]
+  },
+  "ordered_diff_ids": [
+    "sha256:6078cde548a521a729def2ee7875e9f65513c18f0d4bac4db817417617d7006a",
+    "sha256:f073e067a30336a8c6b43a3d1108ada8bf7d07741d824514e2f6c9bbb366063a",
+    "sha256:0db614edecf02aed721f865dba8f1bb9b629b3b3ef4e4b60b541e0faa24b1099",
+    "sha256:23356d06b66894d483fb04849282db3c13e578671b4e1859ec583903f2234c72",
+    "sha256:edb7f3b63dab5acd669b0b1158680d89fca8f52925956dceb9404ca758ad8f47",
+    "sha256:1c0d55c88e931e8e11ccedca49caf02eaf51d66d61a5f9b1255306d9a2cf70a7",
+    "sha256:cc0d0916c47b596b5df45f1a2828d542a49baf285f020347b0e691f0699fa8cb",
+    "sha256:b35e79e20bef769a77944b37dd885f1f19a44d56d0aaef1a69bc6bccf6e439ad",
+    "sha256:1e1f6c4e7c760b23e471029a21feda9b20b8c751c43587c470289e9dda498837",
+    "sha256:94a59bc04b3ce9feba170cba717be7879c2032d8b98cacd131e1a17c31e19bb6",
+    "sha256:fff321f1c88af394d9e9745ae7915d3d8a2ddfe065b82577367f68d1e4c7ad87",
+    "sha256:db96889da81a333a877aaa4c563abfda4542fd782bd2660c108163b528b5a91c",
+    "sha256:04ffbf8677d4f83b7f0fb74cc61f05fe9cb632f37b79628ab8b4e8bf6703b9ba",
+    "sha256:bcdd0cbea9da9d7115913ae5af032047e0630e083178ab493fb3c1432a691715"
+  ],
+  "proof_scope": "25_GENE_SYN_8_R_CALLS_OLS_FROZEN_NUMERIC_BLOCK_PARITY_RDS_FULL_BH_BY_REJECTION",
+  "independent_empirical_bayes_prior_verified": false,
+  "real_study_fitted": false,
+  "whole_frozen_scientific_program_executed": false,
+  "python_environment": {
+    "reference": "docker.io/library/python@sha256:48b13b003dda20b16f9442b8475aa05fe21bf6579a8c881db92ffb4d8fd20f83",
+    "interpreters": [
+      "python3"
+    ]
+  },
+  "python_environment_proof": {
+    "scope": "ENGINEERING_SYN_PYTHON_INTAKE_FAMILY_AND_INTERFACE_NOT_REAL_STUDY",
+    "image_reference": "docker.io/library/python@sha256:48b13b003dda20b16f9442b8475aa05fe21bf6579a8c881db92ffb4d8fd20f83",
+    "image_config_id": "82cd6bca489be723b62b192752c133eb7c6acbcecaeca797628725d994998c5b",
+    "ordered_diff_ids": [
+      "sha256:e58989146fcec76699871403b9897b5c014af1ccd85f5a9300a215e7975525d7",
+      "sha256:08e075203608b4f8b242d98f108e01db067b23db2f0f1a611b02ab462250b89a",
+      "sha256:9a6dbecf1dd0bbab6f8dc7951f40fe1814eda6180322e47f2bd0bc5c798eb682",
+      "sha256:020f37c339b9fc549a11bcc5a937b81e3500281270bb62edde29022b27919d86"
+    ],
+    "actual_current_store_identity_verified": true,
+    "actual_python_runtime": {
+      "version": "3.14.8 (main, Oct  6 2026, 02:01:53) [GCC 12.2.0]",
+      "executable": "/usr/local/bin/python3"
+    },
+    "actual_synthetic_tests_verified": true,
+    "tests_run": 11,
+    "study_assay_read_or_fitted": false,
+    "actual_frozen_intake_executed": false,
+    "scientific_authorization": false,
+    "G0": false,
+    "session": "e755e089f6d140be826763035d976651"
+  },
+  "python_environment_approved": false,
+  "python_B_exact_version_locked": false,
+  "python_A_genetic_QC_version_not_changed": "3.14.7 applies only to A genetic_summary_qc frozen SOFTWARE_LOCK row"
+}

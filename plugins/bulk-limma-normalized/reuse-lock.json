@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "scope": "EXACT_PRESERVED_NORMALIZED_LIMMA_COMPONENT_NEW_VERIFIED_DEPENDENCY_IMAGE",
+  "source_repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+  "source_revision": "c0122cf09fe0ac761e5a2ebc7e8118fc9a07feb5",
+  "image_reference": "localhost/autonomics/frozen-b-normalized@sha256:723904dd46c9148d75716555e2f641604d98c22909bc333d5fac832f33ebffed",
+  "software_lock": {
+    "R": "4.6.1",
+    "digest": "0.6.39",
+    "jsonlite": "2.0.0",
+    "limma": "3.68.5",
+    "statmod": "1.5.2",
+    "stats": "4.6.1"
+  },
+  "files": {
+    "scripts/bulk-limma.R": {
+      "source_path": "research-adapters/b-bulk-limma-contract/scripts/bulk-limma.R",
+      "sha256": "c5d0a5f4fe179dd79ea49ea954f439b1e08af312102ac7ba3c570a82d10f010a",
+      "bytes": 16004
+    },
+    "scripts/run-design.R": {
+      "source_path": "research-adapters/b-bulk-limma-contract/scripts/run-design.R",
+      "sha256": "eca6079b6c0a239e3232b2e431003643f488daee56f9ff49744fce3eb5cad2a5",
+      "bytes": 18828,
+      "original_sha256": "b1f7cc7b2d8e8a94244b148ea651fa4a4b286f2a69da093b05c4541a82a73a2e",
+      "original_bytes": 18683,
+      "adaptation": "EXPLICIT_REAL_PORT0_LOOKUP_NUMERICAL_COMPONENT_UNCHANGED"
+    },
+    "scripts/run-limma.R": {
+      "source_path": "research-adapters/b-bulk-limma-contract/scripts/run-limma.R",
+      "sha256": "e6510b0e5d30837951119244922cf29d13004ee1a0765269ac582e7877b935af",
+      "bytes": 19262,
+      "original_sha256": "cddc93770a8ceafa4ffe4f98c0f1584463666b6f1601acae342ca0988f5dbc99",
+      "original_bytes": 18709,
+      "adaptation": "EXPLICIT_REAL_PORT0_LOOKUP_AND_COMPLETE_OUTPUT_SHA256_AUDIT_NUMERICAL_COMPONENT_UNCHANGED"
+    }
+  },
+  "new_image_build_required": true,
+  "current_runtime_image_presence_verified": true,
+  "real_source_qualification_verified": false,
+  "method_acceptance_verified": false,
+  "scientific_authorization": false,
+  "G0": false,
+  "image_is_dependency_environment_not_new_wrapper_source_identity": true,
+  "historical_dependency_image_reference": "localhost/autonomics/b-bulk-limma@sha256:6932fcead69397d2d6dc941c45aca1e74e84c11a098bd0a510f73ec7fd4301c2",
+  "new_image_build_completed": true,
+  "bounded_synthetic_method_acceptance_verified": true,
+  "actual_oci_proof_session": "6d9cb5f4c9e344ebb7efb8d666a0082d",
+  "software_archive_sha256": "4eb59e9d27f6c18b3c908ca6273d6837e7e95b02c835ce57309813736f17eb0c",
+  "image_config_id": "9f95389b321be12e5b89112e62fce3a7137fd3048bc84815e14260a8436c8f7d"
+}

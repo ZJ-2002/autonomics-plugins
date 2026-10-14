@@ -1,0 +1,268 @@
+PROJECT_LOCK = {'schema_version': 1, 'scope': 'CURRENT_V432_FROZEN_B_LEGACY_PROJECT_SOURCE_BINDING', 'gene_count': 23786, 'source_samples': 46, 'primary_samples': 22, 'case_n': 17, 'control_n': 5, 'residual_df': 18, 'contrast_id': 'B_GSE130563_PDAC_CACHEXIA_VS_STABLE', 'files': {'config': {'relative_path': '03_AUDIT/G0_v4.3.2_2026-10-11/B_ANALYSIS_CONFIG.json', 'sha256': 'bc55da33e51fa25a7e54672366b8785c46803a2796f48c73e460f5cf44bce1f3'}, 'manifest': {'relative_path': '03_AUDIT/G0_v4.3.2_2026-10-11/B_INPUT_MANIFEST.json', 'sha256': '5c8de075d9f3fc185fdd907cc21d83b69330addbf7f7d953baac27ecdfd14411'}, 'samples': {'relative_path': '03_AUDIT/G0_v4.3.2_2026-10-11/B_LOCKED_SAMPLE_MAP.tsv', 'sha256': 'ce6eff1d2924078091bd6b6ddd5afa204ce5a2e253330b73098130c88fecdf31'}, 'features': {'relative_path': '03_AUDIT/G0_v4.3.2_2026-10-11/B_FEATURE_DEFINITION.tsv', 'sha256': 'f14271f1361ec3921911f85b050531a694ad0fcd962e5317b9528419d59e98fd'}, 'scope': {'relative_path': '03_AUDIT/G0_v4.3.2_2026-10-11/B_DISCOVERY_SCOPE.json', 'sha256': '9bc1eb0449727f35344847059415f07334e3263af142757807aea1bb4da81a77'}, 'design_certificate': {'relative_path': '03_AUDIT/G0_v4.3.2_2026-10-11/B_DESIGN_QUALIFICATION.json', 'sha256': '94f04a8500561fb57ba3c363b3eef696bd3587164ef529636c87e8fbe9c4f675'}, 'software_lock': {'relative_path': '02_EXECUTION/SOFTWARE_LOCK.tsv', 'sha256': '3deee8b8e390fc1da21886c170241515889c06adab0cbe74bc31c9d5d87675d6'}, 'r_dependencies': {'relative_path': '03_AUDIT/G0_v4.3.2_2026-10-11/R_DEPENDENCY_LOCK.tsv', 'sha256': '8aeaa7bb2b22b2c4ae9852dc65d32d4f81cb927d875ecdd135822f2f1c2b8a56'}, 'r_session': {'relative_path': '03_AUDIT/G0_v4.3.2_2026-10-11/R_SESSION_LOCK.txt', 'sha256': '067a2969bd19f65eb755508b5b71a499671ff8e2d352e39bd2067f0c46901ef7'}, 'scientific_code': {'relative_path': '02_EXECUTION/g0_v432_methods.R', 'sha256': 'f7e334db38e331acc30cd0117ca9f2b82831523d1c07ce742382eacbd3aff1cd'}, 'scientific_rules': {'relative_path': '02_EXECUTION/EXECUTION_RULES_v4.3.2.json', 'sha256': '1ff187d5672c0448db193db4acb17ee78012ed2588f94bac580075b1cef2245b'}, 'scope_decision': {'relative_path': '03_AUDIT/G0_v4.3.2_2026-10-11/SCOPE_DECISION.json', 'sha256': '02ee8feb0bb705aabfd94351b1ae88b3ffcb484c0bec1935ca7a3e707e2867bd'}, 'matrix': {'relative_path': '03_AUDIT/G0_2026-10-11/sources/GSE130563_local_snapshot/GSE130563_series_matrix.txt.gz', 'sha256': '19ead42a68addd0209f8196dba60b0dee236b27ae2e8229238e6019657d7c0f1'}, 'source_metadata': {'relative_path': '03_AUDIT/G0_2026-10-11/sources/GSE130563_local_snapshot/geo_samples_brief.txt', 'sha256': '19c153db35fcfcafcc268bf25e7c994d9e52971433181c2246f21d57721ad303'}, 'g0_certificate': {'relative_path': '03_AUDIT/G0_v4.3.2_2026-10-11/G0_V432_CERTIFICATE.json', 'sha256': 'aa8905a9d830839e88d3da1081f50732f290fbd561a832ca2a6841ca364ecbb2'}, 'family_lock': {'relative_path': '01_REGISTRIES/FAMILY_LOCK_REGISTER.tsv', 'sha256': 'd7d1a89589fba8f8d115c0eefc9cfd4d270f2216181c70f9c528c4c1da9209c3'}, 'restore_acceptance': {'relative_path': '03_AUDIT/G0_v4.3.2_2026-10-11/RESTORE_ACCEPTANCE.json', 'sha256': '4befc9e12091afb064795e6c20cf5850bb03b6526dad2c241b422691f6bd14ad'}, 'runtime_manifest': {'relative_path': '03_AUDIT/G0_RUNTIME_MANIFEST.json', 'sha256': '1bf0699bffde16a419a308d66654610cdca3170aa3fab2b8b50d93656e80e2a5'}, 'byte_verifier': {'relative_path': '02_EXECUTION/verify_g0_v432.py', 'sha256': '1a928da15243316facd63358c9f33dbc69f399de41b1f7b8f341f05c647a1073'}}, 'software_lock': {'R': '4.6.1', 'limma': '3.68.5', 'statmod': '1.5.2', 'jsonlite': '2.0.0', 'digest': '0.6.39', 'stats': '4.6.1'}, 'scientific_authorization': False, 'G0': False}
+
+"""Frozen v4.3.2 B LEGACY source intake and complete-family transport.
+
+No fit, normalization, clinical label inference or scientific authorization.
+"""
+import csv
+import gzip
+import hashlib
+import io
+import json
+import math
+import os
+from pathlib import Path
+
+INPUTS = ['config', 'manifest', 'samples', 'features', 'scope', 'design_certificate',
+          'software_lock', 'r_dependencies', 'r_session', 'scientific_code',
+          'scientific_rules', 'scope_decision', 'matrix', 'source_metadata',
+          'g0_certificate', 'family_lock', 'restore_acceptance', 'runtime_manifest', 'byte_verifier']
+OUTPUTS = ['config.json', 'expression.tsv', 'genes.tsv', 'samples.tsv', 'decisions.tsv', 'intake.json']
+SAMPLES = ('resource_id patient_id independent_unit_id independent_unit_basis sample_id assay_id group '
+           'weight_loss_6mo_pct sex age diagnosis treatment tissue sampling_time measurement_date '
+           'outcome_start_date outcome_end_date include reason source_metadata_file source_metadata_sha256').split()
+FEATURES = ('feature_id source_probe_id identifier_type assay tissue cell_type contrast_id family_id included '
+            'variable_in_selected_assay measurement_filter role').split()
+GENES = 'matrix_row gene_id analysis_id family_id contrast_id estimand_id'.split()
+
+
+def require(ok, message):
+    if not ok:
+        raise ValueError('Frozen B project: ' + message)
+
+
+def canonical(value):
+    return json.dumps(value, sort_keys=True, separators=(',', ':'), allow_nan=False).encode()
+
+
+def strict_json(raw):
+    def pairs(items):
+        value = {}
+        for key, item in items:
+            require(key not in value, 'duplicate JSON key')
+            value[key] = item
+        return value
+    def bad(value):
+        raise ValueError('nonfinite JSON')
+    return json.loads(raw, object_pairs_hook=pairs, parse_constant=bad)
+
+
+def identity(raw):
+    return {'sha256': hashlib.sha256(raw).hexdigest(), 'bytes': len(raw)}
+
+
+def regular(path):
+    path = Path(path).absolute()
+    require(path.is_file() and not any(p.is_symlink() for p in [path, *path.parents]), 'regular file without symlink ancestors required')
+    require(0 < path.stat().st_size <= 64 * 1024 ** 2, 'input byte budget exceeded')
+    return path
+
+
+def rows(raw, columns=None):
+    reader = csv.DictReader(io.StringIO(raw.decode('utf-8-sig'), newline=''), delimiter='\t')
+    require(reader.fieldnames and len(set(reader.fieldnames)) == len(reader.fieldnames), 'duplicate/absent TSV headers')
+    if columns is not None:
+        require(reader.fieldnames == columns, 'TSV schema differs')
+    result = list(reader)
+    require(all(None not in r and all(v is not None for v in r.values()) for r in result), 'ragged TSV')
+    return result
+
+
+def table(columns, data):
+    stream = io.StringIO(newline='')
+    writer = csv.DictWriter(stream, columns, delimiter='\t', lineterminator='\n')
+    writer.writeheader()
+    writer.writerows(data)
+    return stream.getvalue().encode()
+
+
+def intake(paths, lock):
+    require(set(paths) == set(INPUTS), 'all actual project/source files required')
+    paths = {name: regular(p) for name, p in paths.items()}
+    raw = {name: path.read_bytes() for name, path in paths.items()}
+    refs = {name: identity(data) for name, data in raw.items()}
+    require(all(refs[name]['sha256'] == lock['files'][name]['sha256'] for name in INPUTS), 'frozen source bytes differ')
+    cfg = strict_json(raw['config'])
+    require(cfg['status'] == 'LOCKED' and cfg['version'] == '4.3.2' and cfg['module'] == 'B', 'current frozen B configuration required')
+    require(cfg['family_ids'] == ['B_TRANSCRIPTOME'] and cfg['resource_ids'] == [], 'current minimum scope differs; old ZIP registry cannot substitute')
+    require(cfg['contrast_id'] == lock['contrast_id'] and cfg['estimand_id'] == 'E_B_DIS', 'contrast/estimand differs')
+    require(cfg['model_formula'] == '~group+age+sex' and cfg['model_df'] == lock['residual_df'], 'primary frozen formula/df differs')
+    require(cfg['matrix_type'] == 'GENE_LEVEL_MICROARRAY_RMA_LOG2' and
+            cfg['normalization'] == 'SOURCE_RMA_LOG2_NOT_RENORMALIZED_NO_RAW_COUNT_OR_GENE_LENGTH_MODEL', 'normalization/scale substitution')
+    require(cfg['matrix_file'] == lock['files']['matrix']['relative_path'] and
+            cfg['software_lock_file'] == lock['files']['software_lock']['relative_path'], 'frozen matrix/software path binding differs')
+    require(cfg['transcriptome_method'] == 'limma3.68.5 lmFit+eBayes(trend=TRUE,robust=TRUE)', 'frozen official method differs')
+    require(cfg['followup_exposure_at_lock'] == 'LEGACY_EXPLORATORY' and cfg['predefined_program_panel_enabled'] is False,
+            'legacy history/program scope differs')
+    require(cfg['correction'] == 'BH' and cfg['sensitivity_correction'] == 'BY' and cfg['q'] == .05 and
+            cfg['raw_missing_p'] == 'NA' and cfg['adjustment_missing_p'] == 1, 'complete-family correction policy differs')
+    bindings = [('manifest', 'input_manifest'), ('samples', 'sample_map'), ('features', 'feature_definition'),
+                ('scope', 'discovery_scope'), ('scientific_code', 'scientific_code'), ('scientific_rules', 'scientific_rules')]
+    require(all(cfg[prefix + '_sha256'] == refs[name]['sha256'] and
+                cfg[prefix + '_file'] == lock['files'][name]['relative_path'] for name, prefix in bindings), 'config dependency identity differs')
+    manifest = strict_json(raw['manifest'])
+    require(isinstance(manifest, list) and all(set(r) == {'file', 'sha256'} for r in manifest), 'original input manifest schema differs')
+    require(len({r['file'] for r in manifest}) == len(manifest), 'duplicate original manifest path')
+    indexed = {r['file']: r['sha256'] for r in manifest}
+    require(all(indexed.get(lock['files'][name]['relative_path']) == refs[name]['sha256']
+                for name in ['matrix', 'source_metadata', 'samples', 'features', 'scope']), 'original manifest bytes do not bind actual files')
+    scope = strict_json(raw['scope']); cert = strict_json(raw['design_certificate']); decision = strict_json(raw['scope_decision'])
+    require(scope['N_primary'] == lock['primary_samples'] and scope['case_n'] == lock['case_n'] and scope['control_n'] == lock['control_n'], 'locked cohort counts differ')
+    require(cert['matrix_genes'] == lock['gene_count'] and cert['source_samples'] == lock['source_samples'] and
+            cert['primary_samples'] == lock['primary_samples'] and cert['case_n'] == lock['case_n'] and cert['control_n'] == lock['control_n'], 'certificate dimensions differ')
+    primary = cert['designs']['primary']
+    require(primary['columns'] == ['(Intercept)', 'groupcase', 'age', 'sexM'] and primary['rank'] == 4 and
+            primary['residual_df'] == lock['residual_df'] and primary['identifiable'] is True, 'metadata design certificate differs')
+    require(decision['investigator_scientific_signature'] is None, 'this entry is only the locked unsigned legacy scope')
+    g0 = strict_json(raw['g0_certificate'])
+    require(g0['status'] == 'G0_V432_MINIMUM_COMPLETE' and g0['B']['allowed'] is True and
+            g0['B']['role'] == 'LEGACY_EXPLORATORY_FULL_FEATURE_DISEASE_ASSOCIATION' and
+            g0['B']['independent_validation_allowed'] is False and g0['investigator_scientific_signature'] is None and
+            g0['all_project_scientific_gates_passed'] is False and g0['full_denominators']['B_TRANSCRIPTOME'] == lock['gene_count'],
+            'current B legacy permission/limitations certificate required')
+    require(g0['B']['config_file'] == lock['files']['config']['relative_path'], 'certificate B configuration path differs')
+    require(g0['family_lock_sha256'] == refs['family_lock']['sha256'] and
+            g0['restore_evidence_sha256'] == refs['restore_acceptance']['sha256'] and
+            g0['scientific_rules_sha256'] == refs['scientific_rules']['sha256'], 'certificate dependency bytes differ')
+    runtime = strict_json(raw['runtime_manifest'])
+    runtime_index = {r['path']: r for r in runtime['files']}
+    require(len(runtime_index) == len(runtime['files']), 'duplicate runtime manifest entry')
+    require(all(runtime_index[lock['files'][name]['relative_path']]['sha256'] == refs[name]['sha256'] and
+                runtime_index[lock['files'][name]['relative_path']]['size_bytes'] == refs[name]['bytes']
+                for name in INPUTS if name != 'runtime_manifest'), 'project runtime manifest does not bind B inputs')
+    software = rows(raw['software_lock'])
+    require(any(r['component'] == 'limma_edgeR_or_DESeq2' and r['version_or_commit'] == 'limma3.68.5;R4.6.1;statmod1.5.2'
+                and r['status'] == 'LOCKED_V432_MINIMUM_SCOPE' for r in software), 'frozen software method lock differs')
+    deps = rows(raw['r_dependencies'])
+    require(all(any(r['package'] == p and r['version'] == v for r in deps) for p, v in lock['software_lock'].items() if p not in ['R', 'stats']), 'R dependency declarations differ')
+    require('R version 4.6.1' in raw['r_session'].decode(), 'R session declaration differs')
+    samples = rows(raw['samples'], SAMPLES); features = rows(raw['features'], FEATURES)
+    require(len(samples) == lock['primary_samples'] and len({r['sample_id'] for r in samples}) == len(samples) and
+            len({r['independent_unit_id'] for r in samples}) == len(samples), 'complete unique primary sample/unit axis required')
+    require(sum(r['group'] == 'case' for r in samples) == lock['case_n'] and sum(r['group'] == 'control' for r in samples) == lock['control_n'], 'actual locked groups differ')
+    require(all(r['include'] == 'YES' and r['sex'] in ['F', 'M'] and math.isfinite(float(r['age'])) and
+                r['source_metadata_sha256'] == refs['source_metadata']['sha256'] for r in samples), 'sample metadata/covariates differ')
+    require(len(features) == lock['gene_count'] and len({r['feature_id'] for r in features}) == len(features) and
+            len({r['source_probe_id'] for r in features}) == len(features), 'complete unique frozen gene universe required')
+    require(all(r['included'] == 'YES' and r['family_id'] == 'B_TRANSCRIPTOME' and r['contrast_id'] == cfg['contrast_id'] and
+                r['role'] == 'LEGACY_EXPLORATORY' and r['measurement_filter'] == 'ALL_SOURCE_ROWS_UNIQUE_ENTREZ_AND_FINITE;NO_EFFECT_OR_PROGRAM_SELECTION'
+                for r in features), 'frozen feature scope/legacy roles differ')
+    # Source RMA values are copied verbatim as decimal fields, never renormalized.
+    with gzip.GzipFile(fileobj=io.BytesIO(raw['matrix'])) as matrix_stream:
+        uncompressed = matrix_stream.read(64 * 1024 ** 2 + 1)
+    require(len(uncompressed) <= 64 * 1024 ** 2, 'uncompressed matrix byte budget exceeded')
+    text = uncompressed.decode()
+    lines = text.splitlines()
+    begin = [i for i, line in enumerate(lines) if line == '!series_matrix_table_begin']
+    end = [i for i, line in enumerate(lines) if line == '!series_matrix_table_end']
+    require(len(begin) == len(end) == 1 and end[0] > begin[0], 'exact GEO series matrix table required')
+    reader = csv.reader(lines[begin[0] + 1:end[0]], delimiter='\t')
+    header = next(reader)
+    require(header[0] == 'ID_REF' and len(header) == lock['source_samples'] + 1 and len(set(header)) == len(header), 'complete source assay axis differs')
+    ids = [r['sample_id'] for r in samples]
+    require(set(ids) <= set(header[1:]), 'locked primary assay absent from source matrix')
+    positions = [header.index(s) for s in ids]
+    expression = []
+    for i, row in enumerate(reader):
+        require(i < len(features) and len(row) == len(header) and row[0] == features[i]['source_probe_id'], 'source probe order/universe differs')
+        require(all(math.isfinite(float(v)) for v in row[1:]), 'nonfinite source expression; no imputation/deletion')
+        expression.append({'gene_id': features[i]['feature_id'], **{s: row[j] for s, j in zip(ids, positions, strict=True)}})
+    require(len(expression) == len(features), 'incomplete source matrix rows')
+    genes = [dict(zip(GENES, [str(i + 1), r['feature_id'], cfg['contrast_id'] + ':' + r['feature_id'],
+                            'B_TRANSCRIPTOME', cfg['contrast_id'], 'E_B_DIS'], strict=True)) for i, r in enumerate(features)]
+    decisions = [dict(sample_id=r['sample_id'], independent_unit_id=r['independent_unit_id'], include='YES', reason=r['reason']) for r in samples]
+    payloads = {'expression.tsv': table(['gene_id', *ids], expression), 'genes.tsv': table(GENES, genes),
+                'samples.tsv': raw['samples'], 'decisions.tsv': table(['sample_id', 'independent_unit_id', 'include', 'reason'], decisions)}
+    method = dict(schema_version=1, protocol_version='4.3.2', status='FROZEN', method='LIMMA_EBAYES',
+        expression_scale='log2_normalized', contrast_id=cfg['contrast_id'], resource_id='GSE130563',
+        source_archive_sha256=refs['manifest']['sha256'], software_lock=lock['software_lock'],
+        design=dict(numerator='case', denominator='control', covariates=[dict(name='age', type='NUMERIC', levels=[]),
+                    dict(name='sex', type='CATEGORICAL', levels=['F', 'M'])], family_min_units=3, qr_tolerance=1e-8),
+        method_parameters=dict(trend=True, robust=True, allowed_warning_messages=[]),
+        input_sha256={name: identity(payloads[name + '.tsv'])['sha256'] for name in ['expression', 'genes', 'samples', 'decisions']},
+        limits=dict(max_expression_elements=10000000, max_input_file_bytes=64 * 1024 ** 2))
+    payloads['config.json'] = canonical(method)
+    receipt = dict(scope='FROZEN_V432_B_LEGACY_SOURCE_INTAKE_NOT_QUALIFICATION', source_files=refs,
+        project_lock=identity(canonical(lock)), frozen_scientific_code_executed=False,
+        method_transport='EXISTING_NORMALIZED_LIMMA_COMPONENT_WITH_PARITY_REVIEW_REQUIRED',
+        input_sha256=method['input_sha256'], config_sha256=identity(payloads['config.json'])['sha256'],
+        source_samples=header[1:], primary_samples=ids, gene_count=len(genes),
+        family_role='LEGACY_EXPLORATORY_PRIMARY_MODEL', result_exposure='SEEN',
+        original_full_project_byte_verifier_executed=False,
+        original_full_project_byte_audit_verified=False,
+        metadata_certificate_is_not_full_scientific_permission=True,
+        scientific_authorization=False, formal_authorized=False, G0=False)
+    payloads['intake.json'] = canonical(receipt)
+    require(all(identity(p.read_bytes()) == refs[name] for name, p in paths.items()), 'input changed during intake')
+    return payloads
+
+
+def adjust(values, method):
+    n = len(values)
+    indexed = sorted(enumerate(values), key=lambda pair: pair[1])
+    factor = math.fsum(1 / i for i in range(1, n + 1)) if method == 'BY' else 1.
+    result = [1.] * n; running = 1.
+    for rank in range(n, 0, -1):
+        index, p = indexed[rank - 1]
+        running = min(running, n * factor * p / rank)
+        result[index] = min(1., running)
+    return result
+
+
+def family(raw, lock):
+    require(set(raw) == {'results', 'genes', 'intake', 'limma_audit'}, 'four actual family inputs required')
+    genes = rows(raw['genes'], GENES); results = rows(raw['results'])
+    intake_receipt = strict_json(raw['intake']); audit = strict_json(raw['limma_audit'])
+    require(intake_receipt['family_role'] == 'LEGACY_EXPLORATORY_PRIMARY_MODEL' and intake_receipt['result_exposure'] == 'SEEN', 'legacy role/history required; old conditional roles forbidden')
+    require(intake_receipt['project_lock'] == identity(canonical(lock)) and intake_receipt['gene_count'] == lock['gene_count'], 'actual frozen project identity differs')
+    require(identity(raw['genes'])['sha256'] == intake_receipt['input_sha256']['genes'] and audit['input_sha256'] == intake_receipt['input_sha256'] and
+            audit['config_sha256'] == intake_receipt['config_sha256'] and audit['software_lock'] == lock['software_lock'], 'same actual intake/config/software audit required')
+    require(audit['stage'] == 'LIMMA' and audit['method_executed'] is True and audit['formal_authorized'] is False, 'actual official limma method receipt required')
+    require(audit['plugin_transport_output_sha256']['results'] == identity(raw['results'])['sha256'], 'actual limma output hash differs')
+    require(len(results) == len(genes) == lock['gene_count'] and len({r['analysis_id'] for r in genes}) == len(genes), 'complete family denominator required')
+    require(all(all(g[key] == r[key] for key in GENES) for g, r in zip(genes, results, strict=True)), 'actual full gene registry/results order differs')
+    pvalues = []
+    for row in results:
+        if row['status'] == 'ESTIMATED':
+            p = float(row['raw_p']); require(math.isfinite(p) and 0 <= p <= 1, 'invalid estimated p')
+            require(row['family_p'] == row['raw_p'], 'estimated gene p unavailable to complete family')
+        else:
+            require(row['status'] == 'NOT_ESTIMABLE' and row['raw_p'] == row['family_p'] == 'NA', 'non-estimable rows must retain missing raw p')
+            p = 1.
+        pvalues.append(p)
+    bh, by = adjust(pvalues, 'BH'), adjust(pvalues, 'BY')
+    for row, qbh, qby in zip(results, bh, by, strict=True):
+        row.update(q_BH=repr(qbh), q_BY=repr(qby), role='LEGACY_EXPLORATORY_PRIMARY_MODEL',
+                   status='ESTIMATED_LEGACY_ASSOCIATION' if row['status'] == 'ESTIMATED' else row['status'])
+    receipt = dict(scope='COMPLETE_FROZEN_B_LEGACY_FAMILY_BH_BY_NOT_SCIENTIFIC_AUTHORIZATION',
+        gene_count=len(results), missing_p_denominator_value=1, family_role='LEGACY_EXPLORATORY_PRIMARY_MODEL',
+        source_files={name: identity(data) for name, data in raw.items()}, project_lock=identity(canonical(lock)),
+        frozen_scientific_code_executed=False, scientific_authorization=False, formal_authorized=False, G0=False)
+    return {'family.tsv': table(list(results[0]), results), 'family-audit.json': canonical(receipt)}
+
+
+def entry(stage, lock):
+    names = INPUTS if stage == 'INTAKE' else ['results', 'genes', 'intake', 'limma_audit']
+    paths = {names[0]: regular(os.environ['AUTONOMICS_INPUT0'])}
+    paths.update({name: regular(os.environ['AUTONOMICS_INPUT' + str(i)]) for i, name in enumerate(names) if i})
+    payloads = intake(paths, lock) if stage == 'INTAKE' else family({n: p.read_bytes() for n, p in paths.items()}, lock)
+    outputs = OUTPUTS if stage == 'INTAKE' else ['family.tsv', 'family-audit.json']
+    targets = [Path(os.environ['AUTONOMICS_OUTPUT0']).absolute()]
+    targets.extend(Path(os.environ['AUTONOMICS_OUTPUT' + str(i)]).absolute() for i in range(1, len(outputs)))
+    require([p.name for p in targets] == outputs and len({p.parent for p in targets}) == 1, 'exact output set required')
+    require(not any(p.exists() or p.is_symlink() for p in targets) and not any(p.is_symlink() for p in targets[0].parents), 'output already exists/symlink')
+    parent = targets[0].parent; parent.mkdir(parents=True, exist_ok=True)
+    bundle = parent / ('.frozen-b-' + stage.lower() + '-complete'); bundle.mkdir()
+    for name, data in payloads.items():
+        (bundle / name).write_bytes(data)
+    for name, target in zip(outputs, targets, strict=True):
+        os.link(bundle / name, target)
+
+
+if __name__ == "__main__":
+    try:
+        entry('INTAKE', PROJECT_LOCK)
+    except (ValueError, OSError, KeyError) as error:
+        import sys
+        print("BLOCKED:", error, file=sys.stderr)
+        sys.exit(2)

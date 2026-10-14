@@ -11,6 +11,9 @@ FAMILIES=('b-bulk-inputs-contract','b-donor-contract','b-donor-method','b-state-
     'pseudobulk-contract','singscore-contract','c-network-contract','c-network-source-contract','c-safety-contract')
 NORMALIZED='b-bulk-limma-contract'
 IMAGE='localhost/autonomics/b-bulk-limma@sha256:6932fcead69397d2d6dc941c45aca1e74e84c11a098bd0a510f73ec7fd4301c2'
+CURRENT_LEGACY_PLUGINS={'bulk-limma-normalized':{'bulk_normalized_design','bulk_normalized_limma'},
+    'frozen-b-project':{'frozen_b_legacy_intake','frozen_b_legacy_family'}}
+OPTIONAL_CURRENT_LEGACY_PLUGINS={'twosamplemr-v432-a':{'twosamplemr_v432_a_exploratory'}}
 IMAGE_SHA={
  '/opt/b-bulk-build/SOURCE_LOCK.json':'5e12f6c8573004c40bd0724c66733152f3a394a530b30d8d283476aaeebcd9c2',
  '/opt/b-bulk-build/install-source.R':'1e014a6cd11c9768910ec6fc11334ef706b85f71d845b010fde07e7ae64487b7',
@@ -69,9 +72,18 @@ def check(root=ROOT):
         for path in (root/namespace).glob('*/manifest.toml'):
             if namespace=='research-adapters' and path.parent.name in [*FAMILIES,NORMALIZED]:continue
             kinds={n['kind'] for n in tomllib.loads(path.read_text())['nodes']};require(not (kinds&proposed),'new transport kind collides with existing canonical/opt-in family')
-    catalog=inventory(root);require(catalog['canonical_families']==31 and catalog['canonical_kinds']==62,'default canonical source scope changed')
+    catalog=inventory(root)
+    allowed={**CURRENT_LEGACY_PLUGINS,**OPTIONAL_CURRENT_LEGACY_PLUGINS}
+    additions=[r for r in catalog['families'] if r['directory'].startswith('plugins/') and r['plugin_name'] in allowed]
+    actual={r['plugin_name']:set(r['kinds']) for r in additions}
+    require(all(actual.get(name)==kinds for name,kinds in CURRENT_LEGACY_PLUGINS.items()) and
+        all(allowed[name]==kinds for name,kinds in actual.items()),'exact current independent LEGACY A/B plugin additions required')
+    require(catalog['canonical_families']-len(additions)==31 and
+        catalog['canonical_kinds']-sum(len(r['kinds']) for r in additions)==62,'original canonical import source scope changed')
     return {'scope':'OFFLINE_MANIFEST_SOURCE_AND_PORT_ABI_TRANSPORT_NOT_NATIVE_LOADER_IMAGE_WORKER_OR_SCIENCE_ACCEPTANCE',
         'selected_families':results,'new_unique_kinds':18,'canonical_families':31,'canonical_kinds':62,
+        'current_canonical_families':catalog['canonical_families'],'current_canonical_kinds':catalog['canonical_kinds'],
+        'current_legacy_additions':sorted(actual),
         'native_loader_construct_verified':False,'loaded_worker_registration_verified':False,'scientific_authorization':False,'auto_enable':False}
 
 if __name__=='__main__':

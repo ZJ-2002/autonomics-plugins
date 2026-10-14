@@ -1,9 +1,11 @@
 import argparse
 import json
+import os
 from pathlib import Path
 import sys
 import unittest
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from tools.catalog import ROOT, check_lock
 
 
@@ -19,7 +21,9 @@ class EvidenceResult(unittest.TextTestResult):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--output', type=Path, required=True)
+    managed = os.environ.get('AUTONOMICS_VALIDATION_PERMANENT')
+    parser.add_argument('--output', type=Path, required=managed is None,
+                        default=Path(managed) / 'SOURCE_CHECKS.json' if managed else None)
     arguments = parser.parse_args()
     required = json.loads((ROOT / 'quality/required-tests.json').read_text())['test_ids']
     suite = unittest.defaultTestLoader.discover(str(ROOT / 'tests'), pattern='test_*.py', top_level_dir=str(ROOT))

@@ -102,6 +102,17 @@
     "tests.test_governance_transport.GovernanceTransportTests.test_historical_full_syn_caps_or_rds_format_cannot_replace_micro_manifest",
     "tests.test_governance_transport.GovernanceTransportTests.test_normalized_fixed_ports_vanilla_copy_and_all8_installed_source_shas",
     "tests.test_governance_transport.GovernanceTransportTests.test_source_or_science_autoenable_promotion_is_refused",
-    "tests.test_governance_transport.GovernanceTransportTests.test_unpinned_wrong_digest_wrong_ports_or_unsafe_resource_mutations_refused"
+    "tests.test_governance_transport.GovernanceTransportTests.test_unpinned_wrong_digest_wrong_ports_or_unsafe_resource_mutations_refused",
+    "tests.test_frozen_b_project.FrozenProjectTests.test_complete_bh_by_manual_expected_values_include_na_as_one",
+    "tests.test_frozen_b_project.FrozenProjectTests.test_family_refuses_output_mutation_missing_gene_and_conditional_role",
+    "tests.test_frozen_b_project.FrozenProjectTests.test_generated_tui_graph_binds_all_inputs_and_actual_design_edge",
+    "tests.test_frozen_b_project.FrozenProjectTests.test_inlined_entry_closure_and_project_lock_are_exact",
+    "tests.test_frozen_b_project.FrozenProjectTests.test_intake_preserves_raw_decimals_all_rows_and_locked_labels",
+    "tests.test_frozen_b_project.FrozenProjectTests.test_same_hash_bound_old_registry_scope_is_still_rejected",
+    "tests.test_frozen_b_project.FrozenProjectTests.test_stale_actual_bytes_reject_before_source_matrix_decompression",
+    "tests.test_normalized_bulk_interface.NormalizedBulkTests.test_all_four_installed_scripts_have_real_port0_and_safe_static_surface",
+    "tests.test_normalized_bulk_interface.NormalizedBulkTests.test_existing_method_bytes_and_image_are_preserved",
+    "tests.test_normalized_bulk_interface.NormalizedBulkTests.test_explicit_profile_selects_normalized_family_without_counts_method",
+    "tests.test_normalized_bulk_interface.NormalizedBulkTests.test_registered_ports_keep_actual_design_and_rds_contract"
   ]
 }

@@ -1,9 +1,65 @@
 {
   "schema_version": "1.0",
   "scope": "SOURCE_AND_INTERFACE_INVENTORY_NOT_METHOD_CERTIFICATION",
-  "canonical_families": 31,
-  "canonical_kinds": 62,
+  "canonical_families": 33,
+  "canonical_kinds": 66,
   "families": [
+    {
+      "directory": "plugins/bulk-limma-normalized",
+      "plugin_name": "bulk-limma-normalized",
+      "kinds": [
+        "bulk_normalized_design",
+        "bulk_normalized_limma"
+      ],
+      "image_reference": "localhost/autonomics/frozen-b-normalized@sha256:723904dd46c9148d75716555e2f641604d98c22909bc333d5fac832f33ebffed",
+      "files": [
+        {
+          "path": "README.md",
+          "sha256": "31fd526ef51d8358034e5ac0c94d941bc3a78fd755a0899fd0cbf63a975bbcee",
+          "bytes": 5405,
+          "executable": false
+        },
+        {
+          "path": "manifest.toml",
+          "sha256": "90735f0ccfcc52c9883383be258a2421670d207505381cd2e10aabd00d2fb08e",
+          "bytes": 2924,
+          "executable": false
+        },
+        {
+          "path": "reuse-lock.json",
+          "sha256": "67b997e08f3ce6cf180457e1aad8c929851cc35e50e3ccd87b18ab4070cbd4f8",
+          "bytes": 2486,
+          "executable": false
+        },
+        {
+          "path": "scripts/bulk-limma.R",
+          "sha256": "c5d0a5f4fe179dd79ea49ea954f439b1e08af312102ac7ba3c570a82d10f010a",
+          "bytes": 16004,
+          "executable": false
+        },
+        {
+          "path": "scripts/run-design.R",
+          "sha256": "eca6079b6c0a239e3232b2e431003643f488daee56f9ff49744fce3eb5cad2a5",
+          "bytes": 18828,
+          "executable": false
+        },
+        {
+          "path": "scripts/run-limma.R",
+          "sha256": "e6510b0e5d30837951119244922cf29d13004ee1a0765269ac582e7877b935af",
+          "bytes": 19262,
+          "executable": false
+        },
+        {
+          "path": "tests/run_method_toy.py",
+          "sha256": "d9ba653c3abf12536b4740bbecfde8a99eb73c4359bf0b9aca0176222080f09d",
+          "bytes": 13944,
+          "executable": false
+        }
+      ],
+      "source_inventory_only": true,
+      "scientific_certified": false,
+      "auto_enable": false
+    },
     {
       "directory": "plugins/bulk-rnaseq",
       "plugin_name": "bulk-rnaseq",
@@ -545,6 +601,62 @@
           "path": "tests/validation_contract.json",
           "sha256": "3635cd156d58a90ba2c1f10920efebadf6af5db3de608df39027c42b4f8bc7de",
           "bytes": 1077,
+          "executable": false
+        }
+      ],
+      "source_inventory_only": true,
+      "scientific_certified": false,
+      "auto_enable": false
+    },
+    {
+      "directory": "plugins/frozen-b-project",
+      "plugin_name": "frozen-b-project",
+      "kinds": [
+        "frozen_b_legacy_intake",
+        "frozen_b_legacy_family"
+      ],
+      "image_reference": "docker.io/library/python@sha256:48b13b003dda20b16f9442b8475aa05fe21bf6579a8c881db92ffb4d8fd20f83",
+      "files": [
+        {
+          "path": "README.md",
+          "sha256": "f063330edb60edc4e8ff45265dd163ecf576215d9cccdd126dd6d39160d1e2d0",
+          "bytes": 5269,
+          "executable": false
+        },
+        {
+          "path": "manifest.toml",
+          "sha256": "2d45fca31241bac7b92acaff8da8d96e05892ca42b8ca556c768e2dd69856ef6",
+          "bytes": 3298,
+          "executable": false
+        },
+        {
+          "path": "project-lock.json",
+          "sha256": "7c8f87c70959605672c88657233b5ad1c3388d2b94e0a33a43fd2c10d4a3e7a9",
+          "bytes": 4082,
+          "executable": false
+        },
+        {
+          "path": "scripts/project.py",
+          "sha256": "883d15d0842c59bd771cd8cfda6dba690163882c1932c7dd6adea72df35f542a",
+          "bytes": 19180,
+          "executable": false
+        },
+        {
+          "path": "scripts/project_lock.py",
+          "sha256": "ff099e654b1d22ba76208995de9bc3ee8db269d33cddd83a0b57af5d2252f2b4",
+          "bytes": 3619,
+          "executable": false
+        },
+        {
+          "path": "scripts/run-family.py",
+          "sha256": "d649c84791ccc425d679d542ac369d32fcf6c52bbdd5bc5913eab0c1157d1611",
+          "bytes": 23017,
+          "executable": false
+        },
+        {
+          "path": "scripts/run-intake.py",
+          "sha256": "8ea85f68492874b54651c2c7ca42f8a8e1a13da1137c319a1d8e72bb54004032",
+          "bytes": 23017,
           "executable": false
         }
       ],
