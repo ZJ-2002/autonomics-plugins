@@ -1,0 +1,124 @@
+{
+  "schema_version": 2,
+  "repo": "wjixiang/catalog-ldsc-w-ld-1000g-eur-hm3-no-mhc",
+  "version": "v1",
+  "kind": "ldsc_w_ld_chr",
+  "metadata": {
+    "genome_build": "GRCh37",
+    "population": "EUR"
+  },
+  "files": [
+    {
+      "path": "weights.hm3_noMHC.1.l2.ldscore.gz",
+      "size": 1058188,
+      "sha256": "sha256:e527578b5aa4984df6f4e02fe4f0a849b9c80b4bd435ef44a3db6d2ab8015748"
+    },
+    {
+      "path": "weights.hm3_noMHC.10.l2.ldscore.gz",
+      "size": 683306,
+      "sha256": "sha256:36e89d337018468db63cbb43a10dd655102f0a38eeb3a7b4481ea3b61105706d"
+    },
+    {
+      "path": "weights.hm3_noMHC.11.l2.ldscore.gz",
+      "size": 655783,
+      "sha256": "sha256:a46bc6b1b6b61d3a1606bc052e8d64a711ab057486f4d5ae923519f4164d2440"
+    },
+    {
+      "path": "weights.hm3_noMHC.12.l2.ldscore.gz",
+      "size": 624658,
+      "sha256": "sha256:f4d93e308612626c86730aa75c7e07de8d8849f8e2345d49cb23d3109bf7f37c"
+    },
+    {
+      "path": "weights.hm3_noMHC.13.l2.ldscore.gz",
+      "size": 484428,
+      "sha256": "sha256:e72b457fbecfa65b9c74003bc434af929cfbea13cb839a6b6596d26bb9a74569"
+    },
+    {
+      "path": "weights.hm3_noMHC.14.l2.ldscore.gz",
+      "size": 423525,
+      "sha256": "sha256:cd3bfa7d5fe6720d4159fa65c9e8d0e59c16dade153c58ffd8e7ac05bd6488f1"
+    },
+    {
+      "path": "weights.hm3_noMHC.15.l2.ldscore.gz",
+      "size": 387763,
+      "sha256": "sha256:5cde3bfe70e4e3e3a1ac9d1120bda66993f5a7f285d5919f4061f75fac29fe42"
+    },
+    {
+      "path": "weights.hm3_noMHC.16.l2.ldscore.gz",
+      "size": 393714,
+      "sha256": "sha256:3645ff329f886cedc6df9479a33c94d147ff353726dc286caba33741132cf5b9"
+    },
+    {
+      "path": "weights.hm3_noMHC.17.l2.ldscore.gz",
+      "size": 345911,
+      "sha256": "sha256:0cbd25ddbac0028a56fed0a3d616f31ec36f33de99b6e5bbf0e86583f801220a"
+    },
+    {
+      "path": "weights.hm3_noMHC.18.l2.ldscore.gz",
+      "size": 382543,
+      "sha256": "sha256:91d58613185e65e8a2858463240b85d9c551f8d616ac2719cbb59466f65e5695"
+    },
+    {
+      "path": "weights.hm3_noMHC.19.l2.ldscore.gz",
+      "size": 240667,
+      "sha256": "sha256:494d3b2d540ce6d44e23cc193c737e578d07cada759be3d306a7ff265d82a365"
+    },
+    {
+      "path": "weights.hm3_noMHC.2.l2.ldscore.gz",
+      "size": 1085953,
+      "sha256": "sha256:a8c6388e6749784fb5d592220c752c0063ec1010c718b95150c0d5f1b90e76eb"
+    },
+    {
+      "path": "weights.hm3_noMHC.20.l2.ldscore.gz",
+      "size": 324211,
+      "sha256": "sha256:a651a8bc90283b0cb940a55ecfc86364079d186add12a09484bd546b75c87d47"
+    },
+    {
+      "path": "weights.hm3_noMHC.21.l2.ldscore.gz",
+      "size": 177031,
+      "sha256": "sha256:2e6120bde611c34ef6763c83bc123e9ce6a7a405d41ad55948693f7b8ff174fe"
+    },
+    {
+      "path": "weights.hm3_noMHC.22.l2.ldscore.gz",
+      "size": 182833,
+      "sha256": "sha256:913e49b8841390684e6ffb8cd0ed0356f17d955f5c489e432df853474ca0e674"
+    },
+    {
+      "path": "weights.hm3_noMHC.3.l2.ldscore.gz",
+      "size": 900312,
+      "sha256": "sha256:17b2926fe27534522599f4ab484efdf73174416416540cf751c1c7e957174e59"
+    },
+    {
+      "path": "weights.hm3_noMHC.4.l2.ldscore.gz",
+      "size": 812603,
+      "sha256": "sha256:ec9913ec444f72202a974a5c1e10dd102675f0b9ae7e1ed549ca1f71c0ac4a09"
+    },
+    {
+      "path": "weights.hm3_noMHC.5.l2.ldscore.gz",
+      "size": 810316,
+      "sha256": "sha256:ee0eda41042b8ab71716e0e6c79fb66720212ad3bb6f40487d39b8fd31fbd714"
+    },
+    {
+      "path": "weights.hm3_noMHC.6.l2.ldscore.gz",
+      "size": 772379,
+      "sha256": "sha256:ed80698ee6963c42f21cc2cfd116cc401bf4aea2a34ffd1b54b4238ec8ccbf8e"
+    },
+    {
+      "path": "weights.hm3_noMHC.7.l2.ldscore.gz",
+      "size": 712589,
+      "sha256": "sha256:b19f4da60b8a98678a4bc311993df83f2c51c678e7e1d05ddfa762f0fb319c62"
+    },
+    {
+      "path": "weights.hm3_noMHC.8.l2.ldscore.gz",
+      "size": 701056,
+      "sha256": "sha256:e8cdb8a74af0bcc9cb48cefab2c341c6f34181eeb32496cafc5c9d43619cc6e3"
+    },
+    {
+      "path": "weights.hm3_noMHC.9.l2.ldscore.gz",
+      "size": 592029,
+      "sha256": "sha256:f09d06dcf7de81b5422dcf0c606334d1cebb6bd234aec83aae67f8e1d67671fa"
+    }
+  ],
+  "payload": {},
+  "digest": "sha256:61d606846e70a9c8dea979fd5e882b163550bc9f427a6979d0692bd716a7e6a9"
+}

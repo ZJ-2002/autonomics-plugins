@@ -1,6 +1,12 @@
 {
   "scope": "CATALOG_TESTS_NOT_SCIENTIFIC_CERTIFICATES",
   "test_ids": [
+    "tests.test_ldsc_panel_structure.PanelStructureTests.test_literal_unique_score_coordinates_are_preserved",
+    "tests.test_ldsc_panel_structure.PanelStructureTests.test_wrong_chromosome_duplicate_and_nonfinite_rows_fail",
+    "tests.test_ldsc_panel_structure.PanelStructureTests.test_axis_differences_are_reported_without_filtering_or_coordinate_changes",
+    "tests.test_ldsc_panel_payloads.DeclaredPanelPayloadTests.test_actual_public_manifests_match_their_canonical_catalog_digests",
+    "tests.test_ldsc_panel_payloads.DeclaredPanelPayloadTests.test_missing_duplicate_or_noncanonical_payloads_are_rejected",
+    "tests.test_ldsc_panel_payloads.DeclaredPanelPayloadTests.test_wrong_identity_boolean_size_or_unknown_semantics_fail_closed",
     "tests.test_ldsc_current_dag.CurrentLdscDagContractTests.test_summary_path_padding_does_not_change_any_scientific_field",
     "tests.test_ldsc_current_dag.CurrentLdscDagContractTests.test_truncated_summary_row_cannot_be_normalized_into_a_result",
     "tests.test_ldsc_current_dag.CurrentLdscDagContractTests.test_synthetic_panel_names_and_exact_manifest_bytes_are_explicit",

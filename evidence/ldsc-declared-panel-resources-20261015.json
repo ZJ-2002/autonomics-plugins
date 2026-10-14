@@ -1,0 +1,315 @@
+{
+  "schema": "LDSC_DECLARED_REFERENCE_PACKAGE_RESOURCE_PROOF_V1",
+  "scope": "FIXED_DECLARED_CATALOG_CONTENT_AND_STRUCTURE_NOT_OFFICIAL_DISTRIBUTION_ORIGIN_OR_STUDY_CERTIFICATE",
+  "panels": [
+    {
+      "repository": "wjixiang/catalog-ldsc-ref-ld-1000g-eur-basic",
+      "revision": "02ed9238d391d6acd855f99e7529515619f91f5f",
+      "catalog_digest": "sha256:6468558bcf37cb2cbf276efe3c6f07b165bf88ea09427f0087c5cdcb504ac4e6",
+      "manifest_sha256": "98be7cb4f77f46103c1b963b725a57167ac1c81ad30d3cd6483bd50e6eaf4b4f",
+      "files": 66,
+      "bytes": 13341868,
+      "every_payload_hash_verified": true,
+      "author_distribution_origin_independently_proven": false
+    },
+    {
+      "repository": "wjixiang/catalog-ldsc-w-ld-1000g-eur-hm3-no-mhc",
+      "revision": "c00f382ddf7bb6d089388fd4c8f7285d9a1cc313",
+      "catalog_digest": "sha256:61d606846e70a9c8dea979fd5e882b163550bc9f427a6979d0692bd716a7e6a9",
+      "manifest_sha256": "0e4710b47dfb11252fd69e509101f1004069cbd8e61a5a54b97bc4ce2a21196e",
+      "files": 22,
+      "bytes": 12751798,
+      "every_payload_hash_verified": true,
+      "author_distribution_origin_independently_proven": false
+    }
+  ],
+  "total_payload_files": 88,
+  "total_payload_bytes": 26093666,
+  "source_sha256": {
+    "tools/prove_ldsc_panel_payloads.py": "75db1f799790ccad05dc494688a59bce9aa0a3af5499786c8d8dcd879fc215b8",
+    "tools/audit_ldsc_panel_structure.py": "e1a1449431c69765bede38b8eb68ff7e25aad8cced488a6c755339b1e918889f"
+  },
+  "structure": {
+    "status": "ALL_22_CHROMOSOME_SCHEMAS_COUNTS_AND_SHARED_COORDINATES_VERIFIED",
+    "chromosomes": [
+      {
+        "chromosome": 1,
+        "reference_rows": 98642,
+        "weight_rows": 98642,
+        "M": 779354,
+        "M_5_50": 454682,
+        "shared": 98642,
+        "reference_only": 0,
+        "weight_only": 0
+      },
+      {
+        "chromosome": 2,
+        "reference_rows": 99735,
+        "weight_rows": 99735,
+        "M": 839590,
+        "M_5_50": 495705,
+        "shared": 99735,
+        "reference_only": 0,
+        "weight_only": 0
+      },
+      {
+        "chromosome": 3,
+        "reference_rows": 83036,
+        "weight_rows": 83036,
+        "M": 706350,
+        "M_5_50": 422479,
+        "shared": 83036,
+        "reference_only": 0,
+        "weight_only": 0
+      },
+      {
+        "chromosome": 4,
+        "reference_rows": 74924,
+        "weight_rows": 74924,
+        "M": 729645,
+        "M_5_50": 436159,
+        "shared": 74924,
+        "reference_only": 0,
+        "weight_only": 0
+      },
+      {
+        "chromosome": 5,
+        "reference_rows": 75164,
+        "weight_rows": 75164,
+        "M": 633015,
+        "M_5_50": 374937,
+        "shared": 75164,
+        "reference_only": 0,
+        "weight_only": 0
+      },
+      {
+        "chromosome": 6,
+        "reference_rows": 75358,
+        "weight_rows": 72386,
+        "M": 664016,
+        "M_5_50": 402025,
+        "shared": 72386,
+        "reference_only": 2972,
+        "weight_only": 0
+      },
+      {
+        "chromosome": 7,
+        "reference_rows": 66171,
+        "weight_rows": 66171,
+        "M": 589569,
+        "M_5_50": 354295,
+        "shared": 66171,
+        "reference_only": 0,
+        "weight_only": 0
+      },
+      {
+        "chromosome": 8,
+        "reference_rows": 64975,
+        "weight_rows": 64975,
+        "M": 549971,
+        "M_5_50": 327536,
+        "shared": 64975,
+        "reference_only": 0,
+        "weight_only": 0
+      },
+      {
+        "chromosome": 9,
+        "reference_rows": 55464,
+        "weight_rows": 55464,
+        "M": 438106,
+        "M_5_50": 258343,
+        "shared": 55464,
+        "reference_only": 0,
+        "weight_only": 0
+      },
+      {
+        "chromosome": 10,
+        "reference_rows": 64067,
+        "weight_rows": 64067,
+        "M": 510501,
+        "M_5_50": 308088,
+        "shared": 64067,
+        "reference_only": 0,
+        "weight_only": 0
+      },
+      {
+        "chromosome": 11,
+        "reference_rows": 60977,
+        "weight_rows": 60977,
+        "M": 493922,
+        "M_5_50": 301037,
+        "shared": 60977,
+        "reference_only": 0,
+        "weight_only": 0
+      },
+      {
+        "chromosome": 12,
+        "reference_rows": 58543,
+        "weight_rows": 58543,
+        "M": 480110,
+        "M_5_50": 287010,
+        "shared": 58543,
+        "reference_only": 0,
+        "weight_only": 0
+      },
+      {
+        "chromosome": 13,
+        "reference_rows": 45546,
+        "weight_rows": 45546,
+        "M": 366200,
+        "M_5_50": 221189,
+        "shared": 45546,
+        "reference_only": 0,
+        "weight_only": 0
+      },
+      {
+        "chromosome": 14,
+        "reference_rows": 39484,
+        "weight_rows": 39484,
+        "M": 324698,
+        "M_5_50": 192507,
+        "shared": 39484,
+        "reference_only": 0,
+        "weight_only": 0
+      },
+      {
+        "chromosome": 15,
+        "reference_rows": 35839,
+        "weight_rows": 35839,
+        "M": 287001,
+        "M_5_50": 169209,
+        "shared": 35839,
+        "reference_only": 0,
+        "weight_only": 0
+      },
+      {
+        "chromosome": 16,
+        "reference_rows": 36526,
+        "weight_rows": 36526,
+        "M": 316981,
+        "M_5_50": 182900,
+        "shared": 36526,
+        "reference_only": 0,
+        "weight_only": 0
+      },
+      {
+        "chromosome": 17,
+        "reference_rows": 32218,
+        "weight_rows": 32218,
+        "M": 269222,
+        "M_5_50": 160771,
+        "shared": 32218,
+        "reference_only": 0,
+        "weight_only": 0
+      },
+      {
+        "chromosome": 18,
+        "reference_rows": 35513,
+        "weight_rows": 35513,
+        "M": 285156,
+        "M_5_50": 170454,
+        "shared": 35513,
+        "reference_only": 0,
+        "weight_only": 0
+      },
+      {
+        "chromosome": 19,
+        "reference_rows": 22509,
+        "weight_rows": 22509,
+        "M": 232363,
+        "M_5_50": 140066,
+        "shared": 22509,
+        "reference_only": 0,
+        "weight_only": 0
+      },
+      {
+        "chromosome": 20,
+        "reference_rows": 31101,
+        "weight_rows": 31101,
+        "M": 221626,
+        "M_5_50": 132702,
+        "shared": 31101,
+        "reference_only": 0,
+        "weight_only": 0
+      },
+      {
+        "chromosome": 21,
+        "reference_rows": 17040,
+        "weight_rows": 17040,
+        "M": 138712,
+        "M_5_50": 85742,
+        "shared": 17040,
+        "reference_only": 0,
+        "weight_only": 0
+      },
+      {
+        "chromosome": 22,
+        "reference_rows": 17489,
+        "weight_rows": 17489,
+        "M": 141123,
+        "M_5_50": 83323,
+        "shared": 17489,
+        "reference_only": 0,
+        "weight_only": 0
+      }
+    ],
+    "reference_rows": 1190321,
+    "weight_rows": 1187349,
+    "source_archive_manifest_sha256": "b1034169ef0230f4c7ca66da2abe55e2611113a6617ff11ea2d8ecd24a65b6c2",
+    "SNPs_filtered_or_reordered": false,
+    "author_distribution_origin_independently_proven": false,
+    "production_cache_or_frozen_binding_changed": false,
+    "real_data_DAG_verified": false,
+    "g0_granted": false
+  },
+  "archives": {
+    "discovery": {
+      "session": "1c99f9d88753428d9b200e8220d175cf",
+      "manifest_sha256": "45a295e0064c784f9af45717e5ef25b7ba388f6f2a1965983662e5d7b8e804b6",
+      "files": 8,
+      "bytes": 33614
+    },
+    "manifests": {
+      "session": "9e1ee551780e4c93856aab15b1aaac49",
+      "manifest_sha256": "657ffef0cf489307e01d92f7cfe07551176f8b840391cea7536fe33dea86b741",
+      "files": 6,
+      "bytes": 18197
+    },
+    "payloads": {
+      "session": "66c189d36d4144fe805ec617b8314244",
+      "manifest_sha256": "b1034169ef0230f4c7ca66da2abe55e2611113a6617ff11ea2d8ecd24a65b6c2",
+      "files": 95,
+      "bytes": 26117878
+    },
+    "structure": {
+      "session": "c18caf1159704b58862f42fe2c2c8780",
+      "manifest_sha256": "186f8fb295c330c8d686fff74ff8f5967d2341a11dec5cace256658c690f9bec",
+      "files": 5,
+      "bytes": 10267
+    }
+  },
+  "archive_membership_and_all_content_reverified": true,
+  "download_parallelism": 2,
+  "payloads_downloaded_once": true,
+  "offline_structure_replay_network_requests": 0,
+  "reference_only_SNPs": 2972,
+  "weight_only_SNPs": 0,
+  "shared_SNPs": 1187349,
+  "source_differences_silently_filtered": false,
+  "ancestry_and_build_are_catalog_declarations_not_independent_sample_verification": true,
+  "author_distribution_origin_independently_proven": false,
+  "production_cache_registration_performed": false,
+  "frozen_configuration_modified_by_these_tools": false,
+  "current_DAG_or_daemon_qualified": false,
+  "required_source_tests": {
+    "session": "bb58ad340d904d61ab906c3bb816d01a",
+    "manifest_sha256": "a7c68d463b1cbc5cd60711101473eb7219177ca6c62d7a9372eb16bf2a244b7b",
+    "executed": 184,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "complete_required_inventory": true,
+    "source_lock_matches": true
+  },
+  "g0_granted": false
+}
