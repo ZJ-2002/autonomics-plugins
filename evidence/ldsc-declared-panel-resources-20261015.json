@@ -311,5 +311,16 @@
     "complete_required_inventory": true,
     "source_lock_matches": true
   },
-  "g0_granted": false
+  "g0_granted": false,
+  "post_merge_source_tests": {
+    "session": "5e331578c0cd43afa08801898b1e4601",
+    "manifest_sha256": "e855ba6d9070112b78774dc2034abe0e9c9cc8cb82e441c3f73b4cddce12a664",
+    "executed": 189,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "complete_required_inventory": true,
+    "source_lock_matches": true,
+    "other_session_B_changes_preserved": true
+  }
 }

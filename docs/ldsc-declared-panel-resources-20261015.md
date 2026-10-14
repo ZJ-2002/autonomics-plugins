@@ -50,6 +50,10 @@ test inventory and source lock matched. Six resource-focused tests additionally
 cover canonical live manifest digests, current evidence/source binding, altered
 inventories, unsafe identities, duplicate/nonfinite score rows and conflicting
 coordinate axes. These tests do not certify the biological source selection.
+Concurrent full-B source commits were then merged without overwriting either
+session's work. The merged tree executed **189 required tests**, again with zero
+failures, errors or skips and exact inventory/source-lock agreement (session
+`5e331578c0cd43afa08801898b1e4601`). This is not a new full-B method certificate.
 
 ## Explicitly unproven
 
