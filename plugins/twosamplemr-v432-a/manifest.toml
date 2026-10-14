@@ -1,0 +1,56 @@
+schema_version = 1
+plugin_name = "twosamplemr-v432-a"
+
+[image]
+reference = "ghcr.io/zj-2002/mrlap-official@sha256:78f195b862a3b7c5f8d96a96576cfb2c66b08f9bd31a739da59a017726cd063d"
+tag = "TwoSampleMR-0.7.11-R-4.6.1"
+upstream = "Official TwoSampleMR 0.7.11 in the existing MRlap 0.0.3.3 software image; this node never calls MRlap"
+license = "MIT"
+
+[[nodes]]
+kind = "twosamplemr_v432_a_exploratory"
+desc = "Frozen v4.3.2 A X01 to M06 exploratory MR on qualified independent harmonised IVs."
+doc = """
+Accepts the dotted-column A_FROZEN_EXPLORATORY_INPUT.tsv layout after the
+project's 489-participant LD qualification and action=2 harmonisation.
+No clumping, proxies, allele harmonisation, or instrument selection occurs
+here. Fixed official TwoSampleMR 0.7.11 / R 4.6.1, seed 432202610,
+default_parameters() nboot=1000, mr_ivw (MRE with SE floor), Egger and
+weighted median match the frozen run-A call order. Reports heterogeneity,
+Egger intercept, all leave-one-out rows, and the three declared inclusive
+GRCh37 regional exclusions. O2 overlap remains unresolved: main p_primary
+is NA and p_for_family is 1. This is a narrow numerical adapter; execution
+still requires the project's frozen byte verifier, admission and scientific
+authorization outside this node. Technical success never grants G0 PASS.
+Ports 1..4 are frozen A config JSON, certificate JSON, R dependency lock
+TSV and SHA256-bound method proof JSON. FROZEN_V432_A_LEGACY verifies
+the exact frozen bytes and 39 rows. SYNTHETIC_METHOD_TEST is a separate
+explicit technical fixture scope and rejects the real frozen input hash.
+"""
+timeout_secs = 1800
+stage_in_mode = "copy"
+artifact_prefix = "/artifacts/twosamplemr_v432_a_exploratory"
+
+[nodes.resources]
+cpus = 2.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "missing"
+
+[nodes.ports]
+inputs = [{ type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }, { type = "file" }]
+outputs = [
+  { path = "ALL_METHODS_EXPLORATORY.tsv", format = "tsv" },
+  { path = "HETEROGENEITY.tsv", format = "tsv" },
+  { path = "EGGER_INTERCEPT.tsv", format = "tsv" },
+  { path = "ALL_LEAVE_ONE_OUT.tsv", format = "tsv" },
+  { path = "ALL_REGION_SENSITIVITIES.tsv", format = "tsv" },
+  { path = "QUALIFIED_INPUT.tsv", format = "tsv" },
+  { path = "twosamplemr_v432_a.RDS", format = "r_rds" },
+  { path = "twosamplemr_v432_a.log", format = "twosamplemr_log" },
+  { path = "INPUT_METHOD_PROVENANCE.json", format = "json" },
+]
+
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/mr.R"
