@@ -1,8 +1,8 @@
 {
   "schema_version": "1.0",
   "scope": "SOURCE_AND_INTERFACE_INVENTORY_NOT_METHOD_CERTIFICATION",
-  "canonical_families": 33,
-  "canonical_kinds": 66,
+  "canonical_families": 34,
+  "canonical_kinds": 67,
   "families": [
     {
       "directory": "plugins/bulk-limma-normalized",
@@ -15210,6 +15210,61 @@
           "path": "test_twosamplemr.sh",
           "sha256": "786731282363bb9c656c9916eff2392cb679417cc63ba4030264978b8f628b5d",
           "bytes": 2484,
+          "executable": false
+        }
+      ],
+      "source_inventory_only": true,
+      "scientific_certified": false,
+      "auto_enable": false
+    },
+    {
+      "directory": "plugins/twosamplemr-v432-a",
+      "plugin_name": "twosamplemr-v432-a",
+      "kinds": [
+        "twosamplemr_v432_a_exploratory"
+      ],
+      "image_reference": "ghcr.io/zj-2002/mrlap-official@sha256:78f195b862a3b7c5f8d96a96576cfb2c66b08f9bd31a739da59a017726cd063d",
+      "files": [
+        {
+          "path": "README.md",
+          "sha256": "75c0696991a73f4b27f98a4e978b1b676d99a15ee8cbe04a22318badb8bf34b9",
+          "bytes": 5947,
+          "executable": false
+        },
+        {
+          "path": "contracts/frozen-method-proof.json",
+          "sha256": "a79c4469321bcef7ffabb9f94ad557ca185409bd9177868a3c158d8debb484c2",
+          "bytes": 577,
+          "executable": false
+        },
+        {
+          "path": "manifest.toml",
+          "sha256": "661e12b231f7b38540d5cba2fca8a31ee3d5d0831305998f00fa0e898d980324",
+          "bytes": 2509,
+          "executable": false
+        },
+        {
+          "path": "scripts/mr.R",
+          "sha256": "72023365b372000f6f7e80f11b55a6ad0c018b73d1096e44b44642b306765769",
+          "bytes": 9140,
+          "executable": false
+        },
+        {
+          "path": "tests/generate_toy.py",
+          "sha256": "337e61b6a359a5960f640baf5b901cde89d6b6e1b15e85603a83fd51825e87d1",
+          "bytes": 3530,
+          "executable": false
+        },
+        {
+          "path": "tests/run_acceptance.py",
+          "sha256": "69b625ea4affdb1ad26b05c34d8a71a07d81ab728e19c3678bd31ea927f5bab0",
+          "bytes": 4519,
+          "executable": false
+        },
+        {
+          "path": "tests/verify.R",
+          "sha256": "d9b8c4ccb256e65eea09604b0245cf0da20ceb4c59d013aedd2c1e39f54ef8a2",
+          "bytes": 2646,
           "executable": false
         }
       ],

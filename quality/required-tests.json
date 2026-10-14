@@ -113,6 +113,10 @@
     "tests.test_normalized_bulk_interface.NormalizedBulkTests.test_all_four_installed_scripts_have_real_port0_and_safe_static_surface",
     "tests.test_normalized_bulk_interface.NormalizedBulkTests.test_existing_method_bytes_and_image_are_preserved",
     "tests.test_normalized_bulk_interface.NormalizedBulkTests.test_explicit_profile_selects_normalized_family_without_counts_method",
-    "tests.test_normalized_bulk_interface.NormalizedBulkTests.test_registered_ports_keep_actual_design_and_rds_contract"
+    "tests.test_normalized_bulk_interface.NormalizedBulkTests.test_registered_ports_keep_actual_design_and_rds_contract",
+    "tests.test_frozen_a_project_dag.FrozenAProjectDagTests.test_cli_creates_request_exclusively_without_opening_study_files",
+    "tests.test_frozen_a_project_dag.FrozenAProjectDagTests.test_graph_binds_the_fixed_five_hash_enabled_inputs_in_method_port_order",
+    "tests.test_frozen_a_project_dag.FrozenAProjectDagTests.test_method_manifest_declares_actual_r_entry_and_all_nine_outputs",
+    "tests.test_frozen_a_project_dag.FrozenAProjectDagTests.test_prefix_is_the_only_graph_customization_and_cannot_inject_script"
   ]
 }
