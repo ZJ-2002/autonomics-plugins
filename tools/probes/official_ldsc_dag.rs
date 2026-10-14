@@ -78,7 +78,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         {
             return Err("original canonical panel declarations differ".into());
         }
-        panel.bundle = synthetic.parse()?;
+        panel.bundle = data_catalog::HfRepoId::new(synthetic)?;
     }
     let synthetic_manifest_bytes = toml::to_string(&manifest)?.into_bytes();
     for entry in &mut manifest.nodes {

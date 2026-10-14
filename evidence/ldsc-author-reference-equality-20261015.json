@@ -1,0 +1,755 @@
+{
+  "schema": "LDSC_AUTHOR_REFERENCE_DISTRIBUTION_EQUALITY_V1",
+  "proof": {
+    "status": "ALL_88_DECLARED_PANEL_FILES_BYTE_IDENTICAL_TO_VERSIONED_AUTHOR_DEPOSIT",
+    "author": "Steven Gazal",
+    "author_orcid": "0000-0003-4510-5730",
+    "author_record": 7768714,
+    "archives": [
+      {
+        "author_archive": "1000G_Phase3_ldscores.tgz",
+        "doi": "10.5281/zenodo.7768714",
+        "author_published_checksum": "md5:e4352ccf778f296835d73985350a863b",
+        "archive_sha256": "470fe954080ba164f6b18ca2be8f8a6e2585d983b4a248556b5ffff2c3d0145f",
+        "archive_bytes": 13362450,
+        "catalog_digest": "sha256:6468558bcf37cb2cbf276efe3c6f07b165bf88ea09427f0087c5cdcb504ac4e6",
+        "members": [
+          {
+            "author_member": "LDscore/LDscore.20.l2.M",
+            "catalog_path": "LDscore.20.l2.M",
+            "size": 7,
+            "sha256": "sha256:7cfba76cb5cc782757db9e8cd34cb5d194a0c9deceb271f3e0209d47633fecdb"
+          },
+          {
+            "author_member": "LDscore/LDscore.11.l2.ldscore.gz",
+            "catalog_path": "LDscore.11.l2.ldscore.gz",
+            "size": 683818,
+            "sha256": "sha256:0701f04ecbfd3a5536d34f3e7f5573bc93ec70ee446a7c7ac75940fdcb69db23"
+          },
+          {
+            "author_member": "LDscore/LDscore.21.l2.ldscore.gz",
+            "catalog_path": "LDscore.21.l2.ldscore.gz",
+            "size": 185196,
+            "sha256": "sha256:88fdc6d4b17219d91fe7221ce412587903b277f124038bc49beef12ab6052d9d"
+          },
+          {
+            "author_member": "LDscore/LDscore.18.l2.ldscore.gz",
+            "catalog_path": "LDscore.18.l2.ldscore.gz",
+            "size": 398472,
+            "sha256": "sha256:90612ae7faefc6e303b6de7f7bd207e62c50e85f602c66b1f45ef22f16abc87f"
+          },
+          {
+            "author_member": "LDscore/LDscore.8.l2.M_5_50",
+            "catalog_path": "LDscore.8.l2.M_5_50",
+            "size": 7,
+            "sha256": "sha256:805a90b478d560544afac65cffc30633e462c2bd41199880e0cbfb075c6f1a61"
+          },
+          {
+            "author_member": "LDscore/LDscore.16.l2.ldscore.gz",
+            "catalog_path": "LDscore.16.l2.ldscore.gz",
+            "size": 410650,
+            "sha256": "sha256:26b9d15e3d257aa3c9602a673c1f615241a58a8fc6d1f466d1f18fe09258f937"
+          },
+          {
+            "author_member": "LDscore/LDscore.18.l2.M",
+            "catalog_path": "LDscore.18.l2.M",
+            "size": 7,
+            "sha256": "sha256:907f6717084e7b84cedfec514313c0e724a2fe7a10d5da937b3eea37643a4cb8"
+          },
+          {
+            "author_member": "LDscore/LDscore.10.l2.M",
+            "catalog_path": "LDscore.10.l2.M",
+            "size": 7,
+            "sha256": "sha256:9b3f61c871d210ae1676364d883ca68c87570666b754bb472ea09aa07c611c2e"
+          },
+          {
+            "author_member": "LDscore/LDscore.15.l2.ldscore.gz",
+            "catalog_path": "LDscore.15.l2.ldscore.gz",
+            "size": 403889,
+            "sha256": "sha256:b3857bb72f59453229755276723c7ecb40417856c9d8d6bf30614fde82462267"
+          },
+          {
+            "author_member": "LDscore/LDscore.1.l2.M_5_50",
+            "catalog_path": "LDscore.1.l2.M_5_50",
+            "size": 7,
+            "sha256": "sha256:da9846f5375e5f1ec178c8f5b20d57ef6b2b417d2baac3fc48ae3fbeea7b0e12"
+          },
+          {
+            "author_member": "LDscore/LDscore.12.l2.M_5_50",
+            "catalog_path": "LDscore.12.l2.M_5_50",
+            "size": 7,
+            "sha256": "sha256:46f8062f6e21c772775f571e63a5df6dcf5d3f6f2089befe2a341eb5a50915ad"
+          },
+          {
+            "author_member": "LDscore/LDscore.3.l2.M",
+            "catalog_path": "LDscore.3.l2.M",
+            "size": 7,
+            "sha256": "sha256:bfacd5f7cf73f02cef20e5c556ab3b973a6eab160ece22ce44f688f33e374b13"
+          },
+          {
+            "author_member": "LDscore/LDscore.12.l2.M",
+            "catalog_path": "LDscore.12.l2.M",
+            "size": 7,
+            "sha256": "sha256:8e051b6c9e865280389cd60b087a0983698ce1423b3790a27d84688c84727007"
+          },
+          {
+            "author_member": "LDscore/LDscore.14.l2.M",
+            "catalog_path": "LDscore.14.l2.M",
+            "size": 7,
+            "sha256": "sha256:fc7fa1407aaebff096dc7b5bf78d9f49efec46990bce6ea0b49e9d3d28e2d79c"
+          },
+          {
+            "author_member": "LDscore/LDscore.4.l2.M",
+            "catalog_path": "LDscore.4.l2.M",
+            "size": 7,
+            "sha256": "sha256:23a7b8a87c97d00a06d04afda6695f23ff23fe31bfffe88f0777ae445383dd0f"
+          },
+          {
+            "author_member": "LDscore/LDscore.9.l2.M",
+            "catalog_path": "LDscore.9.l2.M",
+            "size": 7,
+            "sha256": "sha256:fdd2d5e92aefecf9c26b9732e3dbf1a9e1f1c1a8a87b2d93caa64bb4d48ff15b"
+          },
+          {
+            "author_member": "LDscore/LDscore.2.l2.M_5_50",
+            "catalog_path": "LDscore.2.l2.M_5_50",
+            "size": 7,
+            "sha256": "sha256:ed437070ef0f3d66240b970d6a2e55c9c357a8dc5ff8f8abfd97fec3b44aceb8"
+          },
+          {
+            "author_member": "LDscore/LDscore.2.l2.M",
+            "catalog_path": "LDscore.2.l2.M",
+            "size": 7,
+            "sha256": "sha256:d3f536af5a8da2c72ba43e8803177028c4ea30e36762fb789d6c977065fcc331"
+          },
+          {
+            "author_member": "LDscore/LDscore.15.l2.M",
+            "catalog_path": "LDscore.15.l2.M",
+            "size": 7,
+            "sha256": "sha256:03c5521680fbb356800d42bc26992fa4b824de6d1136ffb3b3744d8a380dc6ad"
+          },
+          {
+            "author_member": "LDscore/LDscore.7.l2.ldscore.gz",
+            "catalog_path": "LDscore.7.l2.ldscore.gz",
+            "size": 745252,
+            "sha256": "sha256:910e51d9d07202e31dbea6d9cde7a12cac37f158c5144847fd7c403d1ba06996"
+          },
+          {
+            "author_member": "LDscore/LDscore.18.l2.M_5_50",
+            "catalog_path": "LDscore.18.l2.M_5_50",
+            "size": 7,
+            "sha256": "sha256:ab391d41245e0735d037532ecbb42ddad109a3ed8b7e75cb3ac5b8ed75f829d9"
+          },
+          {
+            "author_member": "LDscore/LDscore.22.l2.M_5_50",
+            "catalog_path": "LDscore.22.l2.M_5_50",
+            "size": 6,
+            "sha256": "sha256:dd5dc9d56e35c2e11184ac571100415d85933646e7ce38e86c354b81f5f85b3a"
+          },
+          {
+            "author_member": "LDscore/LDscore.5.l2.M_5_50",
+            "catalog_path": "LDscore.5.l2.M_5_50",
+            "size": 7,
+            "sha256": "sha256:52a64eed591b25fd6938f8079328a3243725e1aab7ccf94e5b8f07999ba53df2"
+          },
+          {
+            "author_member": "LDscore/LDscore.17.l2.M",
+            "catalog_path": "LDscore.17.l2.M",
+            "size": 7,
+            "sha256": "sha256:9e9d4d4297fe3299972308d66daac0a9ab5934592fdf9d32378595d81631458e"
+          },
+          {
+            "author_member": "LDscore/LDscore.14.l2.M_5_50",
+            "catalog_path": "LDscore.14.l2.M_5_50",
+            "size": 7,
+            "sha256": "sha256:5ce0d73e823657f210b99dab3342fa820be915dac25295051ca2c74409aecdae"
+          },
+          {
+            "author_member": "LDscore/LDscore.15.l2.M_5_50",
+            "catalog_path": "LDscore.15.l2.M_5_50",
+            "size": 7,
+            "sha256": "sha256:b07aac3292ee73ce7f1bbb306d80d37b51a3899e8ec3ea7b05bd4c743d76ff54"
+          },
+          {
+            "author_member": "LDscore/LDscore.5.l2.ldscore.gz",
+            "catalog_path": "LDscore.5.l2.ldscore.gz",
+            "size": 845843,
+            "sha256": "sha256:d32203388a291403afc2d1259f50ceef5677bf16c96acf7acd9273b7bd19c7e0"
+          },
+          {
+            "author_member": "LDscore/LDscore.22.l2.ldscore.gz",
+            "catalog_path": "LDscore.22.l2.ldscore.gz",
+            "size": 190606,
+            "sha256": "sha256:457b49e3c02b958152790df4107aff2bc7349aeae6c3ee4e7e6171b89b694616"
+          },
+          {
+            "author_member": "LDscore/LDscore.3.l2.M_5_50",
+            "catalog_path": "LDscore.3.l2.M_5_50",
+            "size": 7,
+            "sha256": "sha256:795668480cca8c4566cfaf4777ea9205b3992734cdd037be57445535115d34d2"
+          },
+          {
+            "author_member": "LDscore/LDscore.2.l2.ldscore.gz",
+            "catalog_path": "LDscore.2.l2.ldscore.gz",
+            "size": 1133358,
+            "sha256": "sha256:7576cedef09c335fd3c9011f55469e04b02e80c14a162bc6ec11835519494ecb"
+          },
+          {
+            "author_member": "LDscore/LDscore.6.l2.ldscore.gz",
+            "catalog_path": "LDscore.6.l2.ldscore.gz",
+            "size": 840195,
+            "sha256": "sha256:f5d6a685f0baa26567ac5e07c9ddaa3d382339c699b499a8ff723e6d7c0186e3"
+          },
+          {
+            "author_member": "LDscore/LDscore.8.l2.M",
+            "catalog_path": "LDscore.8.l2.M",
+            "size": 7,
+            "sha256": "sha256:0c91d684113d19ee76f159882ad24429234c9d4d02098846b00a9549989bc00d"
+          },
+          {
+            "author_member": "LDscore/LDscore.13.l2.ldscore.gz",
+            "catalog_path": "LDscore.13.l2.ldscore.gz",
+            "size": 506570,
+            "sha256": "sha256:42b803ab70168b454452f26af92102261b4b6f64c72b26d7e1e67726051b9e51"
+          },
+          {
+            "author_member": "LDscore/LDscore.7.l2.M",
+            "catalog_path": "LDscore.7.l2.M",
+            "size": 7,
+            "sha256": "sha256:601288ec488a8294f1ef3452e7493a0f85c669dd2e12a289b3781726ec1ecee3"
+          },
+          {
+            "author_member": "LDscore/LDscore.9.l2.M_5_50",
+            "catalog_path": "LDscore.9.l2.M_5_50",
+            "size": 7,
+            "sha256": "sha256:a346e1cbfe9c27726f85176bad131be1227db2cad2620571c2ffde7adf8bc794"
+          },
+          {
+            "author_member": "LDscore/LDscore.13.l2.M_5_50",
+            "catalog_path": "LDscore.13.l2.M_5_50",
+            "size": 7,
+            "sha256": "sha256:d277f02c3848939103c14b31136a3e38243e1e69ddc329b5532791bb1ad0b1c6"
+          },
+          {
+            "author_member": "LDscore/LDscore.1.l2.ldscore.gz",
+            "catalog_path": "LDscore.1.l2.ldscore.gz",
+            "size": 1102252,
+            "sha256": "sha256:6b2f2763b039d927f9a9a207903f338a43c08353ac0a721ce6aa2c1084598771"
+          },
+          {
+            "author_member": "LDscore/LDscore.16.l2.M",
+            "catalog_path": "LDscore.16.l2.M",
+            "size": 7,
+            "sha256": "sha256:f5cbd620b6c2cbb86ca4fb29dc7af0d728b4f792498193c58e860af7a47e1592"
+          },
+          {
+            "author_member": "LDscore/LDscore.6.l2.M",
+            "catalog_path": "LDscore.6.l2.M",
+            "size": 7,
+            "sha256": "sha256:56e8d4766109b7b02fb231884c87267d6d71151d6640f48078a1fe23f777fb72"
+          },
+          {
+            "author_member": "LDscore/LDscore.3.l2.ldscore.gz",
+            "catalog_path": "LDscore.3.l2.ldscore.gz",
+            "size": 939688,
+            "sha256": "sha256:55e4f42dc7f9ec0e545cad7d99a1491f002ed97d59ba49dd5488883b299559ce"
+          },
+          {
+            "author_member": "LDscore/LDscore.17.l2.M_5_50",
+            "catalog_path": "LDscore.17.l2.M_5_50",
+            "size": 7,
+            "sha256": "sha256:a180352f00b7c879cef586382ebe1e7e1e3e66083deeeb54849f8aebc7b3d2e6"
+          },
+          {
+            "author_member": "LDscore/LDscore.8.l2.ldscore.gz",
+            "catalog_path": "LDscore.8.l2.ldscore.gz",
+            "size": 732178,
+            "sha256": "sha256:6b9ddd1ea1b13993725d36de73ea4acf65fc1be7e8bc2ffa38671c8a1de92323"
+          },
+          {
+            "author_member": "LDscore/LDscore.21.l2.M_5_50",
+            "catalog_path": "LDscore.21.l2.M_5_50",
+            "size": 6,
+            "sha256": "sha256:b7a66bb30a36e31101e17b6480046f20e98279266aa99f66a110d662f4f270e1"
+          },
+          {
+            "author_member": "LDscore/LDscore.11.l2.M",
+            "catalog_path": "LDscore.11.l2.M",
+            "size": 7,
+            "sha256": "sha256:5da74b2ae5209095b2f33e1b9fad2e9f577ca5713e20f7622170a9bc423f4d23"
+          },
+          {
+            "author_member": "LDscore/LDscore.19.l2.ldscore.gz",
+            "catalog_path": "LDscore.19.l2.ldscore.gz",
+            "size": 251719,
+            "sha256": "sha256:aa01e6f3205f51f9983f23a381286cd125d29597cc3d576d33810f67ad976bb1"
+          },
+          {
+            "author_member": "LDscore/LDscore.1.l2.M",
+            "catalog_path": "LDscore.1.l2.M",
+            "size": 7,
+            "sha256": "sha256:a40093065893176f304d2f55cce165b45f7f71c1fae123dd624ef687c8bb7159"
+          },
+          {
+            "author_member": "LDscore/LDscore.20.l2.ldscore.gz",
+            "catalog_path": "LDscore.20.l2.ldscore.gz",
+            "size": 337129,
+            "sha256": "sha256:25ffdc49debebe6fabb9dd9b0b0b2e199ba9b841835a4c1b722a36b50a1926b4"
+          },
+          {
+            "author_member": "LDscore/LDscore.10.l2.ldscore.gz",
+            "catalog_path": "LDscore.10.l2.ldscore.gz",
+            "size": 712909,
+            "sha256": "sha256:13d2e365bdee068888b2efb10ab35dc548ce769a2bde0cbec06b35aff9bd223e"
+          },
+          {
+            "author_member": "LDscore/LDscore.4.l2.M_5_50",
+            "catalog_path": "LDscore.4.l2.M_5_50",
+            "size": 7,
+            "sha256": "sha256:8b7aea0faec9428a136d4c5fa6da35053142cc0c3bf0003a1d861fd7614c6572"
+          },
+          {
+            "author_member": "LDscore/LDscore.19.l2.M",
+            "catalog_path": "LDscore.19.l2.M",
+            "size": 7,
+            "sha256": "sha256:803cd21e4031ede35b20e5d37020cb1f425197e6b63626e37be0b6852a257aa4"
+          },
+          {
+            "author_member": "LDscore/LDscore.6.l2.M_5_50",
+            "catalog_path": "LDscore.6.l2.M_5_50",
+            "size": 7,
+            "sha256": "sha256:8fa0ff3a0d7a9a7ea2e08db4457d891f40b2b76a15f8883d37cf93c130b2a34f"
+          },
+          {
+            "author_member": "LDscore/LDscore.14.l2.ldscore.gz",
+            "catalog_path": "LDscore.14.l2.ldscore.gz",
+            "size": 441689,
+            "sha256": "sha256:8132a213a4fe7d803b986ef465ab515e633e7457adff99e0205660bcfeb70e41"
+          },
+          {
+            "author_member": "LDscore/LDscore.11.l2.M_5_50",
+            "catalog_path": "LDscore.11.l2.M_5_50",
+            "size": 7,
+            "sha256": "sha256:3c0cba9f66079a250739dc5c37e0c265eca8c7945078f0b9d802566043665032"
+          },
+          {
+            "author_member": "LDscore/LDscore.20.l2.M_5_50",
+            "catalog_path": "LDscore.20.l2.M_5_50",
+            "size": 7,
+            "sha256": "sha256:806a9746badbf2c804af41387b7a2de8ff5dd9399e5c5eac6702427635a05a03"
+          },
+          {
+            "author_member": "LDscore/LDscore.5.l2.M",
+            "catalog_path": "LDscore.5.l2.M",
+            "size": 7,
+            "sha256": "sha256:782eb9b57f2976f561e05dc0c04f0f8fc8ff57459a0a05696100577fa0fc2b3f"
+          },
+          {
+            "author_member": "LDscore/LDscore.7.l2.M_5_50",
+            "catalog_path": "LDscore.7.l2.M_5_50",
+            "size": 7,
+            "sha256": "sha256:662726eec54c80e05a8019e016632876357a05d9e5a7482eea2ac31515075835"
+          },
+          {
+            "author_member": "LDscore/LDscore.16.l2.M_5_50",
+            "catalog_path": "LDscore.16.l2.M_5_50",
+            "size": 7,
+            "sha256": "sha256:8f0889cf03f2ac89b6d83002d092519b9a861bedfc5fd467b03ff8f006358097"
+          },
+          {
+            "author_member": "LDscore/LDscore.9.l2.ldscore.gz",
+            "catalog_path": "LDscore.9.l2.ldscore.gz",
+            "size": 617448,
+            "sha256": "sha256:d4fb309e5a445bd19064e69746db7f4910f7e041083feb9a760ee5121533e950"
+          },
+          {
+            "author_member": "LDscore/LDscore.4.l2.ldscore.gz",
+            "catalog_path": "LDscore.4.l2.ldscore.gz",
+            "size": 850674,
+            "sha256": "sha256:e805c05534570fe9deecec8967f2409fd2a09b8d31475911ca62d40f38c84e72"
+          },
+          {
+            "author_member": "LDscore/LDscore.13.l2.M",
+            "catalog_path": "LDscore.13.l2.M",
+            "size": 7,
+            "sha256": "sha256:260e0f5f1270728748f6fd4412e1d6cdf5c1dba5f3852020dacc1aa9af73d4f8"
+          },
+          {
+            "author_member": "LDscore/LDscore.21.l2.M",
+            "catalog_path": "LDscore.21.l2.M",
+            "size": 7,
+            "sha256": "sha256:78ccf56ed2bb5cc681549a8989f314b2533abc8b71c24cc7d0fb0bc9d8f6db97"
+          },
+          {
+            "author_member": "LDscore/LDscore.12.l2.ldscore.gz",
+            "catalog_path": "LDscore.12.l2.ldscore.gz",
+            "size": 651801,
+            "sha256": "sha256:7d84adf87f657e8a8ac97547fdbc5ee4067e3293e86c9bfed58f496af3cfce98"
+          },
+          {
+            "author_member": "LDscore/LDscore.22.l2.M",
+            "catalog_path": "LDscore.22.l2.M",
+            "size": 7,
+            "sha256": "sha256:2d657b236506215b982d5f917983f63c4260f7837f992220a762e2ea0659035c"
+          },
+          {
+            "author_member": "LDscore/LDscore.17.l2.ldscore.gz",
+            "catalog_path": "LDscore.17.l2.ldscore.gz",
+            "size": 360226,
+            "sha256": "sha256:485c1f70024fbd0049d2d489299e805aee21f14a3cd347f479f6b942ddbf6b18"
+          },
+          {
+            "author_member": "LDscore/LDscore.10.l2.M_5_50",
+            "catalog_path": "LDscore.10.l2.M_5_50",
+            "size": 7,
+            "sha256": "sha256:1f70facbe817f35a53afeea94f75d060ef0e57743290a3a79a899b77ed34bc23"
+          },
+          {
+            "author_member": "LDscore/LDscore.19.l2.M_5_50",
+            "catalog_path": "LDscore.19.l2.M_5_50",
+            "size": 7,
+            "sha256": "sha256:ba83a0fe6e25ef45954bdbfb0eb42573a4a655ea4c238055178d971c9cbc7c02"
+          }
+        ],
+        "additional_author_metadata_preserved": [
+          {
+            "author_member": "LDscore/LDscore.5.log",
+            "size": 1328,
+            "sha256": "sha256:cd50578fe1973dcf4cde75458a52aebf37dcc6bd7e8febb6b04b9a2b86b83440",
+            "role": "AUTHOR_GENERATION_LOG_OR_WEIGHT_UNUSED_M_COUNT_NOT_FILTERED_METHOD_DATA"
+          },
+          {
+            "author_member": "LDscore/LDscore.22.log",
+            "size": 1326,
+            "sha256": "sha256:de9997627b571b0d706e4a277c49cd41a3f9ae0d3786f7d6de03efb6ea9b88db",
+            "role": "AUTHOR_GENERATION_LOG_OR_WEIGHT_UNUSED_M_COUNT_NOT_FILTERED_METHOD_DATA"
+          },
+          {
+            "author_member": "LDscore/LDscore.16.log",
+            "size": 1334,
+            "sha256": "sha256:b0c5067000ee47c305c13b14232fb025ac4f0a7a3399573defa20bf79be46e02",
+            "role": "AUTHOR_GENERATION_LOG_OR_WEIGHT_UNUSED_M_COUNT_NOT_FILTERED_METHOD_DATA"
+          },
+          {
+            "author_member": "LDscore/LDscore.19.log",
+            "size": 1333,
+            "sha256": "sha256:2ac7929ba09e7e8f5a54abcbbfae8bd8fe113fc2afc8c82bc9bd0470452fdef0",
+            "role": "AUTHOR_GENERATION_LOG_OR_WEIGHT_UNUSED_M_COUNT_NOT_FILTERED_METHOD_DATA"
+          },
+          {
+            "author_member": "LDscore/LDscore.17.log",
+            "size": 1333,
+            "sha256": "sha256:9b751623f6f98d04287ab04016bc0ceb632970c2765f64b124a7d5fd0563dbe3",
+            "role": "AUTHOR_GENERATION_LOG_OR_WEIGHT_UNUSED_M_COUNT_NOT_FILTERED_METHOD_DATA"
+          },
+          {
+            "author_member": "LDscore/LDscore.8.log",
+            "size": 1322,
+            "sha256": "sha256:257f8a8fd82e293829f75bb20edd4cc722cad466576f57e8f8974132eea9897b",
+            "role": "AUTHOR_GENERATION_LOG_OR_WEIGHT_UNUSED_M_COUNT_NOT_FILTERED_METHOD_DATA"
+          },
+          {
+            "author_member": "LDscore/LDscore.3.log",
+            "size": 1321,
+            "sha256": "sha256:f54838b24e920241d6959c918be95f462775864e85e828f0094844153876df69",
+            "role": "AUTHOR_GENERATION_LOG_OR_WEIGHT_UNUSED_M_COUNT_NOT_FILTERED_METHOD_DATA"
+          },
+          {
+            "author_member": "LDscore/LDscore.4.log",
+            "size": 1328,
+            "sha256": "sha256:5fd6fa578f2873a03754da4f0acf7efac1e0b4726ea8418ef4cfe92375e5e55e",
+            "role": "AUTHOR_GENERATION_LOG_OR_WEIGHT_UNUSED_M_COUNT_NOT_FILTERED_METHOD_DATA"
+          },
+          {
+            "author_member": "LDscore/LDscore.21.log",
+            "size": 1326,
+            "sha256": "sha256:6c6a26aa0771aeee21ad8e3c89b207990ac23b35a0c2e6f033a99450d0dbcd9e",
+            "role": "AUTHOR_GENERATION_LOG_OR_WEIGHT_UNUSED_M_COUNT_NOT_FILTERED_METHOD_DATA"
+          },
+          {
+            "author_member": "LDscore/LDscore.9.log",
+            "size": 1320,
+            "sha256": "sha256:d782964ebaf128ab9549f90e50c5e0090a7da6c21119a9b09913fb1433fb349f",
+            "role": "AUTHOR_GENERATION_LOG_OR_WEIGHT_UNUSED_M_COUNT_NOT_FILTERED_METHOD_DATA"
+          },
+          {
+            "author_member": "LDscore/LDscore.11.log",
+            "size": 1359,
+            "sha256": "sha256:4a46fae49e4c243a876db829caafa31e8283f28e48ee58924758085ebe9b7041",
+            "role": "AUTHOR_GENERATION_LOG_OR_WEIGHT_UNUSED_M_COUNT_NOT_FILTERED_METHOD_DATA"
+          },
+          {
+            "author_member": "LDscore/LDscore.12.log",
+            "size": 1334,
+            "sha256": "sha256:059117c5eba38faa179ab64e0836893d250f72f570a1f0dc38fdcba92b60bcdc",
+            "role": "AUTHOR_GENERATION_LOG_OR_WEIGHT_UNUSED_M_COUNT_NOT_FILTERED_METHOD_DATA"
+          },
+          {
+            "author_member": "LDscore/LDscore.15.log",
+            "size": 1325,
+            "sha256": "sha256:18ba88bfa8b0c18165178e1c72f27bab41a7af3d276c2f88b3c5f4ed7c75f17f",
+            "role": "AUTHOR_GENERATION_LOG_OR_WEIGHT_UNUSED_M_COUNT_NOT_FILTERED_METHOD_DATA"
+          },
+          {
+            "author_member": "LDscore/LDscore.20.log",
+            "size": 1326,
+            "sha256": "sha256:1b7239f326486277b1aaee669de681dcb765b0f3c4ae828c6af1609c95bf9156",
+            "role": "AUTHOR_GENERATION_LOG_OR_WEIGHT_UNUSED_M_COUNT_NOT_FILTERED_METHOD_DATA"
+          },
+          {
+            "author_member": "LDscore/LDscore.6.log",
+            "size": 1328,
+            "sha256": "sha256:b33674e599d8d9e0dff76231e66cdecfd39b5d162c1b8949fbd61ecd19c881af",
+            "role": "AUTHOR_GENERATION_LOG_OR_WEIGHT_UNUSED_M_COUNT_NOT_FILTERED_METHOD_DATA"
+          },
+          {
+            "author_member": "LDscore/LDscore.13.log",
+            "size": 1325,
+            "sha256": "sha256:264dba1c1fbc02818204bcaae54fe46d5abff66aac4c66f5d3e0c6c79c1b2b3a",
+            "role": "AUTHOR_GENERATION_LOG_OR_WEIGHT_UNUSED_M_COUNT_NOT_FILTERED_METHOD_DATA"
+          },
+          {
+            "author_member": "LDscore/LDscore.7.log",
+            "size": 1328,
+            "sha256": "sha256:7bbb880fce5c1893bf3e1ab06a3f907308a20d055db369a8a587a0618fc79e08",
+            "role": "AUTHOR_GENERATION_LOG_OR_WEIGHT_UNUSED_M_COUNT_NOT_FILTERED_METHOD_DATA"
+          },
+          {
+            "author_member": "LDscore/LDscore.1.log",
+            "size": 1318,
+            "sha256": "sha256:0ee425394c082224d3f34140525b5ab8a7d9a504f6e5ff826a7f3a4e1bf550ba",
+            "role": "AUTHOR_GENERATION_LOG_OR_WEIGHT_UNUSED_M_COUNT_NOT_FILTERED_METHOD_DATA"
+          },
+          {
+            "author_member": "LDscore/LDscore.18.log",
+            "size": 1326,
+            "sha256": "sha256:90bce72797ceb70c03d5cfa66916363b2558a82e61b1377bba8803543e9a90f9",
+            "role": "AUTHOR_GENERATION_LOG_OR_WEIGHT_UNUSED_M_COUNT_NOT_FILTERED_METHOD_DATA"
+          },
+          {
+            "author_member": "LDscore/LDscore.10.log",
+            "size": 1334,
+            "sha256": "sha256:cc945d30d153aef33cb889c136bb90336af6beaf2aeb13009490fd74153a9f95",
+            "role": "AUTHOR_GENERATION_LOG_OR_WEIGHT_UNUSED_M_COUNT_NOT_FILTERED_METHOD_DATA"
+          },
+          {
+            "author_member": "LDscore/LDscore.14.log",
+            "size": 1334,
+            "sha256": "sha256:6f0f7a138c94e0d39bf2c08b4d7cbd3af11cf2186ef31ca4fbec82eef7ef2959",
+            "role": "AUTHOR_GENERATION_LOG_OR_WEIGHT_UNUSED_M_COUNT_NOT_FILTERED_METHOD_DATA"
+          },
+          {
+            "author_member": "LDscore/LDscore.2.log",
+            "size": 1320,
+            "sha256": "sha256:fa278e423625704401fe647a0c5f448e253d2cf16b927ad32076876b6b17402d",
+            "role": "AUTHOR_GENERATION_LOG_OR_WEIGHT_UNUSED_M_COUNT_NOT_FILTERED_METHOD_DATA"
+          }
+        ],
+        "reused_exact_sealed_download_from_failed_session": true
+      },
+      {
+        "author_archive": "1000G_Phase3_weights_hm3_no_MHC.tgz",
+        "doi": "10.5281/zenodo.7768714",
+        "author_published_checksum": "md5:a98ac0f089ee285177544a3e6e721ca3",
+        "archive_sha256": "d3e29112c64766dcee0ad9ec69ebda3d24cbe29ddb559d75443b10bcf8756c91",
+        "archive_bytes": 12757654,
+        "catalog_digest": "sha256:61d606846e70a9c8dea979fd5e882b163550bc9f427a6979d0692bd716a7e6a9",
+        "members": [
+          {
+            "author_member": "1000G_Phase3_weights_hm3_no_MHC/weights.hm3_noMHC.2.l2.ldscore.gz",
+            "catalog_path": "weights.hm3_noMHC.2.l2.ldscore.gz",
+            "size": 1085953,
+            "sha256": "sha256:a8c6388e6749784fb5d592220c752c0063ec1010c718b95150c0d5f1b90e76eb"
+          },
+          {
+            "author_member": "1000G_Phase3_weights_hm3_no_MHC/weights.hm3_noMHC.3.l2.ldscore.gz",
+            "catalog_path": "weights.hm3_noMHC.3.l2.ldscore.gz",
+            "size": 900312,
+            "sha256": "sha256:17b2926fe27534522599f4ab484efdf73174416416540cf751c1c7e957174e59"
+          },
+          {
+            "author_member": "1000G_Phase3_weights_hm3_no_MHC/weights.hm3_noMHC.13.l2.ldscore.gz",
+            "catalog_path": "weights.hm3_noMHC.13.l2.ldscore.gz",
+            "size": 484428,
+            "sha256": "sha256:e72b457fbecfa65b9c74003bc434af929cfbea13cb839a6b6596d26bb9a74569"
+          },
+          {
+            "author_member": "1000G_Phase3_weights_hm3_no_MHC/weights.hm3_noMHC.16.l2.ldscore.gz",
+            "catalog_path": "weights.hm3_noMHC.16.l2.ldscore.gz",
+            "size": 393714,
+            "sha256": "sha256:3645ff329f886cedc6df9479a33c94d147ff353726dc286caba33741132cf5b9"
+          },
+          {
+            "author_member": "1000G_Phase3_weights_hm3_no_MHC/weights.hm3_noMHC.9.l2.ldscore.gz",
+            "catalog_path": "weights.hm3_noMHC.9.l2.ldscore.gz",
+            "size": 592029,
+            "sha256": "sha256:f09d06dcf7de81b5422dcf0c606334d1cebb6bd234aec83aae67f8e1d67671fa"
+          },
+          {
+            "author_member": "1000G_Phase3_weights_hm3_no_MHC/weights.hm3_noMHC.6.l2.ldscore.gz",
+            "catalog_path": "weights.hm3_noMHC.6.l2.ldscore.gz",
+            "size": 772379,
+            "sha256": "sha256:ed80698ee6963c42f21cc2cfd116cc401bf4aea2a34ffd1b54b4238ec8ccbf8e"
+          },
+          {
+            "author_member": "1000G_Phase3_weights_hm3_no_MHC/weights.hm3_noMHC.11.l2.ldscore.gz",
+            "catalog_path": "weights.hm3_noMHC.11.l2.ldscore.gz",
+            "size": 655783,
+            "sha256": "sha256:a46bc6b1b6b61d3a1606bc052e8d64a711ab057486f4d5ae923519f4164d2440"
+          },
+          {
+            "author_member": "1000G_Phase3_weights_hm3_no_MHC/weights.hm3_noMHC.22.l2.ldscore.gz",
+            "catalog_path": "weights.hm3_noMHC.22.l2.ldscore.gz",
+            "size": 182833,
+            "sha256": "sha256:913e49b8841390684e6ffb8cd0ed0356f17d955f5c489e432df853474ca0e674"
+          },
+          {
+            "author_member": "1000G_Phase3_weights_hm3_no_MHC/weights.hm3_noMHC.8.l2.ldscore.gz",
+            "catalog_path": "weights.hm3_noMHC.8.l2.ldscore.gz",
+            "size": 701056,
+            "sha256": "sha256:e8cdb8a74af0bcc9cb48cefab2c341c6f34181eeb32496cafc5c9d43619cc6e3"
+          },
+          {
+            "author_member": "1000G_Phase3_weights_hm3_no_MHC/weights.hm3_noMHC.4.l2.ldscore.gz",
+            "catalog_path": "weights.hm3_noMHC.4.l2.ldscore.gz",
+            "size": 812603,
+            "sha256": "sha256:ec9913ec444f72202a974a5c1e10dd102675f0b9ae7e1ed549ca1f71c0ac4a09"
+          },
+          {
+            "author_member": "1000G_Phase3_weights_hm3_no_MHC/weights.hm3_noMHC.7.l2.ldscore.gz",
+            "catalog_path": "weights.hm3_noMHC.7.l2.ldscore.gz",
+            "size": 712589,
+            "sha256": "sha256:b19f4da60b8a98678a4bc311993df83f2c51c678e7e1d05ddfa762f0fb319c62"
+          },
+          {
+            "author_member": "1000G_Phase3_weights_hm3_no_MHC/weights.hm3_noMHC.14.l2.ldscore.gz",
+            "catalog_path": "weights.hm3_noMHC.14.l2.ldscore.gz",
+            "size": 423525,
+            "sha256": "sha256:cd3bfa7d5fe6720d4159fa65c9e8d0e59c16dade153c58ffd8e7ac05bd6488f1"
+          },
+          {
+            "author_member": "1000G_Phase3_weights_hm3_no_MHC/weights.hm3_noMHC.17.l2.ldscore.gz",
+            "catalog_path": "weights.hm3_noMHC.17.l2.ldscore.gz",
+            "size": 345911,
+            "sha256": "sha256:0cbd25ddbac0028a56fed0a3d616f31ec36f33de99b6e5bbf0e86583f801220a"
+          },
+          {
+            "author_member": "1000G_Phase3_weights_hm3_no_MHC/weights.hm3_noMHC.10.l2.ldscore.gz",
+            "catalog_path": "weights.hm3_noMHC.10.l2.ldscore.gz",
+            "size": 683306,
+            "sha256": "sha256:36e89d337018468db63cbb43a10dd655102f0a38eeb3a7b4481ea3b61105706d"
+          },
+          {
+            "author_member": "1000G_Phase3_weights_hm3_no_MHC/weights.hm3_noMHC.1.l2.ldscore.gz",
+            "catalog_path": "weights.hm3_noMHC.1.l2.ldscore.gz",
+            "size": 1058188,
+            "sha256": "sha256:e527578b5aa4984df6f4e02fe4f0a849b9c80b4bd435ef44a3db6d2ab8015748"
+          },
+          {
+            "author_member": "1000G_Phase3_weights_hm3_no_MHC/weights.hm3_noMHC.15.l2.ldscore.gz",
+            "catalog_path": "weights.hm3_noMHC.15.l2.ldscore.gz",
+            "size": 387763,
+            "sha256": "sha256:5cde3bfe70e4e3e3a1ac9d1120bda66993f5a7f285d5919f4061f75fac29fe42"
+          },
+          {
+            "author_member": "1000G_Phase3_weights_hm3_no_MHC/weights.hm3_noMHC.18.l2.ldscore.gz",
+            "catalog_path": "weights.hm3_noMHC.18.l2.ldscore.gz",
+            "size": 382543,
+            "sha256": "sha256:91d58613185e65e8a2858463240b85d9c551f8d616ac2719cbb59466f65e5695"
+          },
+          {
+            "author_member": "1000G_Phase3_weights_hm3_no_MHC/weights.hm3_noMHC.12.l2.ldscore.gz",
+            "catalog_path": "weights.hm3_noMHC.12.l2.ldscore.gz",
+            "size": 624658,
+            "sha256": "sha256:f4d93e308612626c86730aa75c7e07de8d8849f8e2345d49cb23d3109bf7f37c"
+          },
+          {
+            "author_member": "1000G_Phase3_weights_hm3_no_MHC/weights.hm3_noMHC.20.l2.ldscore.gz",
+            "catalog_path": "weights.hm3_noMHC.20.l2.ldscore.gz",
+            "size": 324211,
+            "sha256": "sha256:a651a8bc90283b0cb940a55ecfc86364079d186add12a09484bd546b75c87d47"
+          },
+          {
+            "author_member": "1000G_Phase3_weights_hm3_no_MHC/weights.hm3_noMHC.5.l2.ldscore.gz",
+            "catalog_path": "weights.hm3_noMHC.5.l2.ldscore.gz",
+            "size": 810316,
+            "sha256": "sha256:ee0eda41042b8ab71716e0e6c79fb66720212ad3bb6f40487d39b8fd31fbd714"
+          },
+          {
+            "author_member": "1000G_Phase3_weights_hm3_no_MHC/weights.hm3_noMHC.19.l2.ldscore.gz",
+            "catalog_path": "weights.hm3_noMHC.19.l2.ldscore.gz",
+            "size": 240667,
+            "sha256": "sha256:494d3b2d540ce6d44e23cc193c737e578d07cada759be3d306a7ff265d82a365"
+          },
+          {
+            "author_member": "1000G_Phase3_weights_hm3_no_MHC/weights.hm3_noMHC.21.l2.ldscore.gz",
+            "catalog_path": "weights.hm3_noMHC.21.l2.ldscore.gz",
+            "size": 177031,
+            "sha256": "sha256:2e6120bde611c34ef6763c83bc123e9ce6a7a405d41ad55948693f7b8ff174fe"
+          }
+        ],
+        "additional_author_metadata_preserved": [],
+        "reused_exact_sealed_download_from_failed_session": false
+      }
+    ],
+    "compressed_member_bytes_compared": true,
+    "no_tar_extraction": true,
+    "production_cache_or_frozen_binding_changed": false,
+    "study_panel_eligibility_granted": false,
+    "current_DAG_or_daemon_qualified": false,
+    "g0_granted": false
+  },
+  "proof_driver_sha256": "adacf98a1cd124cf61939779af1350fcde3008e75fe7d0ee90123340ba744a19",
+  "all_declared_data_members": 88,
+  "additional_generation_logs_preserved": 22,
+  "archives_reverified": [
+    {
+      "session": "0b57675010964667859028efd5ff27bd",
+      "manifest_sha256": "f311bb8cb7c0cb7bc7d699a9a4191f39bd62243ebd24e61afcaff73ea1c50b10",
+      "files": 5,
+      "bytes": 9203
+    },
+    {
+      "session": "2b38d75f6c9948288d2912797eb1a935",
+      "manifest_sha256": "94370b78a1a7d582a07da5dce4a2a3c491809a27d75baee3f5a89f1973d20ead",
+      "files": 5,
+      "bytes": 13369345
+    },
+    {
+      "session": "125e793f27214d0b9df05b48e634597f",
+      "manifest_sha256": "51635e219b89483c3217826a2e0cb72043dfae71da9092bd8dd7b56c37354879",
+      "files": 28,
+      "bytes": 12826174
+    },
+    {
+      "session": "935a6d5de4be429a811ea769b536379b",
+      "manifest_sha256": "e330f12314248eff66718b4341e0eeba4d47160e3f38e493cc9531d864e5d1e6",
+      "files": 5,
+      "bytes": 6688
+    },
+    {
+      "session": "a0964d50c8be43cba9c1cddec8086624",
+      "manifest_sha256": "b4d819a4532c2c45533d882d3d3f61b176ae058a08eed73663357915c9b68541",
+      "files": 4,
+      "bytes": 82373
+    }
+  ],
+  "preserved_failed_attempt": {
+    "session": "2b38d75f6c9948288d2912797eb1a935",
+    "worker_exit_status": 1,
+    "reason": "Original validator rejected additional author generation logs; all declared method data remain required, logs now explicitly classified and preserved, arbitrary extras still forbidden"
+  },
+  "source_tests": {
+    "session": "a0964d50c8be43cba9c1cddec8086624",
+    "executed": 193,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "complete": true,
+    "source_lock_matches": true
+  },
+  "upstream_maintenance_evidence": "evidence/ldsc-upstream-maintenance-link-20261015.json",
+  "scientific_reference_selection_or_unpartitioned_weight_recipe_granted": false,
+  "current_DAG_or_deployment_granted": false,
+  "g0_granted": false
+}

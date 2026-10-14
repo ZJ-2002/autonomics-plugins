@@ -1,5 +1,9 @@
 # LDSC declared panels: content and structure, not scientific eligibility
 
+Later evidence closes the selected author-distribution origin through an
+[independent complete archive comparison](ldsc-author-reference-equality-20261015.md).
+This historical resource audit retains its original narrower scope below.
+
 Both repositories declared by the canonical plugin are publicly accessible at
 the immutable revisions recorded here. Their complete packages were downloaded
 once, with two bounded transfer workers, into mandatory managed evidence rather

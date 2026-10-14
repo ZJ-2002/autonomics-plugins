@@ -1,0 +1,14 @@
+{
+  "status": "ORIGINAL_PROJECT_EXPLICITLY_LINKS_CBIIT_PYTHON3_IMPLEMENTATION_NOT_ALL_VERSION_EQUIVALENCE",
+  "original_repository": "https://github.com/bulik/ldsc",
+  "README_revision": "2fdeeb3b44379408794154993dbd6101b8946b7e",
+  "README_url": "https://raw.githubusercontent.com/bulik/ldsc/2fdeeb3b44379408794154993dbd6101b8946b7e/README.md",
+  "README_sha256": "f53daa5fdd1ee6ca5ec4c3b75eafe83b9c858a5698cc02e8cf9441fcb6a4cf7e",
+  "linked_repository": "https://github.com/CBIIT/ldsc",
+  "deployed_CBIIT_revision": "6c673952cee74bd5c57aef1555a03b1c015399a0",
+  "all_versions_or_old_Python2_numerical_equivalence_proven": false,
+  "g0_granted": false,
+  "session": "935a6d5de4be429a811ea769b536379b",
+  "manifest_sha256": "e330f12314248eff66718b4341e0eeba4d47160e3f38e493cc9531d864e5d1e6",
+  "all_parameter_branches_or_legacy_numerical_equivalence_granted": false
+}
