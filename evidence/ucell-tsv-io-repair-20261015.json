@@ -1,0 +1,778 @@
+{
+  "schema": "UCELL_TSV_OWNERSHIP_REPAIR_OFFICIAL_CURRENT_DAG_PROOF_V1",
+  "node_kind": "cachexia_ucell_official",
+  "relation_to_original_120_slots": "Optional TSV official route related to FUNC_h5ad_ucell_score; not an added original slot or a new H5AD method certificate.",
+  "status": "ACCEPTED_SCOPED_TECHNICAL_IO_REPAIR_AND_OFFICIAL_REFERENCE",
+  "implementation_commit": "c1b221df8954b8788b8ac65c7a8b3ebf09df4eb1",
+  "old_method_sha256": "43ca20c8a63417c4ef26d8c56a61b65b064fbe71f4974add726b75998b8624d0",
+  "new_method_sha256": "0ee592ccb766d784451a8d429f13d4cda3d7d2ea774ad7397b3ba6915ed582fd",
+  "unchanged_official_scoring_call_sha256": "7753d863082e755df4ced940e9fff6ef6a937e1adb43a2485e3b6fb0f1ccad63",
+  "official_package": "UCell 2.16.0",
+  "image": "ghcr.io/zj-2002/cachexia-ucell-official@sha256:f5310020240016e9069783498aebbd1849c73c6ae4918058614803fe3b6bfca1",
+  "engine_commit": "db83a6bb9886e4b1a3c563bef9261df782a0050c",
+  "executable_sha256": "9dae47f22c5feeca79dd005ede43c16349b3b362530646e2220fcb8d40bc0069",
+  "counts": {
+    "current_DAGs": 13,
+    "successful_parameter_DAGs": 12,
+    "method_failure_DAGs": 1,
+    "positive_input_bindings": 24,
+    "positive_output_ports": 48,
+    "official_score_values": 208,
+    "complete_typed_RDS_readbacks": 12,
+    "path_regressions": 3,
+    "specific_failure_cases": 16,
+    "graph_preflight_refusals": 2
+  },
+  "before": {
+    "phase": "before",
+    "cases": [
+      {
+        "case": "existing-outputs",
+        "exit_code": 2,
+        "before": {
+          "matrix.tsv": "b9239ce01b6c6b2967da80ad2759c761c68696afc22326cc1ea644e2d92bc692",
+          "signatures.tsv": "61ed8d2378cc5bddddd36f32e7af05d8ced726d489d1e70fc236671c69590a3f",
+          "scores.tsv": "67d7b9ce98383d4570265528e75dd76fff945bd133a28552f75a751dd0386a30",
+          "result.RDS": "67d7b9ce98383d4570265528e75dd76fff945bd133a28552f75a751dd0386a30",
+          "log.txt": "67d7b9ce98383d4570265528e75dd76fff945bd133a28552f75a751dd0386a30",
+          "audit.json": "67d7b9ce98383d4570265528e75dd76fff945bd133a28552f75a751dd0386a30"
+        },
+        "after": {
+          "matrix.tsv": "b9239ce01b6c6b2967da80ad2759c761c68696afc22326cc1ea644e2d92bc692",
+          "signatures.tsv": "61ed8d2378cc5bddddd36f32e7af05d8ced726d489d1e70fc236671c69590a3f",
+          "scores.tsv": null,
+          "result.RDS": null,
+          "log.txt": "b8e4f6296568f99e0b1907dc3633b88a03e7d4c97fbd24962ed61fc083de705f",
+          "audit.json": null
+        },
+        "damaged": [
+          "scores.tsv",
+          "result.RDS",
+          "log.txt",
+          "audit.json"
+        ]
+      },
+      {
+        "case": "input-alias",
+        "exit_code": 2,
+        "before": {
+          "matrix.tsv": "b9239ce01b6c6b2967da80ad2759c761c68696afc22326cc1ea644e2d92bc692",
+          "signatures.tsv": "61ed8d2378cc5bddddd36f32e7af05d8ced726d489d1e70fc236671c69590a3f"
+        },
+        "after": {
+          "matrix.tsv": null,
+          "signatures.tsv": "61ed8d2378cc5bddddd36f32e7af05d8ced726d489d1e70fc236671c69590a3f"
+        },
+        "damaged": [
+          "matrix.tsv"
+        ]
+      },
+      {
+        "case": "log-alias",
+        "exit_code": 2,
+        "before": {
+          "matrix.tsv": "b9239ce01b6c6b2967da80ad2759c761c68696afc22326cc1ea644e2d92bc692",
+          "signatures.tsv": "61ed8d2378cc5bddddd36f32e7af05d8ced726d489d1e70fc236671c69590a3f"
+        },
+        "after": {
+          "matrix.tsv": "b8e4f6296568f99e0b1907dc3633b88a03e7d4c97fbd24962ed61fc083de705f",
+          "signatures.tsv": "61ed8d2378cc5bddddd36f32e7af05d8ced726d489d1e70fc236671c69590a3f"
+        },
+        "damaged": [
+          "matrix.tsv"
+        ]
+      }
+    ],
+    "status": "DATA_LOSS_REPRODUCED",
+    "method_source_sha256": "43ca20c8a63417c4ef26d8c56a61b65b064fbe71f4974add726b75998b8624d0",
+    "image": "ghcr.io/zj-2002/cachexia-ucell-official@sha256:f5310020240016e9069783498aebbd1849c73c6ae4918058614803fe3b6bfca1",
+    "only_owned_synthetic_files_used": true,
+    "g0_granted": false
+  },
+  "after": {
+    "phase": "after",
+    "cases": [
+      {
+        "case": "existing-outputs",
+        "exit_code": 2,
+        "before": {
+          "matrix.tsv": "b9239ce01b6c6b2967da80ad2759c761c68696afc22326cc1ea644e2d92bc692",
+          "signatures.tsv": "61ed8d2378cc5bddddd36f32e7af05d8ced726d489d1e70fc236671c69590a3f",
+          "scores.tsv": "67d7b9ce98383d4570265528e75dd76fff945bd133a28552f75a751dd0386a30",
+          "result.RDS": "67d7b9ce98383d4570265528e75dd76fff945bd133a28552f75a751dd0386a30",
+          "log.txt": "67d7b9ce98383d4570265528e75dd76fff945bd133a28552f75a751dd0386a30",
+          "audit.json": "67d7b9ce98383d4570265528e75dd76fff945bd133a28552f75a751dd0386a30"
+        },
+        "after": {
+          "matrix.tsv": "b9239ce01b6c6b2967da80ad2759c761c68696afc22326cc1ea644e2d92bc692",
+          "signatures.tsv": "61ed8d2378cc5bddddd36f32e7af05d8ced726d489d1e70fc236671c69590a3f",
+          "scores.tsv": "67d7b9ce98383d4570265528e75dd76fff945bd133a28552f75a751dd0386a30",
+          "result.RDS": "67d7b9ce98383d4570265528e75dd76fff945bd133a28552f75a751dd0386a30",
+          "log.txt": "67d7b9ce98383d4570265528e75dd76fff945bd133a28552f75a751dd0386a30",
+          "audit.json": "67d7b9ce98383d4570265528e75dd76fff945bd133a28552f75a751dd0386a30"
+        },
+        "damaged": []
+      },
+      {
+        "case": "input-alias",
+        "exit_code": 2,
+        "before": {
+          "matrix.tsv": "b9239ce01b6c6b2967da80ad2759c761c68696afc22326cc1ea644e2d92bc692",
+          "signatures.tsv": "61ed8d2378cc5bddddd36f32e7af05d8ced726d489d1e70fc236671c69590a3f"
+        },
+        "after": {
+          "matrix.tsv": "b9239ce01b6c6b2967da80ad2759c761c68696afc22326cc1ea644e2d92bc692",
+          "signatures.tsv": "61ed8d2378cc5bddddd36f32e7af05d8ced726d489d1e70fc236671c69590a3f"
+        },
+        "damaged": []
+      },
+      {
+        "case": "log-alias",
+        "exit_code": 2,
+        "before": {
+          "matrix.tsv": "b9239ce01b6c6b2967da80ad2759c761c68696afc22326cc1ea644e2d92bc692",
+          "signatures.tsv": "61ed8d2378cc5bddddd36f32e7af05d8ced726d489d1e70fc236671c69590a3f"
+        },
+        "after": {
+          "matrix.tsv": "b9239ce01b6c6b2967da80ad2759c761c68696afc22326cc1ea644e2d92bc692",
+          "signatures.tsv": "61ed8d2378cc5bddddd36f32e7af05d8ced726d489d1e70fc236671c69590a3f"
+        },
+        "damaged": []
+      }
+    ],
+    "status": "PROTECTED_PATH_REFUSALS_ENFORCED",
+    "method_source_sha256": "0ee592ccb766d784451a8d429f13d4cda3d7d2ea774ad7397b3ba6915ed582fd",
+    "image": "ghcr.io/zj-2002/cachexia-ucell-official@sha256:f5310020240016e9069783498aebbd1849c73c6ae4918058614803fe3b6bfca1",
+    "only_owned_synthetic_files_used": true,
+    "g0_granted": false
+  },
+  "specific_failures": {
+    "status": "TSV_UCELL_SPECIFIC_FAILURE_AND_OWNED_ROLLBACK_PROVEN",
+    "cases": [
+      {
+        "case": "output1-alias-input",
+        "exact_cause": "Input and output paths must be distinct",
+        "exit_code": 2,
+        "input_digests_before": {
+          "matrix.tsv": "b9239ce01b6c6b2967da80ad2759c761c68696afc22326cc1ea644e2d92bc692",
+          "signatures.tsv": "61ed8d2378cc5bddddd36f32e7af05d8ced726d489d1e70fc236671c69590a3f"
+        },
+        "input_digests_after": {
+          "matrix.tsv": "b9239ce01b6c6b2967da80ad2759c761c68696afc22326cc1ea644e2d92bc692",
+          "signatures.tsv": "61ed8d2378cc5bddddd36f32e7af05d8ced726d489d1e70fc236671c69590a3f"
+        },
+        "only_declared_owned_fault_input_changed": [],
+        "ordinary_rollback_not_crash_recovery": true
+      },
+      {
+        "case": "output3-alias-input",
+        "exact_cause": "Input and output paths must be distinct",
+        "exit_code": 2,
+        "input_digests_before": {
+          "matrix.tsv": "b9239ce01b6c6b2967da80ad2759c761c68696afc22326cc1ea644e2d92bc692",
+          "signatures.tsv": "61ed8d2378cc5bddddd36f32e7af05d8ced726d489d1e70fc236671c69590a3f"
+        },
+        "input_digests_after": {
+          "matrix.tsv": "b9239ce01b6c6b2967da80ad2759c761c68696afc22326cc1ea644e2d92bc692",
+          "signatures.tsv": "61ed8d2378cc5bddddd36f32e7af05d8ced726d489d1e70fc236671c69590a3f"
+        },
+        "only_declared_owned_fault_input_changed": [],
+        "ordinary_rollback_not_crash_recovery": true
+      },
+      {
+        "case": "output-alias",
+        "exact_cause": "Input and output paths must be distinct",
+        "exit_code": 2,
+        "input_digests_before": {
+          "matrix.tsv": "b9239ce01b6c6b2967da80ad2759c761c68696afc22326cc1ea644e2d92bc692",
+          "signatures.tsv": "61ed8d2378cc5bddddd36f32e7af05d8ced726d489d1e70fc236671c69590a3f"
+        },
+        "input_digests_after": {
+          "matrix.tsv": "b9239ce01b6c6b2967da80ad2759c761c68696afc22326cc1ea644e2d92bc692",
+          "signatures.tsv": "61ed8d2378cc5bddddd36f32e7af05d8ced726d489d1e70fc236671c69590a3f"
+        },
+        "only_declared_owned_fault_input_changed": [],
+        "ordinary_rollback_not_crash_recovery": true
+      },
+      {
+        "case": "normalized-parent-alias",
+        "exact_cause": "Input and output paths must be distinct",
+        "exit_code": 2,
+        "input_digests_before": {
+          "matrix.tsv": "b9239ce01b6c6b2967da80ad2759c761c68696afc22326cc1ea644e2d92bc692",
+          "signatures.tsv": "61ed8d2378cc5bddddd36f32e7af05d8ced726d489d1e70fc236671c69590a3f"
+        },
+        "input_digests_after": {
+          "matrix.tsv": "b9239ce01b6c6b2967da80ad2759c761c68696afc22326cc1ea644e2d92bc692",
+          "signatures.tsv": "61ed8d2378cc5bddddd36f32e7af05d8ced726d489d1e70fc236671c69590a3f"
+        },
+        "only_declared_owned_fault_input_changed": [],
+        "ordinary_rollback_not_crash_recovery": true
+      },
+      {
+        "case": "dangling-output",
+        "exact_cause": "Refusing to overwrite any existing output",
+        "exit_code": 2,
+        "input_digests_before": {
+          "matrix.tsv": "b9239ce01b6c6b2967da80ad2759c761c68696afc22326cc1ea644e2d92bc692",
+          "signatures.tsv": "61ed8d2378cc5bddddd36f32e7af05d8ced726d489d1e70fc236671c69590a3f"
+        },
+        "input_digests_after": {
+          "matrix.tsv": "b9239ce01b6c6b2967da80ad2759c761c68696afc22326cc1ea644e2d92bc692",
+          "signatures.tsv": "61ed8d2378cc5bddddd36f32e7af05d8ced726d489d1e70fc236671c69590a3f"
+        },
+        "only_declared_owned_fault_input_changed": [],
+        "ordinary_rollback_not_crash_recovery": true
+      },
+      {
+        "case": "hardlinked-output",
+        "exact_cause": "Refusing to overwrite any existing output",
+        "exit_code": 2,
+        "input_digests_before": {
+          "matrix.tsv": "b9239ce01b6c6b2967da80ad2759c761c68696afc22326cc1ea644e2d92bc692",
+          "signatures.tsv": "61ed8d2378cc5bddddd36f32e7af05d8ced726d489d1e70fc236671c69590a3f"
+        },
+        "input_digests_after": {
+          "matrix.tsv": "b9239ce01b6c6b2967da80ad2759c761c68696afc22326cc1ea644e2d92bc692",
+          "signatures.tsv": "61ed8d2378cc5bddddd36f32e7af05d8ced726d489d1e70fc236671c69590a3f"
+        },
+        "only_declared_owned_fault_input_changed": [],
+        "ordinary_rollback_not_crash_recovery": true
+      },
+      {
+        "case": "missing-input-path",
+        "exact_cause": "All declared input and output paths are required",
+        "exit_code": 2,
+        "input_digests_before": {
+          "matrix.tsv": "b9239ce01b6c6b2967da80ad2759c761c68696afc22326cc1ea644e2d92bc692",
+          "signatures.tsv": "61ed8d2378cc5bddddd36f32e7af05d8ced726d489d1e70fc236671c69590a3f"
+        },
+        "input_digests_after": {
+          "matrix.tsv": "b9239ce01b6c6b2967da80ad2759c761c68696afc22326cc1ea644e2d92bc692",
+          "signatures.tsv": "61ed8d2378cc5bddddd36f32e7af05d8ced726d489d1e70fc236671c69590a3f"
+        },
+        "only_declared_owned_fault_input_changed": [],
+        "ordinary_rollback_not_crash_recovery": true
+      },
+      {
+        "case": "missing-output-path",
+        "exact_cause": "All declared input and output paths are required",
+        "exit_code": 2,
+        "input_digests_before": {
+          "matrix.tsv": "b9239ce01b6c6b2967da80ad2759c761c68696afc22326cc1ea644e2d92bc692",
+          "signatures.tsv": "61ed8d2378cc5bddddd36f32e7af05d8ced726d489d1e70fc236671c69590a3f"
+        },
+        "input_digests_after": {
+          "matrix.tsv": "b9239ce01b6c6b2967da80ad2759c761c68696afc22326cc1ea644e2d92bc692",
+          "signatures.tsv": "61ed8d2378cc5bddddd36f32e7af05d8ced726d489d1e70fc236671c69590a3f"
+        },
+        "only_declared_owned_fault_input_changed": [],
+        "ordinary_rollback_not_crash_recovery": true
+      },
+      {
+        "case": "invalid-rank",
+        "exact_cause": "Frozen UCell parameters invalid",
+        "exit_code": 2,
+        "input_digests_before": {
+          "matrix.tsv": "b9239ce01b6c6b2967da80ad2759c761c68696afc22326cc1ea644e2d92bc692",
+          "signatures.tsv": "61ed8d2378cc5bddddd36f32e7af05d8ced726d489d1e70fc236671c69590a3f"
+        },
+        "input_digests_after": {
+          "matrix.tsv": "b9239ce01b6c6b2967da80ad2759c761c68696afc22326cc1ea644e2d92bc692",
+          "signatures.tsv": "61ed8d2378cc5bddddd36f32e7af05d8ced726d489d1e70fc236671c69590a3f"
+        },
+        "only_declared_owned_fault_input_changed": [],
+        "ordinary_rollback_not_crash_recovery": true
+      },
+      {
+        "case": "invalid-weight",
+        "exact_cause": "Frozen UCell parameters invalid",
+        "exit_code": 2,
+        "input_digests_before": {
+          "matrix.tsv": "b9239ce01b6c6b2967da80ad2759c761c68696afc22326cc1ea644e2d92bc692",
+          "signatures.tsv": "61ed8d2378cc5bddddd36f32e7af05d8ced726d489d1e70fc236671c69590a3f"
+        },
+        "input_digests_after": {
+          "matrix.tsv": "b9239ce01b6c6b2967da80ad2759c761c68696afc22326cc1ea644e2d92bc692",
+          "signatures.tsv": "61ed8d2378cc5bddddd36f32e7af05d8ced726d489d1e70fc236671c69590a3f"
+        },
+        "only_declared_owned_fault_input_changed": [],
+        "ordinary_rollback_not_crash_recovery": true
+      },
+      {
+        "case": "invalid-policy",
+        "exact_cause": "Frozen UCell parameters invalid",
+        "exit_code": 2,
+        "input_digests_before": {
+          "matrix.tsv": "b9239ce01b6c6b2967da80ad2759c761c68696afc22326cc1ea644e2d92bc692",
+          "signatures.tsv": "61ed8d2378cc5bddddd36f32e7af05d8ced726d489d1e70fc236671c69590a3f"
+        },
+        "input_digests_after": {
+          "matrix.tsv": "b9239ce01b6c6b2967da80ad2759c761c68696afc22326cc1ea644e2d92bc692",
+          "signatures.tsv": "61ed8d2378cc5bddddd36f32e7af05d8ced726d489d1e70fc236671c69590a3f"
+        },
+        "only_declared_owned_fault_input_changed": [],
+        "ordinary_rollback_not_crash_recovery": true
+      },
+      {
+        "case": "first-result-link-failure",
+        "exact_cause": "Fresh result publication refused",
+        "exit_code": 2,
+        "input_digests_before": {
+          "matrix.tsv": "b9239ce01b6c6b2967da80ad2759c761c68696afc22326cc1ea644e2d92bc692",
+          "signatures.tsv": "61ed8d2378cc5bddddd36f32e7af05d8ced726d489d1e70fc236671c69590a3f"
+        },
+        "input_digests_after": {
+          "matrix.tsv": "b9239ce01b6c6b2967da80ad2759c761c68696afc22326cc1ea644e2d92bc692",
+          "signatures.tsv": "61ed8d2378cc5bddddd36f32e7af05d8ced726d489d1e70fc236671c69590a3f"
+        },
+        "only_declared_owned_fault_input_changed": [],
+        "ordinary_rollback_not_crash_recovery": true
+      },
+      {
+        "case": "second-result-link-failure",
+        "exact_cause": "Fresh result publication refused",
+        "exit_code": 2,
+        "input_digests_before": {
+          "matrix.tsv": "b9239ce01b6c6b2967da80ad2759c761c68696afc22326cc1ea644e2d92bc692",
+          "signatures.tsv": "61ed8d2378cc5bddddd36f32e7af05d8ced726d489d1e70fc236671c69590a3f"
+        },
+        "input_digests_after": {
+          "matrix.tsv": "b9239ce01b6c6b2967da80ad2759c761c68696afc22326cc1ea644e2d92bc692",
+          "signatures.tsv": "61ed8d2378cc5bddddd36f32e7af05d8ced726d489d1e70fc236671c69590a3f"
+        },
+        "only_declared_owned_fault_input_changed": [],
+        "ordinary_rollback_not_crash_recovery": true
+      },
+      {
+        "case": "audit-link-failure",
+        "exact_cause": "Fresh result publication refused",
+        "exit_code": 2,
+        "input_digests_before": {
+          "matrix.tsv": "b9239ce01b6c6b2967da80ad2759c761c68696afc22326cc1ea644e2d92bc692",
+          "signatures.tsv": "61ed8d2378cc5bddddd36f32e7af05d8ced726d489d1e70fc236671c69590a3f"
+        },
+        "input_digests_after": {
+          "matrix.tsv": "b9239ce01b6c6b2967da80ad2759c761c68696afc22326cc1ea644e2d92bc692",
+          "signatures.tsv": "61ed8d2378cc5bddddd36f32e7af05d8ced726d489d1e70fc236671c69590a3f"
+        },
+        "only_declared_owned_fault_input_changed": [],
+        "ordinary_rollback_not_crash_recovery": true
+      },
+      {
+        "case": "foreign-replacement",
+        "exact_cause": "Fresh result publication refused",
+        "exit_code": 2,
+        "input_digests_before": {
+          "matrix.tsv": "b9239ce01b6c6b2967da80ad2759c761c68696afc22326cc1ea644e2d92bc692",
+          "signatures.tsv": "61ed8d2378cc5bddddd36f32e7af05d8ced726d489d1e70fc236671c69590a3f"
+        },
+        "input_digests_after": {
+          "matrix.tsv": "b9239ce01b6c6b2967da80ad2759c761c68696afc22326cc1ea644e2d92bc692",
+          "signatures.tsv": "61ed8d2378cc5bddddd36f32e7af05d8ced726d489d1e70fc236671c69590a3f"
+        },
+        "only_declared_owned_fault_input_changed": [],
+        "ordinary_rollback_not_crash_recovery": true
+      },
+      {
+        "case": "input-change",
+        "exact_cause": "Input changed during UCell computation",
+        "exit_code": 2,
+        "input_digests_before": {
+          "matrix.tsv": "b9239ce01b6c6b2967da80ad2759c761c68696afc22326cc1ea644e2d92bc692",
+          "signatures.tsv": "61ed8d2378cc5bddddd36f32e7af05d8ced726d489d1e70fc236671c69590a3f"
+        },
+        "input_digests_after": {
+          "matrix.tsv": "ee6c835eb409e6aa5a982756f02fb4e8670a776188cd411b27a976d0a5221a7a",
+          "signatures.tsv": "61ed8d2378cc5bddddd36f32e7af05d8ced726d489d1e70fc236671c69590a3f"
+        },
+        "only_declared_owned_fault_input_changed": [
+          "matrix.tsv"
+        ],
+        "ordinary_rollback_not_crash_recovery": true
+      }
+    ],
+    "method_source_sha256": "0ee592ccb766d784451a8d429f13d4cda3d7d2ea774ad7397b3ba6915ed582fd",
+    "image": "ghcr.io/zj-2002/cachexia-ucell-official@sha256:f5310020240016e9069783498aebbd1849c73c6ae4918058614803fe3b6bfca1",
+    "g0_granted": false
+  },
+  "positive_DAGs": [
+    {
+      "case": "main",
+      "parameters": {
+        "max_rank": 1500,
+        "negative_weight": 1,
+        "missing_genes": "impute"
+      },
+      "nodes": 3,
+      "edges": 2,
+      "published_ports": 4,
+      "input_bindings_checked": 2
+    },
+    {
+      "case": "rank1000",
+      "parameters": {
+        "max_rank": 1000,
+        "negative_weight": 1,
+        "missing_genes": "impute"
+      },
+      "nodes": 3,
+      "edges": 2,
+      "published_ports": 4,
+      "input_bindings_checked": 2
+    },
+    {
+      "case": "rank2000",
+      "parameters": {
+        "max_rank": 2000,
+        "negative_weight": 1,
+        "missing_genes": "impute"
+      },
+      "nodes": 3,
+      "edges": 2,
+      "published_ports": 4,
+      "input_bindings_checked": 2
+    },
+    {
+      "case": "skip",
+      "parameters": {
+        "max_rank": 1500,
+        "negative_weight": 1,
+        "missing_genes": "skip"
+      },
+      "nodes": 3,
+      "edges": 2,
+      "published_ports": 4,
+      "input_bindings_checked": 2
+    },
+    {
+      "case": "weight0",
+      "parameters": {
+        "max_rank": 1500,
+        "negative_weight": 0,
+        "missing_genes": "impute"
+      },
+      "nodes": 3,
+      "edges": 2,
+      "published_ports": 4,
+      "input_bindings_checked": 2
+    },
+    {
+      "case": "weight-half",
+      "parameters": {
+        "max_rank": 1500,
+        "negative_weight": 0.5,
+        "missing_genes": "impute"
+      },
+      "nodes": 3,
+      "edges": 2,
+      "published_ports": 4,
+      "input_bindings_checked": 2
+    },
+    {
+      "case": "weight2",
+      "parameters": {
+        "max_rank": 1500,
+        "negative_weight": 2,
+        "missing_genes": "impute"
+      },
+      "nodes": 3,
+      "edges": 2,
+      "published_ports": 4,
+      "input_bindings_checked": 2
+    },
+    {
+      "case": "skip-weight2",
+      "parameters": {
+        "max_rank": 1500,
+        "negative_weight": 2,
+        "missing_genes": "skip"
+      },
+      "nodes": 3,
+      "edges": 2,
+      "published_ports": 4,
+      "input_bindings_checked": 2
+    },
+    {
+      "case": "reordered-genes",
+      "parameters": {
+        "max_rank": 1500,
+        "negative_weight": 1,
+        "missing_genes": "impute"
+      },
+      "nodes": 3,
+      "edges": 2,
+      "published_ports": 4,
+      "input_bindings_checked": 2
+    },
+    {
+      "case": "reordered-cells",
+      "parameters": {
+        "max_rank": 1500,
+        "negative_weight": 1,
+        "missing_genes": "impute"
+      },
+      "nodes": 3,
+      "edges": 2,
+      "published_ports": 4,
+      "input_bindings_checked": 2
+    },
+    {
+      "case": "up-only",
+      "parameters": {
+        "max_rank": 1500,
+        "negative_weight": 1,
+        "missing_genes": "impute"
+      },
+      "nodes": 3,
+      "edges": 2,
+      "published_ports": 4,
+      "input_bindings_checked": 2
+    },
+    {
+      "case": "negative-only",
+      "parameters": {
+        "max_rank": 1500,
+        "negative_weight": 1,
+        "missing_genes": "impute"
+      },
+      "nodes": 3,
+      "edges": 2,
+      "published_ports": 4,
+      "input_bindings_checked": 2
+    }
+  ],
+  "graph_failures": {
+    "status": "TSV_UCELL_DAG_FAILURES_AND_GRAPH_GUARDS_ENFORCED",
+    "engine_commit": "db83a6bb9886e4b1a3c563bef9261df782a0050c",
+    "cases": [
+      {
+        "case": "invalid-policy",
+        "exact_refusal": true,
+        "normal_result_absent": true,
+        "kernel_fallback_used": false
+      },
+      {
+        "case": "unknown-parameter",
+        "exact_refusal": true,
+        "normal_result_absent": true,
+        "kernel_fallback_used": false
+      },
+      {
+        "case": "missing-signature-edge",
+        "exact_refusal": true,
+        "normal_result_absent": true,
+        "kernel_fallback_used": false
+      }
+    ],
+    "method_source_sha256": "0ee592ccb766d784451a8d429f13d4cda3d7d2ea774ad7397b3ba6915ed582fd",
+    "g0_granted": false
+  },
+  "complete_object_readback": {
+    "status": "REPAIRED_TSV_UCELL_COMPLETE_OFFICIAL_OBJECT_READBACK_PROVEN",
+    "DAG_stage_session": "f2deb00d5d964dfd95e065260aaa60e0",
+    "DAG_stage_manifest_sha256": "bbfd3ff5916c2b152e4cd3a1921c48dcab14d32f699a4a11b7fd9c4acd37ea86",
+    "compared_cases": [
+      {
+        "case": "main",
+        "original_reference_weight_type": "integer",
+        "schema_weight_type": "double",
+        "complete_RDS_identical_with_declared_numeric_metadata_type": true,
+        "official_score_object_not_modified": true,
+        "score_values": 20
+      },
+      {
+        "case": "rank1000",
+        "original_reference_weight_type": "integer",
+        "schema_weight_type": "double",
+        "complete_RDS_identical_with_declared_numeric_metadata_type": true,
+        "official_score_object_not_modified": true,
+        "score_values": 20
+      },
+      {
+        "case": "rank2000",
+        "original_reference_weight_type": "integer",
+        "schema_weight_type": "double",
+        "complete_RDS_identical_with_declared_numeric_metadata_type": true,
+        "official_score_object_not_modified": true,
+        "score_values": 20
+      },
+      {
+        "case": "skip",
+        "original_reference_weight_type": "integer",
+        "schema_weight_type": "double",
+        "complete_RDS_identical_with_declared_numeric_metadata_type": true,
+        "official_score_object_not_modified": true,
+        "score_values": 20
+      },
+      {
+        "case": "weight0",
+        "original_reference_weight_type": "integer",
+        "schema_weight_type": "double",
+        "complete_RDS_identical_with_declared_numeric_metadata_type": true,
+        "official_score_object_not_modified": true,
+        "score_values": 20
+      },
+      {
+        "case": "weight-half",
+        "original_reference_weight_type": "double",
+        "schema_weight_type": "double",
+        "complete_RDS_identical_with_declared_numeric_metadata_type": true,
+        "official_score_object_not_modified": true,
+        "score_values": 20
+      },
+      {
+        "case": "weight2",
+        "original_reference_weight_type": "integer",
+        "schema_weight_type": "double",
+        "complete_RDS_identical_with_declared_numeric_metadata_type": true,
+        "official_score_object_not_modified": true,
+        "score_values": 20
+      },
+      {
+        "case": "skip-weight2",
+        "original_reference_weight_type": "integer",
+        "schema_weight_type": "double",
+        "complete_RDS_identical_with_declared_numeric_metadata_type": true,
+        "official_score_object_not_modified": true,
+        "score_values": 20
+      },
+      {
+        "case": "reordered-genes",
+        "original_reference_weight_type": "integer",
+        "schema_weight_type": "double",
+        "complete_RDS_identical_with_declared_numeric_metadata_type": true,
+        "official_score_object_not_modified": true,
+        "score_values": 20
+      },
+      {
+        "case": "reordered-cells",
+        "original_reference_weight_type": "integer",
+        "schema_weight_type": "double",
+        "complete_RDS_identical_with_declared_numeric_metadata_type": true,
+        "official_score_object_not_modified": true,
+        "score_values": 20
+      },
+      {
+        "case": "up-only",
+        "original_reference_weight_type": "integer",
+        "schema_weight_type": "double",
+        "complete_RDS_identical_with_declared_numeric_metadata_type": true,
+        "official_score_object_not_modified": true,
+        "score_values": 4
+      },
+      {
+        "case": "negative-only",
+        "original_reference_weight_type": "integer",
+        "schema_weight_type": "double",
+        "complete_RDS_identical_with_declared_numeric_metadata_type": true,
+        "official_score_object_not_modified": true,
+        "score_values": 4
+      }
+    ],
+    "official_score_objects_or_reference_files_modified": false,
+    "reference_metadata_correction": "JSON integer w_neg constructed as integer by the first reference harness; declared wrapper RDS schema uses as.numeric(double). Exact value and all score/feature objects remain strict.",
+    "method_source_sha256": "0ee592ccb766d784451a8d429f13d4cda3d7d2ea774ad7397b3ba6915ed582fd",
+    "method_or_DAG_recomputed": false,
+    "worker_exit_of_original_stage_rewritten": false,
+    "g0_granted": false
+  },
+  "archives_reverified": [
+    {
+      "session": "c4d43a18ab2f4329afc2f6d57d66c36f",
+      "manifest_sha256": "62cbca4d744dd69cdfc6635757b8f4280a4d9329bb2f1045a6ec47a50d14ec51",
+      "files": 16,
+      "bytes": 9581,
+      "worker_exit_status": 1
+    },
+    {
+      "session": "3a73c3a0001e4b4bba870fc1d8cf0a8a",
+      "manifest_sha256": "f2b6979e1afa0d4b68d2ebcc7bcf5be154b82faebb42b32ca46973e37fbd9de1",
+      "files": 22,
+      "bytes": 11691,
+      "worker_exit_status": 0
+    },
+    {
+      "session": "b6510d38ae974010a5e03f63727d3e16",
+      "manifest_sha256": "0b4a2cbdca22dd2f50735dd43d738f6801d352bb77c513a2600e0e93a8a8164c",
+      "files": 25,
+      "bytes": 14995,
+      "worker_exit_status": 0
+    },
+    {
+      "session": "f2deb00d5d964dfd95e065260aaa60e0",
+      "manifest_sha256": "bbfd3ff5916c2b152e4cd3a1921c48dcab14d32f699a4a11b7fd9c4acd37ea86",
+      "files": 197,
+      "bytes": 1441299,
+      "worker_exit_status": 1
+    },
+    {
+      "session": "37472e74e49340d3bf8096ecdf83b943",
+      "manifest_sha256": "9cc5f74cf62f6fe3d7a64304e28d0e5ec26513680ca370545b511b79232ac241",
+      "files": 90,
+      "bytes": 47441,
+      "worker_exit_status": 0
+    },
+    {
+      "session": "8593e7f5ef734ef48f17b96320ef34cf",
+      "manifest_sha256": "c7fa8189bb9445dc3b596f495b1d8188400c5546f7e00e75203f69500dae0098",
+      "files": 4,
+      "bytes": 759,
+      "worker_exit_status": 0
+    },
+    {
+      "session": "c36e3eae672b4fa39ec4222c94774d97",
+      "manifest_sha256": "b9852600c1b88c7f2bc51a12c19d6dacdc56a227948891c29441cc39e04ae5d7",
+      "files": 97,
+      "bytes": 833281,
+      "worker_exit_status": 0
+    },
+    {
+      "session": "3e8fe4f485cb470893988a83189685e2",
+      "manifest_sha256": "7173a04adc8df7ff10fae201d57ee01d1bf1e15369891cf209d51cfb41dd1be9",
+      "files": 27,
+      "bytes": 146025,
+      "worker_exit_status": 0
+    }
+  ],
+  "source_tree_sha256": {
+    "plugins/ucell/scripts/ucell.R": "0ee592ccb766d784451a8d429f13d4cda3d7d2ea774ad7397b3ba6915ed582fd",
+    "plugins/ucell/manifest.toml": "697afaefb753c095dfcca39fb67ead7d39ba48bebf7d18e1b08ae3a4c6bfe857",
+    "plugins/ucell/tests/test_contract.py": "089e3389cc9158b34c05de010308b0eb49c1b2fe96f50d8981a73559b1684566",
+    "tools/prove_ucell_tsv_io.py": "e72ee41d6d3c8da2940aa2100dc5014e61867dff297c52252faee09925fe9590",
+    "tools/prove_ucell_tsv_dag.py": "2934d70a2c5bb22d2d1746111c42879c18a808c4d43b438fa6dfb67d66293d83",
+    "tools/prove_ucell_tsv_readback.py": "20cc91b5252022381382ff1e0d056cdb2527091fb7a117775e30e3b6982e8bcc",
+    "tools/ucell_tsv_reference.R": "34d5fd586ef93315650b17f089d11f812ad6774ec469698181c276247161bd91",
+    "tools/prove_ucell_tsv_failures.py": "50990393d6060df282bc593df3cb471dedc285aaae9e6b7d2435d0f114f7b695",
+    "tools/prove_ucell_tsv_graph_failures.py": "7270c3d44d619b2f5b3a478ae86b4b14183bb5ba73ed88f7640e9a86f5d086e0",
+    "tests/test_ucell_tsv_repair.py": "337aebd0f85a849b1d5d94087581799f94495e596e8b7d8b8ff7026b80bfa0df",
+    "quality/required-tests.json": "484cc8c3124646297b7f08d768599571a9b6f17b6b1273f7abefa09d2e81869c"
+  },
+  "local_source_tests": {
+    "session": "186dfd79e3344985bc24549817c03224",
+    "manifest_sha256": "4649b386fe200e0db11ed1b520c3901d0abd9ac937ec4241f91f9447b7fbe949",
+    "files": 4,
+    "bytes": 91394,
+    "tests_run": 214,
+    "complete": true,
+    "source_lock_matches": true,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "corrections_and_boundaries": [
+    "Initial old-wrapper probe lacked keep-id mapping and failed before valid reproduction; that failed archive is preserved and not used as data-loss evidence. The corrected three-case old-source probe actually reproduced loss.",
+    "The 12 DAGs all succeeded. Their first verifier failed only on integer-versus-double w_neg metadata created from JSON by the reference harness. Strict readback keeps all official score/feature objects unchanged, requires the original exact w_neg value and constructs the longstanding as.numeric(double) wrapper metadata schema. No official estimates, serialized reference files or numerical tolerance were changed and no DAG was rerun.",
+    "The hardlink fault suite actually exited zero. Its intentionally shared toy alias initially blocked strict archival. Under its session lease, an explicit maintenance command verified actual inactive unit/MainPID zero and the recorded workspace identity, then materialized the alias as a separate identical-byte regular file. Both evidence-file contents, source code and exit status stayed unchanged; the separate post-terminal receipt is archived. No other directory received deletion authority.",
+    "Legacy official_container_v2.R is retained unchanged as historical evidence; its deletion-on-error assertion is obsolete, not a passing current test.",
+    "Ordinary inode-checked rollback is proven for injected publication failures, including preserving an unowned replacement; crash atomicity/persistent resume and all-concurrent-worker behavior are not certified."
+  ],
+  "method_thresholds_signature_mapping_or_frozen_study_changed": false,
+  "all_official_parameter_branches_certified": false,
+  "full_scale_donor_species_background_or_study_coverage_qualified": false,
+  "native_statistical_fallback_used": false,
+  "historical_function_counts_or_276_288_696_changed": false,
+  "production_deployed": false,
+  "formal_research_authorized": false,
+  "g0_granted": false
+}

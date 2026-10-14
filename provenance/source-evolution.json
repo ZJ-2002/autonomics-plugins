@@ -5,6 +5,60 @@
   "auto_enable": false,
   "changes": [
     {
+      "path": "plugins/ucell/scripts/ucell.R",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/ucell-plugin.git",
+        "revision": "4c8db83aba4baedccd7c33f127e1bdd77b2fcfdc",
+        "sha256": "43ca20c8a63417c4ef26d8c56a61b65b064fbe71f4974add726b75998b8624d0",
+        "bytes": 4257,
+        "git_blob": "48aa69304f7a294dd4efd80df29198dced638ea2"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "c1b221df8954b8788b8ac65c7a8b3ebf09df4eb1",
+        "path": "plugins/ucell/scripts/ucell.R",
+        "sha256": "0ee592ccb766d784451a8d429f13d4cda3d7d2ea774ad7397b3ba6915ed582fd",
+        "bytes": 7236,
+        "git_blob": "69d7fb422f2b335afdf6e9897f5485f642d8a655"
+      }
+    },
+    {
+      "path": "plugins/ucell/README.txt",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/ucell-plugin.git",
+        "revision": "4c8db83aba4baedccd7c33f127e1bdd77b2fcfdc",
+        "sha256": "b9feeafc85360f67a417798e163e6fdc4ab7ba90b01a6e75945a516bbe3045ab",
+        "bytes": 3205,
+        "git_blob": "82916e1f4c4142ee885d8fd2b1caa3f23900d816"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "c1b221df8954b8788b8ac65c7a8b3ebf09df4eb1",
+        "path": "plugins/ucell/README.txt",
+        "sha256": "4db31e0b2d3f3f7aa0954019482ebeef209f029822c01fe5b62275f9bb87d6e2",
+        "bytes": 4355,
+        "git_blob": "f283ee987c062871a237972d0ee717a45484fe40"
+      }
+    },
+    {
+      "path": "plugins/ucell/tests/test_contract.py",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/ucell-plugin.git",
+        "revision": "4c8db83aba4baedccd7c33f127e1bdd77b2fcfdc",
+        "sha256": "218036afdad572b0edb79d2847fcd2682c653bf7f5e169453828140debacada2",
+        "bytes": 1952,
+        "git_blob": "5082d93c37b2a6119f85ed59fc060d7ca8749bd9"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "c1b221df8954b8788b8ac65c7a8b3ebf09df4eb1",
+        "path": "plugins/ucell/tests/test_contract.py",
+        "sha256": "089e3389cc9158b34c05de010308b0eb49c1b2fe96f50d8981a73559b1684566",
+        "bytes": 1961,
+        "git_blob": "861d9639614dd9086e0b28aa15eede7d74537bdb"
+      }
+    },
+    {
       "path": "research-adapters/cachexia-r-stats/scripts/statistics.R",
       "original": {
         "repository": "https://github.com/ZJ-2002/autonomics.git",

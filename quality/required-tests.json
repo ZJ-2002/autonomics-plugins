@@ -208,6 +208,12 @@
     "tests.test_ucell_current_dag.CurrentUCellDagTests.test_frozen_refusal_requires_one_specific_method_line",
     "tests.test_ucell_current_dag.CurrentUCellDagTests.test_direct_fault_and_filesystem_cases_are_not_counted_as_DAGs",
     "tests.test_ucell_current_dag.CurrentUCellDagTests.test_changed_reference_seal_is_not_accepted_as_new_reference",
-    "tests.test_ucell_current_dag.CurrentUCellDagTests.test_graph_controls_require_the_exact_node_parameter_and_port"
+    "tests.test_ucell_current_dag.CurrentUCellDagTests.test_graph_controls_require_the_exact_node_parameter_and_port",
+    "tests.test_ucell_tsv_repair.UCellTsvRepairTests.test_exact_original_official_scoring_call_not_reimplemented",
+    "tests.test_ucell_tsv_repair.UCellTsvRepairTests.test_declared_twelve_parameter_branches_and_signature_cases_are_fixed",
+    "tests.test_ucell_tsv_repair.UCellTsvRepairTests.test_toy_fixture_keeps_literal_axes_and_two_file_ports",
+    "tests.test_ucell_tsv_repair.UCellTsvRepairTests.test_fault_inventory_includes_both_owned_and_unowned_rollback_cases",
+    "tests.test_ucell_tsv_repair.UCellTsvRepairTests.test_actual_scope_receipt_keeps_loss_reproduction_and_no_scientific_release",
+    "tests.test_ucell_tsv_repair.UCellTsvRepairTests.test_family_contract_suite_is_actually_run_without_skips"
   ]
 }
