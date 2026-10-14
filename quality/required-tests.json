@@ -1,6 +1,10 @@
 {
   "scope": "CATALOG_TESTS_NOT_SCIENTIFIC_CERTIFICATES",
   "test_ids": [
+    "tests.test_r_stats_publication.OfficialStatisticsPublicationTests.test_content_identity_ignores_access_time_but_not_mutation_or_replacement",
+    "tests.test_r_stats_publication.OfficialStatisticsPublicationTests.test_every_declared_port_refuses_before_truncation_in_actual_r",
+    "tests.test_r_stats_publication.OfficialStatisticsPublicationTests.test_duplicate_dangling_symlink_and_traversing_ports_refuse_in_actual_r",
+    "tests.test_r_stats_publication.OfficialStatisticsPublicationTests.test_method_requalification_does_not_claim_current_dag_or_production",
     "tests.test_opentargets_bulk_metadata.OfficialBulkMetadataTests.test_archive_reuse_verifies_every_byte_without_relabeling_the_failed_run",
     "tests.test_opentargets_bulk_metadata.OfficialBulkMetadataTests.test_author_metadata_scope_cannot_claim_complete_source_or_read_data_rows",
     "tests.test_opentargets_bulk_metadata.OfficialBulkMetadataTests.test_footer_length_is_bounded_and_never_means_full_file_fallback",

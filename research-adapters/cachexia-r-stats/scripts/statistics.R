@@ -198,11 +198,16 @@ run_statistics <- function() {
   print(sessionInfo())
 }
 
-for (index in 0:4) {
-  filename <- port("OUTPUT", index)
-  if (!nzchar(filename)) stop("Every declared output port must be bound")
-  dir.create(dirname(filename), recursive = TRUE, showWarnings = FALSE)
+outputs <- vapply(0:4, function(index) port("OUTPUT", index), character(1))
+if (any(!nzchar(outputs)) || anyDuplicated(outputs)) stop("Every declared output port must have a distinct path")
+if (any(!startsWith(outputs, "/")) || any(grepl("(^|/)([.]|[.][.])(/|$)", outputs))) stop("Absolute non-traversing output paths required")
+for (filename in outputs) {
+  ancestors <- filename
+  while (tail(ancestors, 1L) != "/") ancestors <- c(ancestors, dirname(tail(ancestors, 1L)))
+  links <- Sys.readlink(ancestors)
+  if (any(!is.na(links) & nzchar(links)) || file.exists(filename)) stop("Existing or symlink output path forbidden; no overwrite")
 }
+for (filename in outputs) dir.create(dirname(filename), recursive = TRUE, showWarnings = FALSE)
 connection <- file(port("OUTPUT", 3), "wt")
 sink(connection)
 sink(connection, type = "message")

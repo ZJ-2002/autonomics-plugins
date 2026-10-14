@@ -1,0 +1,44 @@
+{
+  "schema": "OFFICIAL_R_STATS_OUTPUT_OWNERSHIP_METHOD_REQUALIFICATION_V1",
+  "family": "research-adapters/cachexia-r-stats",
+  "kinds": ["cachexia_r_t_test", "cachexia_r_cor_test", "cachexia_r_var_test", "cachexia_r_wilcox_test", "cachexia_r_prop_test", "cachexia_r_p_adjust"],
+  "R_stats_version": "4.5.1",
+  "image": "ghcr.io/auto-nomics/autonomics/coloc@sha256:a2afe7aa83ae6f1ecb9573317aa022af4db0870771378c7fe90d295d70057322",
+  "author_source_commit": "1d95a4c60b0be6766490b1a621610b98a4bf5765",
+  "official_function_bodies_and_formals_reverified": 6,
+  "old_script_sha256": "c1d37ca8a73e46ac6c7b509abea5bae10f4d978fe75b91932aaa377825c78d5c",
+  "current_script_sha256": "1ef00d41e6cb1b5a4870b5018dcfe28329bb0e9156d65e5fbfc6362aa4ef7d51",
+  "numerical_method_body_changed": false,
+  "original_overwrite_counterexample_reproduced": true,
+  "positive_cases": 122,
+  "expected_refusal_cases": 42,
+  "positive_full_object_argument_warning_and_row_identity_comparisons": 122,
+  "numerical_tolerance": 1e-12,
+  "positive_no_clobber_repeat_checks": 122,
+  "single_port_sentinel_guards": 5,
+  "historical_reference": {
+    "seal_sha256": "bc5e5f3a7755d808ce200fb6d801005a3d30bf0ac625a1ade9dacbe9953230cb",
+    "files_rehashed": 11737,
+    "bytes_rehashed": 3118011877,
+    "complete_parent_not_copied": true,
+    "historical_DAGs_not_relabelled": true
+  },
+  "managed_method_evidence": {
+    "session": "6c469b6c101c472ba60a8b5df077d780",
+    "worker_exit_status": 0,
+    "state": "CLEANED",
+    "manifest_sha256": "dca66ac064d61286b5aa1519247113aa40ee720aaa64dc6a76e0c63de0b1f536"
+  },
+  "preserved_failures": [
+    {"session": "258cb14e1b7148299cdea4696fd07f0f", "worker_exit_status": 1, "manifest_sha256": "b407bd08d674d06fe32b6c3415d89537797e585bce98ca319b9c618efcb108e6", "reason": "Access-time-sensitive source stat comparison; exact stored size/hash subsequently confirmed"},
+    {"session": "2f6196b78c8144939cd13ffc49aeb3bd", "worker_exit_status": 1, "manifest_sha256": "3d927ce127889fbae3be39d9675302316975b0370abfe8dcfba0ccfb47cd4a09", "reason": "Source evolution not yet bound to actual Git commit; 161 tests executed, one import-identity error, no skipped tests"}
+  ],
+  "current_engine_DAG_verified": false,
+  "production_deployed": false,
+  "concurrent_or_crash_atomic_publication_proven": false,
+  "full_frozen_family_or_donor_eligibility_verified": false,
+  "new_function_slots_or_whole_node_certificates": 0,
+  "frozen_study_or_276_288_696_denominators_changed": false,
+  "formal_authorized": false,
+  "g0_granted": false
+}
