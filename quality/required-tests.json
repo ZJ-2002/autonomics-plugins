@@ -1,6 +1,10 @@
 {
   "scope": "CATALOG_TESTS_NOT_SCIENTIFIC_CERTIFICATES",
   "test_ids": [
+    "tests.test_ldsc_current_dag.CurrentLdscDagContractTests.test_summary_path_padding_does_not_change_any_scientific_field",
+    "tests.test_ldsc_current_dag.CurrentLdscDagContractTests.test_truncated_summary_row_cannot_be_normalized_into_a_result",
+    "tests.test_ldsc_current_dag.CurrentLdscDagContractTests.test_synthetic_panel_names_and_exact_manifest_bytes_are_explicit",
+    "tests.test_ldsc_current_dag.CurrentLdscDagContractTests.test_published_port_must_match_nonempty_owned_live_bytes",
     "tests.test_ldsc_author_entrypoints.AuthorEntrypointParityTests.test_only_paths_and_three_runtime_timing_lines_are_normalized",
     "tests.test_ldsc_author_entrypoints.AuthorEntrypointParityTests.test_merged_failure_contract_requires_all_author_lines_and_actual_nonzero_exit",
     "tests.test_ldsc_author_entrypoints.AuthorEntrypointParityTests.test_empty_equal_logs_cannot_prove_an_inference_result",
