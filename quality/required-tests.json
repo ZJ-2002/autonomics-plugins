@@ -226,6 +226,9 @@
     "tests.test_study_software_surfaces.SoftwareSurfaceTests.test_blank_version_is_not_invented_or_promoted",
     "tests.test_study_software_surfaces.SoftwareSurfaceTests.test_missing_duplicate_and_ragged_rows_refuse",
     "tests.test_opentargets_direct_acquisition.DirectAcquisitionTests.test_full_toy_file_is_hashed_and_existing_destination_is_not_replaced",
-    "tests.test_opentargets_direct_acquisition.DirectAcquisitionTests.test_truncated_overlong_and_nonparquet_bodies_never_publish"
+    "tests.test_opentargets_direct_acquisition.DirectAcquisitionTests.test_truncated_overlong_and_nonparquet_bodies_never_publish",
+    "tests.test_literature_blank_fields.LiteratureBlankProofTests.test_real_success_and_failure_summaries_remain_distinct",
+    "tests.test_literature_blank_fields.LiteratureBlankProofTests.test_missing_duplicate_zero_and_ignored_summaries_are_not_passes",
+    "tests.test_literature_blank_fields.LiteratureBlankProofTests.test_contradictory_result_labels_are_rejected"
   ]
 }

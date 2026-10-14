@@ -56,6 +56,11 @@ DESeq2 与 limma/edgeR 是直接官方包调用；机械计数聚合使用 SciPy
 无合适官方实现、方法合同未批准或出现反例的分支继续挂起，不换名称冒充通过。
 空间 B-S 仍为 `CONDITIONAL_NOT_READY`，GS01 仍为 OPEN；不自行选择置换零模型。
 
+文献检索的 Rust HTTP 适配器也不能因调用官方服务而免验。
+[Crossref 字段复核](literature-crossref-field-audit-20261015.md)发现空白字段可退化为无约束检索，
+修复及 SDK/DAG 回归待实际构建；严格 title 与 bibliography 的语义缺口单独保留，
+不能用包装器守卫测试替代整条节点认证。
+
 Open Targets 完整分页来源仍有重复成员反例。官方批量资源目前只完成
 [资源与抽样 schema 审计](opentargets-bulk-metadata-20261015.md)，
 尚未证明完整成员、字段映射或正式研究用途；不能自动替换冻结数据来源。
