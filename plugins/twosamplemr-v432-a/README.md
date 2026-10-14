@@ -76,9 +76,12 @@ Results use the method's native artifact prefix
 `/artifacts/twosamplemr_v432_a_exploratory`, with a separate container-run
 directory per execution. For delivery under the study's new results area, the
 operator installs an exact writable VFS mount for that prefix pointing to
-`versions/v4.3.2/bm_cachexia_v432_g0/06_RESULTS/A_LEGACY_TUI` in the project.
-That directory must be a new output namespace; existing research result
-directories are retained. This preset does not install the mount or claim that
+`/research/results/v4.3.2/A_LEGACY_TUI` at the project top level, outside the
+frozen `versions/v4.3.2/bm_cachexia_v432_g0` baseline. The original verifier
+checks the complete frozen-root file set, including `06_RESULTS`; adding new
+results there would invalidate later frozen-byte audits. The external results
+directory is a new output namespace; existing research result directories are
+retained. This preset does not install the mount or claim that
 it already exists. Without that operator mount, artifacts remain visible in
 the runtime's normal `state/data/artifacts` storage. The builder adds no
 overwriting copy/export sinks or unsupported output-directory parameters.
