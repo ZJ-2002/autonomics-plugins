@@ -12,10 +12,11 @@ class InferenceEntrypointTests(unittest.TestCase):
     def setUp(self):
         tmp=tempfile.TemporaryDirectory();self.addCleanup(tmp.cleanup);self.root=Path(tmp.name)
         bindir=self.root/'bin';bindir.mkdir()
-        stub=bindir/'ldsc';stub.write_text('''#!/usr/bin/python3
+        stub=bindir/'python';stub.write_text('''#!/usr/bin/python3
 import os,json,sys
 from pathlib import Path
-args=sys.argv[1:];Path(os.environ['CAPTURE']).write_text(json.dumps(args))
+assert sys.argv[1]=='/opt/cachexia-official-ldsc/ldsc.py'
+args=sys.argv[2:];Path(os.environ['CAPTURE']).write_text(json.dumps(args))
 prefix=args[args.index('--out')+1]
 Path(prefix+'.log').write_text('OFFICIAL_EXACTLY_ONCE\\n'+('ERROR computing rg for phenotype 2/2\\n' if os.environ.get('SWALLOWED')=='1' else ''))
 if os.environ.get('FAIL')=='1':print('PROCESS_FAILURE');sys.exit(9)
@@ -42,6 +43,21 @@ if os.environ.get('FAIL')=='1':print('PROCESS_FAILURE');sys.exit(9)
         argv=json.loads((self.root/'argv.json').read_text());self.assertEqual(argv[argv.index('--rg')+1],str(self.first)+','+str(self.second))
         self.assertEqual((self.root/'published.log').read_text(),'OFFICIAL_EXACTLY_ONCE\n')
 
+    def test_real_declared_ports_never_alias_the_official_internal_log(self):
+        import tomllib
+        manifest=tomllib.loads((ROOT/'manifest.toml').read_text())
+        for method in ['h2','rg']:
+            with self.subTest(method=method):
+                node=next(row for row in manifest['nodes'] if row['kind']=='ldsc_'+method)
+                output=self.root/node['ports']['outputs'][0]['path']
+                result=self.run_method(method,{'AUTONOMICS_OUTPUT0':str(output)})
+                self.assertEqual(result.returncode,0,result.stderr)
+                argv=json.loads((self.root/'argv.json').read_text())
+                internal=Path(argv[argv.index('--out')+1]+'.log')
+                self.assertNotEqual(internal,output)
+                self.assertEqual(output.read_text(),'OFFICIAL_EXACTLY_ONCE\n')
+                self.assertEqual(output.read_bytes(),internal.read_bytes())
+
     def test_gzip_private_materialization_for_both_methods(self):
         for method in ['h2','rg']:
             with self.subTest(method=method):
@@ -67,8 +83,17 @@ if os.environ.get('FAIL')=='1':print('PROCESS_FAILURE');sys.exit(9)
                 log=(self.root/'published.log').read_text();self.assertIn('PROCESS_FAILURE',log);self.assertIn('OFFICIAL_EXACTLY_ONCE',log)
 
     def test_missing_official_log_is_not_a_successful_empty_artifact(self):
-        (self.root/'bin/ldsc').write_text('#!/bin/sh\nexit 0\n')
+        (self.root/'bin/python').write_text('#!/bin/sh\nexit 0\n')
         for method in ['h2','rg']:
             with self.subTest(method=method):self.assertNotEqual(self.run_method(method).returncode,0)
+
+    def test_author_stdout_is_preserved_when_the_author_file_log_is_empty(self):
+        (self.root/'bin/python').write_text('#!/usr/bin/python3\nimport sys\nfrom pathlib import Path\nargs=sys.argv[2:]\nPath(args[args.index("--out")+1]+".log").write_text("")\nprint("ACTUAL_AUTHOR_RESULT")\nprint("AUTHOR_WARNING",file=sys.stderr)\n')
+        for method in ['h2','rg']:
+            with self.subTest(method=method):
+                result=self.run_method(method)
+                self.assertEqual(result.returncode,0,result.stderr)
+                self.assertEqual((self.root/'published.log').read_text(),'ACTUAL_AUTHOR_RESULT\n')
+                self.assertEqual(result.stderr,'AUTHOR_WARNING\n')
 
 if __name__=='__main__':unittest.main()

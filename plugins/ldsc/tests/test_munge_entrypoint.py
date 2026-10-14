@@ -1,5 +1,4 @@
 """Exact official argv and real shell transport tests; no statistical acceptance."""
-import ast
 import gzip
 import json
 import os
@@ -19,11 +18,12 @@ class MungeEntrypointTests(unittest.TestCase):
         self.work = Path(self.tmp.name)
         self.bin = self.work/'bin'; self.bin.mkdir()
         self.raw = self.work/'original GWAS.tsv'; self.raw.write_bytes(b'SNP\tA1\tA2\tN\tZ\tP\nrs1\tA\tG\t10000\t1\t0.31731050786291415\n')
-        stub = self.bin/'munge_sumstats'
+        stub = self.bin/'python'
         stub.write_text('''#!/usr/bin/python3
 import gzip,json,os,sys
 from pathlib import Path
-args=sys.argv[1:]
+assert sys.argv[1]=='/opt/cachexia-official-ldsc/munge_sumstats.py'
+args=sys.argv[2:]
 Path(os.environ['CAPTURE']).write_text(json.dumps(args))
 if os.environ.get('FAIL')=='1': sys.exit(9)
 prefix=args[args.index('--out')+1]
@@ -68,9 +68,9 @@ print('SINGLE_OFFICIAL_SUMMARY')
         result=self.run_script({'LDSC_MUNGE_'+n:'value '+n for n in mapping});self.assertEqual(result.returncode,0,result.stderr)
         args=self.argv()
         for n,flag in mapping.items():self.assertEqual(args[args.index(flag)+1],'value '+n)
-        tree=ast.parse((ROOT/'ldsc-python3/munge_sumstats.py').read_text())
-        flags={a.value for node in ast.walk(tree) if isinstance(node,ast.Call) and isinstance(node.func,ast.Attribute)
-            and node.func.attr=='add_argument' for a in node.args if isinstance(a,ast.Constant) and isinstance(a.value,str)}
+        record=json.loads((ROOT.parents[1]/'provenance/ldsc-pristine-munge-options.json').read_text())
+        self.assertEqual(record['source_sha256'],'65783b746c36ea13a4c1bb64fe210acec9c9cf910a5706081aee3a76ad102be6')
+        flags=set(record['flags'])
         self.assertTrue(set(mapping.values())|{'--daner','--daner-n','--a1-inc','--sumstats','--out'}<=flags)
         self.assertNotIn('--a1-is-a2',flags)
 

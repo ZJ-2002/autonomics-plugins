@@ -1,6 +1,14 @@
 {
   "scope": "CATALOG_TESTS_NOT_SCIENTIFIC_CERTIFICATES",
   "test_ids": [
+    "tests.test_ldsc_author_entrypoints.AuthorEntrypointParityTests.test_only_paths_and_three_runtime_timing_lines_are_normalized",
+    "tests.test_ldsc_author_entrypoints.AuthorEntrypointParityTests.test_merged_failure_contract_requires_all_author_lines_and_actual_nonzero_exit",
+    "tests.test_ldsc_author_entrypoints.AuthorEntrypointParityTests.test_empty_equal_logs_cannot_prove_an_inference_result",
+    "tests.test_ldsc_author_entrypoints.AuthorEntrypointParityTests.test_current_migration_evidence_binds_the_actual_dispatched_sources",
+    "plugins.ldsc.tests.test_inference_entrypoint.InferenceEntrypointTests.test_author_stdout_is_preserved_when_the_author_file_log_is_empty",
+    "plugins.ldsc.tests.test_inference_entrypoint.InferenceEntrypointTests.test_real_declared_ports_never_alias_the_official_internal_log",
+    "tests.test_ldsc_registry_identity.AuthorImagePublicationTests.test_only_existing_exact_author_configuration_and_bounded_real_blobs_are_admitted",
+    "tests.test_ldsc_registry_identity.AuthorImagePublicationTests.test_publication_cannot_rename_the_broken_runtime_as_the_author_image",
     "tests.test_current_r_stats.CurrentOfficialStatisticsTests.test_current_scoped_evidence_binds_both_drivers_manifest_and_method_without_production_grant",
     "tests.test_current_r_stats.CurrentOfficialStatisticsTests.test_every_method_uses_exact_declared_columns_and_only_engineering_rust_nodes",
     "tests.test_current_r_stats.CurrentOfficialStatisticsTests.test_frozen_identity_order_does_not_filter_members_or_nullify_literal_na",

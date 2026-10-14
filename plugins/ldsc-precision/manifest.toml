@@ -1,7 +1,7 @@
 schema_version = 1
 plugin_name = "ldsc-precision"
 [image]
-reference = "localhost/cachexia-ldsc-official@sha256:febf11d5ec554b53e2e022f26e55033233cb4692f40eb7d81cdaa7fe11d70999"
+reference = "ghcr.io/zj-2002/ldsc@sha256:e98d2a89b0412384bbec1369250d935868a919f8a164c4ce55b282ac13495767"
 tag = "CBIIT-LDSC-3.0.1-pristine-6c673952"
 upstream = "Pristine CBIIT/ldsc@6c673952cee74bd5c57aef1555a03b1c015399a0; complete runtime identities verified by every method"
 license = "GPL-3.0-only"

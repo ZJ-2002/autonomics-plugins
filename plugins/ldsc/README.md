@@ -1,5 +1,41 @@
 # ldsc plugin
 
+## Official runtime migration (2026-10-15)
+
+Current scope, corrected-output proof and withdrawn historical claims are recorded
+in [the migration audit](../../docs/ldsc-author-runtime-migration-20261015.md).
+
+The current manifest uses the unmodified author runtime at
+`ghcr.io/zj-2002/ldsc@sha256:e98d2a89b0412384bbec1369250d935868a919f8a164c4ce55b282ac13495767`.
+It is the publicly published equivalent of the previously measured pristine
+image: the image configuration, all Python source files and package identities
+are unchanged. CBIIT/ldsc source is fixed at
+`6c673952cee74bd5c57aef1555a03b1c015399a0`, with its
+[GPL v3 license](https://github.com/CBIIT/ldsc/blob/6c673952cee74bd5c57aef1555a03b1c015399a0/LICENSE).
+The Dockerfile deliberately reuses that immutable runtime; it does not build
+the retired refactored `ldsc-python3/` tree. That historical source remains for
+provenance, not active method execution. No statistical formula is rewritten.
+
+The base also contains legacy PATH aliases. They are not an official-method
+reference: all three adapters explicitly invoke `python` with the measured
+`/opt/cachexia-official-ldsc/ldsc.py` or `munge_sumstats.py` path. Mere presence
+of pristine source in an image does not prove that its default CLI dispatches
+to that source. Runtime inspection and numerical references must bind the
+actual dispatched file, not just the image name or version banner.
+
+Old-image inference failures remain genuine failed evidence. A digest change
+does not certify these wrappers: all three entrypoints need the new runtime's
+actual independent CLI parity and separate engine/deployment checks. The h2/rg
+ports remain raw logs, not full-precision inferential tables; A_ARCH family P
+must use the explicit full-precision route, not values parsed from display logs.
+Actual reference-panel eligibility and study authorization remain independent.
+The current adapter also preserves author stdout when the author-created log
+is empty, rejects a successful exit without any result, and retains separate
+author stderr diagnostics. Earlier empty-log comparisons did not establish rg
+output correctness and are explicitly superseded by the migration evidence.
+Historical installation/migration and 2026-10-12 evidence below retain their old
+scope; they are not current-runtime certificates.
+
 Migrated from the legacy `ldsc_h2` wrapper in nodes-io (M5 pilot). One directory = one plugin family = one git-able unit.
 
 ## Layout

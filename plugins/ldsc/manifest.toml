@@ -2,10 +2,10 @@ schema_version = 1
 plugin_name = "ldsc"
 
 [image]
-reference = "ghcr.io/zj-2002/ldsc@sha256:93b2542386a08df10402045b8036ff4da6733bea65324d50e326d035579d247a"
-tag = "3.0.1-allele-filter"
-upstream = "CBIIT LDSC continuation 3.0.1 @ 6c67395"
-license = "BSD-3-Clause"
+reference = "ghcr.io/zj-2002/ldsc@sha256:e98d2a89b0412384bbec1369250d935868a919f8a164c4ce55b282ac13495767"
+tag = "3.0.1-pristine-official-6c673952"
+upstream = "Unmodified CBIIT/ldsc@6c673952cee74bd5c57aef1555a03b1c015399a0; exact author source/runtime identities audited, not the retired refactored tree"
+license = "GPL-3.0-only"
 
 [[panels]]
 binding = "ref_ld"

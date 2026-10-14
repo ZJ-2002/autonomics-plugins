@@ -1,0 +1,11 @@
+{
+  "scope": "AUTHOR_PARSER_SOURCE_OPTIONS_NOT_METHOD_CERTIFICATE",
+  "repository": "https://github.com/CBIIT/ldsc",
+  "revision": "6c673952cee74bd5c57aef1555a03b1c015399a0",
+  "source_path": "/opt/cachexia-official-ldsc/munge_sumstats.py",
+  "source_sha256": "65783b746c36ea13a4c1bb64fe210acec9c9cf910a5706081aee3a76ad102be6",
+  "captured_session": "0c0cba6289484628b9f1a98ce46883f1",
+  "captured_manifest_sha256": "630fc8370feb6673f69dc75760297452b4a45d76ed978157fa04c9b4fa7db956",
+  "flags": ["--N", "--N-cas", "--N-cas-col", "--N-col", "--N-con", "--N-con-col", "--a1", "--a1-inc", "--a2", "--chunksize", "--daner", "--daner-n", "--frq", "--ignore", "--info", "--info-list", "--info-min", "--keep-maf", "--maf-min", "--merge-alleles", "--n-min", "--no-alleles", "--nstudy", "--nstudy-min", "--out", "--p", "--signed-sumstats", "--snp", "--sumstats"],
+  "g0_granted": false
+}

@@ -8,12 +8,14 @@ import hashlib
 import io
 import json
 import math
+import os
+import shutil
 from pathlib import Path
 import subprocess
 import tomllib
 
 ROOT = Path(__file__).resolve().parents[1]
-IMAGE = 'ghcr.io/zj-2002/ldsc@sha256:93b2542386a08df10402045b8036ff4da6733bea65324d50e326d035579d247a'
+IMAGE = 'ghcr.io/zj-2002/ldsc@sha256:e98d2a89b0412384bbec1369250d935868a919f8a164c4ce55b282ac13495767'
 
 
 def digest(path): return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -23,8 +25,17 @@ def run(output, shared_store):
     output=output.resolve();output.mkdir(mode=0o700)
     manifest=tomllib.loads((ROOT/'manifest.toml').read_text())
     if manifest['image']['reference']!=IMAGE:raise ValueError('explicit reviewed image identity changed')
-    command=['podman','--root',str(output/'storage'),'--runroot',str(output/'runroot'),
-        '--storage-opt','additionalimagestore='+str(shared_store.resolve())]
+    node=next(node for node in manifest['nodes'] if node['kind']=='ldsc_munge')
+    declared=[port['path'] for port in node['ports']['outputs']]
+    if len(declared)!=2:raise ValueError('exact two original output ports required')
+    snapshot=output/'source';snapshot.mkdir()
+    for original,name in [(ROOT/'manifest.toml','manifest.toml'),(ROOT/'scripts/munge.sh','munge.sh'),(Path(__file__),'driver.py')]:
+        shutil.copyfile(original,snapshot/name)
+    command=['podman']
+    if shared_store is not None:
+        temporary=Path(os.environ['TMPDIR'])/'ldsc-munge-native'
+        command+=['--root',str(temporary/'storage'),'--runroot',str(temporary/'runroot'),
+                  '--storage-opt','additionalimagestore='+str(shared_store.resolve())]
     inspection=subprocess.run(command+['image','inspect',IMAGE],capture_output=True,text=True,check=True)
     (output/'image-inspect.json').write_text(inspection.stdout)
     ident=json.loads(inspection.stdout)[0]
@@ -49,7 +60,7 @@ def run(output, shared_store):
             with gzip.open(source,'wb') as f:f.write(plain)
         else:source.write_bytes(plain)
         variables={**env,'AUTONOMICS_INPUT0':'/work/'+source.name,'AUTONOMICS_WORKDIR':'/work',
-            'AUTONOMICS_OUTPUT0':'/work/wrapper.sumstats.gz','AUTONOMICS_OUTPUT1':'/work/wrapper.log'}
+            'AUTONOMICS_OUTPUT0':'/work/'+declared[0],'AUTONOMICS_OUTPUT1':'/work/'+declared[1]}
         base=command+['run','--rm','--pull=never','--network=none','--read-only','--cpus=2','--memory=1g',
             '--pids-limit=128','--security-opt=no-new-privileges','--tmpfs','/tmp:rw,nosuid,nodev,size=64m',
             '-v',str(ROOT/'scripts/munge.sh')+':/entrypoint.sh:ro','-v',str(case)+':/work:rw',
@@ -58,22 +69,22 @@ def run(output, shared_store):
         result=subprocess.run(base+[IMAGE,'/entrypoint.sh'],capture_output=True,text=True,timeout=120)
         (case/'container.stdout').write_text(result.stdout);(case/'container.stderr').write_text(result.stderr)
         (case/'wrapper-command.json').write_text(json.dumps(base+[IMAGE,'/entrypoint.sh']))
-        if result.returncode:raise RuntimeError('actual wrapper failed: '+result.stderr+'; '+(case/'wrapper.log').read_text())
+        if result.returncode:raise RuntimeError('actual wrapper failed: '+result.stderr+'; '+(case/declared[1]).read_text())
         # Independent original CLI invocation uses a plain original source and
         # explicitly spelled parser options; it does not reuse wrapper argv.
         (case/'reference-original.tsv').write_bytes(plain)
-        direct=['munge_sumstats','--sumstats','/work/reference-original.tsv','--out','/work/direct',
+        direct=['python','/opt/cachexia-official-ldsc/munge_sumstats.py','--sumstats','/work/reference-original.tsv','--out','/work/direct',
             '--snp','original_variant','--N-col','original_sample_size','--a1','original_effect_allele',
             '--a2','original_other_allele','--p','original_P','--frq','original_MAF','--info','original_INFO',
             '--signed-sumstats','original_signed_Z,0','--info-min','0.9','--maf-min','0.01','--n-min','5000']
         ref_command=command+['run','--rm','--pull=never','--network=none','--read-only','--cpus=2','--memory=1g',
             '--pids-limit=128','--security-opt=no-new-privileges','--tmpfs','/tmp:rw,size=64m','-v',str(case)+':/work:rw',
-            '--entrypoint','munge_sumstats',IMAGE]+direct[1:]
+            '--entrypoint','python',IMAGE]+direct[1:]
         ref=subprocess.run(ref_command,capture_output=True,text=True,timeout=120)
         (case/'reference.stdout').write_text(ref.stdout);(case/'reference.stderr').write_text(ref.stderr)
         (case/'reference-command.json').write_text(json.dumps(ref_command))
         if ref.returncode:raise RuntimeError('actual direct official CLI failed: '+ref.stderr)
-        with gzip.open(case/'wrapper.sumstats.gz','rb') as f:wrapped=f.read()
+        with gzip.open(case/declared[0],'rb') as f:wrapped=f.read()
         with gzip.open(case/'direct.sumstats.gz','rb') as f:original=f.read()
         if wrapped!=original:raise ValueError('entire munged source table differs from direct original CLI')
         rows=list(csv.DictReader(io.StringIO(wrapped.decode()),delimiter='\t'))
@@ -82,7 +93,7 @@ def run(output, shared_store):
         for i,r in enumerate(rows):
             expected=(-1 if i%2 else 1)*(0.5+(i%70)/10)
             if abs(float(r['Z'])-expected)>0.002:raise ValueError('original_signed_Z convention changed')
-        if (case/'wrapper.log').read_text().count('Writing summary statistics for 1000 SNPs')!=1:
+        if (case/declared[1]).read_text().count('Writing summary statistics for 1000 SNPs')!=1:
             raise ValueError('method summary missing or duplicated')
         checks.append({'input_transport':suffix,'original_rows':1000,'all_SNP_IDs_preserved':True,
             'whole_decompressed_table_equals_direct_original_CLI':True,'N_preserved':True,'signed_Z_preserved':True,
@@ -96,5 +107,5 @@ def run(output, shared_store):
     print(json.dumps(report,indent=2))
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--output',type=Path,required=True);p.add_argument('--shared-image-store',type=Path,required=True)
+    p=argparse.ArgumentParser();p.add_argument('--output',type=Path,required=True);p.add_argument('--shared-image-store',type=Path)
     a=p.parse_args();run(a.output,a.shared_image_store)

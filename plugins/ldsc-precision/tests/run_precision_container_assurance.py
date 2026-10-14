@@ -7,6 +7,7 @@ import hashlib
 import io
 import json
 import math
+import os
 from pathlib import Path
 import random
 import shutil
@@ -14,7 +15,7 @@ import subprocess
 import tomllib
 
 ROOT=Path(__file__).resolve().parents[1]
-IMAGE='localhost/cachexia-ldsc-official@sha256:febf11d5ec554b53e2e022f26e55033233cb4692f40eb7d81cdaa7fe11d70999'
+IMAGE='ghcr.io/zj-2002/ldsc@sha256:e98d2a89b0412384bbec1369250d935868a919f8a164c4ce55b282ac13495767'
 
 
 def identity(path):return {'sha256':hashlib.sha256(path.read_bytes()).hexdigest(),'bytes':path.stat().st_size}
@@ -49,8 +50,11 @@ def run(output,shared,runtime_path):
     manifest=tomllib.loads((ROOT/'manifest.toml').read_text())
     if manifest['image']['reference']!=IMAGE:raise ValueError('explicit image identity changed')
     runtime=json.loads(runtime_path.read_text());runtime_snapshot=output/'declared-runtime.json';runtime_snapshot.write_bytes(runtime_path.read_bytes())
-    podman=['podman','--root',str(output/'storage'),'--runroot',str(output/'runroot'),
-        '--storage-opt','additionalimagestore='+str(shared.resolve())]
+    podman=['podman']
+    if shared is not None:
+        temporary=Path(os.environ['TMPDIR'])/'ldsc-precision-native'
+        podman+=['--root',str(temporary/'storage'),'--runroot',str(temporary/'runroot'),
+                 '--storage-opt','additionalimagestore='+str(shared.resolve())]
     inspected=subprocess.run(podman+['image','inspect',IMAGE],capture_output=True,text=True,check=True)
     (output/'image-inspect.json').write_text(inspected.stdout)
     if json.loads(inspected.stdout)[0]['Digest']!=IMAGE.split('@')[1]:raise ValueError('actual image identity changed')
@@ -163,5 +167,5 @@ def run(output,shared,runtime_path):
     print(json.dumps(report,indent=2))
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--output',type=Path,required=True);p.add_argument('--shared-image-store',type=Path,required=True);p.add_argument('--runtime',type=Path,required=True)
+    p=argparse.ArgumentParser();p.add_argument('--output',type=Path,required=True);p.add_argument('--shared-image-store',type=Path);p.add_argument('--runtime',type=Path,required=True)
     a=p.parse_args();run(a.output,a.shared_image_store,a.runtime)

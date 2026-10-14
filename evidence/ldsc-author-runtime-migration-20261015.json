@@ -1,0 +1,220 @@
+{
+  "schema": "LDSC_AUTHOR_RUNTIME_MIGRATION_SCOPED_PROOF_V1",
+  "author_repository": "https://github.com/CBIIT/ldsc",
+  "author_revision": "6c673952cee74bd5c57aef1555a03b1c015399a0",
+  "image": "ghcr.io/zj-2002/ldsc@sha256:e98d2a89b0412384bbec1369250d935868a919f8a164c4ce55b282ac13495767",
+  "image_config": "sha256:a8142f85b617432173555bc0c5fde94517dd627cfb548576b3eacd061fd40e85",
+  "image_configuration_and_measured_author_sources_unchanged": true,
+  "default_PATH_aliases_are_not_author_entrypoints": true,
+  "source_sha256": {
+    "plugins/ldsc/manifest.toml": "8d9d07171fbf57ff6a49b5bde92f5ea970e6e21d2a3cfa0e6a6e11e4277b7e9c",
+    "plugins/ldsc/scripts/h2.sh": "cb97a4a7a7606991db84bdbf588a0851a8bb260beb9cce803ec1f77cd1e098fa",
+    "plugins/ldsc/scripts/rg.sh": "43e1d83db6d0873a08c2c6338f179551dc9ed10926b31b2dff1ff8c9a180de85",
+    "plugins/ldsc/scripts/munge.sh": "13c5bc3489a086fd56dab4c5fc78bd2aa2d11b4098a65b80ebfa99a55385dede",
+    "plugins/ldsc-precision/manifest.toml": "cc7e29c9c25bf003404d81abfb7161a7694467338ba4b139a15d4ea55f8d16f2",
+    "plugins/ldsc-precision/scripts/precision.py": "4ca585ec540b12cb2d16de4ffffeef0fa6466e6e8e8f11e215392512a3c182e2",
+    "tools/prove_ldsc_entrypoints.py": "51094370b2197e143e806ce022eb043818978938d6aa03aa7f70b4c1e0bf8cb1",
+    "plugins/ldsc/tests/run_munge_container_assurance.py": "5d2c13076dde0f9316de8bebcac8bbb5a1156707526f69f0a4ec666499ff4599",
+    "plugins/ldsc-precision/tests/run_precision_container_assurance.py": "ad27d7fb416d2fdcbb99cef6f982e343fc31b444d09629af39e406e12f72f6f1"
+  },
+  "canonical_entrypoint_proof": {
+    "status": "CANONICAL_AUTHOR_CLI_AND_DECLARED_LOG_PORTS_PROVEN_SCOPED_NOT_DAG",
+    "image": "ghcr.io/zj-2002/ldsc@sha256:e98d2a89b0412384bbec1369250d935868a919f8a164c4ce55b282ac13495767",
+    "cases": [
+      {
+        "case": "h2-plain",
+        "kind": "ldsc_h2",
+        "wrapper_exit": 0,
+        "independent_author_exit": 0,
+        "declared_port": "ldsc_h2.log",
+        "whole_author_log_equal_except_paths_and_three_timing_lines": true,
+        "ordered_complete_failure_diagnostics_preserved": false,
+        "complete_log_bytes": 1423,
+        "true_author_failure_not_fallback": false
+      },
+      {
+        "case": "h2-gzip",
+        "kind": "ldsc_h2",
+        "wrapper_exit": 0,
+        "independent_author_exit": 0,
+        "declared_port": "ldsc_h2.log",
+        "whole_author_log_equal_except_paths_and_three_timing_lines": true,
+        "ordered_complete_failure_diagnostics_preserved": false,
+        "complete_log_bytes": 1434,
+        "true_author_failure_not_fallback": false
+      },
+      {
+        "case": "h2-constrained",
+        "kind": "ldsc_h2",
+        "wrapper_exit": 0,
+        "independent_author_exit": 0,
+        "declared_port": "ldsc_h2.log",
+        "whole_author_log_equal_except_paths_and_three_timing_lines": true,
+        "ordered_complete_failure_diagnostics_preserved": false,
+        "complete_log_bytes": 1455,
+        "true_author_failure_not_fallback": false
+      },
+      {
+        "case": "rg-plain",
+        "kind": "ldsc_rg",
+        "wrapper_exit": 0,
+        "independent_author_exit": 0,
+        "declared_port": "ldsc_rg.log",
+        "whole_author_log_equal_except_paths_and_three_timing_lines": true,
+        "ordered_complete_failure_diagnostics_preserved": false,
+        "complete_log_bytes": 2409,
+        "true_author_failure_not_fallback": false
+      },
+      {
+        "case": "rg-gzip",
+        "kind": "ldsc_rg",
+        "wrapper_exit": 0,
+        "independent_author_exit": 0,
+        "declared_port": "ldsc_rg.log",
+        "whole_author_log_equal_except_paths_and_three_timing_lines": true,
+        "ordered_complete_failure_diagnostics_preserved": false,
+        "complete_log_bytes": 2508,
+        "true_author_failure_not_fallback": false
+      },
+      {
+        "case": "rg-nonpositive-h2",
+        "kind": "ldsc_rg",
+        "wrapper_exit": 0,
+        "independent_author_exit": 0,
+        "declared_port": "ldsc_rg.log",
+        "whole_author_log_equal_except_paths_and_three_timing_lines": true,
+        "ordered_complete_failure_diagnostics_preserved": false,
+        "complete_log_bytes": 2555,
+        "true_author_failure_not_fallback": false
+      },
+      {
+        "case": "rg-invalid-allele-author-failure",
+        "kind": "ldsc_rg",
+        "wrapper_exit": 1,
+        "independent_author_exit": 1,
+        "declared_port": "ldsc_rg.log",
+        "whole_author_log_equal_except_paths_and_three_timing_lines": false,
+        "ordered_complete_failure_diagnostics_preserved": true,
+        "complete_log_bytes": 6642,
+        "true_author_failure_not_fallback": true
+      }
+    ],
+    "original_reference_seal": "51ae58efb47e8cdbc18e7957211fea977b90d04fed27066b0a47b899a77f61d3",
+    "input_origin": "SYNTHETIC_TECHNICAL_ONLY",
+    "all22_synthetic_panel_files_used": true,
+    "h2_script_sha256": "cb97a4a7a7606991db84bdbf588a0851a8bb260beb9cce803ec1f77cd1e098fa",
+    "rg_script_sha256": "43e1d83db6d0873a08c2c6338f179551dc9ed10926b31b2dff1ff8c9a180de85",
+    "actual_research_panels_qualified": false,
+    "full_precision_family_P_from_logs": false,
+    "current_engine_DAG_verified": false,
+    "daemon_deployed": false,
+    "formal_authorized": false,
+    "g0_granted": false
+  },
+  "munge": {
+    "session": "f59bb9f484d840c7a1560b91e29bc5b5",
+    "positive_declared_port_cases": 2,
+    "original_rows_per_case": 1000,
+    "all_decompressed_rows_signed_Z_and_N_equal": true
+  },
+  "precision": {
+    "session": "80cfad43df464152bc4c7561829a4b7c",
+    "positive_cases": 5,
+    "refusal_cases": 4,
+    "complete_fields": 2235,
+    "finite_fields": 1693,
+    "method_body_unchanged": true
+  },
+  "archives_reverified": [
+    {
+      "session": "19531a254a2347918a2686933990a9e1",
+      "manifest_sha256": "569eb8ea3d58ffb21187730b7f7a00d1df9db11a9ce4af69f509e500d53763a8",
+      "files": 12,
+      "bytes": 16386
+    },
+    {
+      "session": "00365362ddc84d738adbfb5e283e39fe",
+      "manifest_sha256": "268906460e58dae1486c010e97bdbe1d9bc6540dc40132379a40ed47df549d35",
+      "files": 3,
+      "bytes": 1510
+    },
+    {
+      "session": "80cfad43df464152bc4c7561829a4b7c",
+      "manifest_sha256": "51ae58efb47e8cdbc18e7957211fea977b90d04fed27066b0a47b899a77f61d3",
+      "files": 258,
+      "bytes": 2885540
+    },
+    {
+      "session": "d910620a7757409b8b675bb9c6959e09",
+      "manifest_sha256": "502fda8dc5dc8a611faadc10d8e2091a8404b5d78c200203a55ffd0edb2aa18c",
+      "files": 106,
+      "bytes": 307754
+    },
+    {
+      "session": "6846bd4acd2d4f059e8fba69ae5c4d42",
+      "manifest_sha256": "2ca155583991d59d5993d51d8b61a51809c527f28f0e173a24c79a35628b968c",
+      "files": 107,
+      "bytes": 246227
+    },
+    {
+      "session": "9923c8ad383046e789624058e49b2198",
+      "manifest_sha256": "f895c484dc0d073e8161769687d60a00bc37ea14147c62af186b29c0b09eafb6",
+      "files": 173,
+      "bytes": 1973287
+    },
+    {
+      "session": "d649c0e9342841da9e09c1db972b2df8",
+      "manifest_sha256": "84a0e82683032024587616a714189fae3dc6480586b20ebb3d3f7f14ec9c6baf",
+      "files": 173,
+      "bytes": 1973744
+    },
+    {
+      "session": "e1b438845e764933965c82a231f95eba",
+      "manifest_sha256": "b26803be0ef1ba5a131baf1afbd0f86dc092bf85b4833bffe9ec66a72bbadd94",
+      "files": 203,
+      "bytes": 2237666
+    },
+    {
+      "session": "f59bb9f484d840c7a1560b91e29bc5b5",
+      "manifest_sha256": "ca9fb84b75c6d0da2bac659cf53f698d8119ae19dfcef1e095fa30dd5074f620",
+      "files": 38,
+      "bytes": 273654
+    },
+    {
+      "session": "0c0cba6289484628b9f1a98ce46883f1",
+      "manifest_sha256": "630fc8370feb6673f69dc75760297452b4a45d76ed978157fa04c9b4fa7db956",
+      "files": 6,
+      "bytes": 985
+    },
+    {
+      "session": "d75e5074142c4003b63c55cccb0472ff",
+      "manifest_sha256": "0c6341b5e372542a25d4e4f27bdd7038f9b481284ed06e2f4883f9b9dbc1fe4f",
+      "files": 181,
+      "bytes": 1981231
+    }
+  ],
+  "withdrawn_claims": [
+    {
+      "session": "e1b438845e764933965c82a231f95eba",
+      "claim": "rg positive output parity",
+      "reason": "Three rg successes compared two empty logs; actual author result was on stdout. Superseded by d75e5074142c4003b63c55cccb0472ff, not counted as valid rg method proof."
+    }
+  ],
+  "fixed_adapter_defects": [
+    "Declared log path aliased internal author log",
+    "PATH CLI invoked retired refactored source instead of pristine author files",
+    "Empty author rg log silently replaced nonempty stdout result"
+  ],
+  "layer_status": {
+    "official_method": "PROVEN_SCOPED_SYNTHETIC",
+    "declared_ports": "PROVEN_SCOPED",
+    "isolated_current_DAG": "PENDING",
+    "current_deployment": "NOT_GRANTED",
+    "real_research_panels": "NOT_QUALIFIED"
+  },
+  "statistical_native_fallback": false,
+  "author_invalid_allele_failure_preserved": true,
+  "full_precision_family_P_from_display_logs_allowed": false,
+  "scientific_frozen_design_or_denominators_changed": false,
+  "g0_granted": false
+}

@@ -2,9 +2,12 @@
 
 This opt-in family reuses the already acquired pristine CBIIT LDSC
 `6c673952cee74bd5c57aef1555a03b1c015399a0` implementation in immutable image
-`localhost/cachexia-ldsc-official@sha256:febf11d5ec554b53e2e022f26e55033233cb4692f40eb7d81cdaa7fe11d70999`.
-The image must be restored/imported locally before use; this source inventory
-is not a remotely available image, installed profile or scientific certificate.
+`ghcr.io/zj-2002/ldsc@sha256:e98d2a89b0412384bbec1369250d935868a919f8a164c4ce55b282ac13495767`.
+This is the anonymously accessible public publication of the earlier localhost
+digest, retaining the exact image configuration and all measured author
+runtime/package identities. OCI manifest digests differ; they are not relabeled
+as the same digest. A successful pull is not an installed profile, numerical
+requalification, actual LD-panel qualification or scientific certificate.
 No statistical method is reimplemented or repaired by this wrapper.
 
 - `ldsc_h2_frozen_precision`: config, munged sumstats, complete panel manifest.
@@ -49,9 +52,12 @@ Nine offline contract tests are required by catalog CI.
 ```sh
 python -B plugins/ldsc-precision/tests/run_precision_container_assurance.py \
   --output /absolute/new-private-evidence \
-  --shared-image-store /absolute/existing-image-store \
   --runtime /absolute/independently-recorded-runtime.json
 ```
+
+The test runner reuses the default existing Podman store unless an explicit
+shared store is supplied. Any temporary native store for that optional mode
+stays in managed TMPDIR, never inside permanent method evidence.
 
 All method evidence is synthetic GWAS and synthetic22-chromosome panels. It
 proves scoped transport/full-object parity, not actual reference-panel

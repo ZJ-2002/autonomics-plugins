@@ -1067,18 +1067,18 @@
         "ldsc_munge",
         "ldsc_rg"
       ],
-      "image_reference": "ghcr.io/zj-2002/ldsc@sha256:93b2542386a08df10402045b8036ff4da6733bea65324d50e326d035579d247a",
+      "image_reference": "ghcr.io/zj-2002/ldsc@sha256:e98d2a89b0412384bbec1369250d935868a919f8a164c4ce55b282ac13495767",
       "files": [
         {
           "path": "Dockerfile",
-          "sha256": "cf4cfd4312f4c9916b57f5c1241b44adbd91d8e4aa160d954bf0760dfede7881",
-          "bytes": 1718,
+          "sha256": "3fbb8efb18cc51b577b3b98a9a50738254d4fba6c37d1fc65ed9ed242c96385c",
+          "bytes": 98,
           "executable": false
         },
         {
           "path": "README.md",
-          "sha256": "f0702f0f0f48140f2e9f8f1c26c0c3d3b7faf4335182040c9fac7e062f3e5cf3",
-          "bytes": 4249,
+          "sha256": "32ff03bb0a1cf635ed9141fc9962d91dd5c3803ce356cbd7c4a16fd1c5d5c1cd",
+          "bytes": 6568,
           "executable": false
         },
         {
@@ -7347,26 +7347,26 @@
         },
         {
           "path": "manifest.toml",
-          "sha256": "b4d5aa33236bc80ce7187eabc299636845c856576ef48fc08c7237cb41dfebb1",
-          "bytes": 6269,
+          "sha256": "8d9d07171fbf57ff6a49b5bde92f5ea970e6e21d2a3cfa0e6a6e11e4277b7e9c",
+          "bytes": 6386,
           "executable": false
         },
         {
           "path": "scripts/h2.sh",
-          "sha256": "24f74ef33cbeeb38242c4abfe06dd3d32b8c79f31677489d4e8dcdcbc1370d54",
-          "bytes": 1023,
+          "sha256": "cb97a4a7a7606991db84bdbf588a0851a8bb260beb9cce803ec1f77cd1e098fa",
+          "bytes": 1141,
           "executable": false
         },
         {
           "path": "scripts/munge.sh",
-          "sha256": "db217c54d672ace1a7e27746601ac303bed55c7981b56e4be548c13ac207432a",
-          "bytes": 2729,
+          "sha256": "13c5bc3489a086fd56dab4c5fc78bd2aa2d11b4098a65b80ebfa99a55385dede",
+          "bytes": 2767,
           "executable": false
         },
         {
           "path": "scripts/rg.sh",
-          "sha256": "d0d2b38fa99ec654f2506e305028b58145e5ce40cb216f474a90394389935f49",
-          "bytes": 1326,
+          "sha256": "43e1d83db6d0873a08c2c6338f179551dc9ed10926b31b2dff1ff8c9a180de85",
+          "bytes": 1556,
           "executable": false
         },
         {
@@ -7383,20 +7383,20 @@
         },
         {
           "path": "tests/run_munge_container_assurance.py",
-          "sha256": "7bed738ad1c8a26374eaca5bf8c871a4b8e8f6b2926b7b11519558891e31f57a",
-          "bytes": 6960,
+          "sha256": "5d2c13076dde0f9316de8bebcac8bbb5a1156707526f69f0a4ec666499ff4599",
+          "bytes": 7572,
           "executable": false
         },
         {
           "path": "tests/test_inference_entrypoint.py",
-          "sha256": "148ad54a89302be45d97d67eda5186e78f93c0c7cd4c5d45f2316c34554f55cd",
-          "bytes": 4591,
+          "sha256": "78c48b0f2d7038386a892fb285736500e71348804b060591289354a981677e25",
+          "bytes": 6254,
           "executable": false
         },
         {
           "path": "tests/test_munge_entrypoint.py",
-          "sha256": "860143929e10d26c8927fc152501c1a7e1776893f22fa53c5af9b3a71bfcbfa9",
-          "bytes": 6038,
+          "sha256": "301cbf4d2dcd6e7d20d5ec0ed5d244529406fdd2bccf6492d93de3e1cf01783c",
+          "bytes": 6022,
           "executable": false
         }
       ],
@@ -7411,18 +7411,18 @@
         "ldsc_h2_frozen_precision",
         "ldsc_rg_frozen_precision"
       ],
-      "image_reference": "localhost/cachexia-ldsc-official@sha256:febf11d5ec554b53e2e022f26e55033233cb4692f40eb7d81cdaa7fe11d70999",
+      "image_reference": "ghcr.io/zj-2002/ldsc@sha256:e98d2a89b0412384bbec1369250d935868a919f8a164c4ce55b282ac13495767",
       "files": [
         {
           "path": "README.md",
-          "sha256": "d3ffe103334a4f1f035b6133388232f52f578547180310d5acc8126ee5cbca6c",
-          "bytes": 3588,
+          "sha256": "03d71c862ddc96e4a63a18f9982c64acb00696cc26af5d87a7d46e7c951f2320",
+          "bytes": 3962,
           "executable": false
         },
         {
           "path": "manifest.toml",
-          "sha256": "5c14741ef5299e953ee3be7dc208065789d19c41dc90731434ec7ca2510bf36c",
-          "bytes": 2805,
+          "sha256": "cc7e29c9c25bf003404d81abfb7161a7694467338ba4b139a15d4ea55f8d16f2",
+          "bytes": 2793,
           "executable": false
         },
         {
@@ -7439,8 +7439,8 @@
         },
         {
           "path": "tests/run_precision_container_assurance.py",
-          "sha256": "a487dc411c22e85deffc0ab85a8fdb1146383ec633c9fe9e7aee28d7773e344d",
-          "bytes": 13866,
+          "sha256": "ad27d7fb416d2fdcbb99cef6f982e343fc31b444d09629af39e406e12f72f6f1",
+          "bytes": 13979,
           "executable": false
         },
         {

@@ -44,7 +44,7 @@ done
 case "${LDSC_MUNGE_A1_IS_A2-}" in ''|false|0) ;; *) echo 'a1_is_a2 is not an official LDSC option; use an explicitly reviewed allele convention' >&2; exit 2 ;; esac
 
 OUT_PREFIX="$AUTONOMICS_WORKDIR/munged_sumstats"
-if munge_sumstats "$@" --sumstats "$INPUT" --out "$OUT_PREFIX" > "$AUTONOMICS_OUTPUT1" 2>&1; then
+if python /opt/cachexia-official-ldsc/munge_sumstats.py "$@" --sumstats "$INPUT" --out "$OUT_PREFIX" > "$AUTONOMICS_OUTPUT1" 2>&1; then
   # This image's official logger writes to .log, not stdout. Keep the complete
   # official log exactly once. Forward separate process diagnostics to the
   # runtime's stderr stream before replacing the temporary capture.
