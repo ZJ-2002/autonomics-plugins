@@ -18,9 +18,11 @@ class GovernanceTransportTests(unittest.TestCase):
         self.assertEqual((report['canonical_families'],report['canonical_kinds']),(31,62))
         with_a=(ROOT/'plugins/twosamplemr-v432-a/manifest.toml').is_file()
         with_lm=(ROOT/'plugins/r-stats-lm/manifest.toml').is_file()
+        with_verifier=(ROOT/'plugins/frozen-project-verifier/manifest.toml').is_file()
         self.assertEqual((report['current_canonical_families'],report['current_canonical_kinds']),
-            (33+int(with_a)+int(with_lm),66+int(with_a)+int(with_lm)))
+            (33+int(with_a)+int(with_lm)+int(with_verifier),66+int(with_a)+int(with_lm)+int(with_verifier)))
         self.assertEqual(report['current_official_method_additions'],['r-stats-lm'] if with_lm else [])
+        self.assertEqual(report['current_technical_additions'],['frozen-project-verifier'] if with_verifier else [])
         self.assertEqual(report['current_legacy_additions'],['bulk-limma-normalized','frozen-b-project']+
             (['twosamplemr-v432-a'] if with_a else []))
         self.assertFalse(report['auto_enable']);self.assertFalse(report['loaded_worker_registration_verified'])
