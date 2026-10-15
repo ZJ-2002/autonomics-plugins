@@ -21,7 +21,7 @@ class FrozenAFamilyProbeBuildTests(unittest.TestCase):
 
     def test_exact_probe_hash_and_thirty_seven_guard_inventory(self):
         source = Path(builder.__file__).parent / 'probes/frozen_a_family_dag.rs'
-        self.assertEqual(builder.PROBE_SHA, '5dd86143bc70829d8caeffffc12487119681ce03512b66eccdb423d5299e2b43')
+        self.assertEqual(builder.PROBE_SHA, 'aa26a2e25925acf9ea1cc0137b5374947b8b4719b0a63caf0da7dac3f9959555')
         self.assertEqual(builder.checked_probe_source(source), builder.PROBE_SHA)
         text = source.read_text()
         original, family = text.split('#[cfg(test)]\nmod family_tests {')

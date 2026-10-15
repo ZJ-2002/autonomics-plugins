@@ -667,7 +667,7 @@
         },
         {
           "path": "source-lock.json",
-          "sha256": "f542a97b2cb9f416ffbe31c446132971a7b1228da39f6a57f073f8062f577a6c",
+          "sha256": "2253f596ed5a86ccc0ddd6ebc3fe9a00e14229a58031e510b03fbab9e6641521",
           "bytes": 4075,
           "executable": false
         }
@@ -14410,8 +14410,8 @@
         },
         {
           "path": "scripts/pseudobulk_counts.py",
-          "sha256": "77884036871586b1be564a8c25f9ab72b2939a987db112aecd328cc86e44c83d",
-          "bytes": 15609,
+          "sha256": "d1bb920dbd2c7a938638724432f38a8f56fd8ecd6b8aeb5d9b6e221ed04be109",
+          "bytes": 21097,
           "executable": false
         },
         {
@@ -14693,8 +14693,8 @@
         },
         {
           "path": "scripts/score_genes.py",
-          "sha256": "9cad19728810b8e9c9933fed33f556870419a985a12f1485ce61d4f4da8c58e8",
-          "bytes": 4973,
+          "sha256": "dc2815e79b289327ef4ef3c15bf744c1e1557063692b9989c77b2002bf47f774",
+          "bytes": 12674,
           "executable": false
         },
         {
@@ -14957,8 +14957,8 @@
         },
         {
           "path": "tests/test_score_genes_contract.py",
-          "sha256": "6e50e75b571765c87dfe5723cc2457a03a59c1903a045430cab5124506ecb9f7",
-          "bytes": 2058,
+          "sha256": "43fb66628521a85cbc05131367907488d65fc447224adedd8b6977a2e77ee857",
+          "bytes": 2130,
           "executable": false
         },
         {

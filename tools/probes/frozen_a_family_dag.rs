@@ -2706,7 +2706,7 @@ mod family_tests {
         assert!(validate_family_manifest(&manifest(false), &identities, false).is_ok());
         let mut value = manifest(true);
         value.image.reference = container_runtime::image::ImageReference::parse(
-            &("registry/wrong@sha256:".to_owned() + &"0".repeat(64)),
+            "registry/wrong@sha256:1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
         )
         .unwrap();
         assert!(validate_family_manifest(&value, &identities, true).is_err());

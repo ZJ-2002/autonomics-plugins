@@ -11,7 +11,7 @@ import subprocess
 import tarfile
 
 PARENT = '11f061589473cb8e4fa57d364ad7107108245de1'
-PROBE_SHA = '5dd86143bc70829d8caeffffc12487119681ce03512b66eccdb423d5299e2b43'
+PROBE_SHA = 'aa26a2e25925acf9ea1cc0137b5374947b8b4719b0a63caf0da7dac3f9959555'
 KERNEL_SOURCE_PINS = {
     'crates/dag-core/src/resource.rs': '21c32eb20d1a4b22573b1032048329ee7c5f29217066123b718cbbb2b8d75e06',
     'crates/dag-core/src/resource_tests.rs': '9a80098c52b5242b8d3f34734052d0ee26a5ddac021d4ac3e90578c63697a1d7',
