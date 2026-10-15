@@ -2,9 +2,9 @@ schema_version = 1
 plugin_name = "cachexia-contracts-v432"
 
 [image]
-reference = "ghcr.io/zj-2002/biotools-py@sha256:7ad6aeafa87672699d28b61b6bed12fc81fcdbfc43222a0abf17e2d56fb806f5"
+reference = "ghcr.io/zj-2002/official-r-stats-python@sha256:9b11b87b22256f5b9726d84d8dd861b332ca3aab87f2948554ff7204eb4e6657"
 tag = "v1"
-upstream = "Python standard-library study-contract adapters; not official statistical algorithms"
+upstream = "R 4.6.1 stats::p.adjust with Python study-contract transport and validation"
 license = "MIT"
 
 [[nodes]]

@@ -18,19 +18,27 @@ use their own complete registered member vector; the separate 23,786-gene
 LEGACY model denominators do not redefine those full families. The two path
 families likewise use separate full BY vectors.
 
-CANDIDATE.json records that no child image has been built or accepted. The
-manifest image reference is deliberately retained byte-for-byte from the old
-source: it is a historical Python runtime and cannot satisfy the new R check.
-It is not a runtime claim for this changed adapter; do not load/deploy it.
+CANDIDATE.json records the measured child image and the completed generated-data
+container acceptance. The manifest now pins the published immutable digest,
+which was pulled back from the registry and checked against the measured local
+manifest/config and six official R reference comparisons.
 shared-image-sources/official-r-stats-python/Dockerfile derives from the exact
 measured 78f195... base, which has R/stats 4.6.1 but no Python. It only adds
 python3-minimal and libpython3-stdlib, prohibits package upgrades, and checks unchanged R package
-versions plus R/stats/BLAS/LAPACK library bytes. A future controlled build must
-measure the actual child digest and software before replacing the manifest
-reference once. Neither a candidate tag nor a guessed child digest is used.
+versions plus R/stats/BLAS/LAPACK library bytes. The controlled build measured
+the child runtime before registry publication. A tag is a distribution
+convenience; execution identity uses image.reference's fixed digest.
 python3-minimal alone did not provide decimal; the explicit stdlib package
-corrects that dependency. This revised recipe has
-not yet been built or accepted, and no failed-attempt image digest is assigned.
+corrects that dependency.
+
+Twelve actual DAG cases covered all five node kinds, 276 edges, 288 paths,
+all four correction families, palindrome/signature guards and failed-node
+propagation. Ten complete vectors matched official R. Native container
+inspections checked the manifest's one CPU, 1 GiB memory, 128 PID, isolated
+network and read-only root limits. All owned test containers were stopped.
+The measured engine revision was 4ceefbd821baab8deebb070645a2fb8b1fa8e1ba;
+this acceptance does not qualify a newer daemon or formal worker. Their
+verification and operator profile selection remain separate prerequisites.
 
 The original research-adapters/cachexia-contracts source remains unchanged.
 Select exactly one admitted adapter profile; no research adapter is enabled
@@ -43,5 +51,5 @@ or wrong R fails the required suite rather than skipping native cases.
 The setup action accepts an exact r-version per its official documentation:
 https://raw.githubusercontent.com/r-lib/actions/v2/setup-r/README.md
 This workflow edit is prepared; remote CI execution/download has not been
-verified here. CI has not built or accepted the candidate container. No real study data or
+verified here. Local container acceptance is not a remote CI pass. No real study data or
 scientific result is recomputed by these tests.
