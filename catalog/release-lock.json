@@ -667,7 +667,7 @@
         },
         {
           "path": "source-lock.json",
-          "sha256": "1b88d0c3aab4a75d5b88d07ed3f329eedb73c615c2422e68e5cb11ce5ba03040",
+          "sha256": "0f58efa03f4ef120322b97c8e2bb687bfb688fd0c0600669f189123cae0ead4d",
           "bytes": 4074,
           "executable": false
         }
