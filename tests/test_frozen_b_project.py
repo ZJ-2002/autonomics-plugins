@@ -17,10 +17,16 @@ project = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(project)
 
 
-def fixture(root):
+def fixture(root, *, gene_count=4, contrast_id=None, expression_rows=None):
     """Self-contained engineering inputs; no real sample/assay payload imports."""
     lock = copy.deepcopy(graph.LOCK)
-    lock.update(gene_count=4, source_samples=9, primary_samples=8, case_n=4, control_n=4, residual_df=4)
+    if type(gene_count) is not int or not 1 <= gene_count <= 1000:
+        raise ValueError('Bounded positive toy gene count required')
+    lock.update(gene_count=gene_count, source_samples=9, primary_samples=8, case_n=4, control_n=4, residual_df=4)
+    if contrast_id is not None:
+        if not isinstance(contrast_id,str) or not contrast_id.startswith('SYN_'):
+            raise ValueError('Explicit synthetic contrast required')
+        lock['contrast_id']=contrast_id
     raw = {}
     raw['source_metadata'] = b'SYNTHETIC source metadata\n'
     samples = []
@@ -32,19 +38,25 @@ def fixture(root):
         samples.append(row)
     raw['samples'] = project.table(project.SAMPLES, samples)
     features = []
-    for i in range(4):
+    for i in range(gene_count):
         row = dict.fromkeys(project.FEATURES, 'SYNTHETIC')
         row.update(feature_id='SYN_G' + str(i), source_probe_id='SYN_G' + str(i) + '_at', included='YES',
                    contrast_id=lock['contrast_id'], family_id='B_TRANSCRIPTOME', role='LEGACY_EXPLORATORY',
                    measurement_filter='ALL_SOURCE_ROWS_UNIQUE_ENTREZ_AND_FINITE;NO_EFFECT_OR_PROGRAM_SELECTION')
         features.append(row)
     raw['features'] = project.table(project.FEATURES, features)
+    if expression_rows is None:
+        expression_rows=[{'gene_id':r['feature_id'],**{s['sample_id']:str(5+i+j/20) for j,s in enumerate(samples)}} for i,r in enumerate(features)]
+    if (len(expression_rows)!=gene_count or any(set(row)!={'gene_id',*[s['sample_id'] for s in samples]} or
+            row['gene_id']!=features[i]['feature_id'] or any(not isinstance(row[s['sample_id']],str) for s in samples)
+            for i,row in enumerate(expression_rows))):
+        raise ValueError('Exact ordered toy gene/sample string matrix required')
     matrix = project.table(['ID_REF', *[r['sample_id'] for r in samples], 'SYN_EXCLUDED'],
-        [{'ID_REF': r['source_probe_id'], **{s['sample_id']: str(5 + i + j / 20) for j, s in enumerate(samples)},
-          'SYN_EXCLUDED': '6'} for i, r in enumerate(features)])
+        [{'ID_REF':r['source_probe_id'],**{s['sample_id']:expression_rows[i][s['sample_id']] for s in samples},
+          'SYN_EXCLUDED':'6'} for i,r in enumerate(features)])
     raw['matrix'] = gzip.compress(b'!series_matrix_table_begin\n' + matrix + b'!series_matrix_table_end\n', mtime=0)
     raw['scope'] = project.canonical(dict(N_primary=8, case_n=4, control_n=4))
-    raw['design_certificate'] = project.canonical(dict(matrix_genes=4, source_samples=9, primary_samples=8, case_n=4, control_n=4,
+    raw['design_certificate'] = project.canonical(dict(matrix_genes=gene_count, source_samples=9, primary_samples=8, case_n=4, control_n=4,
         designs={m: dict(formula=v['formula'], columns=v['columns'], rank=len(v['columns']), residual_df=8-len(v['columns']), identifiable=True) for m,v in project.MODELS.items()}))
     raw['scope_decision'] = project.canonical(dict(investigator_scientific_signature=None))
     raw['scientific_code'] = b'# SYNTHETIC frozen scientific code identity\n'
@@ -55,7 +67,7 @@ def fixture(root):
     raw['g0_certificate'] = project.canonical(dict(status='G0_V432_MINIMUM_COMPLETE',
         B=dict(allowed=True, role='LEGACY_EXPLORATORY_FULL_FEATURE_DISEASE_ASSOCIATION', independent_validation_allowed=False,
                config_file=lock['files']['config']['relative_path']),
-        investigator_scientific_signature=None, all_project_scientific_gates_passed=False, full_denominators=dict(B_TRANSCRIPTOME=4),
+        investigator_scientific_signature=None, all_project_scientific_gates_passed=False, full_denominators=dict(B_TRANSCRIPTOME=gene_count),
         family_lock_sha256=project.identity(raw['family_lock'])['sha256'], restore_evidence_sha256=project.identity(raw['restore_acceptance'])['sha256'],
         scientific_rules_sha256=project.identity(raw['scientific_rules'])['sha256']))
     raw['software_lock'] = project.table(['component', 'version_or_commit', 'status'],
@@ -130,14 +142,27 @@ class FrozenProjectTests(unittest.TestCase):
         genes = project.rows(out['genes.tsv'])
         results = []
         for g, p, qbh in zip(genes, ['0.01', 'NA', '0.04', '0.03'], [.04, 1., 4 / 75, 4 / 75], strict=True):
-            numeric = {k: 'NA' if p == 'NA' else str(v) for k,v in dict(log2_expression_difference=1, standard_error=.1, moderated_df=audit['residual_df'], ci_lower=.8, ci_upper=1.2).items()}
-            results.append({**g, **numeric, 'status': 'NOT_ESTIMABLE' if p == 'NA' else 'ESTIMATED', 'raw_p': p, 'family_p': p,
-                            'q_BH': repr(qbh), 'q_BY': repr(min(1., qbh * 25 / 12))})
+            numeric = {k: 'NA' if p == 'NA' else str(v) for k,v in dict(log2_expression_difference=1, standard_error=.1,
+                ci_lower=.8, ci_upper=1.2, moderated_t=10, moderated_df=audit['residual_df']).items()}
+            status = 'NOT_ESTIMABLE' if p == 'NA' else 'ESTIMATED'
+            reason = 'CONSTANT_EXPRESSION' if p == 'NA' else ''
+            results.append({**g, 'status':status, 'reason':reason, 'numerator':'case', 'denominator':'control',
+                'family_p':p, 'raw_p':p, 'family_p_status':status, 'family_p_reason':reason, **numeric,
+                'average_expression':'6', 'n_case':str(self.lock['case_n']), 'n_control':str(self.lock['control_n']),
+                'q_BH':repr(qbh), 'q_BY':repr(min(1., qbh * 25 / 12))})
         result_raw = project.table(list(results[0]), results)
-        limma = dict(stage='LIMMA', method_executed=True, formal_authorized=False,
+        design = dict(status='IDENTIFIABLE_DECLARED_UNITS',n_case=self.lock['case_n'],n_control=self.lock['control_n'],
+            sample_ids=audit['primary_samples'],independent_unit_ids=audit['independent_unit_ids'],
+            model_columns=audit['model_columns'],rank=audit['rank'],residual_df=audit['residual_df'],
+            candidate_family_p_allowed=True,biological_independence_verified=False,identifiable=True,reason='',
+            condition_coding='denominator reference; numerator minus denominator')
+        limma = dict(scope='BULK_NORMALIZED_MODEL_COMPONENT_NOT_G0_OR_SCIENTIFIC_ACCEPTANCE',protocol_version='4.3.2',
+            stage='LIMMA',method_executed=True,formal_authorized=False,scientific_approval_verified=False,
+            biological_independence_verified=False,source_qualified=False,family_frozen=False,method_warnings=[],
+            design_receipt_sha256=project.identity(project.canonical(dict(scope='SYNTHETIC_DESIGN_FIXTURE',design=design)))['sha256'],
             family_adjustment=dict(backend='stats::p.adjust', R='4.6.1', stats='4.6.1', methods=['BH', 'BY'], n_total=4, missing_p_denominator_value=1),
             input_sha256=audit['input_sha256'], config_sha256=audit['config_sha256'], software_lock=self.lock['software_lock'],
-            model_formula=audit['model_formula'], design=dict(model_columns=audit['model_columns'], rank=audit['rank'], residual_df=audit['residual_df'], identifiable=True),
+            model_formula=audit['model_formula'],design=design,
             plugin_transport_output_sha256=dict(results=project.identity(result_raw)['sha256'], rds='a' * 64))
         return dict(results=result_raw, genes=out['genes.tsv'], intake=out[receipt], limma_audit=project.canonical(limma))
 

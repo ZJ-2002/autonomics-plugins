@@ -11,6 +11,7 @@ import json
 import math
 import os
 from pathlib import Path
+import stat
 
 INPUTS = ['config', 'manifest', 'samples', 'features', 'scope', 'design_certificate',
           'software_lock', 'r_dependencies', 'r_session', 'scientific_code',
@@ -34,6 +35,12 @@ SAMPLES = ('resource_id patient_id independent_unit_id independent_unit_basis sa
 FEATURES = ('feature_id source_probe_id identifier_type assay tissue cell_type contrast_id family_id included '
             'variable_in_selected_assay measurement_filter role').split()
 GENES = 'matrix_row gene_id analysis_id family_id contrast_id estimand_id'.split()
+RESULTS = GENES + ('status reason numerator denominator family_p raw_p family_p_status family_p_reason '
+    'log2_expression_difference standard_error ci_lower ci_upper moderated_t moderated_df '
+    'average_expression n_case n_control q_BH q_BY').split()
+MAX_INPUT_FILE_BYTES = 64 * 1024 ** 2
+MAX_TOTAL_INPUT_BYTES = 64 * 1024 ** 2
+MAX_MATRIX_BYTES = 64 * 1024 ** 2
 
 
 def require(ok, message):
@@ -64,8 +71,33 @@ def identity(raw):
 def regular(path):
     path = Path(path).absolute()
     require(path.is_file() and not any(p.is_symlink() for p in [path, *path.parents]), 'regular file without symlink ancestors required')
-    require(0 < path.stat().st_size <= 64 * 1024 ** 2, 'input byte budget exceeded')
+    require(0 < path.stat().st_size <= MAX_INPUT_FILE_BYTES, 'input byte budget exceeded')
     return path
+
+
+def source_read(path, expected=None, *, collect=False):
+    path = regular(path)
+    checksum = hashlib.sha256()
+    size = 0
+    chunks = []
+    with path.open('rb') as source:
+        before = os.fstat(source.fileno())
+        require(stat.S_ISREG(before.st_mode), 'regular source required')
+        while chunk := source.read(64 * 1024):
+            size += len(chunk)
+            require(size <= MAX_INPUT_FILE_BYTES and (expected is None or size <= expected['bytes']),
+                    'input changed during intake: byte budget exceeded')
+            checksum.update(chunk)
+            if collect:
+                chunks.append(chunk)
+        after = os.fstat(source.fileno())
+    named = path.lstat()
+    signature = lambda record: (record.st_dev, record.st_ino, record.st_size, record.st_mtime_ns, record.st_ctime_ns)
+    require(signature(before) == signature(after) == signature(named) and size == before.st_size,
+            'input changed during intake')
+    reference = dict(sha256=checksum.hexdigest(), bytes=size)
+    require(expected is None or reference == expected, 'input changed during intake')
+    return reference, b''.join(chunks) if collect else None
 
 
 def rows(raw, columns=None):
@@ -107,10 +139,16 @@ def method_config(lock, hashes, model):
 
 def intake(paths, lock):
     require(set(paths) == set(INPUTS), 'all actual project/source files required')
-    paths = {name: regular(p) for name, p in paths.items()}
-    raw = {name: path.read_bytes() for name, path in paths.items()}
-    refs = {name: identity(data) for name, data in raw.items()}
-    require(all(refs[name]['sha256'] == lock['files'][name]['sha256'] for name in INPUTS), 'frozen source bytes differ')
+    paths = {name: regular(paths[name]) for name in INPUTS}
+    require(sum(path.stat().st_size for path in paths.values()) <= MAX_TOTAL_INPUT_BYTES,
+            'aggregate input byte budget exceeded')
+    refs = {}
+    for name, path in paths.items():
+        refs[name], _ = source_read(path)
+        require(refs[name]['sha256'] == lock['files'][name]['sha256'], 'frozen source bytes differ')
+    require(sum(reference['bytes'] for reference in refs.values()) <= MAX_TOTAL_INPUT_BYTES,
+            'aggregate input byte budget exceeded')
+    raw = {name: source_read(path, refs[name], collect=True)[1] for name, path in paths.items()}
     cfg = strict_json(raw['config'])
     require(cfg['status'] == 'LOCKED' and cfg['version'] == '4.3.2' and cfg['module'] == 'B', 'current frozen B configuration required')
     require(cfg['family_ids'] == ['B_TRANSCRIPTOME'] and cfg['resource_ids'] == [], 'current minimum scope differs; old ZIP registry cannot substitute')
@@ -185,8 +223,8 @@ def intake(paths, lock):
                 for r in features), 'frozen feature scope/legacy roles differ')
     # Source RMA values are copied verbatim as decimal fields, never renormalized.
     with gzip.GzipFile(fileobj=io.BytesIO(raw['matrix'])) as matrix_stream:
-        uncompressed = matrix_stream.read(64 * 1024 ** 2 + 1)
-    require(len(uncompressed) <= 64 * 1024 ** 2, 'uncompressed matrix byte budget exceeded')
+        uncompressed = matrix_stream.read(MAX_MATRIX_BYTES + 1)
+    require(len(uncompressed) <= MAX_MATRIX_BYTES, 'uncompressed matrix byte budget exceeded')
     text = uncompressed.decode()
     lines = text.splitlines()
     begin = [i for i, line in enumerate(lines) if line == '!series_matrix_table_begin']
@@ -214,7 +252,8 @@ def intake(paths, lock):
         project_lock=identity(canonical(lock)), frozen_scientific_code_executed=False,
         method_transport='EXISTING_NORMALIZED_LIMMA_COMPONENT_WITH_PARITY_REVIEW_REQUIRED',
         input_sha256=hashes,
-        source_samples=header[1:], primary_samples=ids, gene_count=len(genes),
+        source_samples=header[1:], primary_samples=ids,
+        independent_unit_ids=[sample['independent_unit_id'] for sample in samples], gene_count=len(genes),
         result_exposure='SEEN',
         original_full_project_byte_verifier_executed=False,
         original_full_project_byte_audit_verified=False,
@@ -226,30 +265,96 @@ def intake(paths, lock):
         payloads[config_name] = canonical(method_config(lock, hashes, model))
         payloads[receipt_name] = canonical({**receipt, **model_record(lock, model),
             'config_sha256': identity(payloads[config_name])['sha256']})
-    require(all(identity(p.read_bytes()) == refs[name] for name, p in paths.items()), 'input changed during intake')
+    for name, path in paths.items():
+        source_read(path, refs[name])
     return payloads
 
 
 def family(raw, lock):
     require(set(raw) == {'results', 'genes', 'intake', 'limma_audit'}, 'four actual family inputs required')
+    require(all(isinstance(value, bytes) for value in raw.values()), 'actual byte payloads required')
     genes = rows(raw['genes'], GENES); results = rows(raw['results'])
     intake_receipt = strict_json(raw['intake']); audit = strict_json(raw['limma_audit'])
-    model = intake_receipt['model_id']
+    require(isinstance(intake_receipt, dict) and isinstance(audit, dict), 'object receipts required')
+    model = intake_receipt.get('model_id')
+    require(isinstance(model, str) and model in MODELS, 'only prespecified model receipts are permitted')
     expected_model = model_record(lock, model)
+    receipt_keys = {'scope', 'source_files', 'project_lock', 'frozen_scientific_code_executed', 'method_transport',
+        'input_sha256', 'source_samples', 'primary_samples', 'independent_unit_ids', 'gene_count', 'result_exposure',
+        'original_full_project_byte_verifier_executed', 'original_full_project_byte_audit_verified',
+        'metadata_certificate_is_not_full_scientific_permission', 'scientific_authorization', 'formal_authorized', 'G0',
+        'config_sha256', *expected_model}
+    require(set(intake_receipt) == receipt_keys, 'complete exact source-intake receipt fields required')
+    require(intake_receipt['scope'] == 'FROZEN_V432_B_LEGACY_SOURCE_INTAKE_NOT_QUALIFICATION' and
+            intake_receipt['method_transport'] == 'EXISTING_NORMALIZED_LIMMA_COMPONENT_WITH_PARITY_REVIEW_REQUIRED',
+            'original unqualified legacy source-intake scope required')
+    require(all(intake_receipt[name] is False for name in ['frozen_scientific_code_executed',
+        'original_full_project_byte_verifier_executed', 'original_full_project_byte_audit_verified',
+        'scientific_authorization', 'formal_authorized', 'G0']) and
+        intake_receipt['metadata_certificate_is_not_full_scientific_permission'] is True,
+        'source metadata cannot claim byte-verifier execution or scientific authority')
+    def sha_string(value):
+        return isinstance(value, str) and len(value) == 64 and all(c in '0123456789abcdef' for c in value)
+    def identifier(value):
+        return isinstance(value, str) and bool(value) and value == value.strip() and not any(c in value for c in '\t\r\n')
+    source_files = intake_receipt['source_files']
+    require(isinstance(source_files, dict) and set(source_files) == set(INPUTS), 'all nineteen frozen source references required')
+    for name, reference in source_files.items():
+        require(isinstance(reference, dict) and set(reference) == {'sha256', 'bytes'} and
+                sha_string(reference['sha256']) and reference['sha256'] == lock['files'][name]['sha256'] and
+                type(reference['bytes']) is int and 0 < reference['bytes'] <= 64 * 1024 ** 2,
+                'frozen source identity or bounded byte declaration differs')
+    hashes = intake_receipt['input_sha256']
+    require(isinstance(hashes, dict) and set(hashes) == {'expression', 'genes', 'samples', 'decisions'} and
+            all(sha_string(value) for value in hashes.values()), 'all four derived input identities required')
+    for name, count in [('source_samples', lock['source_samples']), ('primary_samples', lock['primary_samples']),
+                        ('independent_unit_ids', lock['primary_samples'])]:
+        axis = intake_receipt[name]
+        require(isinstance(axis, list) and len(axis) == count and all(identifier(value) for value in axis) and
+                len(set(axis)) == count, 'complete unique source/sample/unit axes required')
+    require(set(intake_receipt['primary_samples']) <= set(intake_receipt['source_samples']), 'primary assays must be present in source')
     require(all(intake_receipt.get(k) == v for k, v in expected_model.items()) and intake_receipt['result_exposure'] == 'SEEN',
             'prespecified model/role/history required; old conditional roles forbidden')
+    require(all(type(intake_receipt[name]) is int for name in ['rank', 'residual_df', 'gene_count']), 'integer model and universe dimensions required')
     expected_config = identity(canonical(method_config(lock, intake_receipt['input_sha256'], model)))['sha256']
     require(intake_receipt['config_sha256'] == expected_config, 'model must bind its exact prespecified configuration')
     require(intake_receipt['project_lock'] == identity(canonical(lock)) and intake_receipt['gene_count'] == lock['gene_count'], 'actual frozen project identity differs')
+    audit_keys = {'scope', 'stage', 'protocol_version', 'config_sha256', 'input_sha256', 'software_lock', 'design',
+        'model_formula', 'method_executed', 'formal_authorized', 'scientific_approval_verified',
+        'biological_independence_verified', 'source_qualified', 'family_frozen', 'design_receipt_sha256',
+        'method_warnings', 'family_adjustment', 'plugin_transport_output_sha256'}
+    require(set(audit) == audit_keys and audit['scope'] == 'BULK_NORMALIZED_MODEL_COMPONENT_NOT_G0_OR_SCIENTIFIC_ACCEPTANCE' and
+            audit['protocol_version'] == '4.3.2' and audit['stage'] == 'LIMMA' and audit['method_executed'] is True and
+            isinstance(audit['model_formula'], str) and
+            all(audit[name] is False for name in ['formal_authorized', 'scientific_approval_verified',
+                'biological_independence_verified', 'source_qualified', 'family_frozen']) and
+            audit['method_warnings'] == [] and sha_string(audit['design_receipt_sha256']),
+            'actual complete official limma method receipt without scientific authority required')
     require(identity(raw['genes'])['sha256'] == intake_receipt['input_sha256']['genes'] and audit['input_sha256'] == intake_receipt['input_sha256'] and
             audit['config_sha256'] == intake_receipt['config_sha256'] and audit['software_lock'] == lock['software_lock'], 'same actual intake/config/software audit required')
-    require(audit['stage'] == 'LIMMA' and audit['method_executed'] is True and audit['formal_authorized'] is False, 'actual official limma method receipt required')
     design = audit['design']
-    require(design['model_columns'] == expected_model['model_columns'] and design['rank'] == expected_model['rank'] and
+    design_keys = {'status', 'n_case', 'n_control', 'sample_ids', 'independent_unit_ids', 'model_columns', 'rank',
+        'residual_df', 'candidate_family_p_allowed', 'biological_independence_verified', 'identifiable', 'reason', 'condition_coding'}
+    require(isinstance(design, dict) and set(design) == design_keys and design['status'] == 'IDENTIFIABLE_DECLARED_UNITS' and
+            design['n_case'] == lock['case_n'] and design['n_control'] == lock['control_n'] and
+            design['sample_ids'] == intake_receipt['primary_samples'] and
+            design['independent_unit_ids'] == intake_receipt['independent_unit_ids'] and
+            design['candidate_family_p_allowed'] is True and design['biological_independence_verified'] is False and
+            design['reason'] == '' and design['condition_coding'] == 'denominator reference; numerator minus denominator' and
+            all(type(design[name]) is int for name in ['rank', 'residual_df', 'n_case', 'n_control']) and
+            design['model_columns'] == expected_model['model_columns'] and design['rank'] == expected_model['rank'] and
             design['residual_df'] == expected_model['residual_df'] and design['identifiable'] is True and
             ''.join(audit['model_formula'].split()) == expected_model['model_formula'], 'actual prespecified model design differs')
-    require(audit['plugin_transport_output_sha256']['results'] == identity(raw['results'])['sha256'], 'actual limma output hash differs')
+    outputs = audit['plugin_transport_output_sha256']
+    require(isinstance(outputs, dict) and set(outputs) == {'results', 'rds'} and all(sha_string(value) for value in outputs.values()) and
+            outputs['results'] == identity(raw['results'])['sha256'], 'actual limma output hash differs')
     require(len(results) == len(genes) == lock['gene_count'] and len({r['analysis_id'] for r in genes}) == len(genes), 'complete family denominator required')
+    require(results and list(results[0]) == RESULTS, 'official adjusted columns and exact producer schema required')
+    require(len({row['gene_id'] for row in genes}) == len(genes) and all(
+        row['matrix_row'] == str(index + 1) and identifier(row['gene_id']) and
+        row['analysis_id'] == lock['contrast_id'] + ':' + row['gene_id'] and row['family_id'] == 'B_TRANSCRIPTOME' and
+        row['contrast_id'] == lock['contrast_id'] and row['estimand_id'] == 'E_B_DIS' for index, row in enumerate(genes)),
+        'complete frozen gene registry identity differs')
     require(all(all(g[key] == r[key] for key in GENES) for g, r in zip(genes, results, strict=True)), 'actual full gene registry/results order differs')
     adjustment = audit.get('family_adjustment')
     expected_adjustment = dict(backend='stats::p.adjust', R=lock['software_lock']['R'],
@@ -259,11 +364,28 @@ def family(raw, lock):
             type(adjustment['missing_p_denominator_value']) is int,
             'actual complete official R adjustment receipt required; no native fallback')
     for row in results:
+        require(row['numerator'] == 'case' and row['denominator'] == 'control' and
+                row['n_case'] == str(lock['case_n']) and row['n_control'] == str(lock['control_n']) and
+                math.isfinite(float(row['average_expression'])), 'result contrast, group counts or average expression differs')
+        metrics = ['log2_expression_difference', 'standard_error', 'ci_lower', 'ci_upper', 'moderated_t', 'moderated_df']
         if row['status'] == 'ESTIMATED':
             p = float(row['raw_p']); require(math.isfinite(p) and 0 <= p <= 1, 'invalid estimated p')
             require(row['family_p'] == row['raw_p'], 'estimated gene p unavailable to complete family')
+            values = {name: float(row[name]) for name in metrics}
+            require(row['reason'] == row['family_p_reason'] == '' and row['family_p_status'] == 'ESTIMATED' and
+                    all(math.isfinite(value) for value in values.values()) and values['standard_error'] > 0 and
+                    values['moderated_df'] > 0 and values['ci_lower'] <= values['log2_expression_difference'] <= values['ci_upper'],
+                    'invalid estimated effect, precision, interval or status fields')
         else:
             require(row['status'] == 'NOT_ESTIMABLE' and row['raw_p'] == row['family_p'] == 'NA', 'non-estimable rows must retain missing raw p')
+            require(row['reason'] in ['CONSTANT_EXPRESSION', 'OFFICIAL_LIMMA_NONFINITE_OR_ZERO_PRECISION'] and
+                    row['family_p_status'] == 'NOT_ESTIMABLE' and row['family_p_reason'] == row['reason'],
+                    'non-estimable diagnostics must retain their actual producer reason')
+            if row['reason'] == 'CONSTANT_EXPRESSION':
+                require(all(row[name] == 'NA' for name in metrics), 'constant-expression coefficient diagnostics must be missing')
+            else:
+                require(all(row[name] in ['NA', 'Inf', '-Inf'] or math.isfinite(float(row[name])) for name in metrics),
+                        'official non-estimable diagnostics must remain numeric or explicit missing/nonfinite tokens')
             p = 1.
         require('q_BH' in row and 'q_BY' in row, 'official adjusted columns required')
         qbh, qby = float(row['q_BH']), float(row['q_BY'])

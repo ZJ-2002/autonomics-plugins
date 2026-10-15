@@ -241,6 +241,16 @@
     "tests.test_normalized_b_current_dag.NormalizedCurrentDagTests.test_fixed_oracle_rejects_membership_drift",
     "tests.test_normalized_b_current_dag.NormalizedCurrentDagTests.test_mixed_full_table_rejects_missing_or_identity_drift",
     "tests.test_normalized_b_current_dag.NormalizedCurrentDagTests.test_three_models_seven_nodes_eleven_edges",
-    "tests.test_normalized_b_current_dag.NormalizedCurrentDagTests.test_upstream_failure_requires_skip_and_no_outputs"
+    "tests.test_normalized_b_current_dag.NormalizedCurrentDagTests.test_upstream_failure_requires_skip_and_no_outputs",
+    "tests.test_frozen_b_family_contract.FamilyContractTests.test_complete_rows_and_official_q_are_consumed_without_recomputation",
+    "tests.test_frozen_b_family_contract.FamilyContractTests.test_estimated_result_requires_exact_producer_schema_and_valid_numbers",
+    "tests.test_frozen_b_family_contract.FamilyContractTests.test_nonestimable_keeps_reason_specific_official_diagnostics",
+    "tests.test_frozen_b_family_contract.FamilyContractTests.test_official_audit_requires_full_same_model_source_contract",
+    "tests.test_frozen_b_family_contract.FamilyContractTests.test_origin_requires_complete_frozen_sources_and_false_authority",
+    "tests.test_frozen_b_intake_budget.FrozenIntakeBudgetTests.test_complete_toy_retains_actual_independent_unit_axis",
+    "tests.test_frozen_b_intake_budget.FrozenIntakeBudgetTests.test_input_mutation_during_transport_is_rejected",
+    "tests.test_frozen_b_intake_budget.FrozenIntakeBudgetTests.test_source_order_cannot_delay_first_frozen_identity_failure",
+    "tests.test_frozen_b_intake_budget.FrozenIntakeBudgetTests.test_total_budget_refuses_before_reading_any_source",
+    "tests.test_frozen_b_intake_budget.FrozenIntakeBudgetTests.test_wrong_first_identity_rejected_before_payload_collection"
   ]
 }

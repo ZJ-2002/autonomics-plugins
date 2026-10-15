@@ -128,3 +128,15 @@ verbatim frozen f7 numerical block, including one constant NA row, full BH/BY
 and model/role mutation refusals. It does not execute the whole frozen program,
 qualify the real source, independently validate the empirical-Bayes prior, or
 authorize formal/full-plan scientific claims.
+
+The subsequent [source/family contract closure](../../docs/frozen-b-source-family-closure-20261015.md)
+adds fail-fast streaming source checks and a64MiB aggregate source budget before
+payload collection, with bounded re-reading and final source revalidation. Byte
+budgets are not a measured process-memory guarantee. Receipts retain the actual
+independent-unit axis. Family transport now rejects incomplete source or method
+receipts, altered authority flags, mismatched sample/unit axes, malformed effect
+or precision fields, and extra result certification columns. Status-specific
+official non-estimable diagnostics remain unchanged. The25-gene method proof
+uses nineteen actual self-contained synthetic sources and the real intake, not
+a handwritten receipt borrowing real-study hashes. Production cutover remains
+pending the operator's safe restart window and separate deployment acceptance.

@@ -1,0 +1,142 @@
+{
+  "schema": "B_SOURCE_FAMILY_CLOSURE_EVIDENCE_V1",
+  "baseline_revision": "646ab3c22f4dfb2002138d1f2718ff47122a8538",
+  "status": "BOUNDED_SOURCE_FAMILY_ENGINEERING_AND_OFFICIAL_HOST_R_TOY_NOT_PRODUCTION_ADMISSION",
+  "original_baseline_family": {
+    "session": "dfcc2637f1a348fc97c501cb5d67863f",
+    "manifest_sha256": "bc5184a44c700beadad2d5ab982fb384947f2340128aca7ee2c3293c53fc5935",
+    "scope": "TEN_INVALID_CASES_ACTUALLY_ACCEPTED",
+    "state": "CLEANED",
+    "worker_exit_status": 0,
+    "root_rehashed_all_members": true
+  },
+  "immutable_baseline_family_replay": {
+    "session": "5c3efda055ce49dc8c01afcc432c8910",
+    "manifest_sha256": "787e06a93568aaaf6a6fa9a054ded71c3661b9e30a538223b72cc200d047e874",
+    "scope": "SAME_TEN_CASES_WITH_BOTH_PUBLISHED_PROJECT_AND_FIXTURE_GIT_OBJECTS",
+    "state": "CLEANED",
+    "worker_exit_status": 0,
+    "root_rehashed_all_members": true
+  },
+  "baseline_intake": {
+    "session": "26941e3ec0af4469a5e93fd12042341c",
+    "manifest_sha256": "eb7d59ed1552bbe8697ecf8fe67fbee9dd19596bee4ade0e608047dce032526c",
+    "scope": "FIVE_TESTS_THREE_ASSERTION_FAILURES_ONE_MISSING_FIELD_ERROR_ONE_EXISTING_REFUSAL_PASS",
+    "state": "CLEANED",
+    "worker_exit_status": 0,
+    "root_rehashed_all_members": true
+  },
+  "repaired_intake": {
+    "session": "f61522489e95407a8beb7a04be70adfd",
+    "manifest_sha256": "f45cc09cd889179e6984224d8b26679b78005a38134cc74422edb58fc787112b",
+    "scope": "FIVE_TESTS_ZERO_FAILURES_ERRORS_SKIPS",
+    "state": "CLEANED",
+    "worker_exit_status": 0,
+    "root_rehashed_all_members": true
+  },
+  "repaired_family_and_existing_transport": {
+    "session": "f170de6ea54843c1802696ef3a6f85d4",
+    "manifest_sha256": "98588e5278d095b8910ad092bb535da5ec477f9a487075bae8062021f5ae4140",
+    "scope": "SEVENTEEN_TESTS_ZERO_FAILURES_ERRORS_SKIPS",
+    "state": "CLEANED",
+    "worker_exit_status": 0,
+    "root_rehashed_all_members": true
+  },
+  "official_R_source_to_family": {
+    "session": "4ae9e57cb7984b70bf84c1ad326c6208",
+    "manifest_sha256": "b29f8435db5c2e31f994604c0c2496b3fa2650dda95f859abe0c463fba6e578c",
+    "scope": "NINETEEN_ACTUAL_TOY_SOURCES_REAL_INTAKE_THREE_OFFICIAL_R_MODELS_TO_FAMILY",
+    "state": "CLEANED",
+    "worker_exit_status": 0,
+    "root_rehashed_all_members": true
+  },
+  "engineering_limits": {
+    "individual_file_bytes": 67108864,
+    "aggregate_source_bytes": 67108864,
+    "expanded_matrix_bytes": 67108864,
+    "memory_peak_measured": false,
+    "not_atomic_source_snapshot": true
+  },
+  "official_method": {
+    "R": "4.6.1",
+    "limma": "3.68.5",
+    "statmod": "1.5.2",
+    "stats": "4.6.1",
+    "adjustment": "stats::p.adjust",
+    "models": [
+      "primary",
+      "unadjusted",
+      "therapy_sensitivity"
+    ],
+    "gene_rows_per_model": 25,
+    "estimated_rows_per_model": 24,
+    "constant_rows_per_model": 1,
+    "reference": "UNCHANGED_VERBATIM_FROZEN_NUMERICAL_BLOCK_PLUS_INDEPENDENT_OLS_COEFFICIENTS",
+    "absolute_tolerance": 1e-12,
+    "relative_tolerance": 1e-11,
+    "independent_empirical_bayes_prior_verified": false
+  },
+  "all_focused_tests": 22,
+  "extra_test_classes_are_not_node_count": true,
+  "real_patient_data_or_new_cohort_fitted": false,
+  "current_production_kind_positive_intake_family_DAG_verified": false,
+  "actual_OCI_execution_for_this_closure": false,
+  "daemon_restarted": false,
+  "daemon_hot_loaded": false,
+  "production_configuration_changed": false,
+  "frozen_project_changed": false,
+  "scientific_authorization_granted": false,
+  "g0_granted": false,
+  "known_limits": [
+    "Production-kind positive full B DAG pending",
+    "Current daemon source loading pending safe operator window",
+    "OFFICIAL_LIMMA_NONFINITE_OR_ZERO_PRECISION has mechanical diagnostic preservation evidence, not actual R branch generation",
+    "A original raw-QC-PLINK1.9-harmonisation wrapper and whole-chain qualification remain separate"
+  ],
+  "source_files": {
+    "plugins/frozen-b-project/manifest.toml": {
+      "bytes": 4724,
+      "sha256": "939a180cafbdeb45899ea216fe71db7e0a2a77a6fc360d09258e14532dbfbcef"
+    },
+    "plugins/frozen-b-project/scripts/project.py": {
+      "bytes": 33717,
+      "sha256": "d7a534bf4006fb89c4d4349e7b5329b0ffb051477e170e8a3f2e50034189f93c"
+    },
+    "plugins/frozen-b-project/scripts/run-intake.py": {
+      "bytes": 37554,
+      "sha256": "6d6f6aac6c57c873886864fb700db6628a974bc370b18c21dbb1e04e47217ac1"
+    },
+    "plugins/frozen-b-project/scripts/run-family.py": {
+      "bytes": 37554,
+      "sha256": "fd934edefd44aeecb50bafd6a9d832e71618c18409762c585e7838bded144b0b"
+    },
+    "plugins/frozen-b-project/source-lock.json": {
+      "bytes": 3116,
+      "sha256": "6064334c850f15a7c66621ed8de132008a1939761af14a608e1488dfabcd0b44"
+    },
+    "plugins/bulk-limma-normalized/tests/run_method_toy.py": {
+      "bytes": 15167,
+      "sha256": "2d634601e5dfba953e0fe5c940d8650c7b3f6cc61073a8f8f942deafdfeb8ee6"
+    },
+    "tests/test_frozen_b_project.py": {
+      "bytes": 23486,
+      "sha256": "070fa0743dceb235fc4e8b6300f0db6edd6748736b12780d59ae710b1eb85bf9"
+    },
+    "tests/test_frozen_b_intake_budget.py": {
+      "bytes": 3300,
+      "sha256": "5d063da2ee0f3313caa257db2dd87304f10d0d36cdaebb06436a4627fa0ecf31"
+    },
+    "tests/test_frozen_b_family_contract.py": {
+      "bytes": 6981,
+      "sha256": "b51267757e6e564c8ce6e68c1ea884b8691ede8a5a6e091b4f5b3d3beddb1032"
+    },
+    "tests/prove_frozen_b_family_contract.py": {
+      "bytes": 7558,
+      "sha256": "dd5807a7af8bbac9237d3a5b8517a5d4b686edf245faad87a4f25f8b792a8d20"
+    },
+    "tools/prove_frozen_b_intake_budget.py": {
+      "bytes": 3125,
+      "sha256": "556a4c6852fe95ca2ce16eda93ca1e76b3a4f2fc64bfd9ff17723d8b8aa69bcd"
+    }
+  }
+}

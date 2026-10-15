@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "scope": "FROZEN_V432_B_THREE_MODEL_OFFICIAL_ADJUSTMENT_AND_IO_SOURCE_ONLY",
+  "scope": "FROZEN_V432_B_THREE_MODEL_OFFICIAL_ADJUSTMENT_IO_ORIGIN_AND_RESULT_CONTRACT_SOURCE_ONLY",
   "baseline_plugin_revision": "2506c61f45bb6015a4324e6c6243be5f52ac1c46",
   "frozen_scientific_code_sha256": "f7e334db38e331acc30cd0117ca9f2b82831523d1c07ce742382eacbd3aff1cd",
   "models": [
@@ -15,46 +15,63 @@
   "G0": false,
   "files": {
     "plugins/frozen-b-project/manifest.toml": {
-      "sha256": "c8ff9e9e678129489d165a04b0c4d5db1421bd53bfda3254ad4323c5252525fd",
-      "bytes": 4107
+      "sha256": "939a180cafbdeb45899ea216fe71db7e0a2a77a6fc360d09258e14532dbfbcef",
+      "bytes": 4724
     },
     "plugins/frozen-b-project/scripts/project.py": {
-      "sha256": "3ee6b367ca19fbcf1bea2711ba78795b022a0d8697b088f846d3799c025d36e8",
-      "bytes": 23929
+      "sha256": "d7a534bf4006fb89c4d4349e7b5329b0ffb051477e170e8a3f2e50034189f93c",
+      "bytes": 33717
     },
     "plugins/frozen-b-project/scripts/project_lock.py": {
       "sha256": "ff099e654b1d22ba76208995de9bc3ee8db269d33cddd83a0b57af5d2252f2b4",
       "bytes": 3619
     },
     "plugins/frozen-b-project/scripts/run-intake.py": {
-      "sha256": "09a5a391f8f76fd1873b7e0fcab561d47549e788691d9a72b8af255bd8ab6ae8",
-      "bytes": 27766
+      "sha256": "6d6f6aac6c57c873886864fb700db6628a974bc370b18c21dbb1e04e47217ac1",
+      "bytes": 37554
     },
     "plugins/frozen-b-project/scripts/run-family.py": {
-      "sha256": "1f9032bc766b61b0d9431d83ad4d587660645f1e36c45f1272d8f7d8d527c6f3",
-      "bytes": 27766
+      "sha256": "fd934edefd44aeecb50bafd6a9d832e71618c18409762c585e7838bded144b0b",
+      "bytes": 37554
     },
     "tools/build_frozen_b_project_dag.py": {
       "sha256": "109e82f5d08491552f12270474e2b429a15cbe0f1df0457666103e2c8f813aed",
       "bytes": 3551
     },
     "plugins/bulk-limma-normalized/tests/run_method_toy.py": {
-      "sha256": "66db0c25271e8a88078181d1e8da9adbf4f16acc316ac09c376c76145ce18a1c",
-      "bytes": 15391
+      "sha256": "2d634601e5dfba953e0fe5c940d8650c7b3f6cc61073a8f8f942deafdfeb8ee6",
+      "bytes": 15167
     },
     "tests/test_frozen_b_project.py": {
-      "sha256": "41e976ccd5f185b1b2d4ccd2b175eee98fd2c254f4c2b15535947afc17c06db4",
-      "bytes": 21341
+      "sha256": "070fa0743dceb235fc4e8b6300f0db6edd6748736b12780d59ae710b1eb85bf9",
+      "bytes": 23486
     },
     "tools/verify_frozen_b_models.py": {
       "sha256": "998a1f1a736a5ee484153821a76e15c7c5cf1863c1028a6e2827092646c60fc6",
       "bytes": 6148
     },
     "quality/required-tests.json": {
-      "sha256": "27806154a66c8207a9699eb0f0d65f30f9b262e86ef75eb68c0b530d5eea3103",
-      "bytes": 29328
+      "sha256": "86db889411581c1b29df296f6706ed4ccdba04bbd416ba4a1d46e9050d26ae9f",
+      "bytes": 30573
+    },
+    "tests/test_frozen_b_intake_budget.py": {
+      "sha256": "5d063da2ee0f3313caa257db2dd87304f10d0d36cdaebb06436a4627fa0ecf31",
+      "bytes": 3300
+    },
+    "tests/test_frozen_b_family_contract.py": {
+      "sha256": "b51267757e6e564c8ce6e68c1ea884b8691ede8a5a6e091b4f5b3d3beddb1032",
+      "bytes": 6981
+    },
+    "tools/prove_frozen_b_intake_budget.py": {
+      "sha256": "556a4c6852fe95ca2ce16eda93ca1e76b3a4f2fc64bfd9ff17723d8b8aa69bcd",
+      "bytes": 3125
+    },
+    "tests/prove_frozen_b_family_contract.py": {
+      "sha256": "dd5807a7af8bbac9237d3a5b8517a5d4b686edf245faad87a4f25f8b792a8d20",
+      "bytes": 7558
     }
   },
   "transport_repair_baseline_revision": "7c240cf387439f820ac07a72aa67deac6f0406ef",
-  "family_adjustment_backend": "R/stats4.6.1 stats::p.adjust; Python validates/transports only"
+  "family_adjustment_backend": "R/stats4.6.1 stats::p.adjust; Python validates/transports only",
+  "origin_result_contract_baseline_revision": "646ab3c22f4dfb2002138d1f2718ff47122a8538"
 }

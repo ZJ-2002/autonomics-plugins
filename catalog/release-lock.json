@@ -51,8 +51,8 @@
         },
         {
           "path": "tests/run_method_toy.py",
-          "sha256": "66db0c25271e8a88078181d1e8da9adbf4f16acc316ac09c376c76145ce18a1c",
-          "bytes": 15391,
+          "sha256": "2d634601e5dfba953e0fe5c940d8650c7b3f6cc61073a8f8f942deafdfeb8ee6",
+          "bytes": 15167,
           "executable": false
         },
         {
@@ -625,14 +625,14 @@
       "files": [
         {
           "path": "README.md",
-          "sha256": "3d18d890b902726141fa9c4150240c26c9887bce97aecd5497ae214ea24cf94c",
-          "bytes": 8284,
+          "sha256": "fe2496b122088348dc3a2cbc2e273ea6889c19a1212f728318a493fca9282a15",
+          "bytes": 9180,
           "executable": false
         },
         {
           "path": "manifest.toml",
-          "sha256": "c8ff9e9e678129489d165a04b0c4d5db1421bd53bfda3254ad4323c5252525fd",
-          "bytes": 4107,
+          "sha256": "939a180cafbdeb45899ea216fe71db7e0a2a77a6fc360d09258e14532dbfbcef",
+          "bytes": 4724,
           "executable": false
         },
         {
@@ -643,8 +643,8 @@
         },
         {
           "path": "scripts/project.py",
-          "sha256": "3ee6b367ca19fbcf1bea2711ba78795b022a0d8697b088f846d3799c025d36e8",
-          "bytes": 23929,
+          "sha256": "d7a534bf4006fb89c4d4349e7b5329b0ffb051477e170e8a3f2e50034189f93c",
+          "bytes": 33717,
           "executable": false
         },
         {
@@ -655,20 +655,20 @@
         },
         {
           "path": "scripts/run-family.py",
-          "sha256": "1f9032bc766b61b0d9431d83ad4d587660645f1e36c45f1272d8f7d8d527c6f3",
-          "bytes": 27766,
+          "sha256": "fd934edefd44aeecb50bafd6a9d832e71618c18409762c585e7838bded144b0b",
+          "bytes": 37554,
           "executable": false
         },
         {
           "path": "scripts/run-intake.py",
-          "sha256": "09a5a391f8f76fd1873b7e0fcab561d47549e788691d9a72b8af255bd8ab6ae8",
-          "bytes": 27766,
+          "sha256": "6d6f6aac6c57c873886864fb700db6628a974bc370b18c21dbb1e04e47217ac1",
+          "bytes": 37554,
           "executable": false
         },
         {
           "path": "source-lock.json",
-          "sha256": "2c39ad4e1cb60c64142f428b9c22a37ae9f1431d019b63e34df4c27627066f09",
-          "bytes": 2369,
+          "sha256": "6064334c850f15a7c66621ed8de132008a1939761af14a608e1488dfabcd0b44",
+          "bytes": 3116,
           "executable": false
         }
       ],

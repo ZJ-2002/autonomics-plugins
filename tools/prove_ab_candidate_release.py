@@ -10,7 +10,8 @@ import tarfile
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
-PARENT = '7c240cf387439f820ac07a72aa67deac6f0406ef'
+PARENT = '8fb0dcca6efc27194cc38318d67caf16337f62ed'
+EXPECTED_TESTS = 251
 FAMILIES = ('twosamplemr-v432-a', 'bulk-limma-normalized', 'frozen-b-project')
 EXTRA = ('tests/test_frozen_b_project.py', 'tests/test_frozen_a_current_dag.py',
          'tests/test_normalized_b_current_dag.py', 'tools/prove_frozen_b_family_transport.py',
@@ -20,6 +21,11 @@ EXTRA = ('tests/test_frozen_b_project.py', 'tests/test_frozen_a_current_dag.py',
          'docs/frozen-a-io-current-dag-20261015.md', 'evidence/frozen-a-io-current-dag-20261015.json',
          'docs/normalized-b-io-official-adjustment-20261015.md',
          'evidence/normalized-b-io-official-adjustment-20261015.json', 'catalog/release-lock.json')
+EXTRA += ('tests/test_frozen_b_intake_budget.py', 'tests/test_frozen_b_family_contract.py',
+          'tools/prove_frozen_b_intake_budget.py', 'tests/prove_frozen_b_family_contract.py',
+          'docs/frozen-b-source-family-closure-20261015.md',
+          'docs/ab-candidate-cutover-20261015.md',
+          'evidence/frozen-b-source-family-closure-20261015.json')
 
 
 def digest(path):
@@ -56,10 +62,11 @@ def main():
     original = json.loads(git('show', PARENT + ':quality/required-tests.json'))
     sys.path.insert(0, str(ROOT))
     additions = set()
-    for name in ('tests.test_frozen_b_project', 'tests.test_frozen_a_current_dag', 'tests.test_normalized_b_current_dag'):
+    for name in ('tests.test_frozen_b_project', 'tests.test_frozen_a_current_dag', 'tests.test_normalized_b_current_dag',
+                 'tests.test_frozen_b_intake_budget', 'tests.test_frozen_b_family_contract'):
         additions.update(test_ids(unittest.defaultTestLoader.loadTestsFromName(name)))
     original['test_ids'].extend(sorted(additions - set(original['test_ids'])))
-    if len(original['test_ids']) != 241 or len(set(original['test_ids'])) != 241:
+    if len(original['test_ids']) != EXPECTED_TESTS or len(set(original['test_ids'])) != EXPECTED_TESTS:
         raise RuntimeError('Exact A/B release test inventory differs')
     quality = (json.dumps(original, indent=2) + '\n').encode()
     expected_quality = json.loads((ROOT / 'plugins/frozen-b-project/source-lock.json').read_text())['files']['quality/required-tests.json']
@@ -72,7 +79,7 @@ def main():
         git('update-index', '--add', '--cacheinfo', mode + ',' + blob + ',' + name)
     git('update-index', '--add', '--cacheinfo', '100644,' + git('hash-object', '-w', '--stdin', data=quality) + ',quality/required-tests.json')
     tree = git('write-tree')
-    commit = git('commit-tree', tree, '-p', PARENT, '-m', 'Harden frozen A/B publication and use official R family adjustment')
+    commit = git('commit-tree', tree, '-p', PARENT, '-m', 'Close frozen B source and family receipt contracts')
     changed = git('diff-tree', '--no-commit-id', '--name-only', '-r', PARENT, commit).splitlines()
     if not set(changed) <= paths | {'quality/required-tests.json'} or not changed:
         raise RuntimeError('Unrelated source in A/B candidate')
@@ -93,7 +100,7 @@ def main():
         result = subprocess.run([sys.executable, '-B', str(source / 'tools/run_checks.py'),
             '--output', str(output / 'SOURCE_CHECKS.json')], cwd=source, stdout=stdout, stderr=stderr, timeout=180)
     report = json.loads((output / 'SOURCE_CHECKS.json').read_text())
-    if (result.returncode or report['tests_run'] != 241 or not report['complete'] or not report['source_lock_matches']
+    if (result.returncode or report['tests_run'] != EXPECTED_TESTS or not report['complete'] or not report['source_lock_matches']
             or report['failures'] or report['errors'] or report['skipped']):
         raise RuntimeError('Exact committed A/B release tests incomplete')
     if identities != {name: digest(ROOT / name) for name in paths}:
