@@ -667,7 +667,7 @@
         },
         {
           "path": "source-lock.json",
-          "sha256": "b9618d212cba8a035dbdef14b3a44f455e2123878d263820a02938b14ed8e139",
+          "sha256": "03dc929b483a6c601a2dd85a74bd7b8197318c07b0cf03d21256948be53b9cde",
           "bytes": 4074,
           "executable": false
         }
@@ -14699,8 +14699,8 @@
         },
         {
           "path": "scripts/subset_by_obs.py",
-          "sha256": "0db6f4caadbb28f679f2d813c60de33d3c74ca1111934f01389b182306b088ec",
-          "bytes": 7731,
+          "sha256": "4d1afc22f291ab80b92033308319306db30b1a779ef873466920e6040fa87b5b",
+          "bytes": 9519,
           "executable": false
         },
         {

@@ -93,31 +93,64 @@ def subset(source: ad.AnnData, selection: pd.DataFrame, join_column: str) -> tup
 
 
 def publish(data: ad.AnnData, report: dict, outputs: list[Path]) -> None:
+    import stat
+
+    if (not isinstance(outputs, (list, tuple)) or len(outputs) != 2
+            or any(not isinstance(path, Path) for path in outputs) or not isinstance(report, dict)):
+        raise ContractError("publication requires two Path outputs and one report object")
+    if len({path.resolve() for path in outputs}) != 2:
+        raise ContractError("publication outputs must be distinct")
+    for path in outputs:
+        if os.path.lexists(path):
+            raise ContractError(f"refusing to overwrite existing output: {path}")
+        if not path.parent.is_dir():
+            raise ContractError(f"publication output parent does not exist: {path.parent}")
+
+    def identity(path):
+        first = path.lstat()
+        if not stat.S_ISREG(first.st_mode):
+            raise ContractError("publication requires ordinary non-symlink files")
+        checksum = digest(path)
+        last = path.lstat()
+        if ((first.st_dev, first.st_ino, first.st_uid, first.st_gid, first.st_size, first.st_mode, first.st_mtime_ns, first.st_ctime_ns)
+                != (last.st_dev, last.st_ino, last.st_uid, last.st_gid, last.st_size, last.st_mode, last.st_mtime_ns, last.st_ctime_ns)):
+            raise ContractError("publication file changed while its identity was checked")
+        return first.st_dev, first.st_ino, first.st_size, checksum, first.st_uid, first.st_gid
+
+    def check(path, expected):
+        if identity(path) != expected:
+            raise ContractError("published output no longer matches its owned identity and content")
+
     published = []
     with ExitStack() as stack:
         directories = [Path(stack.enter_context(tempfile.TemporaryDirectory(prefix=".subset-", dir=path.parent)))
                        for path in outputs]
         staged = [directories[0] / "output.h5ad", directories[1] / "report.json"]
         data.write_h5ad(staged[0], compression="lzf")
-        report["outputs"] = [{"port": 0, "name": outputs[0].name, "sha256": digest(staged[0]),
-                              "bytes": staged[0].stat().st_size}]
+        data_identity = identity(staged[0])
+        report["outputs"] = [{"port": 0, "name": outputs[0].name, "sha256": data_identity[3],
+                              "bytes": data_identity[2]}]
         report["report_hash_policy"] = "port_1_hash_recorded_externally_not_recursively"
         staged[1].write_text(json.dumps(report, indent=2, sort_keys=True, ensure_ascii=False, allow_nan=False) + "\n")
         for path in staged:
             with path.open("rb") as handle:
                 os.fsync(handle.fileno())
+        identities = [identity(path) for path in staged]
+        check(staged[0], data_identity)
         try:
-            for temporary, destination in zip(staged, outputs):
-                status = temporary.stat()
+            for temporary, destination, expected in zip(staged, outputs, identities, strict=True):
+                check(temporary, expected)
                 os.link(temporary, destination)
-                published.append((destination, (status.st_dev, status.st_ino)))
-        except OSError:
+                published.append((destination, expected))
+                check(destination, expected)
+            for destination, expected in published:
+                check(destination, expected)
+        except BaseException:
             for destination, expected in reversed(published):
                 try:
-                    status = destination.lstat()
-                    if (status.st_dev, status.st_ino) == expected:
+                    if identity(destination) == expected:
                         destination.unlink()
-                except FileNotFoundError:
+                except (OSError, ContractError):
                     pass
             raise
 
