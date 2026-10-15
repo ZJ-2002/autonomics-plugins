@@ -1,11 +1,12 @@
 # B：pseudobulk 与 Scanpy 评分发布保全
 
-状态：**SCOPED_DIRECT_AND_FIXED_ENGINE_MICRO_DAG_PROVEN_NOT_DEPLOYED**。
+状态：**SCOPED_DIRECT_AND_MICRO_DAG_PROVEN_DEPLOYED_SOURCE_VERIFIED_NOT_RESIDENT_EXECUTION**。
 日期：2026-10-15。机器记录：`evidence/b-publication-ownership-20261015.json`。
 
 本批修复两个原有 kind 的文件发布，不增加统计方法、研究分支或原 120 个候选
 分母。直接容器、普通 I/O 控制及精确修复源码的四个隔离微型 DAG 已执行；
-resident daemon 装载尚待验收。这些不是完整单细胞研究链或全规模资源验收。
+后续当前 `.3` 服务的装载源码身份已独立核实，但未从驻留服务实际执行方法验收。
+这些不是完整单细胞研究链或全规模资源验收。
 既有其他 A/B 插件的上线不能替代本批两个脚本的部署证明。
 
 ## 精确身份与不变的方法
@@ -162,10 +163,33 @@ worker 内临时 launcher 只转发原受管 shim 和该 backend，不切换生�
 2 CPU/8 GiB；这不认证该全规模资源。8 份实际 `task.json` 的原生任务请求均是
 `resources: {}`，不能宣称 manifest 资源已映射为原生调度准入或得到同等预算批准。
 
+## 后续当前服务源码装载观察
+
+前述 direct 与微型 DAG 档案均是在本批源码尚未部署时封存；不能改写其历史范围。
+随后于 `2026-10-15T09:51:09.690726+00:00` 完成两次连续只读健康观察：
+`/api/v1/gateway/status`、`/api/v1/agents`、`/api/v1/plugins` 均返回 HTTP 200，
+当前为 `v0.1.0-research-preview.20261015.3`、PID 992480，8 个 agent 全部 idle，
+登记 35 个家族。当前二进制 SHA 为
+`ced5e4d1bc333c8de136d7fbc16107f4e88d29b0d30990d29486d5579ed1d7f2`。
+
+两个本批家族现在均使用 Git+完整 rev+subdir：
+`d3065953a513f5b5f07e436b8ff2da62177341cd`；干净固定 checkout 中全部
+82 个 tracked 文件已与精确 Git 对象逐字节复核，包括上述修复脚本。
+其余 33 个配置条目未改；先前 A/B 三核心家族的 25 个文件仍固定于 `cb594425...`。
+这是当前实际服务暴露身份和装载源的证据，不是 `resident method execution`、
+新二进制全域验收或新科学结果。
+
+独立私有记录为 `INDEPENDENT_CURRENT_RELEASE_OBSERVATION.json`，摘要
+`802829f2452f04db8430af27fd1452b82d42777fe2f8e560197a99787dac27ac`。
+用户已确认保留当前 `.3`。它是另一条后续切换链，不能归因于此前启动 `.1` 的
+launcher：该启动等待进程曾由操作者代理主动终止、实际退出 143，不能填写
+“启动命令成功退出 0”；当时 daemon 与当前 `.3` 的切换原因未独立推断。
+本次独立观察没有重启、修改配置或凭据，也没有运行研究或公开密钥/原始代理响应。
+
 ## 未结与研究边界
 
 - 本批精确新源码已完成上述固定 SDK 微型 DAG；完整研究链、全部参数/数据域及真实规模仍未认证。
-- 本批新 wrapper **未部署**，未证明 resident daemon 注册/装载、缓存或恢复。
+- 本批新 wrapper 当前装载源已核实；实际驻留方法计算、缓存及恢复仍未获证。
 - 不改原 120 个候选、冻结签名、276/288/696 名单、查看史、分组或统计设计。
 - pseudobulk 仍须另核 raw-count 层、供者/动物身份、技术库合并、低细胞组、
   跨细胞类型条件、完整检验家族及对比资格；允许非整数分支不是原始 counts。
