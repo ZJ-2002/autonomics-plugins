@@ -24,10 +24,13 @@ source: it is a historical Python runtime and cannot satisfy the new R check.
 It is not a runtime claim for this changed adapter; do not load/deploy it.
 shared-image-sources/official-r-stats-python/Dockerfile derives from the exact
 measured 78f195... base, which has R/stats 4.6.1 but no Python. It only adds
-python3-minimal, prohibits package upgrades, and checks unchanged R package
+python3-minimal and libpython3-stdlib, prohibits package upgrades, and checks unchanged R package
 versions plus R/stats/BLAS/LAPACK library bytes. A future controlled build must
 measure the actual child digest and software before replacing the manifest
 reference once. Neither a candidate tag nor a guessed child digest is used.
+python3-minimal alone did not provide decimal; the explicit stdlib package
+corrects that dependency. This revised recipe has
+not yet been built or accepted, and no failed-attempt image digest is assigned.
 
 The original research-adapters/cachexia-contracts source remains unchanged.
 Select exactly one admitted adapter profile; no research adapter is enabled

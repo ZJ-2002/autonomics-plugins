@@ -4,6 +4,8 @@
   "base_image": "ghcr.io/zj-2002/mrlap-official@sha256:78f195b862a3b7c5f8d96a96576cfb2c66b08f9bd31a739da59a017726cd063d",
   "base_contains_python": false,
   "child_dockerfile": "shared-image-sources/official-r-stats-python/Dockerfile",
+  "python_transport_packages": ["python3-minimal", "libpython3-stdlib"],
+  "python_dependency_gap": "python3-minimal alone does not provide decimal; explicit stdlib required",
   "child_image_digest": null,
   "manifest_image_preserved_from_historical_source": true,
   "manifest_is_executable_with_new_R_correction": false,

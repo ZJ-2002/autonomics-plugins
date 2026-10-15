@@ -16407,14 +16407,14 @@
       "files": [
         {
           "path": "CANDIDATE.json",
-          "sha256": "95072df49b733485e4b05cf5de6cfb17df989149ae3dcae12cd1979062ffd9e3",
-          "bytes": 710,
+          "sha256": "cb46a4e0250869f20ff2e1579e36c8f56669a51297a91d11899a2b074b8b414b",
+          "bytes": 886,
           "executable": false
         },
         {
           "path": "README.txt",
-          "sha256": "79a6629525edbfef26df92463f436c368e24652334351a465b954362ca179c65",
-          "bytes": 2980,
+          "sha256": "98f2173d227a0ea9199c59918cf2f4e7d42558934f8bd6a5cecde6af014c23b3",
+          "bytes": 3207,
           "executable": false
         },
         {
@@ -18518,8 +18518,8 @@
     },
     {
       "path": "official-r-stats-python/Dockerfile",
-      "sha256": "eaf2e21e7538d40a53b36a93f3b521bedf609748fe7bb151ac61c0b02fc02b36",
-      "bytes": 1602,
+      "sha256": "84e517421c42b36accd531aae6f5b9c8a9af20dee8345018eefbac1eee450de8",
+      "bytes": 1620,
       "executable": false
     }
   ],

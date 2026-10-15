@@ -140,7 +140,10 @@ class LatestContractTests(unittest.TestCase):
         self.assertIs(candidate['child_built'],False)
         docker=(ROOT/candidate['child_dockerfile']).read_text()
         self.assertIn('FROM '+candidate['base_image'],docker)
-        self.assertIn('--no-upgrade python3-minimal',docker)
+        self.assertEqual(candidate['python_transport_packages'],['python3-minimal','libpython3-stdlib'])
+        self.assertIn('apt-get install -y --no-install-recommends --no-upgrade python3-minimal libpython3-stdlib;',docker)
+        self.assertEqual(docker.count('apt-get install '),1)
+        self.assertIn('python3 -I -S -c \'import sys,decimal,',docker)
         self.assertIn('sha256sum -c',docker)
         self.assertNotIn('install.packages(',docker.replace('# runtime change; no install.packages(), R update, BLAS change or apt upgrade.',''))
         for node, original in zip(new['nodes'], old['nodes']):
