@@ -1,0 +1,40 @@
+{
+  "schema": "FROZEN_A_FAMILY_ASSEMBLY_SOURCE_CONTRACT_V1",
+  "status": "TECHNICAL_CANDIDATE_NOT_DEPLOYED_OR_SCIENTIFICALLY_RELEASED",
+  "Python": "3.14.7",
+  "image": "docker.io/library/python@sha256:7bf6c3111fe094f8ee1a1cbcdc63c4cfb345b0e3df42d5aa9a90b3b4b022ab6d",
+  "R_version": "4.6.1",
+  "stats_version": "4.6.1",
+  "original_python_functions": ["primary_p", "strict_conjunction", "assert_locked_ids"],
+  "original_python_sha256": "2dd34cf6887e829334c2b3ba49f58be5c81b503333dc9183474208ebab49f08d",
+  "original_adjustment_definition_sha256": "2d110232f5f1c3097d763686df1ecec5212e3ca18b4b226ac8f5562c388813fd",
+  "family_counts": {"A_PRIMARY_EDGES": 88, "A_EXPANDED_EDGES": 188, "A_PRIMARY_PATHS": 36, "A_EXPANDED_PATHS": 252},
+  "inputs": [
+    {"port":0,"name":"01_REGISTRIES/GENETIC_EDGE_UNIVERSE.tsv","bytes":58452,"sha256":"1952fd61e3404364b6bef12334e9743e97f418f80f16ffabd93b4b244473afb4"},
+    {"port":1,"name":"01_REGISTRIES/GENETIC_PATH_UNIVERSE.tsv","bytes":56329,"sha256":"bdb85f7ab874d2f2d913c75a2eeb60e56bc0b6049472eeb7f45c764b6eaaa1f2"},
+    {"port":2,"name":"01_REGISTRIES/G0_LOCKED_HYPOTHESIS_UNIVERSE.tsv","bytes":11740332,"sha256":"b8d7116aea0640f3677b72eb653b097c7ff2a7d4e7815819d9927b61790b782a"},
+    {"port":3,"name":"01_REGISTRIES/PRIMARY_P_DECISION_REGISTER.tsv","bytes":21306,"sha256":"92a49ae782060a6eb51fcc2d2bde65629f599714facbcb0ebefa53ea155f9f6a"},
+    {"port":4,"name":"01_REGISTRIES/FAMILY_LOCK_REGISTER.tsv","bytes":1907,"sha256":"d7d1a89589fba8f8d115c0eefc9cfd4d270f2216181c70f9c528c4c1da9209c3"},
+    {"port":5,"name":"01_REGISTRIES/MULTIPLICITY_REGISTER.tsv","bytes":6325,"sha256":"b66a8b849068a695d65d90decad99229d8a10fe49213d4445d0dfe356f47fee6"},
+    {"port":6,"name":"02_EXECUTION/EXECUTION_RULES_v4.3.2.json","bytes":13853,"sha256":"1ff187d5672c0448db193db4acb17ee78012ed2588f94bac580075b1cef2245b"},
+    {"port":7,"name":"02_EXECUTION/execution_utils.py","bytes":5243,"sha256":"2dd34cf6887e829334c2b3ba49f58be5c81b503333dc9183474208ebab49f08d"},
+    {"port":8,"name":"02_EXECUTION/g0_v432_methods.R","bytes":20329,"sha256":"f7e334db38e331acc30cd0117ca9f2b82831523d1c07ce742382eacbd3aff1cd"}
+  ],
+  "assembly_rows": 564,
+  "correction_vector_rows": 840,
+  "correction_vectors": 6,
+  "input_read_budgets": {
+    "source_roles": "Exact frozen size checked before opening; maximum 33554432 bytes per source",
+    "request_max_bytes": 4194304,
+    "publish_role_max_bytes": [8388608, 8388608, 4194304, 8388608, 33554432, 4194304, 8388608, 8388608],
+    "whole_process_peak_memory_guaranteed": false
+  },
+  "raw_missing_preserved": true,
+  "publication_ownership": "Device/inode plus exact expected size and SHA256; validate staged and linked content; preserve replaced or same-inode externally rewritten bytes",
+  "conditional_MVP_enabled": false,
+  "real_overlap_or_eligibility_assignment_allowed": false,
+  "Python_adjustment_allowed": false,
+  "MR_estimates_computed": false,
+  "scientific_authorization_granted": false,
+  "g0_granted": false
+}

@@ -667,7 +667,7 @@
         },
         {
           "path": "source-lock.json",
-          "sha256": "dfc9335e597d66e96df54523afa4560dc74e7ca41bf751d8922413d82a9c08a6",
+          "sha256": "f542a97b2cb9f416ffbe31c446132971a7b1228da39f6a57f073f8062f577a6c",
           "bytes": 4075,
           "executable": false
         }
@@ -17768,6 +17768,75 @@
           "path": "scripts/run-clump.sh",
           "sha256": "c73585f6e52576c04385a7518a96ddc7d878992d0700bea48d6af0fb4afb10f3",
           "bytes": 28256,
+          "executable": false
+        }
+      ],
+      "source_inventory_only": true,
+      "scientific_certified": false,
+      "auto_enable": false
+    },
+    {
+      "directory": "research-adapters/frozen-a-family-adjustment",
+      "plugin_name": "frozen-a-family-adjustment",
+      "kinds": [
+        "frozen_a_family_adjust"
+      ],
+      "image_reference": "ghcr.io/zj-2002/mrlap-official@sha256:78f195b862a3b7c5f8d96a96576cfb2c66b08f9bd31a739da59a017726cd063d",
+      "files": [
+        {
+          "path": "README.md",
+          "sha256": "c0ebd9055f707dfa020fef70ecce3cf3fcc754af9ec48c629476acc406abe632",
+          "bytes": 2176,
+          "executable": false
+        },
+        {
+          "path": "manifest.toml",
+          "sha256": "55ce64e5a2cc16ba43962fef7c3039c8df9e83a2670934f1a8b7ff2f383541da",
+          "bytes": 1636,
+          "executable": false
+        },
+        {
+          "path": "scripts/adjust.R",
+          "sha256": "debf19afa415433aa00e9258ff82b56e562bf43a6b2fa96eae4c57d0cb93b412",
+          "bytes": 21205,
+          "executable": false
+        }
+      ],
+      "source_inventory_only": true,
+      "scientific_certified": false,
+      "auto_enable": false
+    },
+    {
+      "directory": "research-adapters/frozen-a-family-assembly",
+      "plugin_name": "frozen-a-family-assembly",
+      "kinds": [
+        "frozen_a_family_assemble",
+        "frozen_a_family_publish"
+      ],
+      "image_reference": "docker.io/library/python@sha256:7bf6c3111fe094f8ee1a1cbcdc63c4cfb345b0e3df42d5aa9a90b3b4b022ab6d",
+      "files": [
+        {
+          "path": "README.md",
+          "sha256": "bb25f9a2ac385cdf0e6acdcdc9ae72c53cfae5c3466423f1c288564fce48b9fc",
+          "bytes": 2119,
+          "executable": false
+        },
+        {
+          "path": "contracts/source-lock.json",
+          "sha256": "6f9b3653a65834a602a0bdf977f570e9527298136421523c34c80831f9fac43c",
+          "bytes": 2991,
+          "executable": false
+        },
+        {
+          "path": "manifest.toml",
+          "sha256": "a2ba1a3522b89bf4f229ca649480f9cac0348bcd581a47b287535a2ece2b64cf",
+          "bytes": 2770,
+          "executable": false
+        },
+        {
+          "path": "scripts/family.py",
+          "sha256": "3370bf9a604de0c3e6acab9e1e7617f7caba579c6630e96f17e0d2f4c002d1ba",
+          "bytes": 26707,
           "executable": false
         }
       ],
