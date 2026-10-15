@@ -16403,24 +16403,24 @@
         "cachexia_v41_primary_p",
         "cachexia_v41_path_ledger"
       ],
-      "image_reference": "ghcr.io/zj-2002/biotools-py@sha256:7ad6aeafa87672699d28b61b6bed12fc81fcdbfc43222a0abf17e2d56fb806f5",
+      "image_reference": "ghcr.io/zj-2002/official-r-stats-python@sha256:9b11b87b22256f5b9726d84d8dd861b332ca3aab87f2948554ff7204eb4e6657",
       "files": [
         {
           "path": "CANDIDATE.json",
-          "sha256": "cb46a4e0250869f20ff2e1579e36c8f56669a51297a91d11899a2b074b8b414b",
-          "bytes": 886,
+          "sha256": "8c6738e881ebcc6ac5f48e73a6febdd37c7e18b1b835a017f063d9cc9c2007c9",
+          "bytes": 1499,
           "executable": false
         },
         {
           "path": "README.txt",
-          "sha256": "98f2173d227a0ea9199c59918cf2f4e7d42558934f8bd6a5cecde6af014c23b3",
-          "bytes": 3207,
+          "sha256": "acddca4d429fb19b5b80f8feb00420f441102fa5a5ad7347e04fa0cbea5b5b0b",
+          "bytes": 3672,
           "executable": false
         },
         {
           "path": "manifest.toml",
-          "sha256": "2824e4c349fec420fc1376f5e9b231fbf8dad96946f08faaa0767dddd282dce2",
-          "bytes": 7828,
+          "sha256": "3966614b206594754c87f05b376fa1bf3ede72dfd1143b70059453f84eb76d62",
+          "bytes": 7831,
           "executable": false
         },
         {
