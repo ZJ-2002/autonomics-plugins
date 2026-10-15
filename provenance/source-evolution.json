@@ -699,11 +699,11 @@
       },
       "current": {
         "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
-        "revision": "02052214f6615a50d67127b9985ed171c7871683",
+        "revision": "dc54397ab961a70a9005e43f62ecd1afdea7c39a",
         "path": "plugins/singscore/scripts/singscore.sh",
-        "sha256": "0ccfea285f042f05af15f61dd5de3ef8ff2d924387d8a6d07bf3852eac5a59b2",
-        "bytes": 6539,
-        "git_blob": "49c912ec72d6120b3b38a355bbb7138c238708f3"
+        "bytes": 13409,
+        "sha256": "aebaa30e8394778f748427c186ea14ebd58bfe6c3cf83729fbb2cea3f1e329d3",
+        "git_blob": "2004fda6e86f5642cc22753f452e670f36910edd"
       }
     },
     {
