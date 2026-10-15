@@ -84,11 +84,20 @@ refusals. These tests are not twelve nodes or deployment certificates.
 ## Remaining admission and documentation corrections
 
 Current disposition is `SCOPED_DIRECT_OFFICIAL_HARMONISATION_PROVEN_DAG_PENDING`.
-A dedicated real-input no-fit DAG scope is being added and must actually execute
-before claiming graph qualification. The production daemon has not restarted or
-hot-loaded this kind. This does not close raw-GWAS QC, official PLINK1.90b7.2
-clumping/pairwise completeness, the276-edge/288-path family ledger, all conditional
-A/B branches or scientific review. B-S stays CONDITIONAL_NOT_READY; GS01 OPEN.
+A dedicated real-input no-fit DAG scope and its proof driver are implemented
+in source. Full runner compilation and execution of all **23** Rust guards,
+the seven-node harmonisation DAG and the ten-node raw-qualification DAG remain
+pending; implemented source is not actual graph qualification. The production
+daemon has not restarted or hot-loaded this kind.
+
+This harmonisation record does not itself prove raw-GWAS QC or official PLINK
+clumping/pairwise completeness. The separate fixed X01/M06 direct replay now
+verifies seven byte-comparable products, 26 official PLINK commands and twelve
+ports in session `fe8d9c30ecfc46de9b1d38f81e3723be`; see the
+[scoped direct raw-qualification evidence](frozen-a-input-qualification-20261015.md).
+Neither record certifies real eligibility across the complete 276-edge/288-path
+families, all conditional A/B branches or scientific review.
+B-S stays CONDITIONAL_NOT_READY; GS01 OPEN.
 
 The generic plugin's two action descriptions are corrected using the
 [official 0.7.9 source](https://raw.githubusercontent.com/MRCIEU/TwoSampleMR/v0.7.9/R/harmonise.R):

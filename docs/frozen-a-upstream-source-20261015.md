@@ -51,12 +51,19 @@ strict cache excludes an embedded manifest; the separate pinned input manifest
 and every panel payload remain verified. Reflink failure must refuse execution,
 not silently copy gigabytes or hard-link canonical source inodes.
 
-At this record's cutoff the candidate has only self-cleaning toy evidence:
-**real raw processing, the 26 official PLINK commands, complete twelve-port
-publication, the new guarded DAG, resource peaks and deployment remain pending**.
-The same restriction applies to the new harmonisation DAG proof driver until
-the merged runner is actually compiled and all twenty Rust guards execute.
-Neither a source test nor the runtime smoke result fills those missing cells.
+At an earlier checkpoint the candidate had only self-cleaning toy evidence.
+That checkpoint has been superseded by the completed direct replay in session
+`fe8d9c30ecfc46de9b1d38f81e3723be`: all seven byte-comparable frozen products,
+26 official PLINK commands and twelve output ports were verified. See the
+[scoped direct raw-qualification evidence](frozen-a-input-qualification-20261015.md).
+This is direct execution evidence, not proof that the DAG or deployment passed.
+
+The dedicated scopes and proof drivers are implemented in source. Full runner
+compilation and execution of all **23** Rust guards, the seven-node
+harmonisation DAG and the ten-node raw-qualification DAG remain pending.
+Container resource peaks and production deployment also remain unproven.
+Neither implemented source, a source test nor the runtime smoke result fills
+those missing cells.
 
 Production restart/hot reload remains prohibited while the user's research is
 running. Unrelated active builds and protected caches are not stopped or erased

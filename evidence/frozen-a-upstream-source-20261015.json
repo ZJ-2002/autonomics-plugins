@@ -29,6 +29,10 @@
     "downloaded_binary_executed": false,
     "derived_dated_url_claimed_current_direct_link": false
   },
+  "pending_is_historical_checkpoint_not_current_admission": true,
+  "current_computation_evidence": "frozen-a-input-qualification-20261015.json",
+  "current_computation_status": "SCOPED_DIRECT_RAW_QC_26_OFFICIAL_PLINK_COMMANDS_12_OUTPUTS_PROVEN_DAG_PENDING",
+  "current_required_full_Rust_guards": 23,
   "pending": [
     "Fresh raw input QC and complete official PLINK qualification",
     "Actual twelve-output qualification publication and failure guard",
