@@ -17,6 +17,24 @@ def digest(path):
         return hashlib.file_digest(handle, "sha256").hexdigest()
 
 
+def assert_array_contract(actual, expected):
+    actual_array, expected_array = np.asarray(actual), np.asarray(expected)
+    assert actual_array.dtype == expected_array.dtype
+    assert actual_array.shape == expected_array.shape
+    return actual_array, expected_array
+
+
+def assert_sparse_contract(actual, expected):
+    assert sparse.issparse(actual) and actual.format == expected.format and actual.dtype == expected.dtype
+    assert actual.shape == expected.shape
+
+
+def assert_hdf5_object_contract(actual, expected):
+    assert type(actual) is type(expected)
+    if isinstance(expected, h5py.Dataset):
+        assert actual.shape == expected.shape and actual.dtype == expected.dtype
+
+
 def compare_value(actual, expected):
     if isinstance(expected, dict):
         assert set(actual) == set(expected)
@@ -27,7 +45,7 @@ def compare_value(actual, expected):
             np.testing.assert_array_equal(actual[column].to_numpy(), expected[column].to_numpy())
         return sum(np.isfinite(expected[column].to_numpy()).sum() for column in expected.select_dtypes(include="number"))
     if sparse.issparse(expected):
-        assert sparse.issparse(actual) and actual.format == expected.format and actual.dtype == expected.dtype
+        assert_sparse_contract(actual, expected)
         np.testing.assert_array_equal(actual.indptr, expected.indptr)
         np.testing.assert_array_equal(actual.indices, expected.indices)
         if expected.dtype.kind in "biu":
@@ -36,11 +54,11 @@ def compare_value(actual, expected):
             np.testing.assert_allclose(actual.data, expected.data, atol=1e-12, rtol=0, equal_nan=True)
         return int(np.isfinite(expected.data).sum())
     if isinstance(expected, (np.ndarray, np.generic)):
-        assert np.asarray(actual).dtype == np.asarray(expected).dtype
-        if np.asarray(expected).dtype.kind in "biu":
+        actual, expected = assert_array_contract(actual, expected)
+        if expected.dtype.kind in "biu":
             np.testing.assert_array_equal(actual, expected)
             return int(np.isfinite(expected).sum())
-        if np.asarray(expected).dtype.kind in "fc":
+        if expected.dtype.kind in "fc":
             np.testing.assert_allclose(actual, expected, atol=1e-12, rtol=0, equal_nan=True)
             return int(np.isfinite(expected).sum())
         np.testing.assert_array_equal(actual, expected)
@@ -68,8 +86,10 @@ def compare(directory):
         reference.visit(expected_names.append)
         assert actual_names == expected_names
         for name in ["/", *expected_names]:
+            assert_hdf5_object_contract(produced[name], reference[name])
             for attribute in reference[name].attrs:
-                np.testing.assert_array_equal(produced[name].attrs[attribute], reference[name].attrs[attribute])
+                actual_attribute, expected_attribute = assert_array_contract(produced[name].attrs[attribute], reference[name].attrs[attribute])
+                np.testing.assert_array_equal(actual_attribute, expected_attribute)
             assert set(produced[name].attrs) == set(reference[name].attrs)
             if isinstance(reference[name], h5py.Dataset):
                 assert produced[name].dtype == reference[name].dtype

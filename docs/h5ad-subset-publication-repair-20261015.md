@@ -54,9 +54,11 @@ are not changed.
 These checks establish observations at the checks, not permanent protection
 against later external writes or crash-atomic publication across two files.
 Foreign or uncertain files preserved on failure are not valid node products.
-The new script still needs an official-runtime whole-object replay and a current
-isolated DAG proof before its updated runtime interface is qualified. Existing
-older method evidence is retained with its original identities and scope.
+At this source-release checkpoint the new script still needed official-runtime
+whole-object replay and a current isolated DAG proof. Subsequent direct replay
+is recorded separately in [the official-runtime proof](h5ad-subset-official-runtime-20261015.md).
+The current DAG and deployment requirements remain separate; existing older
+evidence retains its original identities and scope.
 
 No container, fit, real H5AD or production service is run by these unit tests.
 No research donor, QC, scoring, or spatial null contract is filled in. No daemon
