@@ -51,8 +51,8 @@
       "bytes": 6148
     },
     "quality/required-tests.json": {
-      "sha256": "a190d761c1518016984dbb31fdefb851a99760acd785f500659d3e4b88a6ee67",
-      "bytes": 55519
+      "sha256": "f7afe127525d52a2061d2cb2a2dddc764a7d2307dacd85e305dba9182283aa35",
+      "bytes": 59737
     },
     "tests/test_frozen_b_intake_budget.py": {
       "sha256": "5d063da2ee0f3313caa257db2dd87304f10d0d36cdaebb06436a4627fa0ecf31",

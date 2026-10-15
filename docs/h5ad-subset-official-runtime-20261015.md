@@ -99,3 +99,7 @@ donor/pooling, QC and program contracts remain unfilled. No statistical fit,
 real study analysis, production restart, frozen-design edit, G0 grant or change
 to the fixed 120-slot denominator occurs here. Spatial B-S remains
 `CONDITIONAL_NOT_READY`; GS01 remains `OPEN`.
+
+A subsequent [bounded pinned-SDK DAG proof](h5ad-subset-isolated-dag-20261015.md)
+adds actual source-to-node transport and failure-propagation evidence. It does
+not replace the latest-engine, full-resource, resident-daemon or study gates.
