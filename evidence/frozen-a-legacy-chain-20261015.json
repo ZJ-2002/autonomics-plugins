@@ -1,0 +1,140 @@
+{
+  "schema": "FROZEN_A_LEGACY_CHAIN_TECHNICAL_DISPOSITIONS_V1",
+  "scope": "FIXED_V432_ALREADY_SEEN_X01_M06_O2_PRIMARY_MISSING_NOT_RESEARCH_RELEASE",
+  "fixed_study_candidate_denominator_changed": false,
+  "raw_or_result_payloads_published": false,
+  "sources": {
+    "current_MR_adapter_sha256": "33009c9f40ca8964b4aa6e5729eff1856913838dce35679e5169eab4ed3595fe",
+    "family_helper_original_sha256": "3370bf9a604de0c3e6acab9e1e7617f7caba579c6630e96f17e0d2f4c002d1ba",
+    "family_helper_repaired_sha256": "338a864e0cfa9c4ab4df181728f28b1a08c6a841cbea906946dc3de90c40a43a",
+    "gate_manifest_sha256": "f07cd4c67cd01037dc9285670fcf3ec021990a4e2e0ebe356a601358e24bf1c1",
+    "gate_script_sha256": "6c921c4ed2cfece1bc56031a0a40b83c1c1efbdd643d6e32f370ee851da42537"
+  },
+  "proofs": {
+    "current_MR_official_direct": {
+      "session": "5981e37694a1481f9a04ff26e1ee2876",
+      "seal": "000dc33851f32b768901710b07ff8ec74ec5f916e67eb1bb7168f71e1099c9f1",
+      "state": "CLEANED",
+      "worker_exit_status": 0,
+      "members_rehashed": 91,
+      "actual_containers": 2,
+      "stopped_container_intents": 2,
+      "complete_TSVs_byte_and_readback_equal": 6,
+      "complete_RDS_object_identical": true,
+      "complete_log_and_provenance_checked": true,
+      "original_statistical_statements_unchanged": 15,
+      "original_guard_statements_relocated_to_actual_outer_verifier": [4, 5],
+      "whole_original_CLI_executed": false,
+      "original_host_library_path_injection_executed": false,
+      "official_R_version": "4.6.1",
+      "official_TwoSampleMR_version": "0.7.11",
+      "official_package_function_identities_checked": 171,
+      "new_independent_scientific_evidence": false
+    },
+    "family_source_execution_repair": {
+      "session": "581621a671a945eab3857b0c9a631607",
+      "seal": "6e6dc44a5e875d4e0645073bcc3a27f2caacfd1fd422ba89c5a723ab6d827fb4",
+      "state": "CLEANED",
+      "worker_exit_status": 0,
+      "members_rehashed": 192,
+      "actual_containers": 25,
+      "stopped_container_intents": 25,
+      "complete_scenarios": ["BOUNDARY", "INTERIOR", "REAL_FROZEN_NA_LEDGER"],
+      "official_adjusted_values_equal": 2520,
+      "complete_RDS_vectors_read_back": 18,
+      "statistical_formulas_changed": false,
+      "actual_MR_estimates_computed": false,
+      "raw_GWAS_rows_parsed_for_analysis": false,
+      "whole_project_integrity_verifier_reads_frozen_input_bytes": true,
+      "runtime_backend": "EXPLICIT_OWNER_BOUND_CANONICAL_ALTERNATE_NOT_DEFAULT"
+    },
+    "gate_declared_entry": {
+      "session": "29d87332e5d743218f798437a8eb369d",
+      "seal": "ea772e92258310c7d243391be2f1194f068e3888ef8187f3ceb34c583220b8f5",
+      "state": "CLEANED",
+      "worker_exit_status": 0,
+      "members_rehashed": 71,
+      "actual_containers": 8,
+      "stopped_container_intents": 8,
+      "cases": ["positive", "foreign-output", "primary-upgrade", "authority-upgrade", "stale-adapter", "incomplete-loo", "qualified-identity", "registry-identity"],
+      "complete_projection_rows": 564,
+      "original_projection_columns": 18,
+      "all_23_input_identities_checked": true,
+      "RDS_deserialized_by_Python": false,
+      "official_MR_numerical_equivalence_certified_by_gate": false,
+      "runtime_backend": "EXPLICIT_OWNER_BOUND_CANONICAL_ALTERNATE_NOT_DEFAULT",
+      "default_backend_availability_proved": false
+    }
+  },
+  "preserved_failed_attempts": [
+    {
+      "session": "9b123a6354be439bb44b505f2ba89998",
+      "seal": "8c13d8ab5cb1c08e85d8098a6fdcbca7f5bbb4a0c4fc721344d7a2b3694b6f8b",
+      "worker_exit_status": 1,
+      "failure": "OFFICIAL_PYTHON_IMAGE_ABSENT_FROM_DEFAULT_STORE",
+      "method_containers_started": 0,
+      "counts_as_pass": false
+    }
+  ],
+  "nodes": [
+    {
+      "kind": "twosamplemr_v432_a_exploratory",
+      "official_method": "PROVEN_SCOPED_REAL_39_CURRENT_ADAPTER_INDEPENDENT_AUTHOR_PACKAGE_CALLS",
+      "engineering_interface": "NINE_DECLARED_PORTS_FULLY_CHECKED",
+      "current_connected_DAG": "PENDING",
+      "study_contract": "LEGACY_SEEN_O2_PRIMARY_NA_FAMILY_ONE_ONLY"
+    },
+    {
+      "kind": "frozen_a_family_assemble",
+      "official_method": "STUDY_DEFINED_ELIGIBILITY_HELPERS_NOT_AN_OFFICIAL_STATISTICAL_PACKAGE",
+      "engineering_interface": "SOURCE_EXECUTION_REPAIR_AND_THREE_SCENARIO_DIRECT_REPLAY_PROVEN_SCOPED",
+      "current_connected_DAG": "PENDING",
+      "study_contract": "FROZEN_MISSING_LEDGER_OR_EXPLICIT_SYNTHETIC_CASES_NOT_REAL_ELIGIBILITY_ASSIGNMENT"
+    },
+    {
+      "kind": "frozen_a_family_adjust",
+      "official_method": "OFFICIAL_R_STATS_4_6_1_2520_COMPLETE_VALUES_18_RDS_VECTORS",
+      "engineering_interface": "THREE_SCENARIO_DIRECT_REPLAY_PROVEN_SCOPED",
+      "current_connected_DAG": "PENDING",
+      "study_contract": "COMPLETE_FOUR_FAMILIES_RAW_NA_PRESERVED"
+    },
+    {
+      "kind": "frozen_a_family_publish",
+      "official_method": "NOT_APPLICABLE_ENGINEERING_TRANSPORT_ONLY_NO_PYTHON_ADJUSTMENT",
+      "engineering_interface": "THREE_SCENARIO_DIRECT_REPLAY_PROVEN_SCOPED",
+      "current_connected_DAG": "PENDING",
+      "study_contract": "STANDALONE_FAMILY_OUTPUT_DOES_NOT_CARRY_MR_LINEAGE"
+    },
+    {
+      "kind": "frozen_a_legacy_family_gate",
+      "official_method": "NOT_APPLICABLE_ENGINEERING_BARRIER_ON_OFFICIAL_CPYTHON_3_14_7",
+      "engineering_interface": "TWENTY_THREE_INPUT_FOUR_OUTPUT_DECLARED_ENTRY_EIGHT_CASES_PROVEN_SCOPED",
+      "current_connected_DAG": "PENDING",
+      "study_contract": "NO_PRIMARY_P_INGESTION_NO_OVERLAP_INFERENCE_RETAIN_SEPARATE_LINEAGE_RECEIPT"
+    }
+  ],
+  "connected_probe": {
+    "scope": "LOCKED_A_LEGACY_CONNECTED_TECHNICAL_O2_PRIMARY_NA_NOT_G0",
+    "source_nodes": 21,
+    "method_nodes": 7,
+    "bindings": 65,
+    "original_guard_test_ids_preserved": 37,
+    "new_guard_test_ids": 16,
+    "actual_build_status": "PENDING_AUTHORITATIVE_RESULT",
+    "actual_connected_graph_executed": false
+  },
+  "preserved_scientific_constraints": {
+    "edge_count": 276,
+    "path_count": 288,
+    "member_count": 696,
+    "A_family_counts": {"A_PRIMARY_EDGES": 88, "A_EXPANDED_EDGES": 188, "A_PRIMARY_PATHS": 36, "A_EXPANDED_PATHS": 252},
+    "unassigned_overlap_entries": 275,
+    "O2_primary_remains_missing": true,
+    "B_S_status": "CONDITIONAL_NOT_READY",
+    "GS01_status": "OPEN"
+  },
+  "production_changed": false,
+  "full_plan_completed": false,
+  "scientific_authorization_granted": false,
+  "g0_granted": false
+}

@@ -1,7 +1,5 @@
 import csv
 import hashlib
-import importlib.machinery
-import importlib.util
 import io
 import json
 import math
@@ -10,6 +8,7 @@ from pathlib import Path
 import stat
 import sys
 import tempfile
+import types
 
 
 SOURCES = [
@@ -141,15 +140,12 @@ def family_ids(edges, paths):
 
 
 def helpers(path):
-    loader = importlib.machinery.SourceFileLoader('frozen_a_family_original_helpers', str(path))
-    spec = importlib.util.spec_from_loader(loader.name, loader)
-    module = importlib.util.module_from_spec(spec)
-    previous = sys.dont_write_bytecode
-    try:
-        sys.dont_write_bytecode = True
-        loader.exec_module(module)
-    finally:
-        sys.dont_write_bytecode = previous
+    path = ordinary(path)
+    payload = read(path, expected_size=SOURCES[7][1])
+    require(checksum(payload) == SOURCES[7][2], 'Frozen original helper source identity differs')
+    module = types.ModuleType('frozen_a_family_original_helpers')
+    module.__file__ = str(path)
+    exec(compile(payload, str(path), 'exec'), module.__dict__)
     return {name: getattr(module, name) for name in FUNCTIONS}
 
 

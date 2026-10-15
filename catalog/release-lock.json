@@ -667,8 +667,8 @@
         },
         {
           "path": "source-lock.json",
-          "sha256": "e6d0c3dac38fcb95ab453ca641fc1aaf48962c4e4e0db591e4bf4e3875e38352",
-          "bytes": 4075,
+          "sha256": "ba5ef2a169547dfa4c7e4c24bafec6c501922661f5bc0a212901ef06324ffe9f",
+          "bytes": 4076,
           "executable": false
         }
       ],
@@ -17841,8 +17841,8 @@
         },
         {
           "path": "scripts/family.py",
-          "sha256": "3370bf9a604de0c3e6acab9e1e7617f7caba579c6630e96f17e0d2f4c002d1ba",
-          "bytes": 26707,
+          "sha256": "338a864e0cfa9c4ab4df181728f28b1a08c6a841cbea906946dc3de90c40a43a",
+          "bytes": 26620,
           "executable": false
         }
       ],
@@ -17917,6 +17917,31 @@
           "path": "scripts/qualify.py",
           "sha256": "81421c4467c4d204e576949b9a364dd487ffb647e9e429bb922ed7938b1f5a69",
           "bytes": 21400,
+          "executable": false
+        }
+      ],
+      "source_inventory_only": true,
+      "scientific_certified": false,
+      "auto_enable": false
+    },
+    {
+      "directory": "research-adapters/frozen-a-legacy-family-gate",
+      "plugin_name": "frozen-a-legacy-family-gate",
+      "kinds": [
+        "frozen_a_legacy_family_gate"
+      ],
+      "image_reference": "docker.io/library/python@sha256:7bf6c3111fe094f8ee1a1cbcdc63c4cfb345b0e3df42d5aa9a90b3b4b022ab6d",
+      "files": [
+        {
+          "path": "manifest.toml",
+          "sha256": "f07cd4c67cd01037dc9285670fcf3ec021990a4e2e0ebe356a601358e24bf1c1",
+          "bytes": 1823,
+          "executable": false
+        },
+        {
+          "path": "scripts/gate.py",
+          "sha256": "6c921c4ed2cfece1bc56031a0a40b83c1c1efbdd643d6e32f370ee851da42537",
+          "bytes": 18545,
           "executable": false
         }
       ],

@@ -1,0 +1,35 @@
+schema_version = 1
+plugin_name = "frozen-a-legacy-family-gate"
+
+[image]
+reference = "docker.io/library/python@sha256:7bf6c3111fe094f8ee1a1cbcdc63c4cfb345b0e3df42d5aa9a90b3b4b022ab6d"
+tag = "3.14.7-slim-trixie-linux-amd64"
+upstream = "Official CPython 3.14.7; immutable frozen family validation and publication helpers; no statistical calculation"
+license = "MIT"
+
+[[nodes]]
+kind = "frozen_a_legacy_family_gate"
+desc = "Checks frozen exploratory MR lineage before complete missing-ledger transport."
+doc = "Twenty-three Files: all nine legacy MR outputs; frozen config, certificate, R lock, method proof; nine frozen family sources; exact family.py helper. Checks complete exploratory tables and original missing ledger. Outputs only a mechanical request and unchanged 564-row eligibility projection. No primary P values, overlap assignment, RDS parsing, independent numerical certification or scientific authorization."
+timeout_secs = 120
+stage_in_mode = "copy"
+artifact_prefix = "/artifacts/frozen_a_legacy_family_gate"
+
+[nodes.resources]
+cpus = 1.0
+memory = "1Gi"
+network = "isolated"
+read_only_rootfs = true
+pull_policy = "never"
+pids_limit = 64
+
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}, {type="file"}, {type="file"}, {type="file"}, {type="file"}, {type="file"}, {type="file"}, {type="file"}, {type="file"}, {type="file"}, {type="file"}, {type="file"}, {type="file"}, {type="file"}, {type="file"}, {type="file"}, {type="file"}, {type="file"}, {type="file"}, {type="file"}, {type="file"}, {type="file"}]
+outputs = [{path="family-request.json",format="json"}, {path="eligibility-projection.tsv",format="tsv"}, {path="gate-receipt.json",format="json"}, {path="gate.log",format="text"}]
+
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/gate.py"
+
+[nodes.command.env]
+PYTHONDONTWRITEBYTECODE = "1"
