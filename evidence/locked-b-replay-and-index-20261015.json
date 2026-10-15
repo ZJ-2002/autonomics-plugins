@@ -1,0 +1,254 @@
+{
+  "schema": "LOCKED_B_REPLAY_AND_INDEX_EVIDENCE_V1",
+  "status": "BOUNDED_REAL_B_FULL_GRAPH_OFFICIAL_REFERENCE_PROVEN_NOT_DEPLOYED",
+  "scientific_plugin_revision": "efb691f43a47037a3b9fff48a6cb08dff472426e",
+  "original_full_source_verification": {
+    "session": "d585c6c7ef5f49b7bc3845d722572eec",
+    "manifest_sha256": "ae4bdb186263789615ad6123376b2c9a090f850e2f0920528eb79f53a9b81bf7",
+    "actual_exit": 0,
+    "hash_checks": 46786,
+    "unique_files": 23669,
+    "read_only": true,
+    "root_rehashed_members": 6
+  },
+  "real_intake_interface": {
+    "session": "643c0e2a44534a55adfc6e692b0f5de8",
+    "manifest_sha256": "03c81447fb93505fc70aa908ed6f5635484d902c944559fbb26bc7f5af48266c",
+    "actual_exit": 0,
+    "inputs": 19,
+    "outputs": 10,
+    "genes": 23786,
+    "selected_assays": 22,
+    "independent_raw_decimal_projection": true,
+    "wrong_sha_exit": 2,
+    "wrong_sha_normal_outputs": 0,
+    "containers_finished": 2,
+    "root_rehashed_members": 34,
+    "dag_executed": false,
+    "model_fitted": false
+  },
+  "fixed_candidate_reconciliation": {
+    "session": "bdd0c7e63071444a8c71ad158518b73e",
+    "manifest_sha256": "26a6344e777dee2141cc5ed250275c376e22ad5238bae1ca3b1704261d49958b",
+    "actual_exit": 0,
+    "root_rehashed_members": 4,
+    "fixed_original_slots": 120,
+    "slots_with_new_links": 6,
+    "not_reconciled_this_batch": 114,
+    "verified_fact_packets_only": 5,
+    "manual_historical_nonzero_worker_packets": 1,
+    "actual_synthetic_tests": 26,
+    "new_node_certificates": 0,
+    "alternative_routes_never_upgrade_original_domain": true
+  },
+  "bounded_user_authorization": {
+    "scope": "LOCKED_LEGACY_B_THREE_MODEL_REPLAY_NOT_G0",
+    "private_receipt_sha256": "fd8d56a7dd76eea82bab82d4a07c94d4e1e2f9040d69881e02810cf84e916299",
+    "technical_execution_authorized": true,
+    "scientific_authorization_granted": false
+  },
+  "full_replay": {
+    "status": "USER_AUTHORIZED_B_FULL_ISOLATED_TECHNICAL_REPLAY_PROVEN_NOT_DEPLOYED",
+    "session": "e8804f4a61f147c38bf323ae79251736",
+    "manifest_sha256": "169cbc3bd5fdc0c837868cafca0f623a4fbfdbf47884f28721b260794e5e3d05",
+    "state": "CLEANED",
+    "actual_worker_exit": 0,
+    "root_rehashed_members": 193,
+    "actual_final_scope_guards_passed": 12,
+    "full_graph_executed": true,
+    "official_full_reference_executed": true,
+    "whole_RDS_comparison_executed": true,
+    "post_fit_original_verifier_executed": true,
+    "full_positive_DAG": {
+      "nodes": 29,
+      "edges": 64,
+      "published_processing_ports": 28,
+      "official_models": 3
+    },
+    "actual_input_bindings_verified": 64,
+    "distinct_processing_kinds": 4,
+    "models": [
+      "primary",
+      "unadjusted",
+      "therapy_sensitivity"
+    ],
+    "numeric_table_comparisons": 570864,
+    "rds_numeric_element_count_not_separately_reported": true,
+    "official_reference": {
+      "unaltered_original_run_B_source_and_numeric_block": true,
+      "independent_R_process": true,
+      "all_23786_rows_per_model": true,
+      "complete_RDS_objects_compared": true,
+      "comparisons": [
+        {
+          "model": "primary",
+          "rows": 23786,
+          "numeric_fields": [
+            "beta",
+            "moderated_se",
+            "df",
+            "lo",
+            "hi",
+            "p_raw",
+            "q_BH",
+            "q_BY"
+          ],
+          "max_absolute_errors": {
+            "beta": 0.0,
+            "moderated_se": 0.0,
+            "df": 0.0,
+            "lo": 0.0,
+            "hi": 0.0,
+            "p_raw": 0.0,
+            "q_BH": 3.3306690738754696e-16,
+            "q_BY": 0.0
+          },
+          "atol": 1e-12,
+          "rtol": 1e-11
+        },
+        {
+          "model": "unadjusted",
+          "rows": 23786,
+          "numeric_fields": [
+            "beta",
+            "moderated_se",
+            "df",
+            "lo",
+            "hi",
+            "p_raw",
+            "q_BH",
+            "q_BY"
+          ],
+          "max_absolute_errors": {
+            "beta": 0.0,
+            "moderated_se": 0.0,
+            "df": 0.0,
+            "lo": 0.0,
+            "hi": 0.0,
+            "p_raw": 0.0,
+            "q_BH": 1.3322676295501878e-15,
+            "q_BY": 0.0
+          },
+          "atol": 1e-12,
+          "rtol": 1e-11
+        },
+        {
+          "model": "therapy_sensitivity",
+          "rows": 23786,
+          "numeric_fields": [
+            "beta",
+            "moderated_se",
+            "df",
+            "lo",
+            "hi",
+            "p_raw",
+            "q_BH",
+            "q_BY"
+          ],
+          "max_absolute_errors": {
+            "beta": 0.0,
+            "moderated_se": 0.0,
+            "df": 0.0,
+            "lo": 0.0,
+            "hi": 0.0,
+            "p_raw": 0.0,
+            "q_BH": 8.881784197001252e-16,
+            "q_BY": 0.0
+          },
+          "atol": 1e-12,
+          "rtol": 1e-11
+        }
+      ],
+      "original_whole_R_program_guards_executed": false
+    },
+    "intake_positive_DAG": {
+      "nodes": 20,
+      "edges": 19,
+      "published_ports": 10
+    },
+    "historical_family_refusal_DAG": {
+      "nodes": 5,
+      "edges": 4,
+      "normal_outputs": 0,
+      "old_Python_q_used_as_official": false
+    },
+    "full_wrong_source_DAG": {
+      "nodes": 29,
+      "edges": 64,
+      "method_failure": "intake",
+      "downstream_methods_not_executed": 9
+    },
+    "canonical_sources_unchanged": true,
+    "post_verifier": {
+      "actual_exit": 0,
+      "passed": true,
+      "hash_checks": 46786,
+      "unique_file_hashes": 23669,
+      "scientific_release": false
+    },
+    "container_intents_reconciled": 18,
+    "remaining_owned_containers": 0,
+    "complete_family_TSV_byte_identity_claimed": false,
+    "RDS_namespace_loading_message_not_method_warning": true,
+    "node_proof_tsv": "evidence/locked-b-replay-node-proof-20261015.tsv"
+  },
+  "validation_checker_repairs": [
+    "actual run_name-specific port binding",
+    "elementwise recursive RDS numeric and structural checks",
+    "expected refusal must have exact exit/image/diagnostic",
+    "runner and record must be real same-archive sealed members",
+    "failure or cancellation cannot stand in for attributable upstream skip"
+  ],
+  "source_files": {
+    "tools/prove_locked_b_source_transport.py": {
+      "sha256": "191b0dccfe26e21f9fdd0c727ef1be52306927791e98e01242d82d690691dd56",
+      "bytes": 48190
+    },
+    "tests/test_locked_b_source_transport.py": {
+      "sha256": "ca440492d6fd5e3206a22623dc3e86b265f709bdec341e365aa3e84981551ef8",
+      "bytes": 11684
+    },
+    "tools/reconcile_ab_evidence_index.py": {
+      "sha256": "44878add55a5a656f15e2c936e269ba1ef9b2c4a16c81e7a5c22733da6975c72",
+      "bytes": 21802
+    },
+    "tests/test_reconcile_ab_evidence_index.py": {
+      "sha256": "dff17d52576de6ce588af1dae2c3fb6113fdda6e3eb885255b12eb25000d962b",
+      "bytes": 12668
+    },
+    "tools/build_locked_b_plugin_probe.py": {
+      "sha256": "d392980398f0e93f69ade212aa5e43cce70904368fb36a68d3bb92636c5f7d7e",
+      "bytes": 8649
+    },
+    "tools/probes/official_plugin_dag.rs": {
+      "sha256": "d9ffd3ce28c2efb4004f0f6b796e1572d63a1f5fcd5d35ba0498faf79652788f",
+      "bytes": 47033
+    },
+    "evidence/locked-b-replay-node-proof-20261015.tsv": {
+      "sha256": "c5f1b964b990a327833b9a2a750d9e2ce33defda2f3b950e0f845dee1a410fae",
+      "bytes": 8806
+    }
+  },
+  "production_restarted": false,
+  "production_hot_loaded": false,
+  "production_configuration_changed": false,
+  "frozen_study_changed": false,
+  "old_results_overwritten": false,
+  "new_unseen_validation_claimed": false,
+  "scientific_release_granted": false,
+  "g0_granted": false,
+  "bounded_runner_build": {
+    "session": "f4c8121158944b39ad97b8d12cd457fc",
+    "manifest_sha256": "b5e59ee792a554465a43b1be6613c8feae9f51ebee9f2d232702f2b2dbd6a305",
+    "state": "CLEANED",
+    "worker_exit": 0,
+    "root_rehashed_members": 22,
+    "actual_guard_tests_passed": 12,
+    "guard_tests_ignored": 0,
+    "guard_tests_filtered": 0,
+    "runner_sha256": "982f2c1864d8f08008cf4daac53157329ab940cc7fa851356991eb891c111448",
+    "engine_candidate": "8370d22ea7d6a2cba6e72cae8b48bc1e82f44f90",
+    "engine_parent": "4ceefbd821baab8deebb070645a2fb8b1fa8e1ba",
+    "production_upgrade": false
+  }
+}

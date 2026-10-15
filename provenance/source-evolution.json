@@ -921,6 +921,24 @@
         "bytes": 98,
         "git_blob": "a7ac3c35572bd7ed21b80616a35c72395b9cbd69"
       }
+    },
+    {
+      "path": "plugins/twosamplemr/manifest.toml",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/twosamplemr-plugin.git",
+        "revision": "c29cce4a4908590bc313a66ac92dfda44476ea1e",
+        "sha256": "293a71f3cda85945f7e36c4b9f840f714bf9cba20251acaea8cb687da7decfa3",
+        "bytes": 9482,
+        "git_blob": "2c09eb01a314e0065543d19d5c121a5502fc4341"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "fef5686111f2ab9653180627fe14346f7b812eec",
+        "path": "plugins/twosamplemr/manifest.toml",
+        "sha256": "6623acec14683fc35745eac9241c20851e6f381b0b0e00a42687e495f112588a",
+        "bytes": 9758,
+        "git_blob": "75cc3f634c281f7a4846e97e44a46c11b87ad241"
+      }
     }
   ]
 }

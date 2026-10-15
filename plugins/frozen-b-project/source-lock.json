@@ -51,8 +51,8 @@
       "bytes": 6148
     },
     "quality/required-tests.json": {
-      "sha256": "86db889411581c1b29df296f6706ed4ccdba04bbd416ba4a1d46e9050d26ae9f",
-      "bytes": 30573
+      "bytes": 76158,
+      "sha256": "3adae0c66e6774477529940834e9f1221b956745fc6a8c5833260a9e672069c7"
     },
     "tests/test_frozen_b_intake_budget.py": {
       "sha256": "5d063da2ee0f3313caa257db2dd87304f10d0d36cdaebb06436a4627fa0ecf31",
@@ -69,6 +69,30 @@
     "tests/prove_frozen_b_family_contract.py": {
       "sha256": "dd5807a7af8bbac9237d3a5b8517a5d4b686edf245faad87a4f25f8b792a8d20",
       "bytes": 7558
+    },
+    "tools/prove_locked_b_source_transport.py": {
+      "sha256": "191b0dccfe26e21f9fdd0c727ef1be52306927791e98e01242d82d690691dd56",
+      "bytes": 48190
+    },
+    "tools/build_locked_b_plugin_probe.py": {
+      "sha256": "0d8047975a87293db3f5d01a7812af3dc593064fd6a2c09da7f1cb6c8be562ac",
+      "bytes": 11594
+    },
+    "tools/probes/official_plugin_dag.rs": {
+      "sha256": "2a23a4189c0a3df9d8c39071e0d5b33a386f342338d2076e1c29b8f97aa1c4c7",
+      "bytes": 77039
+    },
+    "tools/reconcile_ab_evidence_index.py": {
+      "sha256": "44878add55a5a656f15e2c936e269ba1ef9b2c4a16c81e7a5c22733da6975c72",
+      "bytes": 21802
+    },
+    "tests/test_locked_b_source_transport.py": {
+      "sha256": "ca440492d6fd5e3206a22623dc3e86b265f709bdec341e365aa3e84981551ef8",
+      "bytes": 11684
+    },
+    "tests/test_reconcile_ab_evidence_index.py": {
+      "sha256": "dff17d52576de6ce588af1dae2c3fb6113fdda6e3eb885255b12eb25000d962b",
+      "bytes": 12668
     }
   },
   "transport_repair_baseline_revision": "7c240cf387439f820ac07a72aa67deac6f0406ef",

@@ -1,0 +1,175 @@
+{
+  "schema": "FROZEN_A_COMPLETE_FAMILY_DIRECT_RUNTIME_DRAFT_V1",
+  "status": "DRAFT_DIRECT_RUNTIME_PROVEN_ISOLATED_DAG_PENDING_NOT_DEPLOYED",
+  "date": "2026-10-15",
+  "original_candidate_slots": [17, 18],
+  "fixed_original_candidate_denominator": 120,
+  "new_candidate_slots_added": 0,
+  "claim": "Exact frozen full-family engineering and official-adjustment direct runtime; not generic hypothesize equivalence, DAG certification, production admission or G0.",
+  "kinds": [
+    "frozen_a_family_assemble",
+    "frozen_a_family_adjust",
+    "frozen_a_family_publish"
+  ],
+  "source_pins": {
+    "research-adapters/frozen-a-family-assembly/manifest.toml": {
+      "bytes": 2770,
+      "sha256": "a2ba1a3522b89bf4f229ca649480f9cac0348bcd581a47b287535a2ece2b64cf"
+    },
+    "research-adapters/frozen-a-family-assembly/scripts/family.py": {
+      "bytes": 26707,
+      "sha256": "3370bf9a604de0c3e6acab9e1e7617f7caba579c6630e96f17e0d2f4c002d1ba"
+    },
+    "research-adapters/frozen-a-family-adjustment/manifest.toml": {
+      "bytes": 1636,
+      "sha256": "55ce64e5a2cc16ba43962fef7c3039c8df9e83a2670934f1a8b7ff2f383541da"
+    },
+    "research-adapters/frozen-a-family-adjustment/scripts/adjust.R": {
+      "bytes": 21205,
+      "sha256": "debf19afa415433aa00e9258ff82b56e562bf43a6b2fa96eae4c57d0cb93b412"
+    }
+  },
+  "official_adjustment": {
+    "function": "stats::p.adjust",
+    "invocation": "adjust_full(p, method)",
+    "R_version": "4.6.1",
+    "stats_version": "4.6.1",
+    "original_methods_sha256": "f7e334db38e331acc30cd0117ca9f2b82831523d1c07ce742382eacbd3aff1cd",
+    "unchanged_definition_with_final_lf_sha256": "2d110232f5f1c3097d763686df1ecec5212e3ca18b4b226ac8f5562c388813fd",
+    "R_container_image": "ghcr.io/zj-2002/mrlap-official@sha256:78f195b862a3b7c5f8d96a96576cfb2c66b08f9bd31a739da59a017726cd063d",
+    "MRlap_called": false,
+    "raw_missing_preserved": true,
+    "frozen_helper_missing_adjustment_value": 1,
+    "missing_to_one_is_p_adjust_default": false,
+    "R_node_independently_reopens_all_nine_original_sources": false,
+    "source_content_and_registry_order_rechecked_by_assembly_and_publication": true
+  },
+  "family_counts": {
+    "A_PRIMARY_EDGES": 88,
+    "A_EXPANDED_EDGES": 188,
+    "A_PRIMARY_PATHS": 36,
+    "A_EXPANDED_PATHS": 252
+  },
+  "edge_methods": ["BH", "BY"],
+  "path_methods": ["BY"],
+  "per_scenario": {
+    "family_rows": 564,
+    "vector_count": 6,
+    "adjustment_rows": 840
+  },
+  "strict_IUT": {
+    "definition": "max(p_XM, p_MY) only when both components are estimable",
+    "any_missing_component_preserves_raw_missing": true,
+    "p_XY_product_or_significance_gate_substitution_allowed": false
+  },
+  "technical_scenarios": [
+    {"scenario": "BOUNDARY", "scope": "SYNTHETIC_NOT_RESEARCH"},
+    {"scenario": "INTERIOR", "scope": "SYNTHETIC_NOT_RESEARCH"},
+    {
+      "scenario": "REAL_FROZEN_NA_LEDGER",
+      "scope": "FROZEN_LEDGER_MECHANICAL_ONLY_NOT_RESEARCH",
+      "all_raw_P_missing": true,
+      "all_adjustment_placeholders_one": true,
+      "scientific_estimation_eligibility_granted": false
+    }
+  ],
+  "direct_runtime": {
+    "session": "1dd93528d56d4cbe8a18e63247b0c2ee",
+    "manifest_sha256": "93fdedb6434a3ab570cec95e400909ef8b12408819be1acc33732b01dfbf0ccb",
+    "state": "CLEANED",
+    "actual_worker_exit": 0,
+    "actual_launcher_exit": 0,
+    "independently_rehashed_members": 183,
+    "independently_rehashed_bytes": 2582799,
+    "exact_archive_membership_verified": true,
+    "positive_method_exits_zero": 9,
+    "method_refusals_exit_two": 16,
+    "method_executions_by_kind": {
+      "frozen_a_family_assemble": 14,
+      "frozen_a_family_adjust": 5,
+      "frozen_a_family_publish": 6
+    },
+    "actual_container_intents": 25,
+    "same_backend_stopped_intents": 25,
+    "containers_remaining": 0,
+    "container_cpus": 1,
+    "container_memory_limit": "1Gi",
+    "container_network": "isolated",
+    "container_read_only_rootfs": true,
+    "container_pull_policy": "never",
+    "actual_DAG_executed": false
+  },
+  "specific_refusal_cases": [
+    "wrong-family", "foreign-id", "boolean-p", "out-of-range-p",
+    "mixed-row-scope", "mixed-row-scenario", "research-scope", "missing-id",
+    "duplicate-id", "nonfinite-p", "changed-frozen-source", "shortened-vector",
+    "wrong-path-method", "wrong-R-version", "nonfinite-q", "foreign-output"
+  ],
+  "refusal_contract": {
+    "actual_kind_and_pinned_image_checked": true,
+    "specific_method_diagnostic_checked": true,
+    "nonempty_declared_failure_log_checked": true,
+    "normal_outputs_absent_except_preexisting_foreign_control": true,
+    "foreign_control_bytes_preserved": 27,
+    "OOM_or_infrastructure_failure_counted_as_method_refusal": false
+  },
+  "independent_official_oracle": {
+    "session": "ab47448d3e7b49bc96610c3529d94257",
+    "manifest_sha256": "22387c3e20caecb8eaee9e671fa4a78a3e28c7d690f66bd300e5c7726095a048",
+    "independently_rehashed_members": 21,
+    "independently_rehashed_bytes": 896556,
+    "golden_regenerated": false,
+    "all_three_scenarios_vectors_ID_P_method_order_match": true,
+    "q_values_exact": 2520,
+    "published_complete_adjustment_vectors_byte_equal": true
+  },
+  "official_RDS_readback": {
+    "execution_route": "Separate pinned official host R/stats 4.6.1 process, not additional containers",
+    "actual_exit": 0,
+    "complete_objects": 3,
+    "complete_vectors": 18,
+    "q_values_exact": 2520,
+    "checked_fields": [
+      "vector keys", "analysis_id", "p_raw", "raw NA mask", "p_for_adjustment",
+      "q", "method", "n_total", "input_sha256", "adjustment_definition",
+      "R_version", "stats_version"
+    ],
+    "q_exact_to_old_oracle_and_actual_stats_p_adjust": true,
+    "counterexamples": [
+      {"case": "repeated-scenario-object", "actual_exit": 1, "specific_assertion": "names(payload$vectors)"},
+      {"case": "changed-input-hash", "actual_exit": 1, "specific_assertion": "payload$input_sha256"}
+    ]
+  },
+  "frozen_sources": {
+    "original_sources_unchanged": 9,
+    "content_and_device_inode_size_mtime_ctime_verified": true,
+    "original_post_verifier_actual_exit": 0,
+    "original_post_verifier_read_only": true,
+    "hash_checks": 46786,
+    "unique_files": 23669,
+    "all_project_scientific_gates_passed": false,
+    "scientific_truth_certified": false
+  },
+  "pending": {
+    "isolated_current_source_DAG": "PENDING",
+    "resident_daemon_loading_for_these_three_kinds": "PENDING_NOT_DEPLOYED",
+    "production_admission_for_these_three_kinds": "NOT_GRANTED"
+  },
+  "deployment_separation": {
+    "operator_later_allowed_production_restart": true,
+    "existing_core_A_B_plugin_cutover_is_separate": true,
+    "existing_core_families": ["twosamplemr-v432-a", "bulk-limma-normalized", "frozen-b-project"],
+    "core_restart_does_not_deploy_new_family_kinds": true
+  },
+  "raw_GWAS_read": false,
+  "MR_estimates_computed": false,
+  "real_overlap_eligibility_assigned": false,
+  "pending_overlap_classes_filled": false,
+  "MVP_branch_enabled": false,
+  "B_S": "CONDITIONAL_NOT_READY",
+  "GS01": "OPEN",
+  "spatial_null_model_locked": false,
+  "production_deployed_for_new_family": false,
+  "scientific_authorization_granted": false,
+  "g0_granted": false
+}

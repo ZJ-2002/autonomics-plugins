@@ -1,0 +1,64 @@
+schema_version = 1
+plugin_name = "frozen-a-family-assembly"
+
+[image]
+reference = "docker.io/library/python@sha256:7bf6c3111fe094f8ee1a1cbcdc63c4cfb345b0e3df42d5aa9a90b3b4b022ab6d"
+tag = "3.14.7-slim-trixie-linux-amd64"
+upstream = "Official CPython 3.14.7; unchanged frozen three Python eligibility/IUT/ID helpers; official R adjustments are separate"
+license = "MIT"
+
+[[nodes]]
+kind = "frozen_a_family_assemble"
+desc = "Assembles complete frozen edge/path families in explicit nonresearch technical scopes."
+doc = "Nine exact frozen sources and one explicit synthetic or missing-ledger request. Preserves all 564 IDs and six complete 840-row BH/BY input vectors, retaining raw NA. Uses only original primary_p, strict_conjunction and assert_locked_ids; no Python p-value adjustment, MR, real O-class assignment or scientific release."
+timeout_secs = 120
+stage_in_mode = "copy"
+artifact_prefix = "/artifacts/frozen_a_family_assemble"
+
+[nodes.resources]
+cpus = 1.0
+memory = "1Gi"
+network = "isolated"
+read_only_rootfs = true
+pull_policy = "never"
+pids_limit = 64
+
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}, {type="file"}, {type="file"}, {type="file"}, {type="file"}, {type="file"}, {type="file"}, {type="file"}, {type="file"}]
+outputs = [{path="assembly.tsv",format="tsv"}, {path="vectors.tsv",format="tsv"}, {path="assembly-receipt.json",format="json"}, {path="assembly.log",format="text"}]
+
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/family.py"
+
+[nodes.command.env]
+PYTHONDONTWRITEBYTECODE = "1"
+FROZEN_A_FAMILY_MODE = "assemble"
+
+[[nodes]]
+kind = "frozen_a_family_publish"
+desc = "Publishes complete frozen families using only verified official R adjusted values."
+doc = "Eight assembly/official-R/registry inputs. Validates exact original source identities, complete family IDs, six correction vectors, R/stats 4.6.1 receipt, original adjust_full definition and actual adjusted/RDS hashes. RDS is not parsed in Python and q is never recomputed. Exclusive outputs preserve raw NA and scope; technical transport is not scientific certification."
+timeout_secs = 120
+stage_in_mode = "copy"
+artifact_prefix = "/artifacts/frozen_a_family_publish"
+
+[nodes.resources]
+cpus = 1.0
+memory = "1Gi"
+network = "isolated"
+read_only_rootfs = true
+pull_policy = "never"
+pids_limit = 64
+
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}, {type="file"}, {type="file"}, {type="file"}, {type="file"}, {type="file"}, {type="file"}]
+outputs = [{path="family.tsv",format="tsv"}, {path="family-vectors.tsv",format="tsv"}, {path="family-audit.json",format="json"}, {path="family.log",format="text"}]
+
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/family.py"
+
+[nodes.command.env]
+PYTHONDONTWRITEBYTECODE = "1"
+FROZEN_A_FAMILY_MODE = "publish"

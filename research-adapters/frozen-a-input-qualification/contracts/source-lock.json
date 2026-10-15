@@ -1,0 +1,36 @@
+{
+  "schema":"FROZEN_V432_A_INPUT_QUALIFICATION_SOURCE_CONTRACT_V1",
+  "scope":"FROZEN_X01_M06_RAW_QC_AND_PLINK_QUALIFICATION_ONLY_NOT_MR_OR_G0",
+  "Python":"3.14.7",
+  "image":"docker.io/library/python@sha256:7bf6c3111fe094f8ee1a1cbcdc63c4cfb345b0e3df42d5aa9a90b3b4b022ab6d",
+  "image_config_digest":"sha256:ea130d51594b38acddd30f9f2542a38c37736000f1710fb8c1058b6c3e613f8c",
+  "PLINK_version":"PLINK v1.90b7.2 64-bit (11 Dec 2023)",
+  "panel_bundle":"wjixiang/catalog-plink-ref-1000g-eur-binary",
+  "panel_digest":"sha256:9f483fd11fbb2e73a97ab1af172e45e569c7b8ed7edec5572e35a2b3fa614b21",
+  "inputs":[
+    {"port":0,"name":"GCST90652391.h.tsv.gz","bytes":242104432,"sha256":"ed3b562cd73337e23d31c5facf8d2646eeb4399b14003513729f85743c5d4f16"},
+    {"port":1,"name":"GCST90002393.h.tsv.gz","bytes":2577239641,"sha256":"8d0d508e5373af82839ed92a5dc9c175779ac2ad02dc8566c087b85ff77b568f"},
+    {"port":2,"name":"A_ANALYSIS_CONFIG.json","bytes":3499,"sha256":"8ccb70529da5c4b8494e31cbbe45e62e1b333f603d19517b671671a2fafd404f"},
+    {"port":3,"name":"G0_V432_CERTIFICATE.json","bytes":2324,"sha256":"aa8905a9d830839e88d3da1081f50732f290fbd561a832ca2a6841ca364ecbb2"},
+    {"port":4,"name":"prepare_minimum_g0.py","bytes":11745,"sha256":"dfd51939dd2d7d6c5ed9322c047a86df0f65cbc0ac5522e69c008c8a698e9208"},
+    {"port":5,"name":"verify_minimum_ld.py","bytes":2841,"sha256":"34ac788b92f17a8f2ce19596108eb8f7e5d1c21dbcf448b38e6c61e90dc3f7b0"},
+    {"port":6,"name":"plink","bytes":41730792,"sha256":"03ed6dd8882fddee7a89396c59ea56e4b17bbc4411d3049910e5d713fc8a135f"},
+    {"port":7,"name":"manifest.json","bytes":11272,"sha256":"fe6a3d9717ea70714dcf1c8c9d15b2790501f030a93283042adebab3e8f1ed2b"},
+    {"port":8,"name":"SOFTWARE_LOCK.tsv","bytes":2319,"sha256":"3deee8b8e390fc1da21886c170241515889c06adab0cbe74bc31c9d5d87675d6"}
+  ],
+  "existing_expected_outputs":{
+    "A_INPUT_MANIFEST.json":"63cc4a1494778194996a8f349e430184ca0341e36404830624960867ba0ea185",
+    "A_GWS_CANDIDATES.tsv":"ab2708dd0500d72f7505c3187542c58e78e4674251b737d1e4c3e62b8b72d99a",
+    "A_LD_EXCLUSIONS.tsv":"bf60396a0b6dfa24e5208656a742af58d6f16bbc18ca6e5495ee543bc8c528fd",
+    "A_OUTCOME_MATCHES.tsv":"20b5269c35c322a5491138cf5a95d8c0ebff085ca12a6fe0c09c9d472fec30cd",
+    "A_CLUMP_INPUT.tsv":"52a140535afede920ed6c7cf1af62ec27ff4b75fd87b6679c5f08476871b8910",
+    "A_LD_CLUMPED_INSTRUMENTS.tsv":"254c57122637840e6dc4f952e6a73ba1e660063442e7a2b2d6b5e194db25d85a",
+    "A_RETAINED_HAPLOTYPE_LD.tsv":"ad84c8501b97a0913a3ace84cb137fbb8ca009b773d34a759da3f72a829989b4"
+  },
+  "dynamic_path_outputs_not_expected_to_be_byte_identical":["A_QC_AND_LD.json","A_LD_PAIRWISE_ACCEPTANCE.json"],
+  "expected_clump_commands":13,
+  "expected_paircheck_commands":13,
+  "expected_complete_haplotype_pairs":11,
+  "scientific_authorization_granted":false,
+  "g0_granted":false
+}

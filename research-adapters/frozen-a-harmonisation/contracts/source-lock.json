@@ -1,0 +1,32 @@
+{
+  "schema": "FROZEN_V432_A_HARMONISATION_SOURCE_CONTRACT_V1",
+  "scope": "FROZEN_39_IV_LEGACY_HARMONISATION_ONLY_NOT_RAW_QC_PLINK_MR_OR_G0",
+  "R": "4.6.1",
+  "TwoSampleMR": "0.7.11",
+  "observed_container_TwoSampleMR_RemoteSha": null,
+  "source_commit_supported_by_frozen_host_identity": "d4df21929fdabeb2f89686ffaad0db5f56973d64",
+  "canonical_host_description_sha256": "693abf30cec91e706d2f29acfc255542c7059f4760479c1132f28274f6e1a5b5",
+  "container_description_sha256": "911b67c8ea5bdc0985f51db6c98ff7016e829216043fe816fb5d462314aae531",
+  "package_namespace_function_count": 171,
+  "package_namespace_aggregate_sha256": "127840d8db8ff340b824c6f882cfa263746f5ab93623629c28d19a15968efe73",
+  "package_identity_proof_session": "4f717274ece54f4396b8097b4db0ad8a",
+  "package_identity_proof_manifest_sha256": "bf9ce79a277c51193bb7a8af3be6ca7c9231f14567d9e7f1d0fbcc7016364f48",
+  "seed": 432202610,
+  "qualify_A_block_bytes": 2172,
+  "qualify_A_block_sha256": "50be9627766c996714e1c18ef7c32862ed2f9807814a9f61b5b3bd7c476e4f1d",
+  "inputs": [
+    {"port":0,"name":"A_LD_CLUMPED_INSTRUMENTS.tsv","sha256":"254c57122637840e6dc4f952e6a73ba1e660063442e7a2b2d6b5e194db25d85a"},
+    {"port":1,"name":"A_OUTCOME_MATCHES.tsv","sha256":"20b5269c35c322a5491138cf5a95d8c0ebff085ca12a6fe0c09c9d472fec30cd"},
+    {"port":2,"name":"A_ANALYSIS_CONFIG.json","sha256":"8ccb70529da5c4b8494e31cbbe45e62e1b333f603d19517b671671a2fafd404f"},
+    {"port":3,"name":"G0_V432_CERTIFICATE.json","sha256":"aa8905a9d830839e88d3da1081f50732f290fbd561a832ca2a6841ca364ecbb2"},
+    {"port":4,"name":"R_DEPENDENCY_LOCK.tsv","sha256":"8aeaa7bb2b22b2c4ae9852dc65d32d4f81cb927d875ecdd135822f2f1c2b8a56"},
+    {"port":5,"name":"g0_v432_methods.R","sha256":"f7e334db38e331acc30cd0117ca9f2b82831523d1c07ce742382eacbd3aff1cd"}
+  ],
+  "existing_expected_outputs": {
+    "A_HARMONIZED_INPUT_AUDIT.tsv":"9d2b7c1e7ab66b3825b1563874d98fbf2a2bc341ab0a6948537f8ee81846a2fa",
+    "A_FROZEN_EXPLORATORY_INPUT.tsv":"9d2b7c1e7ab66b3825b1563874d98fbf2a2bc341ab0a6948537f8ee81846a2fa",
+    "A_HARMONIZATION_QUALIFICATION.json":"b0ec0e08840d3c77ea636a37b5b893af6051fcea7692c13de70b4c110b5960e7"
+  },
+  "scientific_authorization_granted": false,
+  "g0_granted": false
+}

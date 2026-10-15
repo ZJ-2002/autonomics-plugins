@@ -1,0 +1,45 @@
+schema_version = 1
+plugin_name = "frozen-a-family-adjustment"
+
+[image]
+reference = "ghcr.io/zj-2002/mrlap-official@sha256:78f195b862a3b7c5f8d96a96576cfb2c66b08f9bd31a739da59a017726cd063d"
+tag = "R-4.6.1-stats-frozen-family"
+upstream = "R Core stats 4.6.1 p.adjust called by the unchanged frozen adjust_full definition"
+license = "GPL-2.0-or-later"
+
+[[nodes]]
+kind = "frozen_a_family_adjust"
+desc = "Adjusts six complete frozen A family vectors with the original R helper and official stats::p.adjust."
+doc = """
+Inputs are vectors.tsv, assembly.tsv, the exact assembly receipt and the original
+frozen g0_v432_methods.R. Validates all 564 assembly rows and six ordered vectors
+of 840 rows across fixed 88/188/36/252 families. Raw missing P remains missing;
+only the unchanged adjust_full helper substitutes one internally. Edge families
+use BH and BY; path families use BY. The source declarations for the other eight
+upstream files are checked, not independently reopened here. No MR, overlap
+adjudication, family selection, scientific release or G0 is performed.
+"""
+timeout_secs = 300
+stage_in_mode = "copy"
+artifact_prefix = "/artifacts/frozen_a_family_adjust"
+
+[nodes.resources]
+cpus = 1.0
+memory = "1Gi"
+network = "isolated"
+read_only_rootfs = true
+pull_policy = "never"
+pids_limit = 64
+
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}, {type="file"}, {type="file"}]
+outputs = [
+  {path="adjusted.tsv",format="tsv"},
+  {path="adjustment.RDS",format="r_rds"},
+  {path="adjustment-receipt.json",format="json"},
+  {path="adjustment.log",format="text"},
+]
+
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/adjust.R"
