@@ -2,7 +2,7 @@
 
 `twosamplemr_v432_a_exploratory` accepts the project's already independent,
 action-2 harmonised dotted-column TSV. It preserves input row order and values,
-does not load the catalog's 503-person PLINK panel, and never calls MRlap.
+does not load any PLINK reference panel, and never calls MRlap.
 The pinned existing image supplies official TwoSampleMR 0.7.11 and R 4.6.1.
 Runtime version checks reject another environment.
 

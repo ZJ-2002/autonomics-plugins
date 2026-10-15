@@ -1,0 +1,51 @@
+schema_version = 1
+plugin_name = "frozen-a-harmonisation"
+
+[image]
+reference = "ghcr.io/zj-2002/mrlap-official@sha256:78f195b862a3b7c5f8d96a96576cfb2c66b08f9bd31a739da59a017726cd063d"
+tag = "TwoSampleMR-0.7.11-R-4.6.1"
+upstream = "Official TwoSampleMR 0.7.11 @ d4df21929fdabeb2f89686ffaad0db5f56973d64; unaltered frozen v4.3.2 qualify-A branch"
+license = "MIT"
+
+[[nodes]]
+kind = "frozen_a_v432_harmonisation"
+desc = "Replays official frozen X01-to-M06 action-2 harmonisation of the existing 39 clumped instruments."
+doc = """
+Six exact frozen files: A_LD_CLUMPED_INSTRUMENTS.tsv,
+A_OUTCOME_MATCHES.tsv, A_ANALYSIS_CONFIG.json, G0_V432_CERTIFICATE.json,
+R_DEPENDENCY_LOCK.tsv and original g0_v432_methods.R. Verifies all six
+hashes and extracts the unchanged qualify-A branch from that scientific
+source, then executes its actual official format_data/harmonise_data calls
+with redirected output helpers. No raw GWAS QC, PLINK, new selection, MR
+estimates, proxies, sample-overlap correction or G0 authorization occurs.
+The exact current 39-IV output must also satisfy the declared inclusive
+palindromic EAF/F/INFO envelope; inconsistency refuses publication instead
+of modifying the original branch. Normal outputs require successful complete
+execution and fresh exclusive publication. Failure retains a diagnostic log.
+This narrow frozen legacy replay is not a generic harmonisation implementation.
+"""
+timeout_secs = 300
+stage_in_mode = "copy"
+artifact_prefix = "/artifacts/frozen_a_v432_harmonisation"
+
+[nodes.resources]
+cpus = 1.0
+memory = "1Gi"
+network = "isolated"
+read_only_rootfs = true
+pull_policy = "never"
+pids_limit = 64
+
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}, {type="file"}, {type="file"}, {type="file"}, {type="file"}]
+outputs = [
+  {path="A_HARMONIZED_INPUT_AUDIT.tsv",format="tsv"},
+  {path="A_FROZEN_EXPLORATORY_INPUT.tsv",format="tsv"},
+  {path="A_HARMONIZATION_QUALIFICATION.json",format="json"},
+  {path="INPUT_METHOD_PROVENANCE.json",format="json"},
+  {path="harmonisation.log",format="text"},
+]
+
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/harmonise.R"

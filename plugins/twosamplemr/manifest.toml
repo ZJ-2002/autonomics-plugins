@@ -74,7 +74,7 @@ outcome = { type = "string", doc = "Trait name stamped onto outcome; cannot be e
 # Rust; the v0 param vocabulary has no enum type, so the script rejects
 # unknown names with the legacy message (coloc/deseq2 precedent).
 method_list = { type = "string_array", default = ["mr_egger_regression", "mr_weighted_median", "mr_ivw", "mr_simple_mode", "mr_weighted_mode"], min_len = 1, doc = "TwoSampleMR method names passed to mr(method_list=); each must be an official method (mr_wald_ratio, mr_two_sample_ml, mr_egger_regression, mr_egger_regression_bootstrap, mr_simple_median, mr_weighted_median, mr_penalised_weighted_median, mr_ivw, mr_ivw_radial, mr_ivw_mre, mr_ivw_fe, mr_simple_mode, mr_weighted_mode, mr_weighted_mode_nome, mr_simple_mode_nome, mr_sign, mr_uwr, mr_grip)" }
-harmonise_action = { type = "int", default = 2, min = 1.0, max = 3.0, doc = "Allele harmonisation action passed to harmonise_data(): 1 keep, 2 flip (default), 3 drop discordants" }
+harmonise_action = { type = "int", default = 2, min = 1.0, max = 3.0, doc = "Official harmonise_data() action: 1 assume forward-strand alleles without palindrome strand inference; 2 infer strand using allele frequencies for palindromic SNPs (default); 3 correct non-palindromic strands and drop all palindromic SNPs" }
 clump = { type = "bool", default = true, doc = "Select independent instruments with official PLINK2 against the 1000G EUR panel before harmonisation; false feeds every input SNP straight to TwoSampleMR" }
 clump_p1 = { type = "number", default = 5e-8, exclusive_min = 0.0, max = 1.0, doc = "Index-SNP p-value threshold (PLINK2 --clump-p1); genome-wide significant by default" }
 clump_p2 = { type = "number", default = 1e-6, exclusive_min = 0.0, max = 1.0, doc = "Secondary p-value threshold for clumped SNPs (PLINK2 --clump-p2); must be >= clump_p1" }
@@ -145,7 +145,7 @@ id_exposure = { type = "string", doc = "Trait identifier stamped onto id.exposur
 exposure = { type = "string", doc = "Trait name stamped onto exposure; cannot be empty" }
 id_outcome = { type = "string", doc = "Trait identifier stamped onto id.outcome; cannot be empty" }
 outcome = { type = "string", doc = "Trait name stamped onto outcome; cannot be empty" }
-harmonise_action = { type = "int", default = 2, min = 1.0, max = 3.0, doc = "Allele harmonisation action passed to harmonise_data(): 1 keep, 2 flip (default), 3 drop discordants" }
+harmonise_action = { type = "int", default = 2, min = 1.0, max = 3.0, doc = "Official harmonise_data() action: 1 assume forward-strand alleles without palindrome strand inference; 2 infer strand using allele frequencies for palindromic SNPs (default); 3 correct non-palindromic strands and drop all palindromic SNPs" }
 units_exposure = { type = "string", optional = true, doc = "Optional free-text units label stamped onto units.exposure in the harmonised table; empty keeps whatever read_exposure_data found" }
 units_outcome = { type = "string", optional = true, doc = "Optional units.outcome label; same semantics as units_exposure" }
 

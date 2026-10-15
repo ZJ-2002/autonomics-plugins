@@ -1,4 +1,4 @@
-"""Build the exact locked-B technical probe and execute its self-contained Rust guards."""
+"""Build the exact locked A/B technical probe and execute its self-contained Rust guards."""
 
 import argparse
 import hashlib
@@ -26,6 +26,10 @@ GUARDS = {
     'transport_tests::full_replay_requires_exact_typed_29_node_64_edge_topology',
     'transport_tests::full_replay_cannot_change_source_images_methods_or_authorization_identity',
     'transport_tests::full_replay_does_not_relax_no_fit_mode',
+    'transport_tests::a_harmonisation_requires_exact_six_sources_and_one_method',
+    'transport_tests::a_harmonisation_rejects_fit_sql_other_plugins_and_source_substitution',
+    'transport_tests::a_harmonisation_requires_all_six_unique_input_bindings',
+    'transport_tests::a_harmonisation_cannot_be_relabelled_synthetic',
 }
 
 
@@ -73,7 +77,7 @@ def main():
     blob = git('hash-object','-w',str(source_file))
     git('update-index','--add','--cacheinfo','100644,'+blob+','+SOURCE_PATH)
     tree = git('write-tree')
-    commit = git('commit-tree',tree,'-p',PARENT,'-m','Add scope-locked B technical transport and replay probe')
+    commit = git('commit-tree',tree,'-p',PARENT,'-m','Add scope-locked A qualification and B technical transport replay probe')
     changed = git('diff-tree','--no-commit-id','--name-only','-r',PARENT,commit).splitlines()
     if changed != [SOURCE_PATH]:
         raise RuntimeError('Only the reviewed technical probe may differ from the exact parent')
@@ -118,9 +122,9 @@ def main():
             observed = re.findall(r'^test (\S+) \.\.\. ok$', text, re.M)
             write(output/'guards-execution.json',dict(exit=tested.returncode,stdout_sha256=digest(output/'guards.stdout.log'),
                   required_tests=sorted(GUARDS),observed_passed_tests=observed))
-            if (tested.returncode or len(observed)!=12 or set(observed)!=GUARDS
-                    or 'test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out;' not in text):
-                raise RuntimeError('All twelve exact Rust guards must actually pass without ignored or filtered tests')
+            if (tested.returncode or len(observed)!=16 or set(observed)!=GUARDS
+                    or 'test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out;' not in text):
+                raise RuntimeError('All sixteen exact Rust guards must actually pass without ignored or filtered tests')
     after = {path.relative_to(source).as_posix():digest(path) for path in source.rglob('*') if path.is_file() and not path.is_symlink()}
     if before != after or digest(source_file) != source_sha:
         raise RuntimeError('Source changed during exact compilation')

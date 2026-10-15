@@ -10,9 +10,10 @@ import tarfile
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
-PARENT = '827350e9b94a8d490c897db3d8c4e5dd80f5a2c4'
-EXPECTED_TESTS = 290
-FAMILIES = ('twosamplemr-v432-a', 'bulk-limma-normalized', 'frozen-b-project')
+PARENT = 'dfb2f9b819a77309775e9e28831d75c840b5849e'
+EXPECTED_TESTS = 302
+FAMILIES = ('twosamplemr-v432-a', 'bulk-limma-normalized', 'frozen-b-project', 'twosamplemr')
+ADAPTERS = ('frozen-a-harmonisation',)
 EXTRA = ('tests/test_frozen_b_project.py', 'tests/test_frozen_a_current_dag.py',
          'tests/test_normalized_b_current_dag.py', 'tools/prove_frozen_b_family_transport.py',
          'tools/prove_frozen_a_current_dag.py', 'tools/prove_normalized_b_current_dag.py',
@@ -32,6 +33,9 @@ EXTRA += ('tools/prove_locked_b_source_transport.py', 'tools/build_locked_b_plug
           'docs/locked-b-replay-and-index-20261015.md',
           'evidence/locked-b-replay-and-index-20261015.json',
           'evidence/locked-b-replay-node-proof-20261015.tsv')
+EXTRA += ('tools/prove_frozen_a_harmonisation.py', 'tools/prove_frozen_a_package_identity.py',
+          'tests/test_frozen_a_harmonisation.py', 'docs/frozen-a-harmonisation-20261015.md',
+          'evidence/frozen-a-harmonisation-20261015.json')
 
 
 def digest(path):
@@ -58,12 +62,13 @@ def main():
         return subprocess.check_output(['git', '-C', str(ROOT), *arguments], env=environment, input=data).decode().strip()
 
     paths = set(EXTRA)
-    for family in FAMILIES:
-        for path in (ROOT / 'plugins' / family).rglob('*'):
-            if path.is_symlink():
-                raise RuntimeError('Unreviewed source alias')
-            if path.is_file() and '__pycache__' not in path.parts:
-                paths.add(path.relative_to(ROOT).as_posix())
+    for namespace, families in [('plugins', FAMILIES), ('research-adapters', ADAPTERS)]:
+        for family in families:
+            for path in (ROOT / namespace / family).rglob('*'):
+                if path.is_symlink():
+                    raise RuntimeError('Unreviewed source alias')
+                if path.is_file() and '__pycache__' not in path.parts:
+                    paths.add(path.relative_to(ROOT).as_posix())
     identities = {name: digest(ROOT / name) for name in sorted(paths)}
     original = json.loads(git('show', PARENT + ':quality/required-tests.json'))
     sys.path.insert(0, str(ROOT))
@@ -71,7 +76,8 @@ def main():
     for name in ('tests.test_frozen_b_project', 'tests.test_frozen_a_current_dag', 'tests.test_normalized_b_current_dag',
                  'tests.test_frozen_b_intake_budget', 'tests.test_frozen_b_family_contract'):
         additions.update(test_ids(unittest.defaultTestLoader.loadTestsFromName(name)))
-    for name in ('tests.test_locked_b_source_transport', 'tests.test_reconcile_ab_evidence_index'):
+    for name in ('tests.test_locked_b_source_transport', 'tests.test_reconcile_ab_evidence_index',
+                 'tests.test_frozen_a_harmonisation'):
         additions.update(test_ids(unittest.defaultTestLoader.loadTestsFromName(name)))
     original['test_ids'].extend(sorted(additions - set(original['test_ids'])))
     if len(original['test_ids']) != EXPECTED_TESTS or len(set(original['test_ids'])) != EXPECTED_TESTS:
@@ -87,9 +93,28 @@ def main():
         git('update-index', '--add', '--cacheinfo', mode + ',' + blob + ',' + name)
     git('update-index', '--add', '--cacheinfo', '100644,' + git('hash-object', '-w', '--stdin', data=quality) + ',quality/required-tests.json')
     tree = git('write-tree')
-    commit = git('commit-tree', tree, '-p', PARENT, '-m', 'Add bounded real B replay and fixed-node evidence reconciliation tools')
+    message = 'Add official frozen A harmonisation adapter and package identity proof'
+    code_commit = git('commit-tree', tree, '-p', PARENT, '-m', message)
+    evolved_path = 'plugins/twosamplemr/manifest.toml'
+    evolution = json.loads(git('show', PARENT + ':provenance/source-evolution.json'))
+    index = json.loads(git('show', PARENT + ':provenance/source-index.json'))
+    origin = next(row for row in index['plugins'] if row['directory'] == 'plugins/twosamplemr')
+    original = next(row for row in origin['files'] if row['path'] == 'manifest.toml')
+    content = (ROOT / evolved_path).read_bytes()
+    change = dict(path=evolved_path,
+        original=dict(repository=origin['repository'], revision=origin['revision'],
+                      **{key: original[key] for key in ['sha256', 'bytes', 'git_blob']}),
+        current=dict(repository='https://github.com/ZJ-2002/autonomics-plugins.git', revision=code_commit,
+                     path=evolved_path, sha256=hashlib.sha256(content).hexdigest(), bytes=len(content),
+                     git_blob=git('rev-parse', code_commit + ':' + evolved_path)))
+    evolution['changes'] = [row for row in evolution['changes'] if row['path'] != evolved_path] + [change]
+    evolution_bytes = (json.dumps(evolution, indent=2) + '\n').encode()
+    git('update-index', '--add', '--cacheinfo', '100644,' +
+        git('hash-object', '-w', '--stdin', data=evolution_bytes) + ',provenance/source-evolution.json')
+    tree = git('write-tree')
+    commit = git('commit-tree', tree, '-p', code_commit, '-m', 'Record exact imported action documentation source evolution')
     changed = git('diff-tree', '--no-commit-id', '--name-only', '-r', PARENT, commit).splitlines()
-    if not set(changed) <= paths | {'quality/required-tests.json'} or not changed:
+    if not set(changed) <= paths | {'quality/required-tests.json', 'provenance/source-evolution.json'} or not changed:
         raise RuntimeError('Unrelated source in A/B candidate')
     archive = scratch / 'ab-source.tar'
     subprocess.run(['git', '-C', str(ROOT), 'archive', '--format=tar', '-o', str(archive), commit], check=True)
@@ -114,6 +139,8 @@ def main():
     if identities != {name: digest(ROOT / name) for name in paths}:
         raise RuntimeError('A/B source changed during release proof')
     record = dict(status='EXACT_AB_SOURCE_RELEASE_CHECKED_NOT_DEPLOYED', parent=PARENT, commit=commit, tree=tree,
+        actual_commit_parent=code_commit, source_evolution_commit=code_commit,
+        source_evolution_ledger_sha256=hashlib.sha256(evolution_bytes).hexdigest(),
         changed_paths=changed, source_sha256=identities, tests_run=report['tests_run'], source_lock_matches=True,
         no_unrelated_dirty_code_imported=True, production_configuration_changed=False, scientific_authorization_granted=False, g0_granted=False)
     (output / 'VERIFICATION.json').write_text(json.dumps(record, indent=2) + '\n')

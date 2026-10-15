@@ -21,6 +21,11 @@ use vfs::{
 
 const TRANSPORT_SCOPE: &str = "LOCKED_LEGACY_SOURCE_TRANSPORT_NO_FIT_NOT_G0";
 const REPLAY_SCOPE: &str = "LOCKED_LEGACY_B_THREE_MODEL_REPLAY_NOT_G0";
+const A_HARMONISATION_SCOPE: &str = "LOCKED_LEGACY_A_HARMONISATION_NO_FIT_NOT_G0";
+const A_HARMONISATION_MANIFEST: &str =
+    "07051b9e8351ae30a74ac8b25074e256bfb9d2fb0af53922864d0c16101a01fb";
+const A_HARMONISATION_SCRIPT: &str =
+    "03a7325619dd1ff927db37875c7d0c040c0d2bf9e97ef1b8af72c2f5533a91f1";
 const AUTHORIZATION_SHA: &str = "fd8d56a7dd76eea82bab82d4a07c94d4e1e2f9040d69881e02810cf84e916299";
 const SOURCE_SESSION: &str = "d585c6c7ef5f49b7bc3845d722572eec";
 const SOURCE_SEAL: &str = "ae4bdb186263789615ad6123376b2c9a090f850e2f0920528eb79f53a9b81bf7";
@@ -30,16 +35,24 @@ const TRANSPORT_MANIFEST: &str = "939a180cafbdeb45899ea216fe71db7e0a2a77a6fc360d
 
 fn transport_mode(job: &Value) -> Result<bool, Box<dyn std::error::Error>> {
     if job["scope"] == "TECHNICAL_PLUGIN_DAG_NOT_G0" {
-        if job["expected_plugin_name"] == "frozen-b-project"
-            || job["additional_plugins"].as_array().is_some_and(|plugins| {
-                plugins
-                    .iter()
-                    .any(|plugin| plugin["expected_plugin_name"] == "frozen-b-project")
+        if matches!(
+            job["expected_plugin_name"].as_str(),
+            Some("frozen-b-project" | "frozen-a-harmonisation")
+        ) || job["additional_plugins"].as_array().is_some_and(|plugins| {
+            plugins.iter().any(|plugin| {
+                matches!(
+                    plugin["expected_plugin_name"].as_str(),
+                    Some("frozen-b-project" | "frozen-a-harmonisation")
+                )
             })
-        {
-            return Err("fixed real legacy B source cannot be relabelled as synthetic".into());
+        }) {
+            return Err("fixed real legacy source cannot be relabelled as synthetic".into());
         }
         return Ok(false);
+    }
+    if job["scope"] == A_HARMONISATION_SCOPE {
+        validate_a_harmonisation_job(job)?;
+        return Ok(true);
     }
     let full_replay = job["scope"] == REPLAY_SCOPE;
     if job["scope"] != TRANSPORT_SCOPE && !full_replay {
@@ -124,6 +137,89 @@ fn transport_mode(job: &Value) -> Result<bool, Box<dyn std::error::Error>> {
         validate_replay_graph(job)?;
     }
     Ok(true)
+}
+
+fn validate_a_harmonisation_job(job: &Value) -> Result<(), Box<dyn std::error::Error>> {
+    if job["expected_plugin_name"] != "frozen-a-harmonisation"
+        || job["plugin_manifest_sha256"] != A_HARMONISATION_MANIFEST
+        || job["script_sha256"] != json!({"scripts/harmonise.R": A_HARMONISATION_SCRIPT})
+        || job["panel_overrides"] != json!([])
+        || job["panel_manifest_sha256"] != json!({})
+        || job["bundles"] != json!([])
+        || job
+            .get("additional_plugins")
+            .is_some_and(|value| value != &json!([]))
+    {
+        return Err("exact official frozen A qualification source without panels or additional plugins required".into());
+    }
+    let nodes = job["nodes"]
+        .as_array()
+        .ok_or("A qualification nodes required")?;
+    let mut kinds = BTreeMap::new();
+    for node in nodes {
+        let id = node["id"].as_str().ok_or("A node identity required")?;
+        let kind = node["kind"].as_str().ok_or("A node kind required")?;
+        if id.is_empty() || kinds.insert(id, kind).is_some() {
+            return Err("unique A qualification node identities required".into());
+        }
+        match kind {
+            "file_reference" => {
+                let path = node["spec"]["path"]
+                    .as_str()
+                    .ok_or("literal A input VFS path required")?;
+                if !path.starts_with("vfs:///")
+                    || path.contains('\\')
+                    || path.chars().any(char::is_control)
+                    || path[7..]
+                        .split('/')
+                        .any(|part| matches!(part, "" | "." | ".."))
+                {
+                    return Err("A references must stay within the owned VFS fixture".into());
+                }
+            }
+            "frozen_a_v432_harmonisation" if node["spec"] == json!({}) => {}
+            _ => {
+                return Err(
+                    "A qualification permits no MR, fit, SQL or other processing node".into(),
+                );
+            }
+        }
+    }
+    let references = kinds
+        .iter()
+        .filter_map(|(id, kind)| (*kind == "file_reference").then_some(*id))
+        .collect::<std::collections::BTreeSet<_>>();
+    let method = kinds
+        .iter()
+        .filter_map(|(id, kind)| (*kind == "frozen_a_v432_harmonisation").then_some(*id))
+        .collect::<Vec<_>>();
+    if nodes.len() != 7 || references.len() != 6 || method.len() != 1 {
+        return Err("exact six source files and one A qualification node required".into());
+    }
+    let edges = job["edges"]
+        .as_array()
+        .ok_or("A qualification edges required")?;
+    let mut ports = std::collections::BTreeSet::new();
+    let mut sources = std::collections::BTreeSet::new();
+    for edge in edges {
+        let source = edge["from"].as_str().ok_or("A edge source required")?;
+        let port = edge["to_port"].as_u64().ok_or("A input port required")?;
+        if !references.contains(source)
+            || edge["from_port"].as_u64() != Some(0)
+            || edge["to"].as_str() != Some(method[0])
+            || port >= 6
+            || !ports.insert(port)
+            || !sources.insert(source)
+        {
+            return Err(
+                "each exact A source must bind one unique qualification port 0 through 5".into(),
+            );
+        }
+    }
+    if edges.len() != 6 || ports.len() != 6 || sources != references {
+        return Err("exact complete six-edge A qualification graph required".into());
+    }
+    Ok(())
 }
 
 fn validate_replay_graph(job: &Value) -> Result<(), Box<dyn std::error::Error>> {
@@ -499,6 +595,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let job: Value = serde_json::from_slice(&std::fs::read(filename)?)?;
     let real_transport = transport_mode(&job)?;
     let full_replay = job["scope"] == REPLAY_SCOPE;
+    let a_harmonisation = job["scope"] == A_HARMONISATION_SCOPE;
     let source_proof = if real_transport {
         Some(locked_source_proof()?)
     } else {
@@ -778,7 +875,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     };
     let report = dag.run(&configuration, &context, None).await?;
     let evidence = json!({
-        "scope": if full_replay { "REAL_LOCKED_LEGACY_THREE_MODEL_TECHNICAL_REPLAY" } else if real_transport { "REAL_LOCKED_LEGACY_TRANSPORT_NO_FIT" } else { "TECHNICAL_PLUGIN_DAG_NOT_G0" },
+        "scope": if full_replay { "REAL_LOCKED_LEGACY_THREE_MODEL_TECHNICAL_REPLAY" } else if a_harmonisation { "REAL_LOCKED_LEGACY_A_HARMONISATION_NO_FIT" } else if real_transport { "REAL_LOCKED_LEGACY_TRANSPORT_NO_FIT" } else { "TECHNICAL_PLUGIN_DAG_NOT_G0" },
         "source_integrity_proof": source_proof,
         "operator_authorization": authorization,
         "real_locked_legacy_transport_no_fit": real_transport && !full_replay,
@@ -834,6 +931,128 @@ mod transport_tests {
             "scientific_results_computed": false, "scientific_authorization_granted": false,
             "g0_granted": false});
         (evidence, actual)
+    }
+
+    fn a_harmonisation_job() -> Value {
+        let mut value = json!({"scope":A_HARMONISATION_SCOPE,
+            "expected_plugin_name":"frozen-a-harmonisation",
+            "plugin_manifest_sha256":A_HARMONISATION_MANIFEST,
+            "script_sha256":{"scripts/harmonise.R":A_HARMONISATION_SCRIPT},
+            "panel_overrides":[],"bundles":[],"panel_manifest_sha256":{},
+            "nodes":[{"id":"qualification","kind":"frozen_a_v432_harmonisation","spec":{}}],
+            "edges":[]});
+        for port in 0..6 {
+            value["nodes"]
+                .as_array_mut()
+                .unwrap()
+                .push(json!({"id":format!("source{port}"),
+                "kind":"file_reference","spec":{"path":format!("vfs:///source{port}.input")}}));
+            value["edges"]
+                .as_array_mut()
+                .unwrap()
+                .push(json!({"from":format!("source{port}"),
+                "from_port":0,"to":"qualification","to_port":port}));
+        }
+        value
+    }
+
+    #[test]
+    fn a_harmonisation_requires_exact_six_sources_and_one_method() {
+        let value = a_harmonisation_job();
+        assert!(transport_mode(&value).unwrap());
+        let mut changed = value.clone();
+        changed["nodes"].as_array_mut().unwrap().pop();
+        assert!(transport_mode(&changed).is_err());
+        changed = value.clone();
+        changed["nodes"]
+            .as_array_mut()
+            .unwrap()
+            .push(value["nodes"][0].clone());
+        assert!(transport_mode(&changed).is_err());
+        changed = value;
+        changed["nodes"][1]["id"] = json!("qualification");
+        assert!(transport_mode(&changed).is_err());
+    }
+
+    #[test]
+    fn a_harmonisation_rejects_fit_sql_other_plugins_and_source_substitution() {
+        let value = a_harmonisation_job();
+        for kind in [
+            "twosamplemr",
+            "mrlap",
+            "bulk_normalized_limma",
+            "datafusion_sql",
+            "frozen_b_legacy_intake",
+            "unknown",
+        ] {
+            let mut changed = value.clone();
+            changed["nodes"][0]["kind"] = json!(kind);
+            assert!(transport_mode(&changed).is_err(), "{kind}");
+        }
+        for (field, replacement) in [
+            ("expected_plugin_name", json!("another-plugin")),
+            ("plugin_manifest_sha256", json!("0".repeat(64))),
+            ("script_sha256", json!({})),
+            ("panel_overrides", json!([{}])),
+            ("panel_manifest_sha256", json!({"unexpected":"panel"})),
+            ("bundles", json!([{}])),
+            ("additional_plugins", json!([{}])),
+        ] {
+            let mut changed = value.clone();
+            changed[field] = replacement;
+            assert!(transport_mode(&changed).is_err(), "{field}");
+        }
+        let mut changed = value.clone();
+        changed["nodes"][0]["spec"] = json!({"action":1});
+        assert!(transport_mode(&changed).is_err());
+        for path in [
+            "vfs:///../source.input",
+            "vfs:///a//b",
+            "file:///tmp/source",
+            "vfs:///a\\b",
+            "vfs:///a\nb",
+        ] {
+            changed = value.clone();
+            changed["nodes"][1]["spec"]["path"] = json!(path);
+            assert!(transport_mode(&changed).is_err(), "{path}");
+        }
+    }
+
+    #[test]
+    fn a_harmonisation_requires_all_six_unique_input_bindings() {
+        let value = a_harmonisation_job();
+        let mut changed = value.clone();
+        changed["edges"].as_array_mut().unwrap().pop();
+        assert!(transport_mode(&changed).is_err());
+        for (field, replacement) in [
+            ("from", json!("source1")),
+            ("from_port", json!(1)),
+            ("to", json!("source0")),
+            ("to_port", json!(1)),
+            ("to_port", json!(6)),
+        ] {
+            changed = value.clone();
+            changed["edges"][0][field] = replacement;
+            assert!(transport_mode(&changed).is_err(), "{field}");
+        }
+        changed = value.clone();
+        changed["edges"]
+            .as_array_mut()
+            .unwrap()
+            .push(value["edges"][0].clone());
+        assert!(transport_mode(&changed).is_err());
+    }
+
+    #[test]
+    fn a_harmonisation_cannot_be_relabelled_synthetic() {
+        let mut value = a_harmonisation_job();
+        value["scope"] = json!("TECHNICAL_PLUGIN_DAG_NOT_G0");
+        assert!(transport_mode(&value).is_err());
+        value["expected_plugin_name"] = json!("bulk-limma-normalized");
+        value["additional_plugins"] = json!([{"expected_plugin_name":"frozen-a-harmonisation"}]);
+        assert!(transport_mode(&value).is_err());
+        value["scope"] = json!(TRANSPORT_SCOPE);
+        assert!(transport_mode(&value).is_err());
     }
 
     fn replay_job() -> Value {

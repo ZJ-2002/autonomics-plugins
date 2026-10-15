@@ -667,7 +667,7 @@
         },
         {
           "path": "source-lock.json",
-          "sha256": "85f50544266e818a2f8350adcdc5152c59bf286583fc422f01122da988b2279b",
+          "sha256": "8677b5619db60f3c2387abbab4d8c30909e5e1be99d6f382f609b8f0906dd46d",
           "bytes": 4074,
           "executable": false
         }
@@ -15264,8 +15264,8 @@
         },
         {
           "path": "manifest.toml",
-          "sha256": "293a71f3cda85945f7e36c4b9f840f714bf9cba20251acaea8cb687da7decfa3",
-          "bytes": 9482,
+          "sha256": "6623acec14683fc35745eac9241c20851e6f381b0b0e00a42687e495f112588a",
+          "bytes": 9758,
           "executable": false
         },
         {
@@ -15307,8 +15307,8 @@
       "files": [
         {
           "path": "README.md",
-          "sha256": "2520e5da0dafb300b825f707fdd6aeb60a1d75f8deb52b6f802a18e785cf91a7",
-          "bytes": 8654,
+          "sha256": "3dd2fd692400495c535212c48ff31fbb57b4e88c43bc9676495aee9d7bccc2c2",
+          "bytes": 8643,
           "executable": false
         },
         {
@@ -17768,6 +17768,43 @@
           "path": "scripts/run-clump.sh",
           "sha256": "c73585f6e52576c04385a7518a96ddc7d878992d0700bea48d6af0fb4afb10f3",
           "bytes": 28256,
+          "executable": false
+        }
+      ],
+      "source_inventory_only": true,
+      "scientific_certified": false,
+      "auto_enable": false
+    },
+    {
+      "directory": "research-adapters/frozen-a-harmonisation",
+      "plugin_name": "frozen-a-harmonisation",
+      "kinds": [
+        "frozen_a_v432_harmonisation"
+      ],
+      "image_reference": "ghcr.io/zj-2002/mrlap-official@sha256:78f195b862a3b7c5f8d96a96576cfb2c66b08f9bd31a739da59a017726cd063d",
+      "files": [
+        {
+          "path": "README.md",
+          "sha256": "22662eecc0e1c67cf01faf3ee1b928932245d65e57a4e6c43c4cbe402b55e832",
+          "bytes": 4558,
+          "executable": false
+        },
+        {
+          "path": "contracts/source-lock.json",
+          "sha256": "99349e339055059d8639217ca49cba29cf82116959306bdebdb00f774d3c5ce2",
+          "bytes": 2215,
+          "executable": false
+        },
+        {
+          "path": "manifest.toml",
+          "sha256": "07051b9e8351ae30a74ac8b25074e256bfb9d2fb0af53922864d0c16101a01fb",
+          "bytes": 2108,
+          "executable": false
+        },
+        {
+          "path": "scripts/harmonise.R",
+          "sha256": "03a7325619dd1ff927db37875c7d0c040c0d2bf9e97ef1b8af72c2f5533a91f1",
+          "bytes": 14903,
           "executable": false
         }
       ],
