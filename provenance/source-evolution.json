@@ -537,11 +537,11 @@
       },
       "current": {
         "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
-        "revision": "623d2ea570128df2c0886b5dc9b89fac00aa150e",
+        "revision": "65e0ab3f967bdaef7feb98296a57fa8ec062ee52",
         "path": "plugins/pseudobulk/scripts/pseudobulk_counts.py",
-        "sha256": "77884036871586b1be564a8c25f9ab72b2939a987db112aecd328cc86e44c83d",
-        "bytes": 15609,
-        "git_blob": "617b2a252e309c41d62de586c50c1f90db6649a4"
+        "sha256": "d1bb920dbd2c7a938638724432f38a8f56fd8ecd6b8aeb5d9b6e221ed04be109",
+        "bytes": 21097,
+        "git_blob": "b423ccef691ae5bf81fc31c0ff4997500d1526e7"
       }
     },
     {
@@ -938,6 +938,42 @@
         "sha256": "6623acec14683fc35745eac9241c20851e6f381b0b0e00a42687e495f112588a",
         "bytes": 9758,
         "git_blob": "75cc3f634c281f7a4846e97e44a46c11b87ad241"
+      }
+    },
+    {
+      "path": "plugins/single-cell/scripts/score_genes.py",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/single-cell-plugin.git",
+        "revision": "ced1d0cf78be5b5dd8731752d6d796f253bcaf40",
+        "sha256": "9cad19728810b8e9c9933fed33f556870419a985a12f1485ce61d4f4da8c58e8",
+        "bytes": 4973,
+        "git_blob": "46242e635bf0b9126162e6471e868e469153e25f"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "65e0ab3f967bdaef7feb98296a57fa8ec062ee52",
+        "path": "plugins/single-cell/scripts/score_genes.py",
+        "sha256": "dc2815e79b289327ef4ef3c15bf744c1e1557063692b9989c77b2002bf47f774",
+        "bytes": 12674,
+        "git_blob": "5bda9b2b7d3558891ca34811cfb7a22e87d1b9b6"
+      }
+    },
+    {
+      "path": "plugins/single-cell/tests/test_score_genes_contract.py",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/single-cell-plugin.git",
+        "revision": "ced1d0cf78be5b5dd8731752d6d796f253bcaf40",
+        "sha256": "6e50e75b571765c87dfe5723cc2457a03a59c1903a045430cab5124506ecb9f7",
+        "bytes": 2058,
+        "git_blob": "7a22f109739829691d611f2856e4e0b9c24e52f2"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "65e0ab3f967bdaef7feb98296a57fa8ec062ee52",
+        "path": "plugins/single-cell/tests/test_score_genes_contract.py",
+        "sha256": "43fb66628521a85cbc05131367907488d65fc447224adedd8b6977a2e77ee857",
+        "bytes": 2130,
+        "git_blob": "0ec5b7991512e6e0bd1d8d9db97375cb4a2b2eb9"
       }
     }
   ]

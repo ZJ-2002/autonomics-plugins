@@ -278,14 +278,118 @@ metadata_columns = (
 )
 log_lines.append(f"schema\t{SCHEMA}")
 log_lines.append(f"groups_kept={len(kept)}\tgenes={len(genes)}\tinteger={is_integer or 'warned'}")
+
+
+def _publication_handle_fact(handle):
+    import hashlib
+    import stat
+
+    before = os.fstat(handle.fileno())
+    if not stat.S_ISREG(before.st_mode):
+        raise ValueError("publication path must remain an ordinary regular file")
+    signature = lambda value: (value.st_dev, value.st_ino, value.st_uid, value.st_mode,
+        value.st_size, value.st_mtime_ns, value.st_ctime_ns)
+    handle.seek(0)
+    checksum = hashlib.file_digest(handle, "sha256").hexdigest()
+    after = os.fstat(handle.fileno())
+    if signature(before) != signature(after):
+        raise ValueError("publication file identity or content changed while reading")
+    return (after.st_dev, after.st_ino, after.st_uid, after.st_mode, after.st_size, checksum)
+
+
+def _publication_fact(path):
+    import stat
+
+    before = path.lstat()
+    if not stat.S_ISREG(before.st_mode):
+        raise ValueError("publication path must remain an ordinary regular file")
+    descriptor = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+    signature = lambda value: (value.st_dev, value.st_ino, value.st_uid, value.st_mode,
+        value.st_size, value.st_mtime_ns, value.st_ctime_ns)
+    with os.fdopen(descriptor, "rb") as handle:
+        opened = os.fstat(handle.fileno())
+        if signature(before) != signature(opened):
+            raise ValueError("publication file identity changed before open")
+        result = _publication_handle_fact(handle)
+        after = os.fstat(handle.fileno())
+    named_after = path.lstat()
+    if signature(before) != signature(after) or signature(after) != signature(named_after):
+        raise ValueError("publication file identity or content changed while reading")
+    return result
+
+
+def _publication_parent_fact(path):
+    import stat
+
+    parent = path.parent
+    value = parent.lstat()
+    if not stat.S_ISDIR(value.st_mode) or parent.resolve(strict=True) != parent:
+        raise ValueError("ordinary unaliased publication parent required")
+    return value.st_dev, value.st_ino, value.st_uid, value.st_mode
+
+
+def _publication_writer(path, staged_owned, staged_parents):
+    import contextlib
+    import io
+
+    @contextlib.contextmanager
+    def owned_writer():
+        expected = staged_owned[path]
+        parent = staged_parents[path]
+        if _publication_parent_fact(path) != parent:
+            raise ValueError("staging parent changed before writing")
+        descriptor = os.open(path, os.O_RDWR | os.O_NOFOLLOW | os.O_NONBLOCK)
+        with os.fdopen(descriptor, "r+b") as handle:
+            if _publication_handle_fact(handle) != expected or _publication_fact(path) != expected:
+                raise ValueError("staged file changed before writing")
+            if _publication_parent_fact(path) != parent:
+                raise ValueError("staging parent changed before truncation")
+            os.ftruncate(handle.fileno(), 0)
+            handle.seek(0)
+            writer = io.TextIOWrapper(handle, encoding="utf-8", newline="\n")
+            try:
+                yield writer
+                writer.flush()
+                os.fsync(writer.fileno())
+            finally:
+                writer.detach()
+            completed = _publication_handle_fact(handle)
+            if _publication_parent_fact(path) != parent or _publication_fact(path) != completed:
+                raise ValueError("staged file or parent changed during writing")
+            staged_owned[path] = completed
+
+    return owned_writer()
+
+
+def _remove_publication_owned(path, expected, parent):
+    try:
+        if _publication_parent_fact(path) != parent or _publication_fact(path) != expected:
+            return False
+        path.unlink()
+        return True
+    except (OSError, ValueError):
+        return False
+
+
 staged = []
 published = []
+staged_owned = {}
+staged_parents = {}
 try:
     for path in output_paths:
+        parent = _publication_parent_fact(path)
         descriptor, temporary_name = tempfile.mkstemp(prefix=".pseudobulk-", dir=path.parent)
+        created = os.fstat(descriptor)
         os.close(descriptor)
         staged.append(Path(temporary_name))
-    with staged[0].open("w", encoding="utf-8", newline="\n") as handle:
+        initial = _publication_fact(staged[-1])
+        if initial[:5] != (created.st_dev, created.st_ino, created.st_uid, created.st_mode, created.st_size):
+            raise ValueError("new staging file changed before registration")
+        if _publication_parent_fact(staged[-1]) != parent:
+            raise ValueError("staging parent changed during registration")
+        staged_owned[staged[-1]] = initial
+        staged_parents[staged[-1]] = parent
+    with _publication_writer(staged[0], staged_owned, staged_parents) as handle:
         writer = csv.writer(handle, delimiter="\t", doublequote=True, lineterminator="\n")
         writer.writerow([first_col] + ids)
         rows_per_chunk = max(1, min(len(genes), 10_000_000 // max(1, len(kept))))
@@ -297,26 +401,38 @@ try:
                 writer.writerow([gene_name] + block[row_offset].tolist())
         handle.flush()
         os.fsync(handle.fileno())
-    with staged[1].open("w", encoding="utf-8", newline="\n") as handle:
+    with _publication_writer(staged[1], staged_owned, staged_parents) as handle:
         writer = csv.writer(handle, delimiter="\t", doublequote=True, lineterminator="\n")
         writer.writerow(metadata_columns)
         writer.writerows(sample_rows)
-    staged[2].write_text("\n".join(log_lines) + "\n", encoding="utf-8")
-    for temporary in staged[1:]:
-        with temporary.open("rb") as handle:
-            os.fsync(handle.fileno())
+    with _publication_writer(staged[2], staged_owned, staged_parents) as handle:
+        handle.write("\n".join(log_lines) + "\n")
+    for temporary in staged:
+        if _publication_fact(temporary) != staged_owned[temporary]:
+            raise ValueError("staged publication file changed before publication")
     for temporary, destination in zip(staged, output_paths):
+        expected = staged_owned[temporary]
+        parent = staged_parents[temporary]
+        if _publication_parent_fact(destination) != parent or _publication_fact(temporary) != expected:
+            raise ValueError("staged publication file identity or content changed")
         os.link(temporary, destination)
-        published.append((destination, temporary.stat().st_dev, temporary.stat().st_ino))
+        published.append((destination, expected, parent))
+        if _publication_fact(destination) != expected:
+            raise ValueError("published output identity or content differs")
+    for destination, expected, parent in published:
+        if _publication_parent_fact(destination) != parent or _publication_fact(destination) != expected:
+            raise ValueError("published output changed during publication")
+    for temporary in staged:
+        if not _remove_publication_owned(temporary, staged_owned[temporary], staged_parents[temporary]):
+            raise ValueError("owned publication staging cleanup refused")
+    for destination, expected, parent in published:
+        if _publication_parent_fact(destination) != parent or _publication_fact(destination) != expected:
+            raise ValueError("published output changed during staging cleanup")
 except BaseException:
-    for destination, device, inode in published:
-        try:
-            current = destination.lstat()
-            if current.st_dev == device and current.st_ino == inode:
-                destination.unlink()
-        except FileNotFoundError:
-            pass
+    for destination, expected, parent in published:
+        _remove_publication_owned(destination, expected, parent)
     raise
 finally:
     for temporary in staged:
-        temporary.unlink(missing_ok=True)
+        if temporary in staged_owned and temporary in staged_parents:
+            _remove_publication_owned(temporary, staged_owned[temporary], staged_parents[temporary])
