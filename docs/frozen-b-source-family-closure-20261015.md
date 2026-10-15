@@ -1,5 +1,11 @@
 # B source intake and family contract closure
 
+Qualified code candidate: `efb691f43a47037a3b9fff48a6cb08dff472426e`.
+Its exact Git tree executed all251 required local tests with zero failures,
+errors or skips and a matching source catalog. This is a test count, not a
+node count or production approval. See the
+[exact-source release evidence](../evidence/frozen-b-source-family-release-20261015.json).
+
 This follows the A/B candidate `646ab3c22f4dfb2002138d1f2718ff47122a8538`,
 not a new scientific analysis or a production cutover. The operator explicitly
 requested that the running daemon must not be restarted. The previous candidate's
@@ -80,3 +86,13 @@ all passed. The toy R test exercised `CONSTANT_EXPRESSION`, not actual R generat
 of `OFFICIAL_LIMMA_NONFINITE_OR_ZERO_PRECISION`; that second reason's diagnostic
 preservation currently has mechanical fixture evidence only. No claim of an
 independent empirical-Bayes prior validation is made.
+
+The repaired family and previous transport controls additionally executed all17
+tests with zero failures/errors/skips in `f170de6ea54843c1802696ef3a6f85d4`, manifest
+`98588e5278d095b8910ad092bb535da5ec477f9a487075bae8062021f5ae4140`.
+The original ten defects were independently replayed from both immutable baseline
+project and fixture Git objects in `5c3efda055ce49dc8c01afcc432c8910`, manifest
+`787e06a93568aaaf6a6fa9a054ded71c3661b9e30a538223b72cc200d047e874`.
+An initial replay-driver import failure was retained as failed evidence and was
+not counted as an executed reproduction. No test or numerical tolerance was
+relaxed to obtain these passes.
