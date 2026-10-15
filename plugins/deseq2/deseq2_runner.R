@@ -135,6 +135,37 @@ publication_identity <- function(filename) {
   unname(identity)
 }
 
+publication_file_identity <- function(filename) {
+  link <- Sys.readlink(filename)
+  if (!is.na(link) && nzchar(link)) return(NA_character_)
+  metadata <- function() {
+    result <- suppressWarnings(system2("/usr/bin/stat", c("-c", shQuote("%d:%i:%f:%u:%g:%s:%y"), "--", shQuote(filename)), stdout = TRUE, stderr = FALSE))
+    status <- attr(result, "status")
+    if ((!is.null(status) && status != 0L) || length(result) != 1L) return(NA_character_)
+    fields <- strsplit(result, ":", fixed = TRUE)[[1]]
+    if (length(fields) < 7L || is.na(strtoi(fields[[3]], base = 16L)) ||
+        bitwAnd(strtoi(fields[[3]], base = 16L), 61440L) != 32768L) return(NA_character_)
+    unname(result)
+  }
+  before <- metadata()
+  if (is.na(before)) return(NA_character_)
+  checksum <- tryCatch(suppressWarnings(system2("/usr/bin/sha256sum", stdin = filename, stdout = TRUE, stderr = FALSE)), error = function(condition) character())
+  status <- attr(checksum, "status")
+  after <- metadata()
+  link <- Sys.readlink(filename)
+  if ((!is.null(status) && status != 0L) || length(checksum) != 1L ||
+      !grepl("^[0-9a-f]{64}  -$", checksum) || is.na(after) || !identical(before, after) ||
+      (!is.na(link) && nzchar(link))) return(NA_character_)
+  paste0(before, ":", substr(checksum, 1L, 64L))
+}
+
+publication_remove_owned_file <- function(filename, expected) {
+  if (is.na(expected)) return(invisible(FALSE))
+  current <- publication_file_identity(filename)
+  if (is.na(current) || !identical(current, expected)) return(invisible(FALSE))
+  invisible(unlink(filename) == 0L)
+}
+
 main <- function() {
 count_path <- required_env("AUTONOMICS_INPUT0")
 metadata_path <- required_env("AUTONOMICS_INPUT1")
@@ -157,22 +188,27 @@ if (anyDuplicated(identities)) stop("output paths must be distinct", call. = FAL
 if (any(file.access(dirname(output_targets), 2L) != 0L)) {
   stop("output parent directories must be writable", call. = FALSE)
 }
-if (!file.exists("/usr/bin/stat")) stop("GNU stat is required for publication identity checks", call. = FALSE)
+if (!all(file.exists(c("/usr/bin/stat", "/usr/bin/sha256sum", "/usr/bin/rmdir")))) {
+  stop("GNU stat, sha256sum and rmdir are required for publication identity checks", call. = FALSE)
+}
 stages <- character()
 stage_identities <- character()
 staged_identities <- rep(NA_character_, length(output_targets))
+staged_outputs <- character()
 published <- integer()
 complete <- FALSE
 on.exit({
   if (!complete && length(published)) {
     for (index in published) {
-      identity <- publication_identity(output_targets[[index]])
-      if (!is.na(identity) && identical(identity, staged_identities[[index]])) unlink(output_targets[[index]])
+      publication_remove_owned_file(output_targets[[index]], staged_identities[[index]])
     }
   }
   for (index in seq_along(stages)) {
     identity <- publication_identity(stages[[index]])
-    if (!is.na(identity) && identical(identity, stage_identities[[index]])) unlink(stages[[index]], recursive = TRUE)
+    if (!is.na(identity) && identical(identity, stage_identities[[index]])) {
+      if (length(staged_outputs) >= index) publication_remove_owned_file(staged_outputs[[index]], staged_identities[[index]])
+      suppressWarnings(system2("/usr/bin/rmdir", c("--", shQuote(stages[[index]])), stdout = FALSE, stderr = FALSE))
+    }
   }
 }, add = TRUE)
 for (index in seq_along(output_targets)) {
@@ -523,14 +559,28 @@ if (any(file.exists(output_targets)) || any(!is.na(links) & nzchar(links))) {
   stop("output appeared during execution; publication refused", call. = FALSE)
 }
 for (index in seq_along(staged_outputs)) {
-  staged_identities[[index]] <- publication_identity(staged_outputs[[index]])
+  staged_identities[[index]] <- publication_file_identity(staged_outputs[[index]])
   if (is.na(staged_identities[[index]])) stop("cannot verify staged output identity", call. = FALSE)
 }
 for (index in seq_along(staged_outputs)) {
+  if (!identical(publication_identity(stages[[index]]), stage_identities[[index]]) ||
+      !identical(publication_file_identity(staged_outputs[[index]]), staged_identities[[index]])) {
+    stop("staged output changed before publication", call. = FALSE)
+  }
   if (!file.link(staged_outputs[[index]], output_targets[[index]])) {
     stop("output publication failed", call. = FALSE)
   }
   published <- c(published, index)
+  if (!identical(publication_file_identity(output_targets[[index]]), staged_identities[[index]])) {
+    stop("published output identity or contents changed", call. = FALSE)
+  }
+}
+for (index in seq_along(staged_outputs)) {
+  if (!identical(publication_identity(stages[[index]]), stage_identities[[index]]) ||
+      !identical(publication_file_identity(staged_outputs[[index]]), staged_identities[[index]]) ||
+      !identical(publication_file_identity(output_targets[[index]]), staged_identities[[index]])) {
+    stop("output changed before publication completed", call. = FALSE)
+  }
 }
 complete <- TRUE
 }

@@ -1,0 +1,119 @@
+{
+  "scope": "BOUNDED_POST_WRITE_PUBLICATION_OWNERSHIP_NOT_WHOLE_NODE_CERTIFICATION",
+  "baseline_revision": "d3065953a513f5b5f07e436b8ff2da62177341cd",
+  "runners": {
+    "deseq2_de": {
+      "path": "plugins/deseq2/deseq2_runner.R",
+      "old_sha256": "cb019c599face7715089df4c16157851b0403bef5f61a3166123ba913ba170f1",
+      "fixed_sha256": "ea10753445ba649cd87e74a8956c5974f9f7f1b8f4684d9ee6f7d982a5b80b34",
+      "unchanged_original_statistical_statements": 83
+    },
+    "limma_voom": {
+      "path": "plugins/bulk-rnaseq/limma_voom_runner.R",
+      "old_sha256": "4dd81e31f558b311da0fdbcc54415967d7cd237356b54d56cfed7ed284808dcf",
+      "fixed_sha256": "1533681a19e415a1e4efabd7828b626613143fb451291dc1e175a1d017ea8e2f",
+      "unchanged_original_statistical_statements": 74
+    }
+  },
+  "component_evidence": {
+    "session": "c5a6a1911a0e4a4f9f3b3615b05da60a",
+    "manifest_sha256": "30b2e625dc57bb3d4dc57fc53b7ab614bb78ebb8723388a1b9f4bde94213c38c",
+    "actual_worker_exit": 0,
+    "all_members_rehashed": 121,
+    "old_and_fixed_actual_R_publication_observations": 24,
+    "new_self_cleaning_tests": 22,
+    "existing_publication_tests": 2,
+    "original_statistical_AST_and_helpers_unchanged": true,
+    "same_inode_mutation_and_late_mutation_refused": true,
+    "unregistered_stage_members_preserved": true,
+    "unverifiable_or_modified_files_not_deleted": true
+  },
+  "fixed_image_full_entry_status": "SCOPED_TWO_FIXED_IMAGES_FOURTEEN_COMPLETE_ENTRIES_PROVEN",
+  "fixed_image_full_entry_evidence": {
+    "session": "9215bdd27e3145cea9082209afa3b6fc",
+    "manifest_sha256": "66f9e51230e5192a575ce7c25353b9c2848fc18f05d64a0cb19c292809f0cd96",
+    "state": "CLEANED",
+    "actual_worker_exit": 0,
+    "all_members_rehashed": 155,
+    "bytes": 2035237,
+    "actual_full_entries": 14,
+    "actual_official_method_containers": 2,
+    "owned_container_intents_stopped": 2,
+    "synthetic_genes": 200,
+    "synthetic_samples": 12,
+    "R_version": "4.5.3",
+    "DESeq2_version": "1.50.2",
+    "limma_version": "3.66.0",
+    "edgeR_version": "4.8.2",
+    "DESeq2_branch": "mean dispersion fit, no LFC shrinkage, condition plus batch",
+    "limma_branch": "TMM, condition plus batch",
+    "complete_DESeq2_TSV_ports_byte_equal": 3,
+    "complete_limma_ports_byte_equal": 5,
+    "DESeqDataSet_all_equal_tolerance": 0,
+    "DESeqDataSet_environment_identity_compared": false,
+    "DESeqDataSet_compressed_bytes_equal": false,
+    "DESeq2_report_bytes_equal": false,
+    "DESeq2_report_only_exception": "outputs.dataset.md5 independently verified against each complete RDS file; all other fields exact",
+    "technical_alias_retirement": "Six fully enumerated two-alias synthetic foreign-byte groups were detached after confirmed worker and container stoppage, preserving every byte and a mandatory alias receipt before recovery; no computation was rerun"
+  },
+  "isolated_DAG_status": "SCOPED_FOUR_CURRENT_SOURCE_GRAPHS_PROVEN_NOT_RESIDENT_EXECUTION",
+  "isolated_DAG_evidence": {
+    "session": "1fb884dc44864ecba8378b2382a1fc10",
+    "manifest_sha256": "9d01c9c962ff12520fd5b7bab93ce98139788e4eb66fa7b3a117d41a59d55bc7",
+    "state": "CLEANED",
+    "actual_worker_exit": 0,
+    "all_members_rehashed": 148,
+    "bytes": 1588890,
+    "actual_graphs": 4,
+    "nodes_per_graph": 3,
+    "edges_per_graph": 2,
+    "actual_task_receipts": 12,
+    "actual_input_bindings_verified": 8,
+    "positive_graphs": 2,
+    "specific_noninteger_method_refusals": 2,
+    "actual_R_method_refusal_exit": 1,
+    "complete_positive_declared_ports_compared": 10,
+    "normal_ports_published_by_refusals": 0,
+    "actual_method_containers": 4,
+    "actual_nonfitting_RDS_comparison_containers": 1,
+    "owned_containers_stopped": 5,
+    "new_independent_official_numeric_oracle_generated": false,
+    "complete_JSON_equality_exceptions": "Only each input basename against its actual verified staging binding, and the DESeq2 dataset MD5 against its own complete RDS; all remaining keys, structure, values and JSON types exact",
+    "RDS_comparison": "Whole all.equal tolerance zero excluding environments; captured environment contents not independently certified",
+    "SDK_reused_without_build": "54d4987610d14ce7882735c715368c8e",
+    "original_manifest_resource_envelope_certified": false,
+    "actual_technical_container_memory_argv_bytes": 1073741824,
+    "actual_technical_container_cpus": 1,
+    "resident_method_execution_proven": false
+  },
+  "preserved_failed_harness_attempts_not_method_certification": [
+    {
+      "session": "6c7977edd16c4884bfb2e9ae34acc67b",
+      "manifest_sha256": "caa10f59a207e3777bc03f259fc70098cec0d19d3b110cfc34b5471b0c1d06e1",
+      "actual_worker_exit": 1,
+      "failure": "Proof proxy incorrectly expected Gi labels instead of actual SDK byte arguments; no R method started"
+    },
+    {
+      "session": "3b9025fac61547e18a1d33f701515baa",
+      "manifest_sha256": "769e1679add64c78c8b1a0a489c1a7c533842b71f81751bc2daabc995f131299",
+      "actual_worker_exit": 1,
+      "failure": "Proof proxy passed an invalid Gi suffix to Podman; no R method started"
+    },
+    {
+      "session": "9274e8d37bc34d0392a28ceb3a1dd726",
+      "manifest_sha256": "a4903bbdc7228ff8a8db969969f72986c5eafea598031be63d864e8b44b43820",
+      "actual_worker_exit": 1,
+      "failure": "Proof validator incorrectly expected an errors list rather than the actual SDK error map; first R entry succeeded but complete bindings/reference verification did not finish"
+    }
+  ],
+  "production_source_or_method_updated": false,
+  "remaining_exclusions": [
+    "Pre-writer replacement before path-based serializers open a stage is not repaired by these post-write checks",
+    "Arbitrary same-UID mutation, including active stat/hash/unlink races, is not certified",
+    "No five-file atomic transaction, crash recovery or durability certification",
+    "No default apeglm or all dispersion/model branch expansion",
+    "GSE130563 log2-RMA is not count/DESeq2/voom input"
+  ],
+  "scientific_authorization_granted": false,
+  "g0_granted": false
+}
