@@ -16406,21 +16406,27 @@
       "image_reference": "ghcr.io/zj-2002/biotools-py@sha256:7ad6aeafa87672699d28b61b6bed12fc81fcdbfc43222a0abf17e2d56fb806f5",
       "files": [
         {
+          "path": "CANDIDATE.json",
+          "sha256": "95072df49b733485e4b05cf5de6cfb17df989149ae3dcae12cd1979062ffd9e3",
+          "bytes": 710,
+          "executable": false
+        },
+        {
           "path": "README.txt",
-          "sha256": "40cb52e08d4588256bdc8682f78c9bd805508200033648d5d093adff4bf949a7",
-          "bytes": 1552,
+          "sha256": "79a6629525edbfef26df92463f436c368e24652334351a465b954362ca179c65",
+          "bytes": 2980,
           "executable": false
         },
         {
           "path": "manifest.toml",
-          "sha256": "a3a6a61271c4d832dd9d749fa5b65724bd98f525acc27f40eb35097ded58e8f2",
-          "bytes": 7336,
+          "sha256": "2824e4c349fec420fc1376f5e9b231fbf8dad96946f08faaa0767dddd282dce2",
+          "bytes": 7828,
           "executable": false
         },
         {
           "path": "scripts/guards.py",
-          "sha256": "9063cc1640ebcefd7e2e80af6281d55740668cca651d22921dcb5edb15f01dc9",
-          "bytes": 24619,
+          "sha256": "885340a4b4b47222d1d845a790337971c4eb1e2f80210a59d74bcaf755592315",
+          "bytes": 31114,
           "executable": false
         }
       ],
@@ -18508,6 +18514,12 @@
       "path": "lme4-r/Dockerfile",
       "sha256": "7eda58c74707a5e3fd72c6de07021e62d3fff19dfba3ea3cd45c3708828bd923",
       "bytes": 505,
+      "executable": false
+    },
+    {
+      "path": "official-r-stats-python/Dockerfile",
+      "sha256": "eaf2e21e7538d40a53b36a93f3b521bedf609748fe7bb151ac61c0b02fc02b36",
+      "bytes": 1602,
       "executable": false
     }
   ],

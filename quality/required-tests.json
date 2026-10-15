@@ -251,6 +251,14 @@
     "tests.test_frozen_b_intake_budget.FrozenIntakeBudgetTests.test_input_mutation_during_transport_is_rejected",
     "tests.test_frozen_b_intake_budget.FrozenIntakeBudgetTests.test_source_order_cannot_delay_first_frozen_identity_failure",
     "tests.test_frozen_b_intake_budget.FrozenIntakeBudgetTests.test_total_budget_refuses_before_reading_any_source",
-    "tests.test_frozen_b_intake_budget.FrozenIntakeBudgetTests.test_wrong_first_identity_rejected_before_payload_collection"
+    "tests.test_frozen_b_intake_budget.FrozenIntakeBudgetTests.test_wrong_first_identity_rejected_before_payload_collection",
+    "tests.test_cachexia_v432_adapter.LatestContractTests.test_non_correction_guard_functions_retain_original_bytes",
+    "tests.test_cachexia_v432_official_correction.CorrectionTransportTests.test_exact_stdout_header_count_numeric_domain_and_stderr_are_checked",
+    "tests.test_cachexia_v432_official_correction.CorrectionTransportTests.test_missing_r_and_invalid_rows_never_fall_back",
+    "tests.test_cachexia_v432_official_correction.CorrectionTransportTests.test_timeout_and_nonzero_exit_are_refusals",
+    "tests.test_cachexia_v432_official_correction.OfficialRTests.test_distinct_complete_b_family_vectors_do_not_concatenate_model_q",
+    "tests.test_cachexia_v432_official_correction.OfficialRTests.test_ordered_ids_restore_original_row_order_without_prior_q_input",
+    "tests.test_cachexia_v432_official_correction.OfficialRTests.test_paths_use_two_full_registered_vectors_and_preserve_component_states",
+    "tests.test_cachexia_v432_official_correction.OfficialRTests.test_real_r_edges_ties_tiny_p_na_placeholders_and_exact_receipts"
   ]
 }

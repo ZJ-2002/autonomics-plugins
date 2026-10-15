@@ -1,4 +1,5 @@
 """Opt-in latest-design rule transport; scientific approval is never implied."""
+import ast
 import csv
 import hashlib
 import importlib.util
@@ -10,6 +11,8 @@ import sys
 import tempfile
 import tomllib
 import unittest
+
+from tests.test_cachexia_v432_official_correction import HAS_EXACT_R, REQUIRES_R
 
 ROOT = Path(__file__).resolve().parents[1]
 ORIGINAL = ROOT / 'research-adapters/cachexia-contracts'
@@ -55,14 +58,29 @@ class LatestContractTests(unittest.TestCase):
             self.assertEqual(hashlib.sha256((ORIGINAL / name).read_bytes()).hexdigest(), digest)
 
     def test_original_method_bytes_have_only_declared_version_changes(self):
+        # Historical version-only derivation is preserved as an identity proof.
+        # The current candidate explicitly adds official R family correction.
         original = (ORIGINAL / 'scripts/guards.py').read_text()
         expected = original.replace(
             '# engineering reference. The user designated v4.2.1 as the final design on\n# 2026-10-07: its role permits preparation, never scientific authorization.',
             '# engineering reference. The user designated v4.3.2 as the current design.\n# This version role permits preparation, never scientific authorization.')
         expected = expected.replace('    "4.2.1": {"role": "RESEARCH_CONTRACT"},',
                                     '    "4.2.1": {"role": "RESEARCH_CONTRACT"},\n    "4.3.2": {"role": "RESEARCH_CONTRACT"},')
-        self.assertNotEqual(expected, original)
-        self.assertEqual((ADAPTER / 'scripts/guards.py').read_text(), expected)
+        self.assertEqual(hashlib.sha256(expected.encode()).hexdigest(), '9063cc1640ebcefd7e2e80af6281d55740668cca651d22921dcb5edb15f01dc9')
+        self.assertNotEqual((ADAPTER/'scripts/guards.py').read_text(),expected)
+
+    def test_non_correction_guard_functions_retain_original_bytes(self):
+        original = (ORIGINAL / 'scripts/guards.py').read_text()
+        changed = (ADAPTER / 'scripts/guards.py').read_text()
+        functions = lambda source: {node.name: ast.get_source_segment(source,node)
+            for node in ast.parse(source).body if isinstance(node,(ast.FunctionDef,ast.AsyncFunctionDef))}
+        baseline,current=functions(original),functions(changed)
+        for name,body in baseline.items():
+            if name not in {'complete_family','path_rows','main'}:
+                self.assertEqual(current[name],body,name)
+        self.assertIn('stats::p.adjust(p, method = args[[1L]], n = n)',guards.R_ADJUST_PROGRAM)
+        self.assertNotIn('factor = sum(1 / rank',changed)
+        self.assertNotIn('running = min(running,',changed)
 
     def test_exact_latest_role_and_both_version_mix_directions(self):
         self.assertEqual(guards.resolve_active_protocol({'version': '4.3.2'},
@@ -91,6 +109,11 @@ class LatestContractTests(unittest.TestCase):
         self.assertEqual(audit['active_protocol'], '4.3.2')
         self.assertEqual(audit['status'], 'TECHNICAL_CONTRACT_PASS')
         self.assertIs(audit['scientific_G0_granted'], False)
+        receipts = audit['official_p_adjust']
+        self.assertEqual([(r['family'],r['method'],r['n']) for r in receipts],
+                         [('A_PRIMARY_EDGES','BH',4),('A_PRIMARY_EDGES','BY',4)])
+        self.assertEqual(receipts[0]['input_vector_sha256'],receipts[1]['input_vector_sha256'])
+        self.assertTrue(all(r['R_version']=='4.6.1' and r['stats_version']=='4.6.1' and r['scientific_G0_granted'] is False for r in receipts))
         self.assertEqual((directory / 'guard.log').read_bytes(), (directory / 'audit.json').read_bytes())
 
     def test_actual_cli_refuses_denominator_drift_missing_or_stale_protocol(self):
@@ -110,9 +133,20 @@ class LatestContractTests(unittest.TestCase):
         self.assertEqual(new['image'], old['image'])
         self.assertEqual(new['plugin_name'], 'cachexia-contracts-v432')
         self.assertEqual(len(new['nodes']), 5)
+        candidate=json.loads((ADAPTER/'CANDIDATE.json').read_text())
+        self.assertIsNone(candidate['child_image_digest'])
+        self.assertIs(candidate['deployment_ready'],False)
+        self.assertIs(candidate['manifest_is_executable_with_new_R_correction'],False)
+        self.assertIs(candidate['child_built'],False)
+        docker=(ROOT/candidate['child_dockerfile']).read_text()
+        self.assertIn('FROM '+candidate['base_image'],docker)
+        self.assertIn('--no-upgrade python3-minimal',docker)
+        self.assertIn('sha256sum -c',docker)
+        self.assertNotIn('install.packages(',docker.replace('# runtime change; no install.packages(), R update, BLAS change or apt upgrade.',''))
         for node, original in zip(new['nodes'], old['nodes']):
             self.assertEqual(node['kind'], original['kind'])
             self.assertEqual(node['resources'], original['resources'])
+            self.assertEqual(node['ports'], original['ports'])
             self.assertEqual(node['resources']['network'], 'isolated')
             if 'CACHEXIA_ACTIVE_PROTOCOL' in node['command']['env']:
                 self.assertEqual(node['command']['env']['CACHEXIA_ACTIVE_PROTOCOL'], '4.3.2')

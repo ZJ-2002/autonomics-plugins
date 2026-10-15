@@ -1,7 +1,121 @@
 """Fail-closed registered study guards, separate from statistical algorithms."""
 
 from decimal import Decimal, InvalidOperation
+import hashlib
+import json
 import math
+import os
+from pathlib import Path
+import re
+import shutil
+import subprocess
+import tempfile
+
+
+R_ADJUST_TIMEOUT_SECONDS = 45
+# The child reads the entire already-completed family vector through stdin.
+# No user program, R expression, method alias or library is accepted here.
+R_ADJUST_PROGRAM = r'''options(warn = 2, OutDec = ".")
+args <- commandArgs(trailingOnly = TRUE)
+if (length(args) != 2L || !args[[1L]] %in% c("BH", "BY") ||
+    !grepl("^[1-9][0-9]*$", args[[2L]])) stop("invalid fixed p.adjust request")
+if (as.character(getRversion()) != "4.6.1" ||
+    as.character(utils::packageVersion("stats")) != "4.6.1") stop("R/stats 4.6.1 required")
+if (normalizePath(getNamespaceInfo("stats", "path"), mustWork = TRUE) !=
+    normalizePath(file.path(R.home("library"), "stats"), mustWork = TRUE))
+    stop("official base stats namespace required")
+n <- as.numeric(args[[2L]])
+if (!is.finite(n) || n != floor(n) || n > .Machine$integer.max) stop("invalid family n")
+input <- readLines(file("stdin"), warn = FALSE)
+if (length(input) != n || any(!grepl("^[0-9]+(\\.[0-9]*)?([eE][+-]?[0-9]+)?$", input)))
+    stop("complete finite family vector required")
+p <- as.numeric(input)
+if (length(p) != n || any(!is.finite(p)) || any(p < 0 | p > 1)) stop("invalid p vector")
+q <- stats::p.adjust(p, method = args[[1L]], n = n)
+if (length(q) != n || any(!is.finite(q)) || any(q < 0 | q > 1)) stop("invalid official q vector")
+cat(paste("AUTONOMICS_R_STATS_PADJUST_V1", as.character(getRversion()),
+    as.character(utils::packageVersion("stats")), args[[1L]], args[[2L]], sep = "\t"), "\n", sep = "")
+cat(paste(sprintf("%.17g", q), collapse = "\n"), "\n", sep = "")
+'''
+
+
+def _canonical(value):
+    return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False,
+                      allow_nan=False).encode("utf-8")
+
+
+def _sha(raw):
+    return hashlib.sha256(raw).hexdigest()
+
+
+def _file_sha(path):
+    result = hashlib.sha256()
+    with path.open("rb") as stream:
+        for raw in iter(lambda: stream.read(1024 * 1024), b""):
+            result.update(raw)
+    return result.hexdigest()
+
+
+def official_adjust(values, method):
+    """One official subprocess; failures never fall back to a Python formula."""
+    if method not in {"BH", "BY"} or not values:
+        raise ValueError("Official correction requires a complete nonempty BH/BY vector")
+    if any(type(value) not in {int, float} or not math.isfinite(value) or not 0 <= value <= 1
+           for value in values):
+        raise ValueError("Official correction requires finite probabilities")
+    program = R_ADJUST_PROGRAM.encode("utf-8")
+    input_bytes = "".join(("0" if value == 0 else format(value, ".17g")) + "\n" for value in values).encode("ascii")
+    located = shutil.which("Rscript")
+    if located is None:
+        raise ValueError("Official Rscript 4.6.1 is required; no correction fallback")
+    executable = Path(located).resolve(strict=True)
+    binary_sha256 = _file_sha(executable)
+    environment = os.environ.copy()
+    environment.update(LC_ALL="C", LANG="C")
+    try:
+        # File-backed capture prevents an unexpected child from allocating an
+        # unbounded Python stdout buffer. Every file closes on all paths.
+        with tempfile.TemporaryFile() as stdout, tempfile.TemporaryFile() as stderr:
+            run = subprocess.run([str(executable), "--vanilla", "-e", R_ADJUST_PROGRAM,
+                                  method, str(len(values))], input=input_bytes,
+                                 stdout=stdout, stderr=stderr, env=environment,
+                                 timeout=R_ADJUST_TIMEOUT_SECONDS, check=False)
+            if run.returncode != 0:
+                raise ValueError("Official R stats::p.adjust process failed")
+            if stderr.tell() != 0:
+                raise ValueError("Official R stats::p.adjust emitted unexpected stderr")
+            if stdout.tell() > 512 + 32 * len(values):
+                raise ValueError("Official R stats::p.adjust output exceeds its vector bound")
+            stdout.seek(0)
+            raw = stdout.read()
+    except subprocess.TimeoutExpired as error:
+        raise ValueError("Official R stats::p.adjust timed out") from error
+    except (OSError, subprocess.SubprocessError) as error:
+        raise ValueError("Official R stats::p.adjust could not execute") from error
+    if _file_sha(executable) != binary_sha256:
+        raise ValueError("Rscript executable changed during correction")
+    expected = f"AUTONOMICS_R_STATS_PADJUST_V1\t4.6.1\t4.6.1\t{method}\t{len(values)}".encode()
+    lines = raw.split(b"\n")
+    if (not raw.endswith(b"\n") or b"\r" in raw or len(lines) != len(values) + 2
+            or lines[0] != expected or lines[-1] != b""):
+        raise ValueError("Official R stats::p.adjust output/version/count contract differs")
+    q = []
+    for line in lines[1:-1]:
+        if re.fullmatch(rb"[0-9]+(?:\.[0-9]*)?(?:[eE][+-]?[0-9]+)?", line) is None:
+            raise ValueError("Official R stats::p.adjust returned malformed q")
+        value = float(line)
+        if not math.isfinite(value) or not 0 <= value <= 1:
+            raise ValueError("Official R stats::p.adjust returned invalid q")
+        q.append(value)
+    receipt = {"schema_version": 1, "scope": "OFFICIAL_R_STATS_P_ADJUST_NOT_SCIENTIFIC_AUTHORIZATION",
+               "method": method, "n": len(values), "R_version": "4.6.1", "stats_version": "4.6.1",
+               "input_vector_sha256": _sha(input_bytes), "input_vector_bytes": len(input_bytes),
+               "input_encoding": "C_LOCALE_17_DIGIT_DECIMAL_PER_LF",
+               "q_vector_sha256": _sha(b"\n".join(lines[1:-1]) + b"\n"),
+               "q_values_sha256": _sha(_canonical(q)), "stdout_sha256": _sha(raw),
+               "program_sha256": _sha(program), "Rscript_sha256": binary_sha256,
+               "exit_status": run.returncode, "scientific_G0_granted": False}
+    return q, receipt
 
 
 def probability(value):
@@ -93,7 +207,7 @@ def joint_probability(component_p, *, same_construct):
     return None if not same_construct or any(value is None for value in values) else max(values)
 
 
-def complete_family(locked_ids, results, *, method):
+def complete_family(locked_ids, results, *, method, receipts=None):
     identifiers = list(locked_ids)
     if (not identifiers or any(not isinstance(identifier, str) or not identifier for identifier in identifiers)
             or len(set(identifiers)) != len(identifiers)):
@@ -115,20 +229,23 @@ def complete_family(locked_ids, results, *, method):
         row["adjustment_p"] = 1.0 if row["raw_p"] is None else row["raw_p"]
         output.append(row)
     count = len(output)
-    factor = sum(1 / rank for rank in range(1, count + 1)) if method == "BY" else 1.0
+    if receipts is not None and type(receipts) is not list:
+        raise ValueError("Correction receipts must be a list")
+    adjusted, receipt = official_adjust([row["adjustment_p"] for row in output], method)
+    receipt["ordered_test_ids_sha256"] = _sha(_canonical(identifiers))
+    receipt["raw_and_status_sha256"] = _sha(_canonical([
+        [row["test_id"], row["raw_p"], row.get("status")] for row in output]))
     # NOT_ESTIMABLE is a completed scientific outcome; only unfinished work
     # (NOT_RUN/FAILED) keeps the family formally incomplete and unqualified
     # for completion or disclosure.
     family_status = "INCOMPLETE" if any(row.get("status") in {"NOT_RUN", "FAILED"} for row in output) else "COMPLETE"
-    order = sorted(range(count), key=lambda index: (output[index]["adjustment_p"], index))
-    running = 1.0
-    for rank in range(count, 0, -1):
-        index = order[rank - 1]
-        running = min(running, output[index]["adjustment_p"] * count * factor / rank)
-        output[index]["q"] = running
-        output[index]["family_size"] = count
-        output[index]["correction"] = method
-        output[index]["family_status"] = family_status
+    for row, q in zip(output, adjusted):
+        row["q"] = q
+        row["family_size"] = count
+        row["correction"] = method
+        row["family_status"] = family_status
+    if receipts is not None:
+        receipts.append(receipt)
     return output
 
 
@@ -222,7 +339,7 @@ def primary_rows(edges, decisions, results, rules):
     return output
 
 
-def path_rows(paths, edges, rules):
+def path_rows(paths, edges, rules, *, receipts=None):
     identifiers = [row["path_id"] for row in paths]
     if not identifiers or len(set(identifiers)) != len(identifiers):
         raise ValueError("Path universe identities invalid")
@@ -264,7 +381,9 @@ def path_rows(paths, edges, rules):
         selected = [row for row in output if row["family"] == family]
         if len(selected) != rules["planned_counts"][family]:
             raise ValueError("Path family denominator mismatch")
-        adjusted = complete_family([row["test_id"] for row in selected], selected, method="BY")
+        adjusted = complete_family([row["test_id"] for row in selected], selected, method="BY", receipts=receipts)
+        if receipts is not None:
+            receipts[-1]["family"] = family
         for target, row in zip(selected, adjusted):
             target.update(adjustment_p=row["adjustment_p"], q_by=row["q"], family_size=row["family_size"],
                           family_status=row["family_status"])
@@ -353,7 +472,8 @@ def main():
                          rules_version=config["version"])
             _, primary = read_table(os.environ["AUTONOMICS_INPUT1"])
             _, registry = read_table(os.environ["AUTONOMICS_INPUT2"])
-            output = path_rows(registry, primary, config)
+            audit["official_p_adjust"] = []
+            output = path_rows(registry, primary, config, receipts=audit["official_p_adjust"])
             write_table(os.environ["AUTONOMICS_OUTPUT0"], list(output[0]), output)
             audit.update(rows=len(output), estimable=sum(row["status"] == "ESTIMATED" for row in output),
                          not_run=sum(row["status"] == "NOT_RUN" for row in output),
@@ -374,8 +494,11 @@ def main():
             expected = config["planned_counts"].get(family, config["new_supportive_planned_counts"].get(family))
             if expected is None or len(locked) != expected:
                 raise ValueError("Frozen family denominator mismatch")
-            primary = complete_family(locked, request["results"], method="BH")
-            sensitivity = complete_family(locked, request["results"], method="BY")
+            audit["official_p_adjust"] = []
+            primary = complete_family(locked, request["results"], method="BH", receipts=audit["official_p_adjust"])
+            sensitivity = complete_family(locked, request["results"], method="BY", receipts=audit["official_p_adjust"])
+            for receipt in audit["official_p_adjust"]:
+                receipt["family"] = family
             output = [{**row, "q_bh": row["q"], "q_by": sensitivity[index]["q"]}
                       for index, row in enumerate(primary)]
             write_table(os.environ["AUTONOMICS_OUTPUT0"],

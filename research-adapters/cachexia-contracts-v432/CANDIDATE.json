@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "scope": "OFFICIAL_FAMILY_CORRECTION_SOURCE_CANDIDATE_NOT_DEPLOYMENT_OR_QUALIFICATION",
+  "base_image": "ghcr.io/zj-2002/mrlap-official@sha256:78f195b862a3b7c5f8d96a96576cfb2c66b08f9bd31a739da59a017726cd063d",
+  "base_contains_python": false,
+  "child_dockerfile": "shared-image-sources/official-r-stats-python/Dockerfile",
+  "child_image_digest": null,
+  "manifest_image_preserved_from_historical_source": true,
+  "manifest_is_executable_with_new_R_correction": false,
+  "required_R": "4.6.1",
+  "required_stats": "4.6.1",
+  "child_built": false,
+  "container_acceptance_executed": false,
+  "deployment_ready": false,
+  "method_qualified": false,
+  "scientific_G0_granted": false
+}
