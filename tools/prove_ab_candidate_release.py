@@ -10,8 +10,8 @@ import tarfile
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
-PARENT = '8fb0dcca6efc27194cc38318d67caf16337f62ed'
-EXPECTED_TESTS = 251
+PARENT = '827350e9b94a8d490c897db3d8c4e5dd80f5a2c4'
+EXPECTED_TESTS = 290
 FAMILIES = ('twosamplemr-v432-a', 'bulk-limma-normalized', 'frozen-b-project')
 EXTRA = ('tests/test_frozen_b_project.py', 'tests/test_frozen_a_current_dag.py',
          'tests/test_normalized_b_current_dag.py', 'tools/prove_frozen_b_family_transport.py',
@@ -26,6 +26,12 @@ EXTRA += ('tests/test_frozen_b_intake_budget.py', 'tests/test_frozen_b_family_co
           'docs/frozen-b-source-family-closure-20261015.md',
           'docs/ab-candidate-cutover-20261015.md',
           'evidence/frozen-b-source-family-closure-20261015.json')
+EXTRA += ('tools/prove_locked_b_source_transport.py', 'tools/build_locked_b_plugin_probe.py',
+          'tools/probes/official_plugin_dag.rs', 'tools/reconcile_ab_evidence_index.py',
+          'tests/test_locked_b_source_transport.py', 'tests/test_reconcile_ab_evidence_index.py',
+          'docs/locked-b-replay-and-index-20261015.md',
+          'evidence/locked-b-replay-and-index-20261015.json',
+          'evidence/locked-b-replay-node-proof-20261015.tsv')
 
 
 def digest(path):
@@ -65,6 +71,8 @@ def main():
     for name in ('tests.test_frozen_b_project', 'tests.test_frozen_a_current_dag', 'tests.test_normalized_b_current_dag',
                  'tests.test_frozen_b_intake_budget', 'tests.test_frozen_b_family_contract'):
         additions.update(test_ids(unittest.defaultTestLoader.loadTestsFromName(name)))
+    for name in ('tests.test_locked_b_source_transport', 'tests.test_reconcile_ab_evidence_index'):
+        additions.update(test_ids(unittest.defaultTestLoader.loadTestsFromName(name)))
     original['test_ids'].extend(sorted(additions - set(original['test_ids'])))
     if len(original['test_ids']) != EXPECTED_TESTS or len(set(original['test_ids'])) != EXPECTED_TESTS:
         raise RuntimeError('Exact A/B release test inventory differs')
@@ -79,7 +87,7 @@ def main():
         git('update-index', '--add', '--cacheinfo', mode + ',' + blob + ',' + name)
     git('update-index', '--add', '--cacheinfo', '100644,' + git('hash-object', '-w', '--stdin', data=quality) + ',quality/required-tests.json')
     tree = git('write-tree')
-    commit = git('commit-tree', tree, '-p', PARENT, '-m', 'Close frozen B source and family receipt contracts')
+    commit = git('commit-tree', tree, '-p', PARENT, '-m', 'Add bounded real B replay and fixed-node evidence reconciliation tools')
     changed = git('diff-tree', '--no-commit-id', '--name-only', '-r', PARENT, commit).splitlines()
     if not set(changed) <= paths | {'quality/required-tests.json'} or not changed:
         raise RuntimeError('Unrelated source in A/B candidate')
