@@ -44,6 +44,8 @@ class FrozenALegacyConnectedProbeTests(unittest.TestCase):
         self.assertEqual(builder.GUARDS, original.GUARDS | {'connected_tests::' + name for name in names})
         self.assertEqual(builder.EXPECTED_GUARD_COUNT, 53)
         self.assertEqual(len(builder.GUARDS), 53)
+        self.assertEqual(builder.checked_probe_source(PROBE), hashlib.sha256(PROBE.read_bytes()).hexdigest())
+        self.assertIn('("panel_overrides",json!([{}]))', connected)
 
     def test_latest_published_engine_parent_and_fixed_kernel_pins(self):
         self.assertEqual(builder.PARENT, '0593ad0e467ad7a4e5ec3f445d38f10f9a53a8f1')
@@ -118,8 +120,12 @@ class FrozenALegacyConnectedProbeTests(unittest.TestCase):
         self.assertLess(mode.index('validate_connected_job_with_pins'), mode.index('reject_family_other_scope'))
         self.assertIn('LOCKED_A_LEGACY_CONNECTED_TECHNICAL_O2_PRIMARY_NA_NOT_G0', source)
         self.assertIn('job["scope"] != CONNECTED_SCOPE && kinds.contains(&"frozen_a_legacy_family_gate")', source)
-        self.assertIn('"connected_primary_p_remains_missing":a_connected', source)
-        self.assertIn('"mr_computed":a_connected', source)
+        self.assertIn('"mr_computed":false', source)
+        self.assertIn('fields.remove("mr_computed")', function(source, 'apply_connected_report_scope'))
+        self.assertIn('fields.remove("connected_primary_p_remains_missing")', function(source, 'apply_connected_report_scope'))
+        self.assertIn('fields.insert("scope_permits_mr".into(), json!(true))', source)
+        self.assertIn('fields.insert("is_connected_scope".into(), json!(true))', source)
+        self.assertIn('apply_connected_report_scope(&mut evidence, a_connected)', source)
         self.assertIn('"scientific_authorized": false', source)
         self.assertIn('max_concurrency: 1', source)
         self.assertIn('incremental: false', source)

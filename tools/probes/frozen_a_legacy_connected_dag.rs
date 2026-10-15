@@ -1740,7 +1740,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     if original_connected_sources != final_connected_sources {
         return Err("canonical connected sources changed during technical DAG".into());
     }
-    let evidence = json!({
+    let mut evidence = json!({
         "scope": if a_connected { "REAL_LOCKED_A_LEGACY_CONNECTED_O2_PRIMARY_NA_TECHNICAL_NOT_G0" } else if a_family { "LOCKED_COMPLETE_A_FAMILY_TECHNICAL_NO_MR" } else if full_replay { "REAL_LOCKED_LEGACY_THREE_MODEL_TECHNICAL_REPLAY" } else if a_harmonisation { "REAL_LOCKED_LEGACY_A_HARMONISATION_NO_FIT" } else if a_raw { "REAL_LOCKED_LEGACY_A_RAW_QC_LD_NO_MR" } else if real_transport { "REAL_LOCKED_LEGACY_TRANSPORT_NO_FIT" } else { "TECHNICAL_PLUGIN_DAG_NOT_G0" },
         "source_integrity_proof": source_proof,
         "operator_authorization": authorization,
@@ -1749,10 +1749,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         "frozen_family_source_facts_before":original_family_sources,
         "frozen_family_source_facts_after":final_family_sources,
         "real_overlap_classes_assigned":false,
-        "mr_computed":a_connected,
+        "mr_computed":false,
         "connected_source_facts_before":original_connected_sources,
         "connected_source_facts_after":final_connected_sources,
-        "connected_primary_p_remains_missing":a_connected,
         "explicit_replay_scope_allows_fit": full_replay || a_connected,
         "engine_source_revision": dag_core::source_revision(),
         "first_run": report,
@@ -1774,6 +1773,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         "scientific_authorized": false,
         "g0_granted": false,
     });
+    apply_connected_report_scope(&mut evidence, a_connected);
     std::fs::write(
         root.join("dag-report.json"),
         serde_json::to_vec_pretty(&evidence)?,
@@ -2798,6 +2798,16 @@ const CONNECTED_GATE_SCRIPT: &str = "6c921c4ed2cfece1bc56031a0a40b83c1c1efbdd643
 const CONNECTED_STUDY: &str = "/home/zj-normal/Work/BONE_MARROW_CACHEXIA/versions/v4.3.2/bm_cachexia_v432_g0";
 const CONNECTED_REPOSITORY: &str = "/home/zj-normal/Work/autonomics-plugins";
 
+fn apply_connected_report_scope(evidence: &mut Value, connected: bool) {
+    if connected {
+        let fields = evidence.as_object_mut().expect("technical report object required");
+        fields.remove("mr_computed");
+        fields.remove("connected_primary_p_remains_missing");
+        fields.insert("scope_permits_mr".into(), json!(true));
+        fields.insert("is_connected_scope".into(), json!(true));
+    }
+}
+
 #[derive(Clone)]
 struct ConnectedPluginPin {
     manifest: String,
@@ -3125,12 +3135,24 @@ mod connected_tests {
         }
         let mut value=job();value["scope"]=json!("TECHNICAL_PLUGIN_DAG_NOT_G0");
         assert!(validate_connected_job_with_pins(&value,&pins()).is_err());
+        let mut evidence=json!({"mr_computed":false,"first_run":{"nodes":{"mr":{"status":"skipped"}}}});
+        let original=evidence.clone();
+        apply_connected_report_scope(&mut evidence,false);
+        assert_eq!(evidence,original);
+        apply_connected_report_scope(&mut evidence,true);
+        assert_eq!(evidence["first_run"],original["first_run"]);
+        assert!(evidence.get("mr_computed").is_none());
+        assert!(evidence.get("connected_primary_p_remains_missing").is_none());
+        assert_eq!(evidence["scope_permits_mr"],json!(true));
+        assert_eq!(evidence["is_connected_scope"],json!(true));
     }
 
     #[test]
     fn panel_alias_digest_manifest_or_bundle_substitution_is_rejected() {
-        for field in ["locked_panel_source","panel_overrides","panel_manifest_sha256","bundles"] {
-            let mut value=job();value[field]=json!([]);
+        assert!(validate_connected_job_with_pins(&job(),&pins()).is_ok());
+        for (field,replacement) in [("locked_panel_source",json!("/foreign/panel")),
+            ("panel_overrides",json!([{}])),("panel_manifest_sha256",json!({})),("bundles",json!([]))] {
+            let mut value=job();value[field]=replacement;
             assert!(validate_connected_job_with_pins(&value,&pins()).is_err());
         }
     }
