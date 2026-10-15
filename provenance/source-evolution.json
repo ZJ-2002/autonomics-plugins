@@ -105,11 +105,11 @@
       },
       "current": {
         "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
-        "revision": "3510156aab7b8a9606d4291020be0d60deb92bac",
+        "revision": "33fe0102567df90c3c5273fb5c721bff02a5d26f",
         "path": "plugins/deseq2/deseq2_runner.R",
-        "sha256": "cb019c599face7715089df4c16157851b0403bef5f61a3166123ba913ba170f1",
-        "bytes": 20263,
-        "git_blob": "e831a72d4a64bf3006770741c323c5d329951e0b"
+        "bytes": 22903,
+        "sha256": "ea10753445ba649cd87e74a8956c5974f9f7f1b8f4684d9ee6f7d982a5b80b34",
+        "git_blob": "cf077e5f13fa8db8e6fd789cc9151e5bf4ab1a13"
       }
     },
     {
