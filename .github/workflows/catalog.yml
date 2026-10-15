@@ -7,6 +7,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
@@ -17,6 +19,9 @@ jobs:
           use-public-rspm: false
       - name: Require the official R/stats correction runtime
         run: Rscript --vanilla -e 'stopifnot(as.character(getRversion()) == "4.6.1", as.character(utils::packageVersion("stats")) == "4.6.1")'
+      - name: Install exact minimal R test helpers
+        timeout-minutes: 12
+        run: python -m tools.install_catalog_test_r_dependencies
       - name: Run all required catalog checks, reject missing or skipped cases
         run: python -m tools.run_checks --output artifacts/catalog-checks.json
       - name: Preserve evidence including failures

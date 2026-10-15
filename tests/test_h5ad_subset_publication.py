@@ -9,6 +9,8 @@ import types
 import unittest
 from unittest import mock
 
+from tools.published_test_source import published_source
+
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / 'plugins/single-cell/scripts/subset_by_obs.py'
@@ -210,17 +212,36 @@ class H5ADSubsetPublicationTests(unittest.TestCase):
         self.assertTrue(all(not path.exists() for path in self.outputs))
 
     def test_every_non_publication_ast_node_is_unchanged_from_published_baseline(self):
-        tree = ast.parse(SOURCE.read_text())
-        tree.body = [node for node in tree.body if not (isinstance(node, ast.FunctionDef) and node.name == 'publish')]
-        self.assertEqual(hashlib.sha256(ast.dump(tree, include_attributes=False).encode()).hexdigest(),
-            '0a4388402e142af22dd7de7e5fb8e765050f92e10948ec91071cb63b1a8da6d7')
+        original = published_source('plugins/single-cell/scripts/subset_by_obs.py',
+            'b4712c853b1a605b3fa9a9cf2c3c6ddf2e7d1536',
+            '0db6f4caadbb28f679f2d813c60de33d3c74ca1111934f01389b182306b088ec')
+        def core(raw):
+            tree = ast.parse(raw)
+            tree.body = [node for node in tree.body if not
+                (isinstance(node, ast.FunctionDef) and node.name == 'publish')]
+            return ast.dump(tree, include_attributes=False)
+        expected = core(original)
+        self.assertEqual(core(SOURCE.read_bytes()), expected)
+        # A same-interpreter comparison must still detect real method mutations.
+        changed = original + b'\nUNDECLARED_METHOD_CHANGE = True\n'
+        self.assertNotEqual(core(changed), expected)
 
     def test_subset_and_run_ast_are_exactly_unchanged_from_published_baseline(self):
-        expected = dict(subset='ae2d291db07da5cf6ce02e7fe49bf532c2e644891f56084126a08112eb6841bd',
-            run='0bc3e95c879036a8b54881be80f067846fbe303d3c241db3ba0ba8ffd74e5a37')
-        observed = {node.name: hashlib.sha256(ast.dump(node, include_attributes=False).encode()).hexdigest()
-            for node in ast.parse(SOURCE.read_text()).body if isinstance(node, ast.FunctionDef) and node.name in expected}
-        self.assertEqual(observed, expected)
+        original = published_source('plugins/single-cell/scripts/subset_by_obs.py',
+            'b4712c853b1a605b3fa9a9cf2c3c6ddf2e7d1536',
+            '0db6f4caadbb28f679f2d813c60de33d3c74ca1111934f01389b182306b088ec')
+        def functions(raw):
+            return {node.name: ast.dump(node, include_attributes=False)
+                for node in ast.parse(raw).body if isinstance(node, ast.FunctionDef)
+                and node.name in {'subset', 'run'}}
+        expected = functions(original)
+        self.assertEqual(set(expected), {'subset', 'run'})
+        self.assertEqual(functions(SOURCE.read_bytes()), expected)
+        changed = ast.parse(original)
+        subset = next(node for node in changed.body if isinstance(node, ast.FunctionDef) and node.name == 'subset')
+        subset.body.append(ast.Return(value=ast.Constant('UNDECLARED_METHOD_CHANGE')))
+        self.assertNotEqual(ast.dump(subset, include_attributes=False), expected['subset'])
+
 
 
 if __name__ == '__main__':

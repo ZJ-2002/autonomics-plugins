@@ -11,6 +11,8 @@ import tempfile
 import unittest
 from unittest import mock
 
+from tools.published_test_source import published_source
+
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / 'plugins/single-cell/scripts/score_genes.py'
@@ -20,7 +22,6 @@ Path(os.environ["AUTONOMICS_OUTPUT1"]).write_text(content)
 '''
 TOY = b'NON_H5AD_EXPLICIT_IO_TOY\n'
 FOREIGN = b'FOREIGN_FILE_DO_NOT_CHANGE\n'
-SCIENTIFIC_CORE_SHA = '7f110c2c4b4ed5e5241ec4b29aaf9351549d926ae68312cadc42109e1de9f652'
 
 
 def load_source():
@@ -30,8 +31,8 @@ def load_source():
     return module
 
 
-def scientific_core():
-    module = ast.parse(SOURCE.read_bytes())
+def scientific_core(raw=None):
+    module = ast.parse(SOURCE.read_bytes() if raw is None else raw)
     functions = {node.name: node for node in module.body if isinstance(node, ast.FunctionDef)}
     body = functions['main'].body
     begin = next(index for index, node in enumerate(body) if isinstance(node, ast.If))
@@ -123,7 +124,12 @@ class ScoringPublicationTests(unittest.TestCase):
         return mock.patch.object(self.score.os, 'link', side_effect=link)
 
     def test_official_scoring_core_and_report_generation_ast_are_unchanged(self):
-        self.assertEqual(scientific_core(), SCIENTIFIC_CORE_SHA)
+        original = published_source('plugins/single-cell/scripts/score_genes.py',
+            'd91be9dad535e79c97fb3566b07fe1f68d0954ba', BASELINE_SHA)
+        self.assertEqual(scientific_core(), scientific_core(original))
+        changed = original.replace(b'ctrl_as_ref=True', b'ctrl_as_ref=False')
+        self.assertNotEqual(changed, original)
+        self.assertNotEqual(scientific_core(changed), scientific_core(original))
         source = SOURCE.read_text()
         self.assertIn('data = ad.read_h5ad(paths["input"])', source)
         self.assertNotIn('shutil.rmtree', source)
