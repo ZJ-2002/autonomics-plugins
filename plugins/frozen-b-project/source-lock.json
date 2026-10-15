@@ -51,8 +51,8 @@
       "bytes": 6148
     },
     "quality/required-tests.json": {
-      "sha256": "ef9da84fe4cb272c01b80bd57b80e322c7f7a1ba87ba1b744f6f1a947030c739",
-      "bytes": 36715
+      "sha256": "9be2ad0cb74c9b41c0a24d669b6eb74865d1952ed6f69771222e331cee668550",
+      "bytes": 41739
     },
     "tests/test_frozen_b_intake_budget.py": {
       "sha256": "5d063da2ee0f3313caa257db2dd87304f10d0d36cdaebb06436a4627fa0ecf31",
@@ -75,12 +75,12 @@
       "bytes": 48190
     },
     "tools/build_locked_b_plugin_probe.py": {
-      "sha256": "ba0cecf5d7b598de188b575ec5787c1a9a80b0c68267179691a06004a568a6f3",
-      "bytes": 8994
+      "sha256": "a315ad9f70009c8bff5b3cfcbe960cbacfe0be66c6921b44a04a0b63487d1a48",
+      "bytes": 9312
     },
     "tools/probes/official_plugin_dag.rs": {
-      "sha256": "0d97457c181ebd87fa80c9eb71ed70899677c011b9dfbcf45f6ab0859e2bdffa",
-      "bytes": 56028
+      "sha256": "bc70fd8d45cd6d96d52774d0bef39fb8f9836365cba40bb3547312bc171a330c",
+      "bytes": 69887
     },
     "tools/reconcile_ab_evidence_index.py": {
       "sha256": "44878add55a5a656f15e2c936e269ba1ef9b2c4a16c81e7a5c22733da6975c72",

@@ -10,10 +10,10 @@ import tarfile
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
-PARENT = 'dfb2f9b819a77309775e9e28831d75c840b5849e'
-EXPECTED_TESTS = 302
+PARENT = 'e78dae40195d86b1c52e5c2934b54f2161b867db'
+EXPECTED_TESTS = 340
 FAMILIES = ('twosamplemr-v432-a', 'bulk-limma-normalized', 'frozen-b-project', 'twosamplemr')
-ADAPTERS = ('frozen-a-harmonisation',)
+ADAPTERS = ('frozen-a-harmonisation', 'frozen-a-input-qualification')
 EXTRA = ('tests/test_frozen_b_project.py', 'tests/test_frozen_a_current_dag.py',
          'tests/test_normalized_b_current_dag.py', 'tools/prove_frozen_b_family_transport.py',
          'tools/prove_frozen_a_current_dag.py', 'tools/prove_normalized_b_current_dag.py',
@@ -36,6 +36,10 @@ EXTRA += ('tools/prove_locked_b_source_transport.py', 'tools/build_locked_b_plug
 EXTRA += ('tools/prove_frozen_a_harmonisation.py', 'tools/prove_frozen_a_package_identity.py',
           'tests/test_frozen_a_harmonisation.py', 'docs/frozen-a-harmonisation-20261015.md',
           'evidence/frozen-a-harmonisation-20261015.json')
+EXTRA += ('tools/acquire_frozen_a_python_runtime.py', 'tools/prove_frozen_a_plink_source.py',
+          'tools/prove_frozen_a_harmonisation_dag.py', 'tests/test_frozen_a_harmonisation_dag.py',
+          'tests/test_frozen_a_input_qualification.py', 'docs/frozen-a-upstream-source-20261015.md',
+          'evidence/frozen-a-upstream-source-20261015.json')
 
 
 def digest(path):
@@ -77,7 +81,8 @@ def main():
                  'tests.test_frozen_b_intake_budget', 'tests.test_frozen_b_family_contract'):
         additions.update(test_ids(unittest.defaultTestLoader.loadTestsFromName(name)))
     for name in ('tests.test_locked_b_source_transport', 'tests.test_reconcile_ab_evidence_index',
-                 'tests.test_frozen_a_harmonisation'):
+                 'tests.test_frozen_a_harmonisation', 'tests.test_frozen_a_harmonisation_dag',
+                 'tests.test_frozen_a_input_qualification'):
         additions.update(test_ids(unittest.defaultTestLoader.loadTestsFromName(name)))
     original['test_ids'].extend(sorted(additions - set(original['test_ids'])))
     if len(original['test_ids']) != EXPECTED_TESTS or len(set(original['test_ids'])) != EXPECTED_TESTS:
@@ -93,26 +98,31 @@ def main():
         git('update-index', '--add', '--cacheinfo', mode + ',' + blob + ',' + name)
     git('update-index', '--add', '--cacheinfo', '100644,' + git('hash-object', '-w', '--stdin', data=quality) + ',quality/required-tests.json')
     tree = git('write-tree')
-    message = 'Add official frozen A harmonisation adapter and package identity proof'
+    message = 'Add scoped official frozen A upstream qualification evidence and guards'
     code_commit = git('commit-tree', tree, '-p', PARENT, '-m', message)
     evolved_path = 'plugins/twosamplemr/manifest.toml'
     evolution = json.loads(git('show', PARENT + ':provenance/source-evolution.json'))
-    index = json.loads(git('show', PARENT + ':provenance/source-index.json'))
-    origin = next(row for row in index['plugins'] if row['directory'] == 'plugins/twosamplemr')
-    original = next(row for row in origin['files'] if row['path'] == 'manifest.toml')
-    content = (ROOT / evolved_path).read_bytes()
-    change = dict(path=evolved_path,
-        original=dict(repository=origin['repository'], revision=origin['revision'],
-                      **{key: original[key] for key in ['sha256', 'bytes', 'git_blob']}),
-        current=dict(repository='https://github.com/ZJ-2002/autonomics-plugins.git', revision=code_commit,
-                     path=evolved_path, sha256=hashlib.sha256(content).hexdigest(), bytes=len(content),
-                     git_blob=git('rev-parse', code_commit + ':' + evolved_path)))
-    evolution['changes'] = [row for row in evolution['changes'] if row['path'] != evolved_path] + [change]
-    evolution_bytes = (json.dumps(evolution, indent=2) + '\n').encode()
-    git('update-index', '--add', '--cacheinfo', '100644,' +
-        git('hash-object', '-w', '--stdin', data=evolution_bytes) + ',provenance/source-evolution.json')
-    tree = git('write-tree')
-    commit = git('commit-tree', tree, '-p', code_commit, '-m', 'Record exact imported action documentation source evolution')
+    evolution_bytes = (git('show', PARENT + ':provenance/source-evolution.json') + '\n').encode()
+    evolution_commit = None
+    commit = code_commit
+    if git('rev-parse', PARENT + ':' + evolved_path) != git('rev-parse', code_commit + ':' + evolved_path):
+        index = json.loads(git('show', PARENT + ':provenance/source-index.json'))
+        origin = next(row for row in index['plugins'] if row['directory'] == 'plugins/twosamplemr')
+        original = next(row for row in origin['files'] if row['path'] == 'manifest.toml')
+        content = (ROOT / evolved_path).read_bytes()
+        change = dict(path=evolved_path,
+            original=dict(repository=origin['repository'], revision=origin['revision'],
+                          **{key: original[key] for key in ['sha256', 'bytes', 'git_blob']}),
+            current=dict(repository='https://github.com/ZJ-2002/autonomics-plugins.git', revision=code_commit,
+                         path=evolved_path, sha256=hashlib.sha256(content).hexdigest(), bytes=len(content),
+                         git_blob=git('rev-parse', code_commit + ':' + evolved_path)))
+        evolution['changes'] = [row for row in evolution['changes'] if row['path'] != evolved_path] + [change]
+        evolution_bytes = (json.dumps(evolution, indent=2) + '\n').encode()
+        git('update-index', '--add', '--cacheinfo', '100644,' +
+            git('hash-object', '-w', '--stdin', data=evolution_bytes) + ',provenance/source-evolution.json')
+        tree = git('write-tree')
+        commit = git('commit-tree', tree, '-p', code_commit, '-m', 'Record exact imported action documentation source evolution')
+        evolution_commit = code_commit
     changed = git('diff-tree', '--no-commit-id', '--name-only', '-r', PARENT, commit).splitlines()
     if not set(changed) <= paths | {'quality/required-tests.json', 'provenance/source-evolution.json'} or not changed:
         raise RuntimeError('Unrelated source in A/B candidate')
@@ -139,7 +149,7 @@ def main():
     if identities != {name: digest(ROOT / name) for name in paths}:
         raise RuntimeError('A/B source changed during release proof')
     record = dict(status='EXACT_AB_SOURCE_RELEASE_CHECKED_NOT_DEPLOYED', parent=PARENT, commit=commit, tree=tree,
-        actual_commit_parent=code_commit, source_evolution_commit=code_commit,
+        actual_commit_parent=git('rev-parse', commit + '^'), source_evolution_commit=evolution_commit,
         source_evolution_ledger_sha256=hashlib.sha256(evolution_bytes).hexdigest(),
         changed_paths=changed, source_sha256=identities, tests_run=report['tests_run'], source_lock_matches=True,
         no_unrelated_dirty_code_imported=True, production_configuration_changed=False, scientific_authorization_granted=False, g0_granted=False)

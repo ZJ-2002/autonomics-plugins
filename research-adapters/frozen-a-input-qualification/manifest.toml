@@ -1,0 +1,69 @@
+schema_version = 1
+plugin_name = "frozen-a-input-qualification"
+
+[image]
+reference = "docker.io/library/python@sha256:7bf6c3111fe094f8ee1a1cbcdc63c4cfb345b0e3df42d5aa9a90b3b4b022ab6d"
+tag = "3.14.7-slim-trixie-linux-amd64"
+upstream = "Official docker-library Python 3.14.7; unchanged frozen CPython QC and official PLINK 1.90b7.2"
+license = "MIT"
+
+[[panels]]
+binding = "ld_ref"
+mount = "/panels/ld_ref"
+bundle = "wjixiang/catalog-plink-ref-1000g-eur-binary"
+
+[[nodes]]
+kind = "frozen_a_v432_input_qualification"
+desc = "Reexecutes the frozen X01/M06 streaming input QC and official PLINK1.9 qualification without MR fitting."
+doc = """
+Nine exact frozen files: raw X GWAS gzip, raw M GWAS gzip, A config,
+G0 certificate, original prepare_minimum_g0.py, original verify_minimum_ld.py,
+official static PLINK executable, panel manifest and SOFTWARE_LOCK.tsv.
+Local files use declared symlink staging with read-only source-parent mounts;
+the raw inputs are not duplicated. The isolated DAG proof transports the 66
+panel payloads into managed TMPDIR using reflink=always, refusing failure with
+no hardlink or ordinary-copy fallback; the resulting panel is mounted read-only.
+The 42MB tool is copied into private scratch and made executable there. The unchanged original
+qualify_a and verify functions run with redirected ROOT/OUT/DATA/PANEL and a
+restricted subprocess proxy that permits only their exact official PLINK argv.
+Source fallback copies/downloaders are refused. Complete expected haplotype
+pair membership and coordinates are separately checked after the original
+verification. This does not run harmonisation, MR, MRlap, proxies or another
+edge, and does not grant scientific authorization or G0. Successful technical
+execution requires all twelve declared outputs and source rechecks.
+"""
+timeout_secs = 1800
+stage_in_mode = "symlink"
+artifact_prefix = "/artifacts/frozen_a_v432_input_qualification"
+
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+read_only_rootfs = true
+pull_policy = "never"
+pids_limit = 64
+
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}, {type="file"}, {type="file"}, {type="file"}, {type="file"}, {type="file"}, {type="file"}, {type="file"}]
+outputs = [
+  {path="A_INPUT_MANIFEST.json",format="json"},
+  {path="A_GWS_CANDIDATES.tsv",format="tsv"},
+  {path="A_LD_EXCLUSIONS.tsv",format="tsv"},
+  {path="A_OUTCOME_MATCHES.tsv",format="tsv"},
+  {path="A_CLUMP_INPUT.tsv",format="tsv"},
+  {path="A_LD_CLUMPED_INSTRUMENTS.tsv",format="tsv"},
+  {path="A_RETAINED_HAPLOTYPE_LD.tsv",format="tsv"},
+  {path="A_QC_AND_LD.json",format="json"},
+  {path="A_LD_PAIRWISE_ACCEPTANCE.json",format="json"},
+  {path="INPUT_METHOD_PROVENANCE.json",format="json"},
+  {path="qualification.log",format="text"},
+  {path="official-artifacts.tar",format="tar"},
+]
+
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/qualify.py"
+
+[nodes.command.env]
+PYTHONDONTWRITEBYTECODE = "1"

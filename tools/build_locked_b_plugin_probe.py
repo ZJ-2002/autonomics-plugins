@@ -30,6 +30,10 @@ GUARDS = {
     'transport_tests::a_harmonisation_rejects_fit_sql_other_plugins_and_source_substitution',
     'transport_tests::a_harmonisation_requires_all_six_unique_input_bindings',
     'transport_tests::a_harmonisation_cannot_be_relabelled_synthetic',
+    'transport_tests::a_raw_requires_exact_nine_sources_and_one_no_mr_method',
+    'transport_tests::a_raw_rejects_changed_panel_source_digest_manifest_and_plugins',
+    'transport_tests::a_raw_requires_all_nine_unique_input_bindings',
+    'transport_tests::a_raw_cannot_be_relabelled_synthetic_or_other_no_fit_scope',
 }
 
 
@@ -122,9 +126,9 @@ def main():
             observed = re.findall(r'^test (\S+) \.\.\. ok$', text, re.M)
             write(output/'guards-execution.json',dict(exit=tested.returncode,stdout_sha256=digest(output/'guards.stdout.log'),
                   required_tests=sorted(GUARDS),observed_passed_tests=observed))
-            if (tested.returncode or len(observed)!=16 or set(observed)!=GUARDS
-                    or 'test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out;' not in text):
-                raise RuntimeError('All sixteen exact Rust guards must actually pass without ignored or filtered tests')
+            if (tested.returncode or len(observed)!=20 or set(observed)!=GUARDS
+                    or 'test result: ok. 20 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out;' not in text):
+                raise RuntimeError('All twenty exact Rust guards must actually pass without ignored or filtered tests')
     after = {path.relative_to(source).as_posix():digest(path) for path in source.rglob('*') if path.is_file() and not path.is_symlink()}
     if before != after or digest(source_file) != source_sha:
         raise RuntimeError('Source changed during exact compilation')

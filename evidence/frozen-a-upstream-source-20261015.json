@@ -1,0 +1,47 @@
+{
+  "schema": "FROZEN_A_UPSTREAM_SOURCE_IDENTITY_V1",
+  "status": "OFFICIAL_RUNTIME_AND_AUTHOR_BINARY_IDENTITY_PROVEN_NOT_UPSTREAM_COMPUTATION",
+  "python_runtime": {
+    "session": "f65435f9ab8548d7bfcbe18e1247180e",
+    "manifest_sha256": "ee5c7c2b914a174ad3f7248efcc1bd5a9e5908c86dc8ad164f52cddcb25fd127",
+    "worker_exit": 0,
+    "root_rehashed_members": 37,
+    "image": "docker.io/library/python@sha256:7bf6c3111fe094f8ee1a1cbcdc63c4cfb345b0e3df42d5aa9a90b3b4b022ab6d",
+    "config_sha256": "ea130d51594b38acddd30f9f2542a38c37736000f1710fb8c1058b6c3e613f8c",
+    "actual_container_version": "3.14.7",
+    "actual_containers": 1,
+    "stdlib_smoke": true,
+    "study_input_read": false,
+    "original_software_owner_changed": false
+  },
+  "plink_author_source": {
+    "session": "d0ec748b477e4297aac69ec57b5c959d",
+    "manifest_sha256": "b3b6aba624d6baea07163ff4a2b3804e9cb127e7a279611b4a580c46c24e48af",
+    "worker_exit": 0,
+    "root_rehashed_members": 4,
+    "author_zip_url": "https://s3.amazonaws.com/plink1-assets/plink_linux_x86_64_20231211.zip",
+    "author_zip_bytes": 8953953,
+    "author_zip_sha256": "1162eca207ecec12b03397a3a9be5eed0527f5d21c173dc24335340ddd191bc3",
+    "actual_zip_binary_bytes": 41730792,
+    "actual_zip_binary_sha256": "03ed6dd8882fddee7a89396c59ea56e4b17bbc4411d3049910e5d713fc8a135f",
+    "entire_binary_equals_frozen_source": true,
+    "canonical_binary_unchanged": true,
+    "downloaded_binary_executed": false,
+    "derived_dated_url_claimed_current_direct_link": false
+  },
+  "pending": [
+    "Fresh raw input QC and complete official PLINK qualification",
+    "Actual twelve-output qualification publication and failure guard",
+    "Merged twenty-guard runner build and actual guard execution",
+    "Seven-node harmonisation and ten-node upstream raw qualification DAGs",
+    "Connected upstream-to-MR replay and controlled production identity"
+  ],
+  "source_tests_are_scientific_certification": false,
+  "production_restarted": false,
+  "production_hot_loaded": false,
+  "frozen_configuration_changed": false,
+  "scientific_release_granted": false,
+  "g0_granted": false,
+  "B_S": "CONDITIONAL_NOT_READY",
+  "GS01": "OPEN"
+}

@@ -22,6 +22,15 @@ use vfs::{
 const TRANSPORT_SCOPE: &str = "LOCKED_LEGACY_SOURCE_TRANSPORT_NO_FIT_NOT_G0";
 const REPLAY_SCOPE: &str = "LOCKED_LEGACY_B_THREE_MODEL_REPLAY_NOT_G0";
 const A_HARMONISATION_SCOPE: &str = "LOCKED_LEGACY_A_HARMONISATION_NO_FIT_NOT_G0";
+const A_RAW_SCOPE: &str = "LOCKED_LEGACY_A_RAW_QC_LD_NO_MR_NOT_G0";
+const A_RAW_MANIFEST: &str = "eb62df8d8ee4e4c18d84b66a141c6ec51e35cceff5dd42017c8723e470e4b908";
+const A_RAW_SCRIPT: &str = "81421c4467c4d204e576949b9a364dd487ffb647e9e429bb922ed7938b1f5a69";
+const A_RAW_PANEL_ID: &str = "wjixiang/catalog-plink-ref-1000g-eur-binary";
+const A_RAW_PANEL_DIGEST: &str =
+    "sha256:9f483fd11fbb2e73a97ab1af172e45e569c7b8ed7edec5572e35a2b3fa614b21";
+const A_RAW_PANEL_SHA: &str = "fe6a3d9717ea70714dcf1c8c9d15b2790501f030a93283042adebab3e8f1ed2b";
+const A_RAW_PANEL_VPATH: &str = "/locked-panels/1000g-eur";
+const A_RAW_PANEL_HOST: &str = "/home/zj-normal/.autonomics/panels/wjixiang/catalog-plink-ref-1000g-eur-binary@sha256:9f483fd11fbb2e73a97ab1af172e45e569c7b8ed7edec5572e35a2b3fa614b21";
 const A_HARMONISATION_MANIFEST: &str =
     "07051b9e8351ae30a74ac8b25074e256bfb9d2fb0af53922864d0c16101a01fb";
 const A_HARMONISATION_SCRIPT: &str =
@@ -37,12 +46,16 @@ fn transport_mode(job: &Value) -> Result<bool, Box<dyn std::error::Error>> {
     if job["scope"] == "TECHNICAL_PLUGIN_DAG_NOT_G0" {
         if matches!(
             job["expected_plugin_name"].as_str(),
-            Some("frozen-b-project" | "frozen-a-harmonisation")
+            Some("frozen-b-project" | "frozen-a-harmonisation" | "frozen-a-input-qualification")
         ) || job["additional_plugins"].as_array().is_some_and(|plugins| {
             plugins.iter().any(|plugin| {
                 matches!(
                     plugin["expected_plugin_name"].as_str(),
-                    Some("frozen-b-project" | "frozen-a-harmonisation")
+                    Some(
+                        "frozen-b-project"
+                            | "frozen-a-harmonisation"
+                            | "frozen-a-input-qualification"
+                    )
                 )
             })
         }) {
@@ -52,6 +65,10 @@ fn transport_mode(job: &Value) -> Result<bool, Box<dyn std::error::Error>> {
     }
     if job["scope"] == A_HARMONISATION_SCOPE {
         validate_a_harmonisation_job(job)?;
+        return Ok(true);
+    }
+    if job["scope"] == A_RAW_SCOPE {
+        validate_a_raw_job(job)?;
         return Ok(true);
     }
     let full_replay = job["scope"] == REPLAY_SCOPE;
@@ -152,6 +169,38 @@ fn validate_a_harmonisation_job(job: &Value) -> Result<(), Box<dyn std::error::E
     {
         return Err("exact official frozen A qualification source without panels or additional plugins required".into());
     }
+    validate_a_graph(job, 6, "frozen_a_v432_harmonisation")
+}
+
+fn a_raw_bundle() -> Value {
+    json!({"ident":A_RAW_PANEL_ID,"desc":"Frozen official 1000G EUR panel; read-only; not synthetic",
+        "vpath":A_RAW_PANEL_VPATH,"source":A_RAW_PANEL_VPATH,"digest":A_RAW_PANEL_DIGEST})
+}
+
+fn validate_a_raw_job(job: &Value) -> Result<(), Box<dyn std::error::Error>> {
+    if job["expected_plugin_name"] != "frozen-a-input-qualification"
+        || job["plugin_manifest_sha256"] != A_RAW_MANIFEST
+        || job["script_sha256"] != json!({"scripts/qualify.py":A_RAW_SCRIPT})
+        || job["panel_overrides"] != json!([])
+        || job["panel_manifest_sha256"] != json!({A_RAW_PANEL_VPATH:A_RAW_PANEL_SHA})
+        || job["bundles"] != json!([a_raw_bundle()])
+        || job["locked_panel_source"] != A_RAW_PANEL_HOST
+        || job
+            .get("additional_plugins")
+            .is_some_and(|value| value != &json!([]))
+    {
+        return Err(
+            "exact frozen raw A qualification and original read-only catalog panel required".into(),
+        );
+    }
+    validate_a_graph(job, 9, "frozen_a_v432_input_qualification")
+}
+
+fn validate_a_graph(
+    job: &Value,
+    count: u64,
+    method_kind: &str,
+) -> Result<(), Box<dyn std::error::Error>> {
     let nodes = job["nodes"]
         .as_array()
         .ok_or("A qualification nodes required")?;
@@ -177,7 +226,7 @@ fn validate_a_harmonisation_job(job: &Value) -> Result<(), Box<dyn std::error::E
                     return Err("A references must stay within the owned VFS fixture".into());
                 }
             }
-            "frozen_a_v432_harmonisation" if node["spec"] == json!({}) => {}
+            kind if kind == method_kind && node["spec"] == json!({}) => {}
             _ => {
                 return Err(
                     "A qualification permits no MR, fit, SQL or other processing node".into(),
@@ -191,10 +240,10 @@ fn validate_a_harmonisation_job(job: &Value) -> Result<(), Box<dyn std::error::E
         .collect::<std::collections::BTreeSet<_>>();
     let method = kinds
         .iter()
-        .filter_map(|(id, kind)| (*kind == "frozen_a_v432_harmonisation").then_some(*id))
+        .filter_map(|(id, kind)| (*kind == method_kind).then_some(*id))
         .collect::<Vec<_>>();
-    if nodes.len() != 7 || references.len() != 6 || method.len() != 1 {
-        return Err("exact six source files and one A qualification node required".into());
+    if nodes.len() as u64 != count + 1 || references.len() as u64 != count || method.len() != 1 {
+        return Err("exact frozen source count and one A qualification node required".into());
     }
     let edges = job["edges"]
         .as_array()
@@ -207,18 +256,132 @@ fn validate_a_harmonisation_job(job: &Value) -> Result<(), Box<dyn std::error::E
         if !references.contains(source)
             || edge["from_port"].as_u64() != Some(0)
             || edge["to"].as_str() != Some(method[0])
-            || port >= 6
+            || port >= count
             || !ports.insert(port)
             || !sources.insert(source)
         {
-            return Err(
-                "each exact A source must bind one unique qualification port 0 through 5".into(),
-            );
+            return Err("each exact A source must bind one unique qualification input port".into());
         }
     }
-    if edges.len() != 6 || ports.len() != 6 || sources != references {
-        return Err("exact complete six-edge A qualification graph required".into());
+    if edges.len() as u64 != count || ports.len() as u64 != count || sources != references {
+        return Err("exact complete frozen A qualification edge inventory required".into());
     }
+    Ok(())
+}
+
+fn locked_a_panel_records() -> Result<Value, Box<dyn std::error::Error>> {
+    use std::io::Read;
+    use std::os::unix::fs::MetadataExt;
+    let directory = PathBuf::from(A_RAW_PANEL_HOST);
+    if directory.canonicalize()? != directory
+        || directory.symlink_metadata()?.file_type().is_symlink()
+    {
+        return Err("frozen panel source must have its exact unaliased host identity".into());
+    }
+    let path = directory.join("manifest.json");
+    let bytes = std::fs::read(&path)?;
+    if path.symlink_metadata()?.file_type().is_symlink()
+        || format!("{:x}", Sha256::digest(&bytes)) != A_RAW_PANEL_SHA
+    {
+        return Err("actual frozen panel manifest differs from its admitted byte identity".into());
+    }
+    let manifest: container_runtime::PanelManifest = serde_json::from_slice(&bytes)?;
+    manifest.validate()?;
+    if manifest.id != A_RAW_PANEL_ID
+        || manifest.digest != A_RAW_PANEL_DIGEST
+        || manifest.files.len() != 66
+    {
+        return Err("exact original 66-file catalog panel required".into());
+    }
+    let metadata = directory.metadata()?;
+    let mut records = Vec::new();
+    let mut expected = std::collections::BTreeSet::from([
+        "manifest.json".to_owned(),
+        ".autonomics-panel-complete".to_owned(),
+    ]);
+    for file in manifest.files {
+        if file.path.contains('/') || file.path == "." || file.path == ".." {
+            return Err("only original top-level frozen panel payload files permitted".into());
+        }
+        expected.insert(file.path.clone());
+        let path = directory.join(&file.path);
+        let info = path.symlink_metadata()?;
+        if !info.is_file() || info.file_type().is_symlink() || info.len() != file.size {
+            return Err("frozen panel payload metadata differs".into());
+        }
+        let mut input = std::fs::File::open(&path)?;
+        let mut hasher = Sha256::new();
+        let mut buffer = vec![0u8; 1024 * 1024];
+        loop {
+            let count = input.read(&mut buffer)?;
+            if count == 0 {
+                break;
+            }
+            hasher.update(&buffer[..count]);
+        }
+        if format!("sha256:{:x}", hasher.finalize()) != file.sha256 {
+            return Err("frozen panel payload content differs".into());
+        }
+        records.push(
+            json!({"path":file.path,"bytes":file.size,"sha256":file.sha256,
+            "device":info.dev(),"inode":info.ino(),"uid":info.uid(),"mode":info.mode(),
+            "nlink":info.nlink(),"mtime":info.mtime(),"mtime_nsec":info.mtime_nsec(),
+            "ctime":info.ctime(),"ctime_nsec":info.ctime_nsec()}),
+        );
+    }
+    let actual = std::fs::read_dir(&directory)?
+        .map(|entry| {
+            let entry = entry?;
+            Ok(entry
+                .file_name()
+                .into_string()
+                .map_err(|_| "non-UTF8 panel path")?)
+        })
+        .collect::<Result<std::collections::BTreeSet<_>, Box<dyn std::error::Error>>>()?;
+    if actual != expected {
+        return Err("canonical frozen panel file universe changed".into());
+    }
+    Ok(
+        json!({"host_source":A_RAW_PANEL_HOST,"catalog_bundle":A_RAW_PANEL_ID,
+        "digest":A_RAW_PANEL_DIGEST,"manifest_sha256":A_RAW_PANEL_SHA,"payload_files":records,
+        "source_directory":{"device":metadata.dev(),"inode":metadata.ino(),"uid":metadata.uid(),
+            "mtime":metadata.mtime(),"mtime_nsec":metadata.mtime_nsec(),"ctime":metadata.ctime(),"ctime_nsec":metadata.ctime_nsec()}}),
+    )
+}
+
+fn seed_locked_a_panel_cache(root: &std::path::Path) -> Result<(), Box<dyn std::error::Error>> {
+    use std::os::unix::fs::MetadataExt;
+    let destination = root.join(format!("{A_RAW_PANEL_ID}@{A_RAW_PANEL_DIGEST}"));
+    std::fs::create_dir_all(destination.parent().ok_or("panel cache parent required")?)?;
+    std::fs::create_dir(&destination)?;
+    let manifest: container_runtime::PanelManifest = serde_json::from_slice(&std::fs::read(
+        PathBuf::from(A_RAW_PANEL_HOST).join("manifest.json"),
+    )?)?;
+    for file in manifest.files {
+        let source = PathBuf::from(A_RAW_PANEL_HOST).join(&file.path);
+        let target = destination.join(&file.path);
+        let status = std::process::Command::new("/usr/bin/cp")
+            .args(["--reflink=always", "--no-clobber", "--"])
+            .arg(&source)
+            .arg(&target)
+            .status()?;
+        if !status.success() {
+            return Err("temporary CoW panel transport unavailable; ordinary copy and hardlink fallback forbidden".into());
+        }
+        let before = source.symlink_metadata()?;
+        let after = target.symlink_metadata()?;
+        if !after.is_file()
+            || after.file_type().is_symlink()
+            || before.len() != after.len()
+            || (before.dev(), before.ino()) == (after.dev(), after.ino())
+        {
+            return Err("temporary CoW panel must use separate regular payload inodes".into());
+        }
+    }
+    std::fs::write(
+        destination.join(".autonomics-panel-complete"),
+        format!("digest={A_RAW_PANEL_DIGEST}\n"),
+    )?;
     Ok(())
 }
 
@@ -596,6 +759,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let real_transport = transport_mode(&job)?;
     let full_replay = job["scope"] == REPLAY_SCOPE;
     let a_harmonisation = job["scope"] == A_HARMONISATION_SCOPE;
+    let a_raw = job["scope"] == A_RAW_SCOPE;
     let source_proof = if real_transport {
         Some(locked_source_proof()?)
     } else {
@@ -603,6 +767,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     };
     let authorization = if full_replay {
         Some(replay_authorization(&job)?)
+    } else {
+        None
+    };
+    let original_panel = if a_raw {
+        Some(locked_a_panel_records()?)
     } else {
         None
     };
@@ -656,10 +825,23 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let overrides = job["panel_overrides"]
         .as_array()
         .ok_or("explicit panel override array required")?;
-    if overrides.len() != manifest.panels.len() {
+    if !a_raw && overrides.len() != manifest.panels.len() {
         return Err("complete explicit technical panel mapping required".into());
     }
     let mut panel_ids = std::collections::BTreeSet::new();
+    if a_raw {
+        if manifest.panels.len() != 1
+            || manifest.panels[0].binding != "ld_ref"
+            || manifest.panels[0].mount != "/panels/ld_ref"
+            || manifest.panels[0].bundle.to_string() != A_RAW_PANEL_ID
+            || !overrides.is_empty()
+        {
+            return Err(
+                "raw A scope must preserve the exact original catalog panel binding".into(),
+            );
+        }
+        panel_ids.insert(A_RAW_PANEL_ID.to_owned());
+    }
     for (panel, replacement) in manifest.panels.iter_mut().zip(overrides) {
         let synthetic = replacement["synthetic_bundle"]
             .as_str()
@@ -746,6 +928,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             "{}",
             json!({"scope":job["scope"],"job_validated_without_execution":true,
             "source_integrity_proof":source_proof,"operator_authorization":authorization,
+            "locked_actual_panel_source":original_panel,
             "containers_started":false,"scientific_results_computed":false,"g0_granted":false})
         );
         return Ok(());
@@ -757,7 +940,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     {
         let bundle: DataBundle = serde_json::from_value(record.clone())?;
         if !panel_ids.contains(&bundle.ident)
-            || !bundle.vpath.starts_with("/synthetic-panels/")
+            || (!a_raw && !bundle.vpath.starts_with("/synthetic-panels/"))
             || bundle.source.as_deref() != Some(bundle.vpath.as_str())
             || bundle.digest.is_none()
         {
@@ -773,11 +956,19 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let panel_cache_root = PathBuf::from(std::env::var("TMPDIR")?)
         .join("official-plugin-panel-cache")
         .join(root.file_name().ok_or("fixture name missing")?);
+    if a_raw {
+        seed_locked_a_panel_cache(&panel_cache_root)?;
+        if original_panel.as_ref() != Some(&locked_a_panel_records()?) {
+            return Err(
+                "canonical panel source changed during independent temporary CoW transport".into(),
+            );
+        }
+    }
     let panel_cache = Arc::new(
         PanelCache::content_required(&panel_cache_root)
             .with_manifest_hashes(panel_manifest_hashes)?,
     );
-    let mounts = VfsManifest {
+    let mut mounts = VfsManifest {
         backend: vec![BackendDefinition {
             id: "technical".into(),
             config: BackendConfig::local("/"),
@@ -790,6 +981,15 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             permissions: Default::default(),
         }],
     };
+    if a_raw {
+        mounts.mount.push(MountDefinition {
+            path: A_RAW_PANEL_VPATH.into(),
+            backend: "technical".into(),
+            source: A_RAW_PANEL_HOST.into(),
+            read_only: true,
+            permissions: Default::default(),
+        });
+    }
     let mounted = Arc::new(MountedObjectStore::from_manifest(&mounts)?);
     let storage = Arc::new(OpendalFileStorage::with_mounts(&root, mounted.clone()));
     let session = SessionContext::new();
@@ -874,8 +1074,18 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         ..SchedulerConfig::default()
     };
     let report = dag.run(&configuration, &context, None).await?;
+    let final_panel = if a_raw {
+        Some(locked_a_panel_records()?)
+    } else {
+        None
+    };
+    if original_panel != final_panel {
+        return Err(
+            "canonical frozen panel contents or metadata changed during technical DAG".into(),
+        );
+    }
     let evidence = json!({
-        "scope": if full_replay { "REAL_LOCKED_LEGACY_THREE_MODEL_TECHNICAL_REPLAY" } else if a_harmonisation { "REAL_LOCKED_LEGACY_A_HARMONISATION_NO_FIT" } else if real_transport { "REAL_LOCKED_LEGACY_TRANSPORT_NO_FIT" } else { "TECHNICAL_PLUGIN_DAG_NOT_G0" },
+        "scope": if full_replay { "REAL_LOCKED_LEGACY_THREE_MODEL_TECHNICAL_REPLAY" } else if a_harmonisation { "REAL_LOCKED_LEGACY_A_HARMONISATION_NO_FIT" } else if a_raw { "REAL_LOCKED_LEGACY_A_RAW_QC_LD_NO_MR" } else if real_transport { "REAL_LOCKED_LEGACY_TRANSPORT_NO_FIT" } else { "TECHNICAL_PLUGIN_DAG_NOT_G0" },
         "source_integrity_proof": source_proof,
         "operator_authorization": authorization,
         "real_locked_legacy_transport_no_fit": real_transport && !full_replay,
@@ -890,7 +1100,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         "additional_plugin_identities": additional_identities,
         "native_statistical_factories_registered": false,
         "original_manifest_sha256": format!("{:x}", Sha256::digest(&manifest_bytes)),
-        "effective_synthetic_manifest_sha256": format!("{:x}", Sha256::digest(&synthetic_manifest_bytes)),
+        "effective_manifest_sha256": format!("{:x}", Sha256::digest(&synthetic_manifest_bytes)),
+        "effective_synthetic_manifest_sha256": if a_raw { None } else { Some(format!("{:x}", Sha256::digest(&synthetic_manifest_bytes))) },
+        "locked_actual_panel_source_before":original_panel,
+        "locked_actual_panel_source_after":final_panel,
+        "panel_transport":if a_raw { Some("TEMPORARY_REFLINK_ALWAYS_INDEPENDENT_COW_INODES_NO_FALLBACK_READONLY_MOUNT") } else { None },
         "panel_bindings_are_explicit_synthetic_overrides": !real_transport,
         "actual_research_panels_qualified": false,
         "scientific_authorized": false,
@@ -954,6 +1168,118 @@ mod transport_tests {
                 "from_port":0,"to":"qualification","to_port":port}));
         }
         value
+    }
+
+    fn a_raw_job() -> Value {
+        let mut value = a_harmonisation_job();
+        value["scope"] = json!(A_RAW_SCOPE);
+        value["expected_plugin_name"] = json!("frozen-a-input-qualification");
+        value["plugin_manifest_sha256"] = json!(A_RAW_MANIFEST);
+        value["script_sha256"] = json!({"scripts/qualify.py":A_RAW_SCRIPT});
+        value["nodes"][0]["kind"] = json!("frozen_a_v432_input_qualification");
+        value["panel_manifest_sha256"] = json!({A_RAW_PANEL_VPATH:A_RAW_PANEL_SHA});
+        value["bundles"] = json!([a_raw_bundle()]);
+        value["locked_panel_source"] = json!(A_RAW_PANEL_HOST);
+        for port in 6..9 {
+            value["nodes"]
+                .as_array_mut()
+                .unwrap()
+                .push(json!({"id":format!("source{port}"),
+                "kind":"file_reference","spec":{"path":format!("vfs:///source{port}.input")}}));
+            value["edges"]
+                .as_array_mut()
+                .unwrap()
+                .push(json!({"from":format!("source{port}"),
+                "from_port":0,"to":"qualification","to_port":port}));
+        }
+        value
+    }
+
+    #[test]
+    fn a_raw_requires_exact_nine_sources_and_one_no_mr_method() {
+        let value = a_raw_job();
+        assert!(transport_mode(&value).unwrap());
+        for kind in [
+            "twosamplemr",
+            "mrlap",
+            "datafusion_sql",
+            "frozen_a_v432_harmonisation",
+            "unknown",
+        ] {
+            let mut changed = value.clone();
+            changed["nodes"][0]["kind"] = json!(kind);
+            assert!(transport_mode(&changed).is_err(), "{kind}");
+        }
+        let mut changed = value;
+        changed["nodes"].as_array_mut().unwrap().pop();
+        assert!(transport_mode(&changed).is_err());
+    }
+
+    #[test]
+    fn a_raw_rejects_changed_panel_source_digest_manifest_and_plugins() {
+        let value = a_raw_job();
+        for (field, replacement) in [
+            ("expected_plugin_name", json!("frozen-a-harmonisation")),
+            ("plugin_manifest_sha256", json!("0".repeat(64))),
+            ("script_sha256", json!({})),
+            ("additional_plugins", json!([{}])),
+            ("panel_overrides", json!([{}])),
+            ("bundles", json!([])),
+            ("panel_manifest_sha256", json!({})),
+            ("locked_panel_source", json!("/tmp/alternative")),
+        ] {
+            let mut changed = value.clone();
+            changed[field] = replacement;
+            assert!(transport_mode(&changed).is_err(), "{field}");
+        }
+        for (field, replacement) in [
+            ("ident", json!("autonomics-technical/relabelled")),
+            ("vpath", json!("/synthetic-panels/ld_ref")),
+            ("source", json!("/other/source")),
+            ("digest", json!("sha256:".to_owned() + &"0".repeat(64))),
+        ] {
+            let mut changed = value.clone();
+            changed["bundles"][0][field] = replacement;
+            assert!(transport_mode(&changed).is_err(), "{field}");
+        }
+    }
+
+    #[test]
+    fn a_raw_requires_all_nine_unique_input_bindings() {
+        let value = a_raw_job();
+        for (field, replacement) in [
+            ("from", json!("source1")),
+            ("from_port", json!(1)),
+            ("to", json!("source0")),
+            ("to_port", json!(1)),
+            ("to_port", json!(9)),
+        ] {
+            let mut changed = value.clone();
+            changed["edges"][0][field] = replacement;
+            assert!(transport_mode(&changed).is_err(), "{field}");
+        }
+        let mut changed = value;
+        changed["edges"].as_array_mut().unwrap().pop();
+        assert!(transport_mode(&changed).is_err());
+    }
+
+    #[test]
+    fn a_raw_cannot_be_relabelled_synthetic_or_other_no_fit_scope() {
+        let mut value = a_raw_job();
+        for scope in [
+            "TECHNICAL_PLUGIN_DAG_NOT_G0",
+            A_HARMONISATION_SCOPE,
+            TRANSPORT_SCOPE,
+            REPLAY_SCOPE,
+        ] {
+            value["scope"] = json!(scope);
+            assert!(transport_mode(&value).is_err(), "{scope}");
+        }
+        value["scope"] = json!("TECHNICAL_PLUGIN_DAG_NOT_G0");
+        value["expected_plugin_name"] = json!("bulk-limma-normalized");
+        value["additional_plugins"] =
+            json!([{"expected_plugin_name":"frozen-a-input-qualification"}]);
+        assert!(transport_mode(&value).is_err());
     }
 
     #[test]
