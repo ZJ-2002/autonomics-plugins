@@ -1,17 +1,31 @@
 {
   "schema": "LITERATURE_FIELD_REGRESSION_PROTOCOL_V1",
-  "status": "PATCH_AND_PROOF_DRIVER_PREPARED_ACTUAL_ENGINE_BUILD_PENDING",
+  "status": "BLANK_QUERY_REGRESSION_REPRODUCED_AND_REPAIRED_NOT_WHOLE_NODE_QUALIFIED",
+  "published_engine_commit": "d83771b049a6d13bde02f7eee3ddd393a3da30e7",
   "engine_parent_commit": "c17d7a2dd6e55112bee7f40db95f66d62a4c3e5c",
   "engine_patch_sources_sha256": {
     "crates/crossref/src/query.rs": "5add6382ff42ee17637da0d69e387b1cc24185a73f286fac3aaf4f319d5bc0d7",
     "crates/crossref/tests/structured_search_field_contract.rs": "0778d61454e6d7063511449d619dfa2bff4c4eeef6f69f00f086293815795fb7",
     "crates/bib-base/tests/literature_provider_field_dag.rs": "f5aa9610c88dfef295f542d0a18847c2d92707b14d05bf2f1830f4da0fa94fc9"
   },
-  "planned_baseline_regression_expected_failure": true,
-  "planned_blank_query_inputs_inside_one_sdk_test": 254,
-  "planned_new_blank_field_rejection_dags": 7,
-  "planned_existing_unsupported_field_rejection_dags": 8,
-  "planned_dags_are_not_yet_executed_or_certified": true,
+  "actual_proof_archive": {
+    "session": "08b1a36bfeb9409881e49b14ca17c43c",
+    "manifest_sha256": "c3eb52ce125979c2879a755b23f8816d192c5bb736e70fb66126de0be369d674",
+    "complete_archive_files_rehashed": 83,
+    "baseline_expected_exit": 101,
+    "baseline_actual_exit": 101,
+    "baseline_expected_regression_failed": 1,
+    "fixed_actual_sdk_query_tests": 12,
+    "fixed_actual_sdk_contract_tests": 5,
+    "fixed_actual_dag_test_functions": 9,
+    "fixed_actual_test_failures_or_ignored": 0,
+    "actual_blank_query_inputs_inside_one_sdk_test": 254,
+    "actual_new_blank_field_rejection_dags": 7,
+    "actual_existing_unsupported_field_rejection_dags": 8,
+    "actual_dag_source_failed_merge_skipped_no_files_rechecked": 15,
+    "committed_source_files_unchanged": 5523,
+    "selected_source_git_blobs_independently_verified": 3
+  },
   "source_guard_test_archive": {
     "session": "2f90a6ed6c614fcda387e15fc27b1e4f",
     "manifest_sha256": "19ac93e47caa5cc696df0c6edc50321176602c2ee12b191808d640d3c2f06fb8",

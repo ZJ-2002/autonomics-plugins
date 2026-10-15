@@ -58,7 +58,7 @@ DESeq2 与 limma/edgeR 是直接官方包调用；机械计数聚合使用 SciPy
 
 文献检索的 Rust HTTP 适配器也不能因调用官方服务而免验。
 [Crossref 字段复核](literature-crossref-field-audit-20261015.md)发现空白字段可退化为无约束检索，
-修复及 SDK/DAG 回归待实际构建；严格 title 与 bibliography 的语义缺口单独保留，
+修复及 26 项 SDK/DAG 测试已实际通过，含 15 张拒绝图；严格 title 与 bibliography 的语义缺口单独保留，
 不能用包装器守卫测试替代整条节点认证。
 
 Open Targets 完整分页来源仍有重复成员反例。官方批量资源目前只完成
