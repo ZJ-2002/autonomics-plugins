@@ -667,7 +667,7 @@
         },
         {
           "path": "source-lock.json",
-          "sha256": "e49ae161a0c4b08891975d4904b716843f3d1a008cac6e2c8ed06c8d298a94a4",
+          "sha256": "a97a7f20ce8cb9af73b727de6a639b209176b53ebe07082f1fb15e045475b219",
           "bytes": 4076,
           "executable": false
         }
@@ -15006,8 +15006,8 @@
         },
         {
           "path": "scripts/singscore.sh",
-          "sha256": "0ccfea285f042f05af15f61dd5de3ef8ff2d924387d8a6d07bf3852eac5a59b2",
-          "bytes": 6539,
+          "sha256": "aebaa30e8394778f748427c186ea14ebd58bfe6c3cf83729fbb2cea3f1e329d3",
+          "bytes": 13409,
           "executable": false
         },
         {

@@ -24,6 +24,44 @@ validate_ids <- function(values, label, unique_required = TRUE) {
   }
 }
 
+singscore_publication_identity <- function(filename) {
+  value <- suppressWarnings(system2("/usr/bin/stat", c("-c", shQuote("%d:%i:%f:%u:%g"), "--", shQuote(filename)), stdout = TRUE, stderr = FALSE))
+  status <- attr(value, "status")
+  if ((!is.null(status) && status != 0L) || length(value) != 1L) return(NA_character_)
+  unname(value)
+}
+
+singscore_publication_file_identity <- function(filename) {
+  link <- Sys.readlink(filename)
+  if (!is.na(link) && nzchar(link)) return(NA_character_)
+  metadata <- function() {
+    value <- suppressWarnings(system2("/usr/bin/stat", c("-c", shQuote("%d:%i:%f:%u:%g:%s:%y"), "--", shQuote(filename)), stdout = TRUE, stderr = FALSE))
+    status <- attr(value, "status")
+    if ((!is.null(status) && status != 0L) || length(value) != 1L) return(NA_character_)
+    fields <- strsplit(value, ":", fixed = TRUE)[[1]]
+    if (length(fields) < 7L || is.na(strtoi(fields[[3]], base = 16L)) ||
+        bitwAnd(strtoi(fields[[3]], base = 16L), 61440L) != 32768L) return(NA_character_)
+    unname(value)
+  }
+  before <- metadata()
+  if (is.na(before)) return(NA_character_)
+  checksum <- tryCatch(suppressWarnings(system2("/usr/bin/sha256sum", stdin = filename, stdout = TRUE, stderr = FALSE)), error = function(error) character())
+  status <- attr(checksum, "status")
+  after <- metadata()
+  link <- Sys.readlink(filename)
+  if ((!is.null(status) && status != 0L) || length(checksum) != 1L ||
+      !grepl("^[0-9a-f]{64}  -$", checksum) || is.na(after) || !identical(before, after) ||
+      (!is.na(link) && nzchar(link))) return(NA_character_)
+  paste0(before, ":", substr(checksum, 1L, 64L))
+}
+
+singscore_publication_remove_owned <- function(filename, expected) {
+  if (is.na(expected)) return(invisible(FALSE))
+  current <- singscore_publication_file_identity(filename)
+  if (is.na(current) || !identical(current, expected)) return(invisible(FALSE))
+  invisible(unlink(filename) == 0L)
+}
+
 run_score <- function() {
   inputs <- Sys.getenv(paste0("AUTONOMICS_INPUT", 0:2))
   outputs <- Sys.getenv(paste0("AUTONOMICS_OUTPUT", 0:2))
@@ -33,20 +71,64 @@ run_score <- function() {
   if (any(!dir.exists(dirname(outputs))) || anyDuplicated(outputs)) {
     stop("Output parents must exist and declared output paths must be distinct", call. = FALSE)
   }
-  if (file.exists(outputs[3])) {
+  outputs <- vapply(outputs, function(path) file.path(normalizePath(dirname(path), mustWork = TRUE), basename(path)), character(1))
+  if (anyDuplicated(outputs)) stop("Declared output paths must remain distinct after parent resolution", call. = FALSE)
+  if (!all(file.exists(c("/usr/bin/stat", "/usr/bin/sha256sum", "/usr/bin/rmdir")))) {
+    stop("GNU stat, sha256sum and rmdir are required for publication identity checks", call. = FALSE)
+  }
+  links <- Sys.readlink(outputs)
+  if (file.exists(outputs[3]) || (!is.na(links[3]) && nzchar(links[3]))) {
     stop("Refuse to overwrite an existing run log", call. = FALSE)
   }
-  sink(outputs[3], split = TRUE)
-  on.exit(sink(), add = TRUE)
+  log_connection <- file(outputs[3], open = "wx")
+  log_initial_identity <- singscore_publication_identity(outputs[3])
+  if (is.na(log_initial_identity)) { close(log_connection); stop("Fresh run log identity unavailable", call. = FALSE) }
+  log_open <- TRUE
+  log_sink_active <- FALSE
+  log_final_identity <- NA_character_
+  close_score_log <- function() {
+    if (log_sink_active) {
+      sink()
+      log_sink_active <<- FALSE
+    }
+    if (log_open) {
+      close(log_connection)
+      log_open <<- FALSE
+    }
+    current <- singscore_publication_identity(outputs[3])
+    full <- singscore_publication_file_identity(outputs[3])
+    if (is.na(current) || is.na(full) || !identical(current, log_initial_identity) ||
+        (!is.na(log_final_identity) && !identical(full, log_final_identity))) {
+      complete <<- FALSE
+      stop("Run log identity or finalized contents changed; foreign log preserved", call. = FALSE)
+    }
+    log_final_identity <<- full
+    invisible(full)
+  }
+  on.exit(close_score_log(), add = TRUE)
+  sink(log_connection, split = TRUE)
+  log_sink_active <- TRUE
   staged <- character()
-  published <- character()
+  stages <- character()
+  stage_identities <- character()
+  staged_identities <- rep(NA_character_, 2L)
+  published <- integer()
   complete <- FALSE
   on.exit({
-    unlink(staged)
-    if (!complete) unlink(published)
+    if (!complete) {
+      for (position in published) singscore_publication_remove_owned(outputs[position], staged_identities[position])
+    }
+    for (position in seq_along(stages)) {
+      current <- singscore_publication_identity(stages[position])
+      if (!is.na(current) && identical(current, stage_identities[position])) {
+        if (length(staged) >= position) singscore_publication_remove_owned(staged[position], staged_identities[position])
+        suppressWarnings(system2("/usr/bin/rmdir", c("--", shQuote(stages[position])), stdout = FALSE, stderr = FALSE))
+      }
+    }
   }, add = TRUE)
   tryCatch({
-    if (any(file.exists(outputs[1:2]))) {
+    links <- Sys.readlink(outputs[1:2])
+    if (any(file.exists(outputs[1:2])) || any(!is.na(links) & nzchar(links))) {
       stop("Refuse to overwrite existing score or RDS artifacts", call. = FALSE)
     }
     matrix_table <- read_tsv(inputs[1])
@@ -113,18 +195,62 @@ run_score <- function() {
     scores <- data.frame(sample = sample_ids, TotalScore = simple$TotalScore,
                           group = samples$group[match(sample_ids, samples$sample)],
                           check.names = FALSE, stringsAsFactors = FALSE)
-    staged <- vapply(outputs[1:2], function(path) tempfile(".singscore-", tmpdir = dirname(path)), character(1))
-    write.table(scores, staged[1], sep = "\t", row.names = FALSE, quote = FALSE)
-    saveRDS(list(rank_data = rank_data, simple = simple, scores = scores), staged[2])
+    for (position in seq_len(2L)) {
+      stage <- tempfile(".singscore-", tmpdir = dirname(outputs[position]))
+      if (!dir.create(stage, mode = "0700")) stop("Fresh private score staging directory required", call. = FALSE)
+      stages <- c(stages, stage)
+      stage_identities <- c(stage_identities, singscore_publication_identity(stage))
+      if (is.na(stage_identities[position])) stop("Score staging directory identity unavailable", call. = FALSE)
+    }
+    staged <- file.path(stages, c("scores.tsv", "scores.RDS"))
     for (position in seq_along(staged)) {
+      if (!identical(singscore_publication_identity(stages[position]), stage_identities[position])) {
+        stop("Score staging directory changed before writing", call. = FALSE)
+      }
+      connection <- file(staged[position], open = if (position == 1L) "wx" else "wbx")
+      initial <- singscore_publication_identity(staged[position])
+      if (is.na(initial)) { close(connection); stop("Fresh score staging file identity unavailable", call. = FALSE) }
+      tryCatch({
+        if (position == 1L) {
+          write.table(scores, connection, sep = "\t", row.names = FALSE, quote = FALSE)
+        } else {
+          connection <- gzcon(connection)
+          saveRDS(list(rank_data = rank_data, simple = simple, scores = scores), connection)
+        }
+      }, finally = close(connection))
+      if (!identical(singscore_publication_identity(stages[position]), stage_identities[position]) ||
+          !identical(singscore_publication_identity(staged[position]), initial)) {
+        stop("Score staging file or directory changed during writing", call. = FALSE)
+      }
+      staged_identities[position] <- singscore_publication_file_identity(staged[position])
+      if (is.na(staged_identities[position])) stop("Complete staged score identity unavailable", call. = FALSE)
+    }
+    for (position in seq_along(staged)) {
+      if (!identical(singscore_publication_identity(stages[position]), stage_identities[position]) ||
+          is.na(staged_identities[position]) ||
+          !identical(singscore_publication_file_identity(staged[position]), staged_identities[position])) {
+        stop("Staged score artifact changed before publication", call. = FALSE)
+      }
       if (!suppressWarnings(file.link(staged[position], outputs[position]))) {
         stop("Fresh output publication failed; existing artifacts are never replaced", call. = FALSE)
       }
-      published <- c(published, outputs[position])
+      published <- c(published, position)
+      if (!identical(singscore_publication_identity(stages[position]), stage_identities[position]) ||
+          !identical(singscore_publication_file_identity(outputs[position]), staged_identities[position])) {
+        stop("Published score artifact identity or contents changed", call. = FALSE)
+      }
     }
-    complete <- TRUE
+    for (position in seq_along(staged)) {
+      if (!identical(singscore_publication_identity(stages[position]), stage_identities[position]) ||
+          !identical(singscore_publication_file_identity(staged[position]), staged_identities[position]) ||
+          !identical(singscore_publication_file_identity(outputs[position]), staged_identities[position])) {
+        stop("Score artifact changed before publication completed", call. = FALSE)
+      }
+    }
     cat("\n== singscore_bspec summary ==\n")
     print(head(scores, 5))
+    close_score_log()
+    complete <- TRUE
     0L
   }, error = function(error) {
     cat("ERROR:", conditionMessage(error), "\n")
