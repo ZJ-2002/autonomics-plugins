@@ -17,7 +17,7 @@ class FrozenAHarmonisationDAGTests(unittest.TestCase):
     def setUp(self):
         self.job = proof.job_for(Path('/owned/positive'), Path('/owned/source'))
         self.build = dict(engine_commit='b' * 40)
-        self.guards = {'toy_guard_' + str(index) for index in range(20)}
+        self.guards = {'toy_guard_' + str(index) for index in range(23)}
 
     def report(self):
         return dict(scope='REAL_LOCKED_LEGACY_A_HARMONISATION_NO_FIT',
@@ -52,7 +52,7 @@ class FrozenAHarmonisationDAGTests(unittest.TestCase):
     def guard_fixture(self):
         observed = sorted(self.guards)
         text = '\n'.join('test ' + name + ' ... ok' for name in observed)
-        text += '\ntest result: ok. 20 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out;\n'
+        text += '\ntest result: ok. 23 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out;\n'
         return text, dict(exit=0, required_tests=observed, observed_passed_tests=observed)
 
     def build_fixture(self, root):
@@ -214,7 +214,7 @@ class FrozenAHarmonisationDAGTests(unittest.TestCase):
             with mock.patch.multiple(proof, PROBE_SHA=build['probe_sha256'], GUARDS=self.guards):
                 checked, receipt = proof.checked_build(archives, directory / 'official_plugin_dag', directory / 'build-record.json', seal)
                 self.assertEqual(checked['engine_commit'], build['engine_commit'])
-                self.assertEqual(receipt['guard_count'], 20)
+                self.assertEqual(receipt['guard_count'], 23)
                 (directory / 'guards.stdout.log').unlink()
                 with self.assertRaises((RuntimeError, ValueError)):
                     proof.checked_build(archives, directory / 'official_plugin_dag', directory / 'build-record.json', seal)

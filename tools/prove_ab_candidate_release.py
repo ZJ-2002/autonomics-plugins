@@ -10,8 +10,8 @@ import tarfile
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
-PARENT = 'ea0617675ed2e6d73b1d7942e13d9863631bd484'
-EXPECTED_TESTS = 355
+PARENT = 'b2a76039db51038e13bbc07508760c0cf8c27f46'
+EXPECTED_TESTS = 394
 FAMILIES = ('twosamplemr-v432-a', 'bulk-limma-normalized', 'frozen-b-project', 'twosamplemr')
 ADAPTERS = ('frozen-a-harmonisation', 'frozen-a-input-qualification')
 EXTRA = ('tests/test_frozen_b_project.py', 'tests/test_frozen_a_current_dag.py',
@@ -41,6 +41,13 @@ EXTRA += ('tools/acquire_frozen_a_python_runtime.py', 'tools/prove_frozen_a_plin
           'tests/test_frozen_a_input_qualification.py', 'docs/frozen-a-upstream-source-20261015.md',
           'evidence/frozen-a-upstream-source-20261015.json')
 EXTRA += ('tools/prove_frozen_a_input_qualification.py', 'tests/test_frozen_a_input_qualification_driver.py')
+EXTRA += ('docs/frozen-a-input-qualification-20261015.md',
+          'evidence/frozen-a-input-qualification-20261015.json')
+EXTRA += ('tools/prove_symlink_stage_visibility.py',
+          'tools/prove_frozen_a_input_qualification_dag.py',
+          'tests/test_frozen_a_input_qualification_dag.py',
+          'tools/prove_frozen_a_family_contract.py', 'tests/test_frozen_a_family_contract.py',
+          'docs/frozen-a-family-contract-20261015.md', 'evidence/frozen-a-family-contract-20261015.json')
 
 
 def digest(path):
@@ -83,7 +90,8 @@ def main():
         additions.update(test_ids(unittest.defaultTestLoader.loadTestsFromName(name)))
     for name in ('tests.test_locked_b_source_transport', 'tests.test_reconcile_ab_evidence_index',
                  'tests.test_frozen_a_harmonisation', 'tests.test_frozen_a_harmonisation_dag',
-                 'tests.test_frozen_a_input_qualification', 'tests.test_frozen_a_input_qualification_driver'):
+                 'tests.test_frozen_a_input_qualification', 'tests.test_frozen_a_input_qualification_driver',
+                 'tests.test_frozen_a_input_qualification_dag', 'tests.test_frozen_a_family_contract'):
         additions.update(test_ids(unittest.defaultTestLoader.loadTestsFromName(name)))
     original['test_ids'].extend(sorted(additions - set(original['test_ids'])))
     if len(original['test_ids']) != EXPECTED_TESTS or len(set(original['test_ids'])) != EXPECTED_TESTS:

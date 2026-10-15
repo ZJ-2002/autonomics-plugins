@@ -31,6 +31,17 @@ const A_RAW_PANEL_DIGEST: &str =
 const A_RAW_PANEL_SHA: &str = "fe6a3d9717ea70714dcf1c8c9d15b2790501f030a93283042adebab3e8f1ed2b";
 const A_RAW_PANEL_VPATH: &str = "/locked-panels/1000g-eur";
 const A_RAW_PANEL_HOST: &str = "/home/zj-normal/.autonomics/panels/wjixiang/catalog-plink-ref-1000g-eur-binary@sha256:9f483fd11fbb2e73a97ab1af172e45e569c7b8ed7edec5572e35a2b3fa614b21";
+const A_RAW_SOURCE_FILES: [&str; 9] = [
+    "/home/zj-normal/Work/BONE_MARROW_CACHEXIA/versions/v4.3.2/bm_cachexia_v432_g0/04_DATA/G0_MINIMUM_A/GCST90652391.h.tsv.gz",
+    "/home/zj-normal/Work/BONE_MARROW_CACHEXIA/versions/v4.3.2/bm_cachexia_v432_g0/04_DATA/G0_MINIMUM_A/GCST90002393.h.tsv.gz",
+    "/home/zj-normal/Work/BONE_MARROW_CACHEXIA/versions/v4.3.2/bm_cachexia_v432_g0/03_AUDIT/G0_v4.3.2_2026-10-11/A_ANALYSIS_CONFIG.json",
+    "/home/zj-normal/Work/BONE_MARROW_CACHEXIA/versions/v4.3.2/bm_cachexia_v432_g0/03_AUDIT/G0_v4.3.2_2026-10-11/G0_V432_CERTIFICATE.json",
+    "/home/zj-normal/Work/BONE_MARROW_CACHEXIA/versions/v4.3.2/bm_cachexia_v432_g0/02_EXECUTION/prepare_minimum_g0.py",
+    "/home/zj-normal/Work/BONE_MARROW_CACHEXIA/versions/v4.3.2/bm_cachexia_v432_g0/02_EXECUTION/verify_minimum_ld.py",
+    "/home/zj-normal/Work/BONE_MARROW_CACHEXIA/versions/v4.3.2/bm_cachexia_v432_g0/04_SOFTWARE/bin/plink",
+    "/home/zj-normal/Work/BONE_MARROW_CACHEXIA/versions/v4.3.2/bm_cachexia_v432_g0/04_DATA/LD_REF_1000G_EUR_489/manifest.json",
+    "/home/zj-normal/Work/BONE_MARROW_CACHEXIA/versions/v4.3.2/bm_cachexia_v432_g0/02_EXECUTION/SOFTWARE_LOCK.tsv",
+];
 const A_HARMONISATION_MANIFEST: &str =
     "07051b9e8351ae30a74ac8b25074e256bfb9d2fb0af53922864d0c16101a01fb";
 const A_HARMONISATION_SCRIPT: &str =
@@ -61,6 +72,14 @@ fn transport_mode(job: &Value) -> Result<bool, Box<dyn std::error::Error>> {
         }) {
             return Err("fixed real legacy source cannot be relabelled as synthetic".into());
         }
+        validate_synthetic_kinds(
+            job,
+            job["nodes"]
+                .as_array()
+                .into_iter()
+                .flatten()
+                .filter_map(|node| node["kind"].as_str()),
+        )?;
         return Ok(false);
     }
     if job["scope"] == A_HARMONISATION_SCOPE {
@@ -156,6 +175,26 @@ fn transport_mode(job: &Value) -> Result<bool, Box<dyn std::error::Error>> {
     Ok(true)
 }
 
+fn validate_synthetic_kinds<'a>(
+    job: &Value,
+    kinds: impl IntoIterator<Item = &'a str>,
+) -> Result<(), Box<dyn std::error::Error>> {
+    if job["scope"] == "TECHNICAL_PLUGIN_DAG_NOT_G0"
+        && kinds.into_iter().any(|kind| {
+            matches!(
+                kind,
+                "frozen_b_legacy_intake"
+                    | "frozen_b_legacy_family"
+                    | "frozen_a_v432_harmonisation"
+                    | "frozen_a_v432_input_qualification"
+            )
+        })
+    {
+        return Err("fixed real legacy node kinds cannot be relabelled as synthetic through a renamed family".into());
+    }
+    Ok(())
+}
+
 fn validate_a_harmonisation_job(job: &Value) -> Result<(), Box<dyn std::error::Error>> {
     if job["expected_plugin_name"] != "frozen-a-harmonisation"
         || job["plugin_manifest_sha256"] != A_HARMONISATION_MANIFEST
@@ -177,6 +216,15 @@ fn a_raw_bundle() -> Value {
         "vpath":A_RAW_PANEL_VPATH,"source":A_RAW_PANEL_VPATH,"digest":A_RAW_PANEL_DIGEST})
 }
 
+fn a_raw_source_path(port: usize) -> String {
+    let name = std::path::Path::new(A_RAW_SOURCE_FILES[port])
+        .file_name()
+        .unwrap()
+        .to_str()
+        .unwrap();
+    format!("/locked-inputs/{port}/{name}")
+}
+
 fn validate_a_raw_job(job: &Value) -> Result<(), Box<dyn std::error::Error>> {
     if job["expected_plugin_name"] != "frozen-a-input-qualification"
         || job["plugin_manifest_sha256"] != A_RAW_MANIFEST
@@ -193,7 +241,23 @@ fn validate_a_raw_job(job: &Value) -> Result<(), Box<dyn std::error::Error>> {
             "exact frozen raw A qualification and original read-only catalog panel required".into(),
         );
     }
-    validate_a_graph(job, 9, "frozen_a_v432_input_qualification")
+    validate_a_graph(job, 9, "frozen_a_v432_input_qualification")?;
+    for edge in job["edges"].as_array().ok_or("raw A edges required")? {
+        let port = edge["to_port"].as_u64().ok_or("raw A port required")? as usize;
+        let node = job["nodes"]
+            .as_array()
+            .ok_or("raw A nodes required")?
+            .iter()
+            .find(|node| node["id"] == edge["from"])
+            .ok_or("raw A source node required")?;
+        if node["spec"]["path"] != format!("vfs://{}", a_raw_source_path(port)) {
+            return Err(
+                "raw A input ports must directly bind their exact read-only canonical source mount"
+                    .into(),
+            );
+        }
+    }
+    Ok(())
 }
 
 fn validate_a_graph(
@@ -811,6 +875,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .iter()
         .map(|entry| entry.kind.clone())
         .collect();
+    validate_synthetic_kinds(&job, methods.iter().map(String::as_str))?;
     if methods.len() != manifest.nodes.len() {
         return Err("duplicate declared method kind".into());
     }
@@ -881,6 +946,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 return Err("additional canonical manifest bytes differ".into());
             }
             let mut extra: PluginManifest = toml::from_str(std::str::from_utf8(&bytes)?)?;
+            validate_synthetic_kinds(&job, extra.nodes.iter().map(|entry| entry.kind.as_str()))?;
             if extra.plugin_name
                 != record["expected_plugin_name"]
                     .as_str()
@@ -989,6 +1055,20 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             read_only: true,
             permissions: Default::default(),
         });
+        for (port, filename) in A_RAW_SOURCE_FILES.iter().enumerate() {
+            let path = std::path::Path::new(filename);
+            mounts.mount.push(MountDefinition {
+                path: format!("/locked-inputs/{port}"),
+                backend: "technical".into(),
+                source: path
+                    .parent()
+                    .ok_or("canonical source parent required")?
+                    .to_string_lossy()
+                    .into_owned(),
+                read_only: true,
+                permissions: Default::default(),
+            });
+        }
     }
     let mounted = Arc::new(MountedObjectStore::from_manifest(&mounts)?);
     let storage = Arc::new(OpendalFileStorage::with_mounts(&root, mounted.clone()));
@@ -1192,7 +1272,27 @@ mod transport_tests {
                 .push(json!({"from":format!("source{port}"),
                 "from_port":0,"to":"qualification","to_port":port}));
         }
+        for port in 0..9 {
+            value["nodes"][port + 1]["spec"]["path"] =
+                json!(format!("vfs://{}", a_raw_source_path(port)));
+        }
         value
+    }
+
+    #[test]
+    fn a_raw_sources_require_exact_canonical_readonly_mount_and_port_roles() {
+        let value = a_raw_job();
+        assert!(transport_mode(&value).unwrap());
+        let mut changed = value.clone();
+        changed["nodes"][1]["spec"]["path"] = json!("vfs:///owned-input-link.gz");
+        assert!(transport_mode(&changed).is_err());
+        changed = value.clone();
+        changed["nodes"][1]["spec"]["path"] = value["nodes"][2]["spec"]["path"].clone();
+        assert!(transport_mode(&changed).is_err());
+        changed = value;
+        changed["edges"][0]["from"] = json!("source1");
+        changed["edges"][1]["from"] = json!("source0");
+        assert!(transport_mode(&changed).is_err());
     }
 
     #[test]
@@ -1488,6 +1588,62 @@ mod transport_tests {
     #[test]
     fn original_synthetic_scope_remains_available() {
         assert!(!transport_mode(&json!({"scope":"TECHNICAL_PLUGIN_DAG_NOT_G0"})).unwrap());
+    }
+    #[test]
+    fn synthetic_scope_rejects_renamed_families_with_locked_kinds() {
+        for kind in [
+            "frozen_b_legacy_intake",
+            "frozen_b_legacy_family",
+            "frozen_a_v432_harmonisation",
+            "frozen_a_v432_input_qualification",
+        ] {
+            let value = json!({"scope":"TECHNICAL_PLUGIN_DAG_NOT_G0",
+                "expected_plugin_name":"renamed-display-family",
+                "nodes":[{"id":"real-method","kind":kind,"spec":{}}]});
+            assert!(transport_mode(&value).is_err(), "{kind}");
+        }
+        for kind in ["bulk_normalized_design", "bulk_normalized_limma"] {
+            let value = json!({"scope":"TECHNICAL_PLUGIN_DAG_NOT_G0",
+                "expected_plugin_name":"bulk-limma-normalized",
+                "nodes":[{"id":"toy-method","kind":kind,"spec":{}}]});
+            assert!(!transport_mode(&value).unwrap());
+        }
+    }
+    #[test]
+    fn synthetic_manifest_kinds_cannot_hide_locked_nodes_by_renaming() {
+        let scope = json!({"scope":"TECHNICAL_PLUGIN_DAG_NOT_G0"});
+        for name in ["renamed-primary-family", "renamed-additional-family"] {
+            for kind in [
+                "frozen_b_legacy_intake",
+                "frozen_b_legacy_family",
+                "frozen_a_v432_harmonisation",
+                "frozen_a_v432_input_qualification",
+            ] {
+                let definition =
+                    serde_json::from_value(json!({"kind":kind,"desc":"technical fixture",
+                    "doc":"No method is executed","ports":{"inputs":[],"outputs":[]},
+                    "command":{"interpreter":"sh","script":"true"}}))
+                    .unwrap();
+                let manifest = PluginManifest {
+                    plugin_name: name.into(),
+                    nodes: vec![definition],
+                    ..Default::default()
+                };
+                assert!(
+                    validate_synthetic_kinds(
+                        &scope,
+                        manifest.nodes.iter().map(|entry| entry.kind.as_str())
+                    )
+                    .is_err(),
+                    "{name}/{kind}"
+                );
+            }
+        }
+        assert!(
+            validate_synthetic_kinds(&scope, ["bulk_normalized_design", "bulk_normalized_limma"])
+                .is_ok()
+        );
+        assert!(validate_synthetic_kinds(&job(), ["frozen_b_legacy_intake"]).is_ok());
     }
     #[test]
     fn synthetic_scope_cannot_relabel_fixed_real_frozen_b_plugin() {

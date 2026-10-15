@@ -22,8 +22,8 @@ from tools.reconcile_ab_evidence_index import verify_archive
 
 REVISION = 'e78dae40195d86b1c52e5c2934b54f2161b867db'
 PARENT = '4ceefbd821baab8deebb070645a2fb8b1fa8e1ba'
-PROBE_SHA = 'bc70fd8d45cd6d96d52774d0bef39fb8f9836365cba40bb3547312bc171a330c'
-EXPECTED_GUARD_COUNT = 20
+PROBE_SHA = '81b0816929a585b159aaeb8c9cdeea8b8a0c93b340c2c3ae38ccaebe0e4475c9'
+EXPECTED_GUARD_COUNT = 23
 SCOPE = 'LOCKED_LEGACY_A_HARMONISATION_NO_FIT_NOT_G0'
 METHOD = 'frozen_a_v432_harmonisation'
 DIRECT_SESSION = 'a685dfe45f9448b78083b7c510844912'
@@ -57,6 +57,9 @@ GUARDS = {
     'transport_tests::a_raw_rejects_changed_panel_source_digest_manifest_and_plugins',
     'transport_tests::a_raw_requires_all_nine_unique_input_bindings',
     'transport_tests::a_raw_cannot_be_relabelled_synthetic_or_other_no_fit_scope',
+    'transport_tests::synthetic_scope_rejects_renamed_families_with_locked_kinds',
+    'transport_tests::synthetic_manifest_kinds_cannot_hide_locked_nodes_by_renaming',
+    'transport_tests::a_raw_sources_require_exact_canonical_readonly_mount_and_port_roles',
 }
 
 
@@ -71,7 +74,7 @@ def validate_guard_inventory(text, execution):
 
 def checked_build(archives, runner, record, seal):
     require(isinstance(PROBE_SHA, str) and re.fullmatch('[0-9a-f]{64}', PROBE_SHA) and
-        len(GUARDS) == EXPECTED_GUARD_COUNT, 'Merged twenty-guard source is not yet frozen; execution unavailable')
+        len(GUARDS) == EXPECTED_GUARD_COUNT, 'Merged guard source is not yet frozen; execution unavailable')
     runner, record = regular(runner), regular(record)
     archive = next((parent for parent in record.parents if re.fullmatch('[0-9a-f]{32}', parent.name) and
         parent.parent == archives), None)

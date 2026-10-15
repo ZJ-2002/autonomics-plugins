@@ -1,5 +1,9 @@
 # Frozen A upstream runtime and author-artifact identity
 
+Subsequent evidence: the [direct raw/PLINK replay](frozen-a-input-qualification-20261015.md)
+has completed. Its report also records a discovered scope-alias regression and
+the expanded 22-guard candidate; the earlier cutoff below is preserved.
+
 These records qualify source/runtime identities, not a completed upstream DAG,
 production deployment, a new scientific observation, or G0. Existing B replay
 and A harmonisation evidence retain their original identities and scopes.
