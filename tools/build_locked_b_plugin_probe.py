@@ -10,7 +10,13 @@ import shutil
 import subprocess
 import tarfile
 
-PARENT = '4ceefbd821baab8deebb070645a2fb8b1fa8e1ba'
+PARENT = '11f061589473cb8e4fa57d364ad7107108245de1'
+PROBE_SHA = '2a23a4189c0a3df9d8c39071e0d5b33a386f342338d2076e1c29b8f97aa1c4c7'
+KERNEL_SOURCE_PINS = {
+    'crates/dag-core/src/resource.rs': '21c32eb20d1a4b22573b1032048329ee7c5f29217066123b718cbbb2b8d75e06',
+    'crates/dag-core/src/resource_tests.rs': '9a80098c52b5242b8d3f34734052d0ee26a5ddac021d4ac3e90578c63697a1d7',
+    'crates/dag-core/src/dag/execution/local.rs': 'da748075d402c0c1cefebe3a8a1a364f17f3eef6a085599628bc6302979765eb',
+}
 EXAMPLE = 'official_plugin_dag'
 SOURCE_PATH = 'crates/container-plugin/examples/'+EXAMPLE+'.rs'
 GUARDS = {
@@ -51,6 +57,30 @@ def write(path, value):
         stream.write('\n')
 
 
+def checked_probe_source(path):
+    if path.is_symlink() or not path.is_file() or digest(path) != PROBE_SHA:
+        raise RuntimeError('Exact reviewed twenty-three-guard probe source required')
+    return PROBE_SHA
+
+
+def snapshot_kernel_sources(repository, exported, destination):
+    records = {}
+    for name, expected in KERNEL_SOURCE_PINS.items():
+        payload = subprocess.check_output(['git', '-C', str(repository), 'show', PARENT + ':' + name])
+        path = exported / name
+        if (hashlib.sha256(payload).hexdigest() != expected or path.is_symlink() or not path.is_file()
+                or path.read_bytes() != payload):
+            raise RuntimeError('Committed and exported native memory source must match the pinned fixed engine: ' + name)
+        snapshot = destination / name
+        snapshot.parent.mkdir(parents=True, exist_ok=True)
+        with snapshot.open('xb') as handle:
+            handle.write(payload)
+        if digest(snapshot) != expected:
+            raise RuntimeError('Native memory source snapshot differs: ' + name)
+        records[name] = dict(sha256=expected, bytes=len(payload))
+    return records
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--engine-repository', required=True, type=Path)
@@ -69,7 +99,7 @@ def main():
     output.mkdir()
     shutil.copyfile(Path(__file__), output/'driver.py')
     source_file = Path(__file__).parent/'probes/official_plugin_dag.rs'
-    source_sha = digest(source_file)
+    source_sha = checked_probe_source(source_file)
     shutil.copyfile(source_file, output/'probe.rs')
     available = int(next(line.split()[1] for line in Path('/proc/meminfo').read_text().splitlines() if line.startswith('MemAvailable:')))*1024
     write(output/'resource-preflight.json', dict(memory_available_bytes=available,
@@ -89,7 +119,8 @@ def main():
     if changed != [SOURCE_PATH]:
         raise RuntimeError('Only the reviewed technical probe may differ from the exact parent')
     write(output/'candidate.json',dict(engine_commit=commit,parent_commit=PARENT,git_tree=tree,
-          changed_paths=changed,probe_sha256=source_sha,remote_pushed=False,scientific_authorized=False,g0_granted=False))
+          changed_paths=changed,probe_sha256=source_sha,kernel_source_pins=KERNEL_SOURCE_PINS,
+          remote_pushed=False,scientific_authorized=False,g0_granted=False))
     source_archive = Path(os.environ['TMPDIR'])/'locked-b-source.tar'
     subprocess.run(['git','-C',str(arguments.engine_repository),'archive','--format=tar','-o',str(source_archive),commit],check=True)
     source = Path(os.environ['TMPDIR'])/'locked-b-source'
@@ -100,6 +131,9 @@ def main():
     write(output/'committed-source-files.json',before)
     if digest(source/SOURCE_PATH) != source_sha:
         raise RuntimeError('Exact exported probe identity required')
+    kernel_sources = snapshot_kernel_sources(arguments.engine_repository, source, output/'kernel-source')
+    write(output/'kernel-source-pins.json', dict(parent_commit=PARENT, files=kernel_sources,
+          exported_sources_equal_committed_parent=True, old_sdk_fallback_allowed=False))
     build_env = dict(os.environ,CARGO_TARGET_DIR=str(target),CARGO_BUILD_JOBS='2',
                      CARGO_TERM_COLOR='never',AUTONOMICS_SOURCE_REVISION=commit)
     results = {}
@@ -137,6 +171,7 @@ def main():
         raise RuntimeError('Source changed during exact compilation')
     write(output/'build-record.json',dict(engine_commit=commit,parent_commit=PARENT,git_tree=tree,
           probe_sha256=source_sha,changed_paths=changed,source_unchanged=True,committed_source_files=len(before),
+          kernel_source_pins=kernel_sources,old_sdk_fallback_allowed=False,
           actual_build_exit=0,executables=results,canonical_target=str(target),remote_pushed=False,
           containers_started=False,real_study_fitted=False,production_restarted=False,scientific_authorized=False,g0_granted=False))
     print(json.dumps(dict(engine_commit=commit,probe_sha256=source_sha,executables=results,scientific_authorized=False,g0_granted=False)))

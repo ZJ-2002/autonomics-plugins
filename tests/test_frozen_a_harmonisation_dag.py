@@ -1,7 +1,10 @@
 import copy
 import hashlib
 import json
+import os
 from pathlib import Path
+import subprocess
+import sys
 import tempfile
 import unittest
 from unittest import mock
@@ -18,6 +21,7 @@ class FrozenAHarmonisationDAGTests(unittest.TestCase):
         self.job = proof.job_for(Path('/owned/positive'), Path('/owned/source'))
         self.build = dict(engine_commit='b' * 40)
         self.guards = {'toy_guard_' + str(index) for index in range(23)}
+        self.kernel_pins = {name: sha(('toy ' + name).encode()) for name in proof.KERNEL_SOURCE_PINS}
 
     def report(self):
         return dict(scope='REAL_LOCKED_LEGACY_A_HARMONISATION_NO_FIT',
@@ -65,14 +69,24 @@ class FrozenAHarmonisationDAGTests(unittest.TestCase):
                     'probe.rs': b'toy rust source'}
         for name, payload in payloads.items():
             (directory / name).write_bytes(payload)
+        kernel_sources = {}
+        for name, checksum in self.kernel_pins.items():
+            snapshot = directory / 'kernel-source' / name
+            snapshot.parent.mkdir(parents=True, exist_ok=True)
+            snapshot.write_bytes(('toy ' + name).encode())
+            kernel_sources[name] = dict(sha256=checksum, bytes=snapshot.stat().st_size)
         build = dict(actual_build_exit=0, parent_commit=proof.PARENT, engine_commit='b' * 40, git_tree='c' * 40,
             probe_sha256=sha(payloads['probe.rs']), changed_paths=['crates/container-plugin/examples/official_plugin_dag.rs'],
             source_unchanged=True, containers_started=False, real_study_fitted=False, production_restarted=False,
+            kernel_source_pins=kernel_sources, old_sdk_fallback_allowed=False,
             g0_granted=False, executables=dict(runner=dict(executable='official_plugin_dag', sha256=sha(payloads['official_plugin_dag'])),
                 guards=dict(executable='guard-tests', sha256=sha(payloads['guard-tests']))))
         (directory / 'build-record.json').write_text(json.dumps(build))
         (directory / 'candidate.json').write_text(json.dumps({key: build[key] for key in
-            ['engine_commit', 'parent_commit', 'probe_sha256', 'git_tree', 'changed_paths']}))
+            ['engine_commit', 'parent_commit', 'probe_sha256', 'git_tree', 'changed_paths']} |
+            dict(kernel_source_pins=self.kernel_pins)))
+        (directory / 'kernel-source-pins.json').write_text(json.dumps(dict(parent_commit=proof.PARENT,
+            files=kernel_sources, exported_sources_equal_committed_parent=True, old_sdk_fallback_allowed=False)))
         text, execution = self.guard_fixture()
         (directory / 'guards.stdout.log').write_text(text)
         execution['stdout_sha256'] = sha(text.encode())
@@ -211,7 +225,7 @@ class FrozenAHarmonisationDAGTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             archives, archive, directory, build = self.build_fixture(Path(temporary))
             seal = self.seal_fixture(archive)
-            with mock.patch.multiple(proof, PROBE_SHA=build['probe_sha256'], GUARDS=self.guards):
+            with mock.patch.multiple(proof, PROBE_SHA=build['probe_sha256'], GUARDS=self.guards, KERNEL_SOURCE_PINS=self.kernel_pins):
                 checked, receipt = proof.checked_build(archives, directory / 'official_plugin_dag', directory / 'build-record.json', seal)
                 self.assertEqual(checked['engine_commit'], build['engine_commit'])
                 self.assertEqual(receipt['guard_count'], 23)
@@ -223,7 +237,7 @@ class FrozenAHarmonisationDAGTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             archives, archive, directory, build = self.build_fixture(Path(temporary))
             seal = self.seal_fixture(archive, worker=1)
-            with mock.patch.multiple(proof, PROBE_SHA=build['probe_sha256'], GUARDS=self.guards):
+            with mock.patch.multiple(proof, PROBE_SHA=build['probe_sha256'], GUARDS=self.guards, KERNEL_SOURCE_PINS=self.kernel_pins):
                 with self.assertRaisesRegex(RuntimeError, 'worker'):
                     proof.checked_build(archives, directory / 'official_plugin_dag', directory / 'build-record.json', seal)
 
@@ -234,7 +248,7 @@ class FrozenAHarmonisationDAGTests(unittest.TestCase):
             seal = self.seal_fixture(archive)
             alternate = root / 'official_plugin_dag'
             alternate.write_bytes((directory / 'official_plugin_dag').read_bytes())
-            with mock.patch.multiple(proof, PROBE_SHA=build['probe_sha256'], GUARDS=self.guards):
+            with mock.patch.multiple(proof, PROBE_SHA=build['probe_sha256'], GUARDS=self.guards, KERNEL_SOURCE_PINS=self.kernel_pins):
                 with self.assertRaisesRegex(RuntimeError, 'same sealed'):
                     proof.checked_build(archives, alternate, directory / 'build-record.json', seal)
 
@@ -244,7 +258,7 @@ class FrozenAHarmonisationDAGTests(unittest.TestCase):
             build['parent_commit'] = 'f' * 40
             (directory / 'build-record.json').write_text(json.dumps(build))
             seal = self.seal_fixture(archive)
-            with mock.patch.multiple(proof, PROBE_SHA=build['probe_sha256'], GUARDS=self.guards):
+            with mock.patch.multiple(proof, PROBE_SHA=build['probe_sha256'], GUARDS=self.guards, KERNEL_SOURCE_PINS=self.kernel_pins):
                 with self.assertRaises(RuntimeError):
                     proof.checked_build(archives, directory / 'official_plugin_dag', directory / 'build-record.json', seal)
 
@@ -260,6 +274,223 @@ class FrozenAHarmonisationDAGTests(unittest.TestCase):
                 proof.expected_refusal(node, proof.IMAGE, marker, scratch)
             node['execution']['exit_code'] = 2
             proof.expected_refusal(node, proof.IMAGE, marker, scratch)
+
+    def test_legacy_engine_parent_is_rejected_without_fallback(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            archives, archive, directory, build = self.build_fixture(Path(temporary))
+            build['parent_commit'] = '4ceefbd821baab8deebb070645a2fb8b1fa8e1ba'
+            (directory / 'build-record.json').write_text(json.dumps(build))
+            seal = self.seal_fixture(archive)
+            with mock.patch.multiple(proof, PROBE_SHA=build['probe_sha256'], GUARDS=self.guards,
+                    KERNEL_SOURCE_PINS=self.kernel_pins):
+                with self.assertRaisesRegex(RuntimeError, 'reviewed parent'):
+                    proof.checked_build(archives, directory / 'official_plugin_dag', directory / 'build-record.json', seal)
+
+    def test_kernel_snapshot_drift_is_rejected_even_with_new_valid_seal(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            archives, archive, directory, build = self.build_fixture(Path(temporary))
+            snapshot = directory / 'kernel-source' / next(iter(self.kernel_pins))
+            snapshot.write_text('substituted memory source')
+            seal = self.seal_fixture(archive)
+            with mock.patch.multiple(proof, PROBE_SHA=build['probe_sha256'], GUARDS=self.guards,
+                    KERNEL_SOURCE_PINS=self.kernel_pins):
+                with self.assertRaisesRegex(RuntimeError, 'snapshot differs'):
+                    proof.checked_build(archives, directory / 'official_plugin_dag', directory / 'build-record.json', seal)
+
+    def test_missing_kernel_source_proof_cannot_be_replaced_by_record_strings(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            archives, archive, directory, build = self.build_fixture(Path(temporary))
+            (directory / 'kernel-source-pins.json').unlink()
+            seal = self.seal_fixture(archive)
+            with mock.patch.multiple(proof, PROBE_SHA=build['probe_sha256'], GUARDS=self.guards,
+                    KERNEL_SOURCE_PINS=self.kernel_pins):
+                with self.assertRaisesRegex(RuntimeError, 'absent'):
+                    proof.checked_build(archives, directory / 'official_plugin_dag', directory / 'build-record.json', seal)
+
+    def test_sealed_nonexecutable_runner_is_copied_without_changing_original(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            original = root / 'sealed-runner'
+            original.write_bytes(b'toy executable bytes; not executed')
+            original.chmod(0o600)
+            temporary_root = root / 'scratch'
+            temporary_root.mkdir()
+            before = proof.file_identity(original)
+            target, identity = proof.executable_copy(original, temporary_root)
+            self.assertEqual(identity, before)
+            self.assertEqual(proof.file_identity(original), before)
+            self.assertEqual(target.stat().st_mode & 0o777, 0o700)
+            self.assertEqual(target.read_bytes(), original.read_bytes())
+            with self.assertRaises(FileExistsError):
+                proof.executable_copy(original, temporary_root)
+
+    def task_fixture(self, root):
+        work = root / 'case'
+        directory = work / 'task-receipts/123-456-0'
+        directory.mkdir(parents=True)
+        manifest = directory / 'task.json'
+        manifest.write_text(json.dumps(dict(spec=dict(id='input0', kind='file_reference'), resources={})))
+        reference = dict(path=str(manifest), fingerprint=dict(size=manifest.stat().st_size))
+        execution = dict(exit_code=0, workspace=str(directory), task_manifest=reference)
+        nodes = dict(input0=dict(node_type='file_reference', status='success', execution=execution))
+        (directory / 'attempt.json').write_text(json.dumps(dict(task_id='input0', executor='local', status='success',
+            exit_code=0, workspace=str(directory), task_manifest=reference)))
+        (directory / 'status.json').write_text(json.dumps(dict(status='success')))
+        return work, directory, nodes
+
+    def test_owned_receipts_match_actual_nodes_and_preserve_unmeasured_resources(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            work, directory, nodes = self.task_fixture(Path(temporary))
+            observed = proof.checked_task_receipts(work, nodes)
+            self.assertEqual(observed['input0']['actual_task_resources'], {})
+            self.assertEqual(set(observed['input0']['files']), {'task.json', 'attempt.json', 'status.json'})
+
+    def test_foreign_task_manifest_path_is_rejected(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            work, directory, nodes = self.task_fixture(Path(temporary))
+            nodes['input0']['execution']['task_manifest']['path'] = '/foreign/task.json'
+            with self.assertRaisesRegex(RuntimeError, 'receipt differ'):
+                proof.checked_task_receipts(work, nodes)
+
+    def test_failed_or_missing_receipt_cannot_match_success_report(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            work, directory, nodes = self.task_fixture(Path(temporary))
+            (directory / 'status.json').write_text(json.dumps(dict(status='failed')))
+            with self.assertRaisesRegex(RuntimeError, 'receipt differ'):
+                proof.checked_task_receipts(work, nodes)
+            (directory / 'status.json').unlink()
+            with self.assertRaises(FileNotFoundError):
+                proof.checked_task_receipts(work, nodes)
+
+    def test_repaired_memory_report_requires_actual_cgroup_observation(self):
+        memory = dict(enabled=True, source='cgroup_v2', error=None, trigger=None, sample_count=1,
+            threshold_ratio=0.9, sample_interval_ms=250,
+            peak=dict(source='cgroup_v2', limit_bytes=2147483648, charged_bytes=100, usage_bytes=80))
+        proof.validate_memory_report(dict(first_run=dict(resource=dict(memory=memory))))
+        for key, value in [('source', 'system'), ('error', 'permission denied'), ('sample_count', 0),
+                           ('sample_count', True), ('trigger', {'reason': 'pressure'})]:
+            changed = copy.deepcopy(memory)
+            changed[key] = value
+            with self.assertRaises(RuntimeError):
+                proof.validate_memory_report(dict(first_run=dict(resource=dict(memory=changed))))
+
+    def test_regular_copy_stage_guard_does_not_accept_foreign_symlink(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            target = root / 'foreign'
+            target.write_bytes(b'toy bytes')
+            alias = root / 'alias'
+            alias.symlink_to(target)
+            with self.assertRaises(RuntimeError):
+                proof.file_identity(alias)
+
+    def stop_fixture(self, root):
+        session = 'a' * 32
+        permanent = root / session / 'permanent'
+        permanent.mkdir(parents=True)
+        output = permanent / 'output'
+        output.mkdir()
+        owner = root / 'toy-owner.json'
+        backend = ['--root', '/toy/storage', '--runroot', '/toy/run', '--tmpdir', '/toy/run/tmp']
+        owner.write_text(json.dumps(dict(runtime_backend=backend)))
+        (permanent / 'container-intents.json').write_text(json.dumps(dict(session=session,
+            intents=[dict(token=character * 32, backend=backend) for character in ['b', 'c']])))
+        return permanent, output, owner, backend
+
+    def test_two_owned_stoppage_queries_use_both_labels_and_actual_backend(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            permanent, output, owner, backend = self.stop_fixture(Path(temporary))
+            with mock.patch.object(proof, 'OWNER', owner), mock.patch.object(proof.subprocess, 'run') as run:
+                run.return_value = type('ToyResult', (), dict(returncode=0, stdout='[]'))()
+                observed = proof.stopped_owned_containers(['toy-managed-shim', *backend], output, permanent)
+                self.assertEqual(len(observed), 2)
+                self.assertEqual(run.call_count, 2)
+                for index, call in enumerate(run.call_args_list):
+                    command = call.args[0]
+                    self.assertEqual(command[:1 + len(backend)], ['toy-managed-shim', *backend])
+                    self.assertIn('label=autonomics.validation.session=' + 'a' * 32, command)
+                    self.assertIn('label=autonomics.validation.intent=' + ['b', 'c'][index] * 32, command)
+
+    def test_still_running_method_container_cannot_be_recorded_stopped(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            permanent, output, owner, backend = self.stop_fixture(Path(temporary))
+            with mock.patch.object(proof, 'OWNER', owner), mock.patch.object(proof.subprocess, 'run') as run:
+                run.return_value = type('ToyResult', (), dict(returncode=0, stdout='[{"Id":"owned-live"}]'))()
+                with self.assertRaisesRegex(RuntimeError, 'not proven stopped'):
+                    proof.stopped_owned_containers(['toy-managed-shim', *backend], output, permanent)
+
+    def launcher_fixture(self, root):
+        original = root / 'fake-managed-shim'
+        original.write_text('#!/usr/bin/python3\nimport json,sys\nprint(json.dumps(sys.argv[1:]))\n')
+        original.chmod(0o700)
+        backend = ['--root', '/toy/storage', '--runroot', '/toy/run', '--tmpdir', '/toy/run/libpod-tmp']
+        owner = root / 'owner.json'
+        owner.write_text(json.dumps(dict(runtime_backend=backend)))
+        temporary, output = root / 'scratch', root / 'permanent'
+        temporary.mkdir()
+        output.mkdir()
+        return original, backend, owner, temporary, output
+
+    def test_backend_launcher_real_fake_shim_receives_exact_prefix_and_operation(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            original, backend, owner, scratch, output = self.launcher_fixture(Path(temporary))
+            with mock.patch.multiple(proof, OWNER=owner, OWNER_SHA=sha(owner.read_bytes())), \
+                    mock.patch.dict(os.environ, AUTONOMICS_PODMAN_PROGRAM=str(original)):
+                receipt = proof.install_backend_launcher([str(original), *backend], scratch, output)
+                process = subprocess.run([sys.executable, receipt['launcher_path'], 'create', '--rm', 'toy-image'],
+                    capture_output=True, text=True, check=False)
+                self.assertEqual(process.returncode, 0)
+                self.assertEqual(json.loads(process.stdout), [*backend, 'create', '--rm', 'toy-image'])
+                self.assertEqual(os.environ['AUTONOMICS_PODMAN_PROGRAM'], str(original))
+                self.assertEqual(Path(os.environ['PATH'].split(os.pathsep)[0]), scratch / 'frozen-a-owner-backend-bin')
+                proof.verify_backend_launcher(receipt)
+
+    def test_backend_launcher_rejects_override_before_fake_shim_execution(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            original, backend, owner, scratch, output = self.launcher_fixture(Path(temporary))
+            with mock.patch.multiple(proof, OWNER=owner, OWNER_SHA=sha(owner.read_bytes())), \
+                    mock.patch.dict(os.environ, AUTONOMICS_PODMAN_PROGRAM=str(original)):
+                receipt = proof.install_backend_launcher([str(original), *backend], scratch, output)
+                for option in ['--root', '--runroot=/foreign', '--storage-driver=vfs', '--version', '-r']:
+                    process = subprocess.run([sys.executable, receipt['launcher_path'], option, 'toy-value'],
+                        capture_output=True, text=True, check=False)
+                    self.assertEqual(process.returncode, 125)
+                    self.assertEqual(process.stdout, '')
+                    self.assertIn('backend override refused', process.stderr)
+
+    def test_backend_launcher_child_installation_does_not_modify_parent_environment(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            original, backend, owner, scratch, output = self.launcher_fixture(Path(temporary))
+            before = dict(os.environ)
+            script = '''import json,sys
+from pathlib import Path
+from tools import prove_frozen_a_harmonisation_dag as proof
+original,owner,scratch,output,backend,checksum=json.loads(sys.argv[1])
+proof.OWNER=Path(owner)
+proof.OWNER_SHA=checksum
+receipt=proof.install_backend_launcher([original,*backend],Path(scratch),Path(output))
+print(json.dumps(receipt))
+'''
+            arguments = json.dumps([str(original), str(owner), str(scratch), str(output), backend, sha(owner.read_bytes())])
+            process = subprocess.run([sys.executable, '-B', '-c', script, arguments], capture_output=True, text=True,
+                cwd=proof.ROOT, env=dict(os.environ, AUTONOMICS_PODMAN_PROGRAM=str(original)), check=False)
+            self.assertEqual(process.returncode, 0, process.stderr)
+            receipt = json.loads(process.stdout)
+            self.assertTrue(receipt['original_managed_program_unchanged'])
+            self.assertFalse(receipt['shared_or_parent_environment_modified'])
+            self.assertEqual(dict(os.environ), before)
+
+    def test_backend_launcher_identity_and_owner_prefix_cannot_be_substituted(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            original, backend, owner, scratch, output = self.launcher_fixture(Path(temporary))
+            with mock.patch.multiple(proof, OWNER=owner, OWNER_SHA=sha(owner.read_bytes())), \
+                    mock.patch.dict(os.environ, AUTONOMICS_PODMAN_PROGRAM=str(original)):
+                with self.assertRaisesRegex(RuntimeError, 'exactly the inspected owner'):
+                    proof.install_backend_launcher([str(original), '--root', '/foreign'], scratch, output)
+                receipt = proof.install_backend_launcher([str(original), *backend], scratch, output)
+                Path(receipt['launcher_path']).write_text('substituted launcher')
+                with self.assertRaisesRegex(RuntimeError, 'launcher.*changed'):
+                    proof.verify_backend_launcher(receipt)
 
 
 if __name__ == '__main__':

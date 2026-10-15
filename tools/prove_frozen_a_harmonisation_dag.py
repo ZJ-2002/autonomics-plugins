@@ -21,8 +21,13 @@ from tools.prove_locked_b_source_transport import actual_ports, dispatched_bindi
 from tools.reconcile_ab_evidence_index import verify_archive
 
 REVISION = 'e78dae40195d86b1c52e5c2934b54f2161b867db'
-PARENT = '4ceefbd821baab8deebb070645a2fb8b1fa8e1ba'
-PROBE_SHA = '81b0816929a585b159aaeb8c9cdeea8b8a0c93b340c2c3ae38ccaebe0e4475c9'
+PARENT = '11f061589473cb8e4fa57d364ad7107108245de1'
+KERNEL_SOURCE_PINS = {
+    'crates/dag-core/src/resource.rs': '21c32eb20d1a4b22573b1032048329ee7c5f29217066123b718cbbb2b8d75e06',
+    'crates/dag-core/src/resource_tests.rs': '9a80098c52b5242b8d3f34734052d0ee26a5ddac021d4ac3e90578c63697a1d7',
+    'crates/dag-core/src/dag/execution/local.rs': 'da748075d402c0c1cefebe3a8a1a364f17f3eef6a085599628bc6302979765eb',
+}
+PROBE_SHA = '2a23a4189c0a3df9d8c39071e0d5b33a386f342338d2076e1c29b8f97aa1c4c7'
 EXPECTED_GUARD_COUNT = 23
 SCOPE = 'LOCKED_LEGACY_A_HARMONISATION_NO_FIT_NOT_G0'
 METHOD = 'frozen_a_v432_harmonisation'
@@ -98,13 +103,25 @@ def checked_build(archives, runner, record, seal):
     require(expected['executable'] == runner.name == 'official_plugin_dag' and digest(runner) == expected['sha256'],
         'Actual runner bytes differ from build')
     for name in ['probe.rs', 'candidate.json', 'guards-execution.json', 'guards.stdout.log', 'guard-tests',
-                 'runner-build-exit.json', 'guards-build-exit.json']:
+                 'runner-build-exit.json', 'guards-build-exit.json', 'kernel-source-pins.json',
+                 *['kernel-source/' + name for name in KERNEL_SOURCE_PINS]]:
         require((record.parent / name).relative_to(artifacts).as_posix() in checked['member_identities'],
             'Required build/guard artifact is absent from the sealed archive: ' + name)
     require(digest(record.parent / 'probe.rs') == PROBE_SHA, 'Actual compiled probe source differs')
     candidate = json.loads((record.parent / 'candidate.json').read_text())
     require(all(candidate.get(key) == build[key] for key in ['engine_commit', 'parent_commit', 'probe_sha256',
         'git_tree', 'changed_paths']), 'Candidate and actual build identities differ')
+    kernel = build.get('kernel_source_pins')
+    receipt = json.loads((record.parent / 'kernel-source-pins.json').read_text())
+    require(candidate.get('kernel_source_pins') == KERNEL_SOURCE_PINS and isinstance(kernel, dict) and
+        set(kernel) == set(KERNEL_SOURCE_PINS) and receipt.get('parent_commit') == PARENT and
+        receipt.get('files') == kernel and receipt.get('exported_sources_equal_committed_parent') is True and
+        receipt.get('old_sdk_fallback_allowed') is False and build.get('old_sdk_fallback_allowed') is False,
+        'Exact fixed native memory source evidence required; no old SDK fallback')
+    for name, checksum in KERNEL_SOURCE_PINS.items():
+        snapshot = regular(record.parent / 'kernel-source' / name)
+        require(kernel[name] == dict(sha256=checksum, bytes=snapshot.stat().st_size) and digest(snapshot) == checksum,
+            'Sealed native memory source snapshot differs from the reviewed engine')
     guard_executable = build['executables']['guards']
     require(guard_executable['executable'] == 'guard-tests' and
         digest(record.parent / 'guard-tests') == guard_executable['sha256'], 'Actual guard executable differs')
@@ -115,7 +132,150 @@ def checked_build(archives, runner, record, seal):
     require(execution['stdout_sha256'] == digest(record.parent / 'guards.stdout.log'), 'Actual guard log changed')
     validate_guard_inventory((record.parent / 'guards.stdout.log').read_text(), execution)
     return build, dict(session=archive.name, manifest_sha256=seal, members=checked['files'],
-        bytes=checked['bytes'], runner_sha256=digest(runner), guard_count=EXPECTED_GUARD_COUNT, original_parent=PARENT)
+        bytes=checked['bytes'], runner_sha256=digest(runner), guard_count=EXPECTED_GUARD_COUNT, original_parent=PARENT,
+        kernel_source_pins=kernel)
+
+
+def executable_copy(original, temporary):
+    original = regular(original)
+    before = file_identity(original)
+    target = temporary / 'official_plugin_dag'
+    with original.open('rb') as incoming, target.open('xb') as outgoing:
+        shutil.copyfileobj(incoming, outgoing)
+    target.chmod(0o700)
+    require(digest(target) == before['sha256'] and file_identity(original) == before,
+        'Owned executable copy must preserve the sealed original bytes and identity')
+    return target, before
+
+
+def file_identity(path):
+    path = regular(path)
+    before = path.stat()
+    checksum = digest(path)
+    after = path.stat()
+    signature = lambda value: (value.st_dev, value.st_ino, value.st_mode, value.st_size, value.st_mtime_ns, value.st_ctime_ns)
+    require(signature(before) == signature(after), 'Regular evidence file changed during hashing')
+    return dict(bytes=after.st_size, sha256=checksum, identity=list(signature(after)))
+
+
+def install_backend_launcher(prefix, temporary, output):
+    original = regular(Path(os.environ['AUTONOMICS_PODMAN_PROGRAM']))
+    owner = regular(OWNER)
+    owner_identity = file_identity(owner)
+    require(owner_identity['sha256'] == OWNER_SHA and prefix ==
+        [str(original), *json.loads(owner.read_text())['runtime_backend']] and len(prefix) > 1 and
+        all(isinstance(value, str) and value and '\0' not in value for value in prefix),
+        'Launcher must forward exactly the inspected owner backend through the original managed shim')
+    directory = temporary / 'frozen-a-owner-backend-bin'
+    directory.mkdir(mode=0o700)
+    launcher = directory / 'podman'
+    script = '''#!/usr/bin/python3
+import os
+import sys
+
+PREFIX = __PREFIX__
+if len(sys.argv) < 2 or sys.argv[1].startswith('-'):
+    print('explicit Podman operation required; backend override refused', file=sys.stderr)
+    raise SystemExit(125)
+os.execv(PREFIX[0], [*PREFIX, *sys.argv[1:]])
+'''.replace('__PREFIX__', repr(prefix))
+    with launcher.open('x') as handle:
+        handle.write(script)
+    launcher.chmod(0o700)
+    previous_path = os.environ.get('PATH', '/usr/bin:/bin')
+    os.environ['PATH'] = str(directory) + os.pathsep + previous_path
+    receipt = dict(launcher_path=str(launcher), launcher=file_identity(launcher), original_shim_path=str(original),
+        original_shim=file_identity(original), owner=owner_identity, backend=prefix[1:],
+        prior_path_sha256=hashlib.sha256(previous_path.encode()).hexdigest(),
+        current_worker_path_sha256=hashlib.sha256(os.environ['PATH'].encode()).hexdigest(),
+        original_managed_program_unchanged=os.environ['AUTONOMICS_PODMAN_PROGRAM'] == str(original),
+        shared_or_parent_environment_modified=False, containers_started=False)
+    verify_backend_launcher(receipt)
+    write(output / 'backend-launcher.json', receipt)
+    return receipt
+
+
+def verify_backend_launcher(receipt):
+    launcher = regular(Path(receipt['launcher_path']))
+    original = regular(Path(receipt['original_shim_path']))
+    require(file_identity(launcher) == receipt['launcher'] and file_identity(original) == receipt['original_shim'] and
+        file_identity(OWNER) == receipt['owner'] and receipt['owner']['sha256'] == OWNER_SHA and
+        os.environ.get('AUTONOMICS_PODMAN_PROGRAM') == str(original) and
+        os.environ.get('PATH', '').split(os.pathsep)[0] == str(launcher.parent),
+        'Owned backend launcher, owner, original managed shim or worker PATH changed')
+
+
+def checked_task_receipts(work, nodes):
+    root = work / 'task-receipts'
+    require(root.is_dir() and root.resolve() == root and not root.is_symlink(), 'Owned task receipt root required')
+    directories = list(root.iterdir())
+    require(len(directories) == len(nodes) and all(path.is_dir() and not path.is_symlink() and
+        re.fullmatch(r'[0-9]+-[0-9]+-[0-9]+', path.name) for path in directories),
+        'Exactly one owned attempt directory per actual graph node required')
+    observed = {}
+    for directory in directories:
+        task_path, attempt_path, status_path = [regular(directory / name) for name in ['task.json', 'attempt.json', 'status.json']]
+        task = json.loads(task_path.read_text())
+        attempt = json.loads(attempt_path.read_text())
+        status = json.loads(status_path.read_text())
+        identifier = task.get('spec', {}).get('id')
+        require(identifier in nodes and identifier not in observed, 'Owned task receipt ID is missing or duplicated')
+        node = nodes[identifier]
+        execution = node.get('execution')
+        require(isinstance(execution, dict) and isinstance(task.get('resources'), dict) and
+            task['spec'].get('kind') == node['node_type'] and
+            attempt.get('task_id') == identifier and attempt.get('executor') == 'local' and
+            attempt.get('status') == status.get('status') == node['status'] and
+            type(attempt.get('exit_code')) is int and attempt['exit_code'] == execution.get('exit_code') and
+            type(execution.get('exit_code')) is int and attempt.get('workspace') == execution.get('workspace') == str(directory) and
+            attempt.get('task_manifest', {}).get('path') == execution.get('task_manifest', {}).get('path') == str(task_path) and
+            attempt['task_manifest'].get('fingerprint', {}).get('size') == task_path.stat().st_size,
+            'Actual node, owned task manifest and terminal attempt receipt differ')
+        observed[identifier] = dict(status=node['status'], exit_code=attempt['exit_code'],
+            actual_task_resources=task.get('resources'),
+            files={path.name: file_identity(path) for path in [task_path, attempt_path, status_path]})
+    require(set(observed) == set(nodes), 'Every actual node needs its own terminal attempt receipt')
+    write(work / 'task-receipts-verification.json', observed)
+    return observed
+
+
+def validate_memory_report(report):
+    memory = report.get('first_run', {}).get('resource', {}).get('memory', {})
+    peak = memory.get('peak')
+    require(memory.get('enabled') is True and memory.get('source') == 'cgroup_v2' and memory.get('error') is None and
+        memory.get('trigger') is None and type(memory.get('sample_count')) is int and memory['sample_count'] > 0 and
+        memory.get('threshold_ratio') == 0.9 and memory.get('sample_interval_ms') == 250 and
+        isinstance(peak, dict) and peak.get('source') == 'cgroup_v2' and
+        type(peak.get('limit_bytes')) is int and peak['limit_bytes'] > 0 and
+        all(type(peak.get(name)) is int and peak[name] >= 0 for name in ['charged_bytes', 'usage_bytes']) and
+        peak['usage_bytes'] <= peak['charged_bytes'], 'Actual repaired cgroup memory guard observation required')
+    return memory
+
+
+def stopped_owned_containers(prefix, output, permanent):
+    session = permanent.parent.name
+    require(re.fullmatch('[0-9a-f]{32}', session), 'Literal current managed session required')
+    path = regular(permanent / 'container-intents.json')
+    before = file_identity(path)
+    value = json.loads(path.read_text())
+    require(value.get('session') == session and len(value.get('intents', [])) == 2 and
+        len({row['token'] for row in value['intents']}) == 2, 'Exactly two owned method intents required')
+    owner = json.loads(regular(OWNER).read_text())
+    observations = []
+    for row in value['intents']:
+        require(re.fullmatch('[0-9a-f]{32}', row['token']) and row['backend'] in
+            [owner['runtime_backend'], [*owner['runtime_backend'], '--cgroup-manager=cgroupfs']],
+            'Exact recorded backend and managed intent token required')
+        command = [prefix[0], *row['backend'], 'ps', '-a', '--filter', 'label=autonomics.validation.session=' + session,
+            '--filter', 'label=autonomics.validation.intent=' + row['token'], '--format=json']
+        result = subprocess.run(command, capture_output=True, text=True, timeout=30)
+        require(result.returncode == 0 and json.loads(result.stdout) == [], 'Owned method container is not proven stopped')
+        observations.append(dict(token=row['token'], backend=row['backend'], actual_exit=result.returncode,
+            command=command, containers_remaining=0))
+    require(file_identity(path) == before, 'Managed intent inventory changed during stoppage observation')
+    write(output / 'owned-container-stop-observations.json', dict(session=session, intents=observations,
+        whole_managed_worker_stoppage_not_yet_certified=True, global_container_idle_claimed=False))
+    return observations
 
 
 def job_for(work, source):
@@ -158,9 +318,11 @@ def validate_report(report, job, build, *, negative):
     nodes = {node['id']: node for node in records}
     require(all(nodes[record['id']].get('node_type') == record['kind'] for record in job['nodes']),
         'Actual registered node kinds differ from the reviewed job')
-    require(all(nodes['input' + str(index)]['status'] == 'success' for index in range(6)), 'Every actual file reference must succeed')
+    require(all(nodes['input' + str(index)]['status'] == 'success' and
+        nodes['input' + str(index)].get('reused') is False for index in range(6)),
+        'Every actual file reference must freshly succeed')
     method = nodes['harmonisation']
-    require(not method.get('reused', False), 'The method must execute; cache reuse is not fresh proof')
+    require(method.get('reused') is False, 'The method must execute; cache reuse is not fresh proof')
     if not negative:
         execution = method.get('execution')
         require(method['status'] == 'success' and isinstance(execution, dict) and
@@ -207,13 +369,16 @@ def graph(runner, build, work, job, definition, *, negative):
     require(admitted.get('scope') == SCOPE and admitted.get('job_validated_without_execution') is True and
         admitted.get('containers_started') is False and admitted.get('scientific_results_computed') is False and
         admitted.get('g0_granted') is False, 'Actual no-execution admission receipt differs')
-    run = subprocess.run([str(runner), str(work / 'job.json')], capture_output=True, text=True, timeout=600)
+    run = subprocess.run([str(runner), str(work / 'job.json')], capture_output=True, text=True, timeout=600,
+        env=dict(os.environ, AUTONOMICS_DAG_TASKS_ROOT=str(work / 'task-receipts')))
     (work / 'runner.stdout').write_text(run.stdout)
     (work / 'runner.stderr').write_text(run.stderr)
     write(work / 'runner-exit.json', dict(actual_exit=run.returncode))
     require(run.returncode == 0, 'Guarded graph runner failed before valid reporting')
     report = json.loads((work / 'dag-report.json').read_text())
     nodes = validate_report(report, job, build, negative=negative)
+    memory = validate_memory_report(report)
+    receipts = checked_task_receipts(work, nodes)
     scratch = Path(os.environ['TMPDIR']) / 'official-plugin-container-workspaces' / work.name
     method = nodes['harmonisation']
     for index in range(6):
@@ -227,12 +392,19 @@ def graph(runner, build, work, job, definition, *, negative):
             'Actual source reference does not retain its exact role/path/content identity')
     bindings = dispatched_bindings(work, method, nodes, job['edges'], scratch)
     require(len(bindings) == 6 and {row['to_port'] for row in bindings} == set(range(6)), 'All six dispatched bindings required')
+    for index in range(6):
+        bound = next(item for item in method['inputs'] if item['to_port'] == index)
+        reference = nodes['input' + str(index)]['port_assignments']['0']
+        require(bound.get('kind') == 'File' and bound.get('path') == reference['path'] and
+            bound['fingerprint']['content_hash'] == reference['fingerprint']['content_hash'],
+            'Dispatched binding must retain its exact source role and content hash')
     ports = []
     if negative:
         stderr = expected_refusal(method, IMAGE, 'Only the exact six frozen harmonisation inputs are supported', scratch)
         shutil.copyfile(stderr, work / 'expected-refusal.stderr')
         normal = [port['path'] for port in definition['ports']['outputs'][:-1]]
-        require(not any(list((work / 'artifacts').rglob(name)) for name in normal), 'Failed source guard published normal results')
+        require(not any(list(root.rglob(name)) for root in [work / 'artifacts', scratch] for name in normal),
+            'Failed source guard published normal results')
     else:
         ports = actual_ports(work, definition, method, scratch)
     require(scratch.is_dir() and not scratch.is_symlink(), 'Actual owned execution workspace required')
@@ -241,6 +413,8 @@ def graph(runner, build, work, job, definition, *, negative):
     write(work / 'graph-verification.json', dict(nodes=7, edges=6, actual_input_bindings=bindings,
         actual_output_ports=[dict(port=index, name=path.name, bytes=path.stat().st_size, sha256=digest(path))
             for index, path in enumerate(ports)], expected_source_refusal=negative,
+        actual_owned_task_receipts=len(receipts), actual_native_memory_guard=memory,
+        plugin_resource_to_native_budget_mapping_verified=False,
         current_daemon_verified=False, raw_QC_or_PLINK_proven=False, MR_estimates_computed=False, g0_granted=False))
     return ports
 
@@ -258,6 +432,7 @@ def main():
     archives = Path.home() / '.local/state/autonomics/validation-archives'
     build, build_receipt = checked_build(archives, arguments.runner, arguments.build_record, arguments.build_seal)
     write(output / 'verified-build.json', build_receipt)
+    runner, runner_identity = executable_copy(arguments.runner, Path(os.environ['TMPDIR']))
     direct = verify_archive(archives, DIRECT_SESSION, DIRECT_SEAL)
     identity = verify_archive(archives, IDENTITY_SESSION, IDENTITY_SEAL)
     require(direct['positive_worker_exit_verified'] and identity['positive_worker_exit_verified'], 'Prior direct/identity proof must have actual zero exits')
@@ -278,7 +453,8 @@ def main():
     require(len(definition['ports']['inputs']) == 6 and len(definition['ports']['outputs']) == 5 and
         not definition.get('params'), 'Exact six-input/five-output zero-parameter node required')
     resource_admission(output)
-    inspected_backend(output)
+    prefix = inspected_backend(output)
+    launcher = install_backend_launcher(prefix, Path(os.environ['TMPDIR']), output)
     results = []
     for label, negative in [('positive', False), ('wrong-config', True)]:
         work = output / label
@@ -290,7 +466,7 @@ def main():
         if negative:
             config = work / 'input2.input'
             config.write_bytes(config.read_bytes() + b'\n')
-        ports = graph(arguments.runner, build, work, job_for(work, source), definition, negative=negative)
+        ports = graph(runner, build, work, job_for(work, source), definition, negative=negative)
         if not negative:
             value = json.loads(ports[3].read_text())
             validate_provenance(value, before)
@@ -306,7 +482,10 @@ def main():
             write(work / 'product-comparison.json', dict(complete_products=comparisons, full_byte_equal=True))
         results.append(dict(case=label, nodes=7, edges=6, positive=not negative, expected_method_exit=2 if negative else 0,
             input_bindings=6, published_ports=len(ports)))
-    require(before == source_records() and digest(OWNER) == OWNER_SHA and
+    stopped = stopped_owned_containers(prefix, output, Path(os.environ['AUTONOMICS_VALIDATION_PERMANENT']))
+    verify_backend_launcher(launcher)
+    require(file_identity(arguments.runner) == runner_identity and digest(runner) == runner_identity['sha256'] and
+        before == source_records() and digest(OWNER) == OWNER_SHA and
         all(digest(FAMILY / name) == expected == digest(source / name) for name, expected in PINS.items()),
         'Original source, candidate or software owner changed during graph proof')
     post = original_postcheck(output)
@@ -314,6 +493,8 @@ def main():
         source_revision=REVISION, source_sha256=PINS, build=build_receipt, official_reference_session=DIRECT_SESSION,
         official_reference_seal=DIRECT_SEAL, package_identity_session=IDENTITY_SESSION, package_identity_seal=IDENTITY_SEAL,
         cases=results, actual_positive_nodes=7, actual_positive_edges=6, actual_positive_outputs=5,
+        actual_owned_task_receipts=14, owned_stopped_containers=len(stopped), sealed_runner_unchanged=True,
+        plugin_resource_to_native_budget_mapping_verified=False,
         all_three_complete_products_byte_equal=True, canonical_inputs_unchanged=True, original_post_verifier=post,
         raw_GWAS_QC_or_PLINK_proven=False, MR_estimates_computed=False, production_restarted=False,
         current_daemon_verified=False, scientific_release_granted=False, g0_granted=False))

@@ -13,7 +13,10 @@ import tomllib
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from tools import prove_frozen_a_input_qualification as direct
-from tools.prove_frozen_a_harmonisation_dag import checked_build
+from tools.prove_frozen_a_harmonisation_dag import (
+    checked_build, checked_task_receipts, executable_copy, file_identity, install_backend_launcher,
+    validate_memory_report, verify_backend_launcher,
+)
 from tools.prove_locked_b_source_transport import actual_ports
 from tools.reconcile_ab_evidence_index import verify_archive
 
@@ -202,6 +205,7 @@ def main():
     build, build_receipt = checked_build(archives, args.runner, args.build_record, args.build_seal)
     require(build_receipt['guard_count'] == 23, 'Exact twenty-three-guard canonical readonly mount build required')
     write(output / 'verified-build.json', build_receipt)
+    runner, runner_identity = executable_copy(args.runner, Path(os.environ['TMPDIR']))
     checked = verify_archive(archives, DIRECT_SESSION, DIRECT_SEAL)
     require(checked['positive_worker_exit_verified'], 'Actual direct proof must have recorded zero exit')
     actual_direct = Path(checked['artifact_root']) / 'permanent/frozen-a-input-qualification'
@@ -226,16 +230,17 @@ def main():
         'Exact nine-input/twelve-output readonly official raw qualification manifest required')
     contract = json.loads((source / 'contracts/source-lock.json').read_text())
     prefix = direct.backend(output, runtime)
+    launcher = install_backend_launcher(prefix, Path(os.environ['TMPDIR']), output)
     before = direct.source_facts(direct.INPUT_PATHS, contract)
     panel_manifest = json.loads(direct.INPUT_PATHS[7].read_text())
     panel_before = direct.panel_facts(PANEL_HOST, panel_manifest)
-    refusals = structural_refusals(args.runner, output, source, permanent)
+    refusals = structural_refusals(runner, output, source, permanent)
     work = output / 'positive'
     work.mkdir()
     job = job_for(work, source)
     validate_job(job)
     write(work / 'job.json', job)
-    admission = subprocess.run([str(args.runner), '--validate-job', str(work / 'job.json')],
+    admission = subprocess.run([str(runner), '--validate-job', str(work / 'job.json')],
         capture_output=True, text=True, timeout=600)
     (work / 'admission.stdout.json').write_text(admission.stdout)
     (work / 'admission.stderr.log').write_text(admission.stderr)
@@ -244,13 +249,16 @@ def main():
     require(admitted['scope'] == SCOPE and admitted['job_validated_without_execution'] is True and
         admitted['containers_started'] is False and admitted['scientific_results_computed'] is False and
         admitted['g0_granted'] is False, 'Actual no-execution validation receipt differs')
-    result = subprocess.run([str(args.runner), str(work / 'job.json')], capture_output=True, text=True, timeout=2400)
+    result = subprocess.run([str(runner), str(work / 'job.json')], capture_output=True, text=True, timeout=2400,
+        env=dict(os.environ, AUTONOMICS_DAG_TASKS_ROOT=str(work / 'task-receipts')))
     (work / 'runner.stdout.log').write_text(result.stdout)
     (work / 'runner.stderr.log').write_text(result.stderr)
     write(work / 'runner-exit.json', dict(actual_exit=result.returncode))
     require(result.returncode == 0, 'Actual raw qualification runner failed before valid reporting')
     report = json.loads((work / 'dag-report.json').read_text())
     nodes = validate_report(report, job, build)
+    memory = validate_memory_report(report)
+    receipts = checked_task_receipts(work, nodes)
     scratch = Path(os.environ['TMPDIR']) / 'official-plugin-container-workspaces' / work.name
     bindings = bound_source_facts(scratch, nodes, nodes['qualification'], job, direct.INPUT_PATHS, before)
     ports = actual_ports(work, definition, nodes['qualification'], scratch)
@@ -261,7 +269,8 @@ def main():
         expected = actual_direct / 'positive' / name
         require(expected.relative_to(Path(checked['artifact_root'])).as_posix() in checked['member_identities'] and
             (published / name).read_bytes() == expected.read_bytes(), 'Complete DAG product differs from sealed direct execution')
-    require(before == direct.source_facts(direct.INPUT_PATHS, contract) and
+    require(file_identity(args.runner) == runner_identity and digest(runner) == runner_identity['sha256'] and
+        before == direct.source_facts(direct.INPUT_PATHS, contract) and
         panel_before == direct.panel_facts(PANEL_HOST, panel_manifest) and digest(direct.OWNER) == direct.OWNER_SHA and
         all(digest(direct.FAMILY / name) == expected == digest(source / name) for name, expected in direct.SOURCE_PINS.items()),
         'Canonical input/panel/candidate/owner changed during actual DAG')
@@ -270,9 +279,12 @@ def main():
         'Actual reported original panel must match every independently hashed source payload')
     stopped = stopped_owned_containers(prefix, output, permanent)
     require(len(stopped) == 1, 'Exactly one actual stopped qualification container required')
+    verify_backend_launcher(launcher)
     post = direct.original_postcheck(output)
     write(work / 'transport-verification.json', dict(nodes=10, edges=9, bindings=bindings,
         positive_outputs=positive, canonical_sources_unchanged=True, original_panel_metadata_unchanged=True,
+        actual_owned_task_receipts=len(receipts), actual_native_memory_guard=memory,
+        plugin_resource_to_native_budget_mapping_verified=False,
         source_staging_symlinks_not_copied_to_archive=True, source_mount_contract_readonly=True,
         kernel_mount_snapshot_collected=False, no_raw_or_panel_payload_archived=True, g0_granted=False))
     require(not any(path.is_symlink() for path in output.rglob('*')), 'Only regular evidence may enter the archive')
@@ -280,6 +292,8 @@ def main():
         source_sha256=direct.SOURCE_PINS, build=build_receipt, prerequisites=prerequisites,
         direct_reference_session=DIRECT_SESSION, direct_reference_manifest_sha256=DIRECT_SEAL,
         actual_nodes=10, actual_edges=9, actual_ports=12, full_byte_equal_small_products=7,
+        actual_owned_task_receipts=len(receipts), sealed_runner_unchanged=True,
+        plugin_resource_to_native_budget_mapping_verified=False,
         structural_admission_refusals=refusals, actual_negative_DAG_method_executions=0,
         actual_clump_commands=13, actual_paircheck_commands=13, complete_haplotype_pairs=11,
         owned_source_links_created=0, raw_inputs_copied=False, canonical_panel_copied=False,

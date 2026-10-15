@@ -1654,7 +1654,10 @@ mod transport_tests {
         value["additional_plugins"] = json!([{"expected_plugin_name":"frozen-b-project"}]);
         assert!(transport_mode(&value).is_err());
         value["additional_plugins"] = json!([]);
-        assert!(!transport_mode(&value).unwrap());
+        assert_eq!(
+            transport_mode(&value).unwrap_err().to_string(),
+            "fixed real legacy node kinds cannot be relabelled as synthetic through a renamed family"
+        );
     }
     #[test]
     fn exact_transport_job_is_accepted_without_executing_it() {
