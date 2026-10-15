@@ -47,6 +47,48 @@ checks, direct official full-sequence parity and seven negative contracts to
 with the session's Podman ownership wrapper and stopped-worker audit. A successful
 toy run does not execute the real frozen 39-SNP MR.
 
+## Output lifecycle
+
+Before opening a log or running a method, the adapter resolves the five inputs
+and existing output-parent directories, requires nine distinct fresh output
+paths, and rejects input aliases, existing files/directories and even dangling
+output symlinks. It does not truncate an old log on a refused run. Inputs must
+be ordinary files; their SHA256 values are checked again after computation and
+before scientific results are published.
+
+The unchanged official numerical body writes into owned, mode-0700 staging
+directories beside each destination. A fresh execution log is linked exclusively
+to port 7 before computation, so a failed run can retain its diagnostic log.
+The six TSVs, complete RDS and provenance are published only after calculation
+and input rechecks, using exclusive hard links that cannot replace a destination.
+Each link is checked against the owned staged file's device/inode and content,
+and all nine publications are checked again before reporting success. The method
+reads the same resolved input path whose bytes were checked, rather than
+re-resolving the environment alias.
+Publication therefore requires the same-filesystem hard-link support already
+tested in the pinned image and a writable destination parent; it does not fall
+back to an overwriting copy.
+
+On an ordinary caught failure the adapter removes only scientific outputs whose
+recorded device/inode and SHA256 still match its own staged publication. A
+replaced or content-modified destination is preserved and diagnosed instead of
+being blindly unlinked. Staging cleanup checks the directory's recorded
+device/inode and preserves a replaced directory; error-log append likewise checks
+the owned log identity. Owned staging directories are removed on normal R exit.
+This is not a multi-file crash-atomic transaction: SIGKILL, power loss, adversarial
+concurrent path replacement, resumability and filesystem-durability guarantees
+are not certified. A partial directory after an interrupted process must not be
+treated as a completed result package. The caller still needs terminal execution
+success, all nine readable outputs and the existing research admission checks.
+
+Synthetic I/O acceptance is run separately with the same managed command,
+substituting `tests/run_io_acceptance.py`. It exercises refusal before writes,
+method/staging failure, exclusive-publication conflicts, ownership-aware rollback
+and a changed input after computation. It neither mounts study data nor changes
+the seed, official method expressions, call sequence or TSV serialization rules.
+Neither these checks nor the numerical acceptance install the candidate plugin,
+restart the daemon or grant scientific authorization.
+
 Generate the preset TUI `dag_shell` request from this repository:
 
 ```sh

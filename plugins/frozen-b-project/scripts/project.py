@@ -230,18 +230,6 @@ def intake(paths, lock):
     return payloads
 
 
-def adjust(values, method):
-    n = len(values)
-    indexed = sorted(enumerate(values), key=lambda pair: pair[1])
-    factor = math.fsum(1 / i for i in range(1, n + 1)) if method == 'BY' else 1.
-    result = [1.] * n; running = 1.
-    for rank in range(n, 0, -1):
-        index, p = indexed[rank - 1]
-        running = min(running, n * factor * p / rank)
-        result[index] = min(1., running)
-    return result
-
-
 def family(raw, lock):
     require(set(raw) == {'results', 'genes', 'intake', 'limma_audit'}, 'four actual family inputs required')
     genes = rows(raw['genes'], GENES); results = rows(raw['results'])
@@ -263,7 +251,13 @@ def family(raw, lock):
     require(audit['plugin_transport_output_sha256']['results'] == identity(raw['results'])['sha256'], 'actual limma output hash differs')
     require(len(results) == len(genes) == lock['gene_count'] and len({r['analysis_id'] for r in genes}) == len(genes), 'complete family denominator required')
     require(all(all(g[key] == r[key] for key in GENES) for g, r in zip(genes, results, strict=True)), 'actual full gene registry/results order differs')
-    pvalues = []
+    adjustment = audit.get('family_adjustment')
+    expected_adjustment = dict(backend='stats::p.adjust', R=lock['software_lock']['R'],
+        stats=lock['software_lock']['stats'], methods=['BH', 'BY'], n_total=lock['gene_count'],
+        missing_p_denominator_value=1)
+    require(adjustment == expected_adjustment and type(adjustment['n_total']) is int and
+            type(adjustment['missing_p_denominator_value']) is int,
+            'actual complete official R adjustment receipt required; no native fallback')
     for row in results:
         if row['status'] == 'ESTIMATED':
             p = float(row['raw_p']); require(math.isfinite(p) and 0 <= p <= 1, 'invalid estimated p')
@@ -271,10 +265,11 @@ def family(raw, lock):
         else:
             require(row['status'] == 'NOT_ESTIMABLE' and row['raw_p'] == row['family_p'] == 'NA', 'non-estimable rows must retain missing raw p')
             p = 1.
-        pvalues.append(p)
-    bh, by = adjust(pvalues, 'BH'), adjust(pvalues, 'BY')
-    for row, qbh, qby in zip(results, bh, by, strict=True):
-        row.update(q_BH=repr(qbh), q_BY=repr(qby), role=expected_model['family_role'], model_id=model,
+        require('q_BH' in row and 'q_BY' in row, 'official adjusted columns required')
+        qbh, qby = float(row['q_BH']), float(row['q_BY'])
+        require(math.isfinite(qbh) and math.isfinite(qby) and 0 <= p <= qbh <= qby <= 1,
+                'official adjusted values must preserve the complete family and missing-as-one policy')
+        row.update(role=expected_model['family_role'], model_id=model,
                    status='ESTIMATED_LEGACY_ASSOCIATION' if row['status'] == 'ESTIMATED' else row['status'])
         # Retain component columns and expose every original f7 full-result field.
         for name, component in {'beta': 'log2_expression_difference', 'moderated_se': 'standard_error',
@@ -283,6 +278,7 @@ def family(raw, lock):
     receipt = dict(scope='COMPLETE_FROZEN_B_LEGACY_FAMILY_BH_BY_NOT_SCIENTIFIC_AUTHORIZATION',
         gene_count=len(results), missing_p_denominator_value=1, **expected_model,
         primary_family_denominator=lock['gene_count'], adjustment_scope='ONE_MODEL_FULL_GENE_UNIVERSE_NOT_POOLED_ACROSS_MODELS',
+        family_adjustment=adjustment,
         source_files={name: identity(data) for name, data in raw.items()}, project_lock=identity(canonical(lock)),
         frozen_scientific_code_executed=False, scientific_authorization=False, formal_authorized=False, G0=False)
     return {'family.tsv': table(list(results[0]), results), 'family-audit.json': canonical(receipt)}
@@ -302,6 +298,29 @@ def entry(stage, lock):
     bundle = parent / ('.frozen-b-' + stage.lower() + '-complete'); bundle.mkdir()
     for name, data in payloads.items():
         (bundle / name).write_bytes(data)
-    for name, target in zip(outputs, targets, strict=True):
-        os.link(bundle / name, target)
+    published = {}
+    success = False
+    try:
+        for name, target in zip(outputs, targets, strict=True):
+            source = bundle / name
+            expected = source.stat()
+            os.link(source, target)
+            published[target] = (expected.st_dev, expected.st_ino)
+            actual = target.lstat()
+            require((actual.st_dev, actual.st_ino) == published[target], 'published output was replaced')
+        for name, target in zip(outputs, targets, strict=True):
+            actual = target.lstat()
+            require((actual.st_dev, actual.st_ino) == published[target] and
+                    target.read_bytes() == payloads[name], 'complete published output was replaced or modified')
+        success = True
+    finally:
+        if not success:
+            for target, expected in published.items():
+                try:
+                    actual = target.lstat()
+                    if ((actual.st_dev, actual.st_ino) == expected and
+                            target.read_bytes() == payloads[target.name]):
+                        target.unlink()
+                except FileNotFoundError:
+                    pass
 

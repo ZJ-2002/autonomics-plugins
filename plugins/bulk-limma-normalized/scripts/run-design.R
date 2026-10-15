@@ -16,17 +16,31 @@ entry_main <- function() {
   while(tail(ancestors,1L)!="/") ancestors<-c(ancestors,dirname(tail(ancestors,1L)))
   bulk$bulk_check(!any(vapply(c(ancestors,outputs),bulk$bulk_link,logical(1))) && !any(file.exists(outputs)),"bulk outputs exist or have a symlink ancestor")
   if(!dir.exists(parent)) bulk$bulk_check(dir.create(parent,recursive=TRUE),"cannot create private bulk output directory")
+  stat_program<-Sys.which("stat")
+  bulk$bulk_check(nzchar(stat_program),"artifact identity inspection requires stat")
+  identity<-function(filename) {
+    value<-suppressWarnings(system2(stat_program,c("-c","%d:%i:%u","--",shQuote(filename)),stdout=TRUE,stderr=TRUE))
+    bulk$bulk_check(is.null(attr(value,"status")) && length(value)==1L && grepl("^[0-9]+:[0-9]+:[0-9]+$",value),"cannot prove published artifact ownership")
+    list(identity=value,sha256=bulk$bulk_sha(filename))
+  }
   bundle<-file.path(parent,".bulk-design-complete")
   bulk$bulk_check(!file.exists(bundle) && !bulk$bulk_link(bundle),"bulk complete bundle exists")
   bulk$bulk_main(c("DESIGN",unname(inputs),bundle))
   bulk$bulk_check(setequal(list.files(bundle,all.files=TRUE,no..=TRUE),names),"complete bulk result set differs")
-  published<-character();success<-FALSE
-  on.exit(if(!success && length(published)) unlink(published),add=TRUE)
+  expected_files<-lapply(file.path(bundle,names),identity)
+  published<-list();success<-FALSE
+  on.exit(if(!success) for(record in rev(published)) {
+    current<-tryCatch(identity(record$path),error=function(error) NA_character_)
+    if(identical(current,record$identity)) unlink(record$path)
+  },add=TRUE)
   for(i in seq_along(outputs)) {
     bulk$bulk_check(!file.exists(outputs[i]) && !bulk$bulk_link(outputs[i]),"bulk output appeared during publication")
+    expected<-expected_files[[i]]
     bulk$bulk_check(suppressWarnings(file.link(file.path(bundle,names[i]),outputs[i])),"no-clobber bulk port publication failed")
-    published<-c(published,outputs[i])
+    published[[length(published)+1L]]<-list(path=outputs[i],identity=expected)
+    bulk$bulk_check(identical(identity(outputs[i]),expected),"published artifact identity changed")
   }
+  bulk$bulk_check(all(vapply(published,function(record) identical(identity(record$path),record$identity),logical(1))),"complete published artifact identity changed")
   success<-TRUE
 }
 tryCatch(entry_main(),error=function(e) {cat("BLOCKED:",conditionMessage(e),"\n",file=stderr());quit(status=2L)})

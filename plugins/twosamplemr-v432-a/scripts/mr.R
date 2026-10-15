@@ -1,14 +1,11 @@
 # Narrow numerical adapter for the frozen v4.3.2 run-A sequence.
 # It consumes already qualified IVs and does not grant scientific admission.
+run_frozen_a <- function(inputs, paths) {
 options(stringsAsFactors = FALSE, warn = 1)
 Sys.setenv(OMP_NUM_THREADS = 1, OPENBLAS_NUM_THREADS = 1, MKL_NUM_THREADS = 1)
 stopifnot(as.character(getRversion()) == "4.6.1",
           as.character(packageVersion("TwoSampleMR")) == "0.7.11",
           TwoSampleMR::default_parameters()$nboot == 1000)
-paths <- c(Sys.getenv("AUTONOMICS_OUTPUT0"),
-           vapply(1:8, function(i) Sys.getenv(paste0("AUTONOMICS_OUTPUT", i)), ""))
-inputs <- vapply(0:4, function(i) Sys.getenv(paste0("AUTONOMICS_INPUT", i)), "")
-stopifnot(all(nzchar(paths)), all(nzchar(inputs)))
 sha <- function(path) digest::digest(file = path, algo = "sha256", serialize = FALSE)
 input_sha <- unname(vapply(inputs, sha, ""))
 cfg <- jsonlite::read_json(inputs[2], simplifyVector = TRUE)
@@ -49,10 +46,17 @@ if (identical(proof$scope, "FROZEN_V432_A_LEGACY")) {
             grepl("^[a-f0-9]{64}$", proof$generator_sha256),
             input_sha[1] != "9d2b7c1e7ab66b3825b1563874d98fbf2a2bc341ab0a6948537f8ee81846a2fa")
 } else stop("Explicit frozen legacy or synthetic method-test proof scope required")
+output_level <- sink.number()
+message_level <- sink.number(type = "message")
 logfile <- file(paths[8], open = "wt")
+on.exit({
+  try(if (sink.number(type = "message") != message_level) sink(type = "message"), silent = TRUE)
+  try(while (sink.number() > output_level) sink(), silent = TRUE)
+  try(close(logfile), silent = TRUE)
+}, add = TRUE)
 sink(logfile, split = TRUE)
 sink(logfile, type = "message")
-h <- read.delim(Sys.getenv("AUTONOMICS_INPUT0"), check.names = FALSE)
+h <- read.delim(inputs[1], check.names = FALSE)
 stopifnot(nrow(h) == cfg$n_independent_IV)
 required <- c("SNP", "beta.exposure", "beta.outcome", "se.exposure", "se.outcome",
               "eaf.exposure", "eaf.outcome", "effect_allele.exposure", "other_allele.exposure",
@@ -136,3 +140,97 @@ jsonlite::write_json(list(scope = proof$scope, input_sha256 = input_sha,
 sink(type = "message")
 sink()
 close(logfile)
+}
+
+execute_frozen_a <- function() {
+  input_values <- Sys.getenv(paste0("AUTONOMICS_INPUT", 0:4), unset = "")
+  output_values <- Sys.getenv(paste0("AUTONOMICS_OUTPUT", 0:8), unset = "")
+  if (any(!nzchar(c(input_values, output_values)))) stop("All declared input and output paths required")
+  inputs <- unname(normalizePath(input_values, mustWork = TRUE))
+  parents <- unname(normalizePath(dirname(output_values), mustWork = TRUE))
+  if (any(!dir.exists(parents))) stop("Existing output parent directories required")
+  paths <- unname(file.path(parents, basename(output_values)))
+  if (anyDuplicated(paths) || any(paths %in% inputs)) stop("All output paths must be distinct from each other and inputs")
+  links <- Sys.readlink(paths)
+  if (any(file.exists(paths)) || any(!is.na(links) & nzchar(links))) stop("Refusing to overwrite existing or linked outputs")
+  stat_program <- Sys.which("stat")
+  if (!nzchar(stat_program)) stop("File ownership inspection requires stat")
+  identity <- function(filename, directory = FALSE) {
+    value <- suppressWarnings(system2(stat_program,
+      c("-c", "%d:%i:%F", "--", shQuote(filename)), env = "LC_ALL=C", stdout = TRUE, stderr = TRUE))
+    if (!is.null(attr(value, "status")) || length(value) != 1 ||
+        !grepl(paste0("^[0-9]+:[0-9]+:", if (directory) "directory" else "regular( empty)? file", "$"), value))
+      stop("Ordinary file or directory ownership cannot be proven")
+    paste(strsplit(value, ":", fixed = TRUE)[[1]][1:2], collapse = ":")
+  }
+  invisible(vapply(inputs, identity, ""))
+  hash <- function(filename) digest::digest(file = filename, algo = "sha256", serialize = FALSE)
+  verify_publication <- function(record) {
+    first <- identity(record$path)
+    content <- hash(record$path)
+    last <- identity(record$path)
+    if (!identical(first, record$identity) || !identical(last, record$identity) ||
+        !identical(content, record$sha256)) stop("Published file no longer has its owned identity and content")
+  }
+  before <- unname(vapply(inputs, hash, ""))
+  directories <- character()
+  directory_identities <- character()
+  published <- list()
+  complete <- FALSE
+  on.exit({
+    if (!complete) {
+      for (record in rev(published)) {
+        current <- tryCatch(identity(record$path), error = function(error) NA_character_)
+        current_hash <- tryCatch(hash(record$path), error = function(error) NA_character_)
+        repeated <- tryCatch(identity(record$path), error = function(error) NA_character_)
+        if (identical(current, record$identity) && identical(repeated, record$identity) &&
+            identical(current_hash, record$sha256)) {
+          if (unlink(record$path) != 0) cat("BLOCKED: owned result rollback failed\n", file = stderr())
+        } else cat("BLOCKED: foreign or modified result preserved during rollback\n", file = stderr())
+      }
+    }
+    for (directory in directories) {
+      current <- tryCatch(identity(directory, TRUE), error = function(error) NA_character_)
+      if (identical(current, directory_identities[[directory]])) unlink(directory, recursive = TRUE)
+      else cat("BLOCKED: replaced staging directory preserved during cleanup\n", file = stderr())
+    }
+  }, add = TRUE)
+  staged <- vapply(seq_along(paths), function(position) {
+    directory <- tempfile(".twosamplemr-v432-a-stage-", tmpdir = parents[position])
+    if (!dir.create(directory, mode = "0700")) stop("Cannot create owned staging directory")
+    directory_identities[[directory]] <<- identity(directory, TRUE)
+    directories <<- c(directories, directory)
+    file.path(directory, basename(paths[position]))
+  }, "")
+  connection <- file(staged[8], open = "wx")
+  close(connection)
+  initial_log <- list(path = paths[8], identity = identity(staged[8]), sha256 = hash(staged[8]))
+  if (!isTRUE(suppressWarnings(file.link(staged[8], paths[8])))) stop("Fresh log publication refused")
+  verify_publication(initial_log)
+  tryCatch({
+    run_frozen_a(inputs, staged)
+    if (!identical(before, unname(vapply(inputs, hash, "")))) stop("Input changed during official MR calculation")
+    final_log <- list(path = paths[8], identity = identity(staged[8]), sha256 = hash(staged[8]))
+    verify_publication(final_log)
+    for (position in c(1:7, 9)) {
+      own_identity <- identity(staged[position])
+      own_hash <- hash(staged[position])
+      if (!isTRUE(suppressWarnings(file.link(staged[position], paths[position])))) stop("Fresh result publication refused")
+      published[[length(published) + 1]] <- list(path = paths[position], identity = own_identity, sha256 = own_hash)
+      verify_publication(published[[length(published)]])
+    }
+    invisible(lapply(c(list(final_log), published), verify_publication))
+    complete <- TRUE
+  }, error = function(error) {
+    log_identity <- tryCatch(identity(staged[8]), error = function(error) NA_character_)
+    if (identical(log_identity, initial_log$identity))
+      cat("BLOCKED:", conditionMessage(error), "\n", file = staged[8], append = TRUE)
+    else cat("BLOCKED: replaced staged log preserved without append\n", file = stderr())
+    stop(error)
+  })
+}
+
+tryCatch(execute_frozen_a(), error = function(error) {
+  cat("BLOCKED:", conditionMessage(error), "\n", file = stderr())
+  quit(save = "no", status = 2)
+})

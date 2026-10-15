@@ -32,7 +32,7 @@ script_file = "scripts/run-design.R"
 [[nodes]]
 kind = "bulk_normalized_limma"
 desc = "Official fixed normalized-log2 lmFit/eBayes with actual same-source DESIGN receipt."
-doc = "Six File inputs in config/expression/genes/samples/decisions/actual-DESIGN-audit order; results.tsv/audit.json/official.rds outputs. Exact official limma lmFit and eBayes trendTRUE robustTRUE; normalized arrays only, no raw-count/voom/ordinary-OLS replacement. Checks complete original gene rows, exact input/config/software/design receipt and preserves constant/non-estimable/low-precision NA and family denominator. No per-contrast replacement for full multi-contrast BH/BY, real-source qualification, full-method acceptance, biological independence, G0 or formal authority."
+doc = "Six File inputs in config/expression/genes/samples/decisions/actual-DESIGN-audit order; results.tsv/audit.json/official.rds outputs. Exact official limma lmFit and eBayes trendTRUE robustTRUE; normalized arrays only, no raw-count/voom/ordinary-OLS replacement. Checks complete original gene rows, exact input/config/software/design receipt and preserves constant/non-estimable/low-precision raw NA. Node-local q_BH/q_BY use official stats4.6.1 p.adjust on all rows with missing denominator value1, plus an exact adjustment receipt. The downstream frozen family must separately qualify the complete model universe; node-local adjustment is not a replacement for a larger multi-contrast family, source qualification, full-method acceptance, independence, G0 or formal authority."
 timeout_secs = 1200
 stage_in_mode = "copy"
 artifact_prefix = "/artifacts/bulk_normalized_limma"

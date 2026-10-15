@@ -2,9 +2,11 @@ import copy
 import gzip
 import importlib.util
 import json
+import os
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
 
 from tools import build_frozen_b_project_dag as graph
 
@@ -127,11 +129,13 @@ class FrozenProjectTests(unittest.TestCase):
         audit = project.strict_json(out[receipt])
         genes = project.rows(out['genes.tsv'])
         results = []
-        for g, p in zip(genes, ['0.01', 'NA', '0.04', '0.03'], strict=True):
+        for g, p, qbh in zip(genes, ['0.01', 'NA', '0.04', '0.03'], [.04, 1., 4 / 75, 4 / 75], strict=True):
             numeric = {k: 'NA' if p == 'NA' else str(v) for k,v in dict(log2_expression_difference=1, standard_error=.1, moderated_df=audit['residual_df'], ci_lower=.8, ci_upper=1.2).items()}
-            results.append({**g, **numeric, 'status': 'NOT_ESTIMABLE' if p == 'NA' else 'ESTIMATED', 'raw_p': p, 'family_p': p})
+            results.append({**g, **numeric, 'status': 'NOT_ESTIMABLE' if p == 'NA' else 'ESTIMATED', 'raw_p': p, 'family_p': p,
+                            'q_BH': repr(qbh), 'q_BY': repr(min(1., qbh * 25 / 12))})
         result_raw = project.table(list(results[0]), results)
         limma = dict(stage='LIMMA', method_executed=True, formal_authorized=False,
+            family_adjustment=dict(backend='stats::p.adjust', R='4.6.1', stats='4.6.1', methods=['BH', 'BY'], n_total=4, missing_p_denominator_value=1),
             input_sha256=audit['input_sha256'], config_sha256=audit['config_sha256'], software_lock=self.lock['software_lock'],
             model_formula=audit['model_formula'], design=dict(model_columns=audit['model_columns'], rank=audit['rank'], residual_df=audit['residual_df'], identifiable=True),
             plugin_transport_output_sha256=dict(results=project.identity(result_raw)['sha256'], rds='a' * 64))
@@ -191,6 +195,87 @@ class FrozenProjectTests(unittest.TestCase):
         gene_rows = project.rows(original['genes'])[:-1]
         with self.assertRaisesRegex(ValueError, 'same actual intake'):
             project.family({**original, 'genes': project.table(project.GENES, gene_rows)}, self.lock)
+
+    def test_family_requires_actual_official_adjustment_and_never_recomputes_missing_values(self):
+        original = self.family_inputs()
+        audit = project.strict_json(original['limma_audit'])
+        for patch in [None, dict(audit['family_adjustment'], n_total=3),
+                      dict(audit['family_adjustment'], backend='python'),
+                      dict(audit['family_adjustment'], missing_p_denominator_value=True),
+                      dict(audit['family_adjustment'], stats='4.5.1')]:
+            with self.subTest(receipt=patch), self.assertRaisesRegex(ValueError, 'official R adjustment'):
+                project.family({**original, 'limma_audit': project.canonical(dict(audit, family_adjustment=patch))}, self.lock)
+        for field, value in [('q_BH', 'NA'), ('q_BY', 'Inf'), ('q_BH', '-1'), ('q_BY', '0')]:
+            changed = project.rows(original['results'])
+            changed[0][field] = value
+            raw = project.table(list(changed[0]), changed)
+            changed_audit = copy.deepcopy(audit)
+            changed_audit['plugin_transport_output_sha256']['results'] = project.identity(raw)['sha256']
+            with self.subTest(field=field, value=value), self.assertRaises(ValueError):
+                project.family({**original, 'results': raw, 'limma_audit': project.canonical(changed_audit)}, self.lock)
+        changed = project.rows(original['results'])
+        for row in changed:
+            del row['q_BH']
+        raw = project.table(list(changed[0]), changed)
+        changed_audit = copy.deepcopy(audit)
+        changed_audit['plugin_transport_output_sha256']['results'] = project.identity(raw)['sha256']
+        with self.assertRaisesRegex(ValueError, 'official adjusted columns'):
+            project.family({**original, 'results': raw, 'limma_audit': project.canonical(changed_audit)}, self.lock)
+        self.assertFalse(hasattr(project, 'adjust'))
+
+    def test_failed_family_publication_removes_only_its_own_links(self):
+        for replace_first in [False, True]:
+            with self.subTest(replace_first=replace_first), tempfile.TemporaryDirectory() as directory:
+                work = Path(directory)
+                inputs = [work / ('input' + str(index)) for index in range(4)]
+                for filename in inputs:
+                    filename.write_bytes(b'SYNTHETIC')
+                output = work / 'output'
+                targets = [output / 'family.tsv', output / 'family-audit.json']
+                environment = {'AUTONOMICS_INPUT' + str(index): str(filename) for index, filename in enumerate(inputs)}
+                environment.update({'AUTONOMICS_OUTPUT' + str(index): str(filename) for index, filename in enumerate(targets)})
+                original_link = os.link
+                def injected_link(source, target):
+                    if target == targets[1]:
+                        if replace_first:
+                            targets[0].unlink()
+                            targets[0].write_bytes(b'FOREIGN_REPLACEMENT')
+                        raise OSError('SYNTHETIC second-port publication failure')
+                    return original_link(source, target)
+                with patch.dict(os.environ, environment), patch.object(project, 'family', return_value={
+                        'family.tsv': b'SYNTHETIC_FAMILY', 'family-audit.json': b'{}'}), patch.object(project.os, 'link', injected_link):
+                    with self.assertRaisesRegex(OSError, 'second-port'):
+                        project.entry('FAMILY', self.lock)
+                self.assertEqual(targets[0].exists(), replace_first)
+                if replace_first:
+                    self.assertEqual(targets[0].read_bytes(), b'FOREIGN_REPLACEMENT')
+                self.assertFalse(targets[1].exists())
+                self.assertTrue(all(filename.read_bytes() == b'SYNTHETIC' for filename in inputs))
+
+    def test_successful_links_cannot_publish_replaced_or_modified_family(self):
+        for modify_same_inode in [False, True]:
+            with self.subTest(modify_same_inode=modify_same_inode), tempfile.TemporaryDirectory() as directory:
+                work = Path(directory)
+                inputs = [work / ('input' + str(index)) for index in range(4)]
+                for filename in inputs:
+                    filename.write_bytes(b'SYNTHETIC')
+                targets = [work / 'output/family.tsv', work / 'output/family-audit.json']
+                environment = {'AUTONOMICS_INPUT' + str(index): str(filename) for index, filename in enumerate(inputs)}
+                environment.update({'AUTONOMICS_OUTPUT' + str(index): str(filename) for index, filename in enumerate(targets)})
+                original_link = os.link
+                def injected_link(source, target):
+                    result = original_link(source, target)
+                    if target == targets[1]:
+                        if not modify_same_inode:
+                            targets[0].unlink()
+                        targets[0].write_bytes(b'FOREIGN_REPLACEMENT')
+                    return result
+                with patch.dict(os.environ, environment), patch.object(project, 'family', return_value={
+                        'family.tsv': b'SYNTHETIC_FAMILY', 'family-audit.json': b'{}'}), patch.object(project.os, 'link', injected_link):
+                    with self.assertRaisesRegex(ValueError, 'complete published output'):
+                        project.entry('FAMILY', self.lock)
+                self.assertEqual(targets[0].read_bytes(), b'FOREIGN_REPLACEMENT')
+                self.assertFalse(targets[1].exists())
 
     def test_generated_tui_graph_binds_all_inputs_and_actual_design_edge(self):
         built = graph.build('vfs://study_v432')

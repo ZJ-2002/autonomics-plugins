@@ -16,22 +16,49 @@ entry_main <- function() {
   while(tail(ancestors,1L)!="/") ancestors<-c(ancestors,dirname(tail(ancestors,1L)))
   bulk$bulk_check(!any(vapply(c(ancestors,outputs),bulk$bulk_link,logical(1))) && !any(file.exists(outputs)),"bulk outputs exist or have a symlink ancestor")
   if(!dir.exists(parent)) bulk$bulk_check(dir.create(parent,recursive=TRUE),"cannot create private bulk output directory")
+  stat_program<-Sys.which("stat")
+  bulk$bulk_check(nzchar(stat_program),"artifact identity inspection requires stat")
+  identity<-function(filename) {
+    value<-suppressWarnings(system2(stat_program,c("-c","%d:%i:%u","--",shQuote(filename)),stdout=TRUE,stderr=TRUE))
+    bulk$bulk_check(is.null(attr(value,"status")) && length(value)==1L && grepl("^[0-9]+:[0-9]+:[0-9]+$",value),"cannot prove published artifact ownership")
+    list(identity=value,sha256=bulk$bulk_sha(filename))
+  }
   bundle<-file.path(parent,".bulk-limma-complete")
   bulk$bulk_check(!file.exists(bundle) && !bulk$bulk_link(bundle),"bulk complete bundle exists")
   bulk$bulk_main(c("LIMMA",unname(inputs),bundle))
   # Bind the actual complete outputs for the new LEGACY family endpoint.
   audit_path<-file.path(bundle,"audit.json")
   audit<-bulk$bulk_json(audit_path)
+  results_path<-file.path(bundle,"results.tsv")
+  results<-bulk$bulk_tsv(results_path)
+  bulk$bulk_check(nrow(results)>0L && all(c("status","raw_p","family_p") %in% names(results)) && !any(c("q_BH","q_BY") %in% names(results)),"complete unadjusted limma rows required")
+  estimated<-results$status=="ESTIMATED"
+  bulk$bulk_check(all(results$status %in% c("ESTIMATED","NOT_ESTIMABLE")) && all(results$raw_p[!estimated]=="NA") && all(results$family_p[!estimated]=="NA"),"invalid non-estimable raw p semantics")
+  p<-rep(1,nrow(results))
+  p[estimated]<-suppressWarnings(as.numeric(results$raw_p[estimated]))
+  bulk$bulk_check(all(is.finite(p)) && all(p>=0 & p<=1),"invalid complete-family adjustment p")
+  bulk$bulk_check(identical(as.character(getRversion()),"4.6.1") && identical(as.character(utils::packageVersion("stats")),"4.6.1"),"frozen official adjustment software differs")
+  results$q_BH<-formatC(stats::p.adjust(p,method="BH",n=nrow(results)),digits=17,format="g")
+  results$q_BY<-formatC(stats::p.adjust(p,method="BY",n=nrow(results)),digits=17,format="g")
+  utils::write.table(results,results_path,sep="\t",quote=FALSE,row.names=FALSE,na="NA")
+  audit$family_adjustment<-list(backend="stats::p.adjust",R="4.6.1",stats="4.6.1",methods=c("BH","BY"),n_total=nrow(results),missing_p_denominator_value=1)
   audit$plugin_transport_output_sha256<-list(results=bulk$bulk_sha(file.path(bundle,"results.tsv")),rds=bulk$bulk_sha(file.path(bundle,"official.rds")))
   jsonlite::write_json(audit,audit_path,auto_unbox=TRUE,pretty=TRUE,na="null",null="null",digits=17)
   bulk$bulk_check(setequal(list.files(bundle,all.files=TRUE,no..=TRUE),names),"complete bulk result set differs")
-  published<-character();success<-FALSE
-  on.exit(if(!success && length(published)) unlink(published),add=TRUE)
+  expected_files<-lapply(file.path(bundle,names),identity)
+  published<-list();success<-FALSE
+  on.exit(if(!success) for(record in rev(published)) {
+    current<-tryCatch(identity(record$path),error=function(error) NA_character_)
+    if(identical(current,record$identity)) unlink(record$path)
+  },add=TRUE)
   for(i in seq_along(outputs)) {
     bulk$bulk_check(!file.exists(outputs[i]) && !bulk$bulk_link(outputs[i]),"bulk output appeared during publication")
+    expected<-expected_files[[i]]
     bulk$bulk_check(suppressWarnings(file.link(file.path(bundle,names[i]),outputs[i])),"no-clobber bulk port publication failed")
-    published<-c(published,outputs[i])
+    published[[length(published)+1L]]<-list(path=outputs[i],identity=expected)
+    bulk$bulk_check(identical(identity(outputs[i]),expected),"published artifact identity changed")
   }
+  bulk$bulk_check(all(vapply(published,function(record) identical(identity(record$path),record$identity),logical(1))),"complete published artifact identity changed")
   success<-TRUE
 }
 tryCatch(entry_main(),error=function(e) {cat("BLOCKED:",conditionMessage(e),"\n",file=stderr());quit(status=2L)})

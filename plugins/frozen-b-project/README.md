@@ -21,6 +21,17 @@ BH/BY with missing p counted as1. Sensitivity rows never enlarge or replace
 the23786-gene primary denominator. This is the faithful narrow frozen comparison;
 it is not completion or scientific acceptance of the entire B plan.
 
+BH/BY now come from official R/stats 4.6.1 `stats::p.adjust` in the paired
+`bulk-limma-normalized` producer. The family endpoint only validates and carries
+those actual `q_BH`/`q_BY` columns and the bound adjustment receipt; it no longer
+implements a Python adjustment algorithm or recomputes missing official output.
+An old producer without those columns/receipt is refused. Deploy both families
+at the same proven source revision; do not mix the new family with an older
+LIMMA producer. Scientific source, full-family and study eligibility remain
+separate checks. Both endpoints roll back owned hard links after ordinary
+failure and preserves a replaced foreign inode; this is not crash-atomic recovery
+or protection against an uncooperative process racing every filesystem operation.
+
 Before real execution, run the original project `02_EXECUTION/verify_g0_v432.py`
 read-only under its existing study access/ownership rules. This adapter checks
 the B-required files against their original runtime manifest and source hashes;
@@ -44,8 +55,8 @@ python3 -B tools/build_frozen_b_project_dag.py \
   --output /tmp/frozen-b-dag-shell.json
 ```
 
-The generated request contains 19 hash-enabled source references and four
-connected nodes: intake → DESIGN → LIMMA → full-family BH/BY. Submit its
+The generated request contains 19 hash-enabled source references and ten
+processing nodes: one intake and three DESIGN → LIMMA → full-family chains. Submit its
 `script` to `dag_shell` first with `dry_run=true`; after runtime installation,
 source admission and the original project byte audit succeed, submit with
 `dry_run=false`, then invoke `run_dag`. The generator does not execute either

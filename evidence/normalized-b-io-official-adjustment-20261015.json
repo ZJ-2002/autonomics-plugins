@@ -1,0 +1,162 @@
+{
+  "schema": "SCOPED_NORMALIZED_B_IO_OFFICIAL_ADJUSTMENT_DAG_EVIDENCE_V1",
+  "date": "2026-10-15",
+  "status": "ACCEPTED_SCOPED_SYN_NORMALIZED_DESIGN_LIMMA_DAGS",
+  "source": {
+    "plugins/bulk-limma-normalized/scripts/run-design.R": {
+      "bytes": 19849,
+      "sha256": "ed9ab1fd7b4c5f4533a7fac14d50ded9c829a840e849d974486945534648d707",
+      "embedded_numerical_prefix_bytes": 16694,
+      "embedded_numerical_prefix_sha256": "5f8300f0078ee45531efb16fd8ecad726ba52a6a24c2824b0f8418979d504d2e"
+    },
+    "plugins/bulk-limma-normalized/scripts/run-limma.R": {
+      "bytes": 21594,
+      "sha256": "a300208080b1cf6c8d3361fe4f0dbea50977a45f7e76fed00bfe49dc7def738c",
+      "embedded_numerical_prefix_bytes": 16693,
+      "embedded_numerical_prefix_sha256": "7723131e15c4aeb64a8b58ee97756028cf191ad3bdcbb85e22ab88da50d3b1cc"
+    },
+    "plugins/bulk-limma-normalized/manifest.toml": {
+      "sha256": "d643744bb9c96c31f3e0f86b8782ff61a66ec4281ca3b0c45bbc041dbcda09f2"
+    }
+  },
+  "io": {
+    "session": "7aae6ab1be8b49ceb7d154016b716a30",
+    "manifest_sha256": "d794d8c4bfc78badc88294913ed644b01b44c67fc6025da4cc561c976beb6278",
+    "complete_files_rehashed": 95,
+    "state": "CLEANED",
+    "worker_exit_status": 0,
+    "runtime_release_sha256": "f32991937c824d56ead0ecee66979f20030a55410e68c56c1c57ff37880cc1fa",
+    "entry": "permanent/normalized-b-publication-repaired/verification.json",
+    "scope": "REAL_R_ENTRY_PUBLICATION_WITH_STUB_METHOD_NOT_NUMERICAL_ACCEPTANCE",
+    "case_count": 18,
+    "expected_successes": 2,
+    "expected_rejections": 16,
+    "unchanged_input_hashes_verified": true,
+    "existing_output_symlink_and_input_alias_protection_verified": true,
+    "foreign_replacement_preservation_verified": true,
+    "same_inode_edit_cases": 6,
+    "expected_complete_bundle_identity_and_sha256_frozen_before_first_link": true,
+    "post_link_final_set_and_rollback_compare_identity_and_sha256": true,
+    "containers_started": false,
+    "crash_atomic_or_arbitrary_postcheck_race_safety_proven": false
+  },
+  "same_inode_baseline": {
+    "session": "820a0b77215b42788deb750f4d5353fc",
+    "manifest_sha256": "c442763dbf343e5675a317d5cdcc1ae7b8c6eb441489cec5e0534716dc7f7366",
+    "complete_files_rehashed": 35,
+    "cases": 6,
+    "wrong_successes": 5,
+    "late_failure_deleted_edited_file": 1,
+    "per_case_expected_regression_assertions_recorded": true,
+    "inode_identity_before_after_equal_verified": true,
+    "legacy_aggregate_baseline_regression_reproduced_value": false,
+    "legacy_aggregate_field_bug": "phase == baseline excluded identity-baseline; use per-case exit, output SHA and expected_regression_assertion, not this aggregate field",
+    "driver_fixed_to_endswith_baseline": true,
+    "sealed_baseline_rewritten": false
+  },
+  "immutable_oracle": {
+    "session": "186a1ed980cd48f6908f0e7201420f7f",
+    "manifest_sha256": "efded200ef0755472fda92543d4ce48095799e78828560fa66d54b57968f73cc",
+    "complete_files_rehashed": 61,
+    "gene_rows": 25,
+    "synthetic_units": 8,
+    "estimated_rows": 24,
+    "constant_rows": 1,
+    "models": ["primary", "unadjusted", "therapy_sensitivity"],
+    "original_frozen_numerical_block_sha256": "2d9297b81b21415afc44221ac9f634e1c2e9668301a0fa5dd54bf2e2c90faa9a",
+    "original_frozen_scientific_code_sha256": "f7e334db38e331acc30cd0117ca9f2b82831523d1c07ce742382eacbd3aff1cd",
+    "golden_regenerated_or_modified": false,
+    "original_frozen_program_or_real_study_executed": false,
+    "independent_empirical_bayes_prior_proven": false
+  },
+  "official_adjustment": {
+    "backend": "stats::p.adjust",
+    "R": "4.6.1",
+    "stats": "4.6.1",
+    "limma": "3.68.5",
+    "statmod": "1.5.2",
+    "methods": ["BH", "BY"],
+    "n_total_per_synthetic_model": 25,
+    "missing_p_denominator_value": 1,
+    "raw_p_and_family_p_missing_preserved": true,
+    "full_q_BH_and_q_BY_vectors_compared_to_frozen_R": true,
+    "three_model_families_pooled": false,
+    "q_objects_claimed_inside_original_fit_RDS": false
+  },
+  "dag": {
+    "session": "7b67c1da0b9b47c4bf72e893d8e4eba9",
+    "manifest_sha256": "74e5d3882983b5f07984a488d74fa0cfaf8ce9fcf776a81d50d9260863b7cb89",
+    "complete_files_rehashed": 71,
+    "state": "CLEANED",
+    "worker_exit_status": 0,
+    "entry": "permanent/normalized-b-current-dag/VERIFICATION.json",
+    "engine_commit": "4ceefbd821baab8deebb070645a2fb8b1fa8e1ba",
+    "runner_executable_sha256": "bbc1a387b508ba05c50e79eb95b3dc15f87cf274a6e2c3983bcd320246339481",
+    "runtime_release_sha256": "985b77dcaf5adf490b1ba5a523dec0aa66ceeac5897f2abfa7704c57a8987f65",
+    "managed_shim_sha256": "e422b7a14ad9681ce9a90ae57120a228bf59e336ad1fb0ce448dd76e78320c7d",
+    "image": "localhost/autonomics/frozen-b-normalized@sha256:723904dd46c9148d75716555e2f641604d98c22909bc333d5fac832f33ebffed",
+    "image_config_digest": "sha256:9f95389b321be12e5b89112e62fce3a7137fd3048bc84815e14260a8436c8f7d",
+    "actual_existing_image_manifest_config_and_layers_checked": true,
+    "image_pulled_or_built": false,
+    "max_concurrent_containers": 1,
+    "cpus_per_container": 1,
+    "memory_per_container": "1Gi",
+    "network": "isolated",
+    "rootfs_read_only": true,
+    "real_study_data_mounted": false,
+    "positive_cases": [
+      {"model": "primary", "nodes": 7, "edges": 11, "actual_input_bindings": 11, "actual_output_ports": 4, "rows": 25, "columns": 25, "max_absolute_error": 2.4980018054066022e-15},
+      {"model": "unadjusted", "nodes": 7, "edges": 11, "actual_input_bindings": 11, "actual_output_ports": 4, "rows": 25, "columns": 25, "max_absolute_error": 1.2212453270876722e-15},
+      {"model": "therapy_sensitivity", "nodes": 7, "edges": 11, "actual_input_bindings": 11, "actual_output_ports": 4, "rows": 25, "columns": 25, "max_absolute_error": 9.992007221626409e-16}
+    ],
+    "negative_case": {
+      "name": "upstream-scale-rejected",
+      "only_mutation": "SYN config expression_scale = raw_integer_counts",
+      "upstream": "DESIGN",
+      "exit_status": 2,
+      "error_contract": "frozen normalized-bulk original source contract required",
+      "downstream": "LIMMA",
+      "downstream_status": "skipped",
+      "downstream_executed": false,
+      "published_method_outputs": 0,
+      "diagnostics_preserved": true
+    },
+    "frozen_numeric_columns": ["beta", "moderated_se", "df", "lo", "hi", "p_raw", "q_BH", "q_BY"],
+    "rtol": 1e-11,
+    "atol": 1e-12,
+    "full_table_identity_order_status_and_missing_mask_checked": true,
+    "all_11_input_staged_bytes_and_edges_checked_per_positive_DAG": true,
+    "all_4_declared_output_files_and_hashes_checked_per_positive_DAG": true,
+    "RDS_readback": {
+      "actual_container_execution": true,
+      "models": 3,
+      "full_and_variable_gene_ids_checked": true,
+      "fitted_components": ["coefficients", "stdev.unscaled", "sigma", "df.residual", "s2.prior", "df.prior", "s2.post", "df.total", "t", "p.value", "Amean", "cov.coefficients"],
+      "every_slot_or_environment_equivalence_claimed": false
+    },
+    "container_stoppage": {
+      "entry": "permanent/container-stoppage.json",
+      "intents": 8,
+      "all_containers_remaining_zero": true,
+      "computation_time_pending_reconcile_field_rewritten": false
+    }
+  },
+  "historical_not_substituted_for_final_source": [
+    {"session": "76c1cd99f76c47c785a77df814dc6795", "scope": "old 12-case I/O control"},
+    {"session": "186a1ed980cd48f6908f0e7201420f7f", "scope": "immutable old-wrapper host numerical oracle, not final-wrapper publication proof"},
+    {"session": "5a1eeb7158b249449fbfd9aa13328abc", "scope": "old-wrapper DAG on temporary f329 runtime, not final qualified runtime/source"}
+  ],
+  "exclusions": [
+    "real 23786-gene 22-PDAC-unit analysis",
+    "complete frozen family current DAG",
+    "scientific source eligibility and biological independence",
+    "independent empirical-Bayes prior correctness",
+    "resident production daemon loading or hot deployment",
+    "cross-process cache reuse and fault recovery",
+    "global cross-service resource policy",
+    "all-node scientific certification"
+  ],
+  "production_restarted_or_hot_loaded": false,
+  "scientific_authorization_granted": false,
+  "g0_granted": false
+}

@@ -1,0 +1,50 @@
+{
+  "schema": "AB_OFFICIAL_BACKEND_REPAIR_SCOPE_V1",
+  "status": "SCOPED_METHOD_IO_AND_ISOLATED_DAG_PROOFS_NOT_WHOLE_AB_ADMISSION",
+  "user_priority": "A/B before bibliography or OpenTargets expansion",
+  "nodes": [
+    {"kind": "twosamplemr-v432-a/twosamplemr_v432_a_exploratory", "official": "TwoSampleMR0.7.11 / R4.6.1", "input_ports": 5, "output_ports": 9, "proof": "frozen-a-io-current-dag-20261015.json", "status": "PROVEN_SCOPED_OFFICIAL_METHOD_IO_AND_ISOLATED_DAG", "upstream_raw_GWAS_QC_LD_and_harmonisation_reexecuted_in_this_proof": false},
+    {"kind": "bulk-limma-normalized/bulk_normalized_design", "official": "Fixed R4.6.1 model construction", "input_ports": 5, "output_ports": 1, "proof": "normalized-b-io-official-adjustment-20261015.json", "status": "PROVEN_SCOPED_IO_AND_ISOLATED_DAG"},
+    {"kind": "bulk-limma-normalized/bulk_normalized_limma", "official": "limma3.68.5 lmFit/eBayes; stats4.6.1 p.adjust BH/BY", "input_ports": 6, "output_ports": 3, "proof": "normalized-b-io-official-adjustment-20261015.json", "status": "PROVEN_SCOPED_OFFICIAL_METHOD_IO_AND_ISOLATED_DAG", "counts_or_voom_substitution": false},
+    {"kind": "frozen-b-project/frozen_b_legacy_intake", "official": "Engineering source binding; not a statistical method", "input_ports": 19, "output_ports": 10, "status": "PUBLICATION_REPAIRED_TOY_CONTRACTS_VERIFIED_CURRENT_POSITIVE_PRODUCTION_KIND_DAG_PENDING"},
+    {"kind": "frozen-b-project/frozen_b_legacy_family", "official": "Mechanical transport of actual official R adjustments; no Python adjustment algorithm", "input_ports": 4, "output_ports": 2, "status": "OFFICIAL_VALUE_CONSUMPTION_AND_IO_VERIFIED_CURRENT_POSITIVE_PRODUCTION_KIND_DAG_PENDING"}
+  ],
+  "family_transport": {
+    "session": "ac64b2c63d254fe296e463f35553cfb9",
+    "manifest_sha256": "94f1926a3f0e6f8159dea134583ae1be4c0c77819cbe9a00e16446f8bd44bc09",
+    "complete_archive_files_rehashed": 10,
+    "baseline_test_functions": 3,
+    "baseline_failure_records": 13,
+    "baseline_errors": 0,
+    "fixed_actual_tests": 12,
+    "fixed_failures_errors_skips": 0,
+    "independent_official_R_not_executed_by_this_particular_python_test": true,
+    "foreign_replaced_or_modified_outputs_preserved_in_tested_windows": true,
+    "no_custom_adjustment_fallback": true
+  },
+  "runtime_compatibility": {
+    "adopted_published_engine_source": "bf614399a2a83b2ce1f365c5f513f4d5a03d66b9",
+    "podman_shim_sha256": "e422b7a14ad9681ce9a90ae57120a228bf59e336ad1fb0ce448dd76e78320c7d",
+    "exact_tmpdir_is_bound_to_runroot_libpod_tmp": true,
+    "ownership_backend_replayed_for_stoppage": true,
+    "actual_backend_and_session_tests": 44,
+    "session": "7c9bcbd03c544fcfbd1b362e2e969546",
+    "manifest_sha256": "a6e6c946281a2efb2b412f99d035bedd8c31be908f79e31883a1a57b3f5a1dce",
+    "earlier_local_weaker_tmpdir_candidate_not_published": true
+  },
+  "deployment": {
+    "status": "HOLD_OPERATOR_HAS_LIVE_RESEARCH",
+    "operator_instruction": "任务仍在运行，请暂不重启",
+    "daemon_restarted_or_plugins_hot_reloaded": false,
+    "registered_kind_or_mutable_runtime_symlink_is_not_loaded_code_identity": true,
+    "required_cutover": "All three A/B families at one proven immutable Git revision, with safe-window loaded-execution verification",
+    "new_source_is_not_claimed_to_be_current_production": true
+  },
+  "full_AB_plan_redefined_as_these_five_kinds": false,
+  "new_scientific_cohort_or_independent_replication_computed": false,
+  "frozen_design_or_276_288_696_denominators_changed": false,
+  "B_S": "CONDITIONAL_NOT_READY",
+  "GS01": "OPEN",
+  "scientific_authorization_granted": false,
+  "g0_granted": false
+}

@@ -15,20 +15,20 @@
       "files": [
         {
           "path": "README.md",
-          "sha256": "29422e044123ecd08b8099215d4dec763b7c9e880ed1a05ba3ad67f939c49531",
-          "bytes": 5471,
+          "sha256": "5e5c7c0647b9ec36fdc1f4c83e851f9d2cc7a7856f51e12c39a1e1dcda5aba82",
+          "bytes": 7659,
           "executable": false
         },
         {
           "path": "manifest.toml",
-          "sha256": "90735f0ccfcc52c9883383be258a2421670d207505381cd2e10aabd00d2fb08e",
-          "bytes": 2924,
+          "sha256": "d643744bb9c96c31f3e0f86b8782ff61a66ec4281ca3b0c45bbc041dbcda09f2",
+          "bytes": 3124,
           "executable": false
         },
         {
           "path": "reuse-lock.json",
-          "sha256": "67b997e08f3ce6cf180457e1aad8c929851cc35e50e3ccd87b18ab4070cbd4f8",
-          "bytes": 2486,
+          "sha256": "dd431140d43202083a03b5bbbaca653420dbede39294ea1e060c36e19f093aec",
+          "bytes": 2608,
           "executable": false
         },
         {
@@ -39,20 +39,26 @@
         },
         {
           "path": "scripts/run-design.R",
-          "sha256": "eca6079b6c0a239e3232b2e431003643f488daee56f9ff49744fce3eb5cad2a5",
-          "bytes": 18828,
+          "sha256": "ed9ab1fd7b4c5f4533a7fac14d50ded9c829a840e849d974486945534648d707",
+          "bytes": 19849,
           "executable": false
         },
         {
           "path": "scripts/run-limma.R",
-          "sha256": "e6510b0e5d30837951119244922cf29d13004ee1a0765269ac582e7877b935af",
-          "bytes": 19262,
+          "sha256": "a300208080b1cf6c8d3361fe4f0dbea50977a45f7e76fed00bfe49dc7def738c",
+          "bytes": 21594,
           "executable": false
         },
         {
           "path": "tests/run_method_toy.py",
           "sha256": "66db0c25271e8a88078181d1e8da9adbf4f16acc316ac09c376c76145ce18a1c",
           "bytes": 15391,
+          "executable": false
+        },
+        {
+          "path": "tests/run_publication_io.py",
+          "sha256": "5fcdf29aaea5f0ae7c9e8caae61b615401beff5314362b2755e81fce4d6cc1da",
+          "bytes": 11477,
           "executable": false
         }
       ],
@@ -619,14 +625,14 @@
       "files": [
         {
           "path": "README.md",
-          "sha256": "19fad66295f10a05dba211747b3aa79246201c50c5dc628a4da4638386321584",
-          "bytes": 7485,
+          "sha256": "3d18d890b902726141fa9c4150240c26c9887bce97aecd5497ae214ea24cf94c",
+          "bytes": 8284,
           "executable": false
         },
         {
           "path": "manifest.toml",
-          "sha256": "1cecd76d9c2be197b77af7294f6fb315dce94a023db6cfd7d99c9235c1d991ae",
-          "bytes": 3905,
+          "sha256": "c8ff9e9e678129489d165a04b0c4d5db1421bd53bfda3254ad4323c5252525fd",
+          "bytes": 4107,
           "executable": false
         },
         {
@@ -637,8 +643,8 @@
         },
         {
           "path": "scripts/project.py",
-          "sha256": "35d0a0067b0897da96504ea42bb8f324469997295791b572ab372cbf150012f7",
-          "bytes": 22592,
+          "sha256": "3ee6b367ca19fbcf1bea2711ba78795b022a0d8697b088f846d3799c025d36e8",
+          "bytes": 23929,
           "executable": false
         },
         {
@@ -649,20 +655,20 @@
         },
         {
           "path": "scripts/run-family.py",
-          "sha256": "716a538d9c776d51ebba4a5acaa0ae1d6cdd227bde631d7d69353a4bc07b9f01",
-          "bytes": 26429,
+          "sha256": "1f9032bc766b61b0d9431d83ad4d587660645f1e36c45f1272d8f7d8d527c6f3",
+          "bytes": 27766,
           "executable": false
         },
         {
           "path": "scripts/run-intake.py",
-          "sha256": "ca8e5d2177e18c15a3e39081173ccf3f2b5df7cabaf72eb877315249fac62a78",
-          "bytes": 26429,
+          "sha256": "09a5a391f8f76fd1873b7e0fcab561d47549e788691d9a72b8af255bd8ab6ae8",
+          "bytes": 27766,
           "executable": false
         },
         {
           "path": "source-lock.json",
-          "sha256": "8bedc3a2e95ce4af62bbb66abaee320f686d5b0ff9830a1ab66b03e800bcf325",
-          "bytes": 2171,
+          "sha256": "2c39ad4e1cb60c64142f428b9c22a37ae9f1431d019b63e34df4c27627066f09",
+          "bytes": 2369,
           "executable": false
         }
       ],
@@ -15301,8 +15307,8 @@
       "files": [
         {
           "path": "README.md",
-          "sha256": "75c0696991a73f4b27f98a4e978b1b676d99a15ee8cbe04a22318badb8bf34b9",
-          "bytes": 5947,
+          "sha256": "2520e5da0dafb300b825f707fdd6aeb60a1d75f8deb52b6f802a18e785cf91a7",
+          "bytes": 8654,
           "executable": false
         },
         {
@@ -15319,8 +15325,8 @@
         },
         {
           "path": "scripts/mr.R",
-          "sha256": "72023365b372000f6f7e80f11b55a6ad0c018b73d1096e44b44642b306765769",
-          "bytes": 9140,
+          "sha256": "33009c9f40ca8964b4aa6e5729eff1856913838dce35679e5169eab4ed3595fe",
+          "bytes": 14453,
           "executable": false
         },
         {
@@ -15330,15 +15336,27 @@
           "executable": false
         },
         {
+          "path": "tests/reproduce_io_baseline.py",
+          "sha256": "40fd0d1a5124e6f10df933b185e7d5adbbfb789f0ade3ca44eb600328f80c68a",
+          "bytes": 4885,
+          "executable": false
+        },
+        {
           "path": "tests/run_acceptance.py",
-          "sha256": "69b625ea4affdb1ad26b05c34d8a71a07d81ab728e19c3678bd31ea927f5bab0",
-          "bytes": 4519,
+          "sha256": "85a7cc17608ce9ae6b089474849a1467b659e224afeb63e023f8a11b721fcb86",
+          "bytes": 4656,
+          "executable": false
+        },
+        {
+          "path": "tests/run_io_acceptance.py",
+          "sha256": "b80042b4c91867614ed48383da5f53ebb1310cb049e81beffa386eacbe8dbdbe",
+          "bytes": 14806,
           "executable": false
         },
         {
           "path": "tests/verify.R",
-          "sha256": "d9b8c4ccb256e65eea09604b0245cf0da20ceb4c59d013aedd2c1e39f54ef8a2",
-          "bytes": 2646,
+          "sha256": "34ac4133a2a3823387ad70da224dd9d53974ea756111c350606a2f5c983733c0",
+          "bytes": 4556,
           "executable": false
         }
       ],

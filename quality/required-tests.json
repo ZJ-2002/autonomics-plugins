@@ -229,6 +229,18 @@
     "tests.test_opentargets_direct_acquisition.DirectAcquisitionTests.test_truncated_overlong_and_nonparquet_bodies_never_publish",
     "tests.test_literature_blank_fields.LiteratureBlankProofTests.test_real_success_and_failure_summaries_remain_distinct",
     "tests.test_literature_blank_fields.LiteratureBlankProofTests.test_missing_duplicate_zero_and_ignored_summaries_are_not_passes",
-    "tests.test_literature_blank_fields.LiteratureBlankProofTests.test_contradictory_result_labels_are_rejected"
+    "tests.test_literature_blank_fields.LiteratureBlankProofTests.test_contradictory_result_labels_are_rejected",
+    "tests.test_frozen_a_current_dag.FrozenACurrentDagTests.test_dag_report_requires_all_success_nodes_and_current_identity",
+    "tests.test_frozen_a_current_dag.FrozenACurrentDagTests.test_oracle_requires_all_six_exact_tsv_bytes",
+    "tests.test_frozen_a_current_dag.FrozenACurrentDagTests.test_provenance_comparison_ignores_only_adapter_path_identity",
+    "tests.test_frozen_a_current_dag.FrozenACurrentDagTests.test_six_nodes_bind_all_five_inputs_in_order",
+    "tests.test_frozen_a_current_dag.FrozenACurrentDagTests.test_staged_input_requires_source_port_path_and_exact_bytes",
+    "tests.test_frozen_b_project.FrozenProjectTests.test_failed_family_publication_removes_only_its_own_links",
+    "tests.test_frozen_b_project.FrozenProjectTests.test_family_requires_actual_official_adjustment_and_never_recomputes_missing_values",
+    "tests.test_frozen_b_project.FrozenProjectTests.test_successful_links_cannot_publish_replaced_or_modified_family",
+    "tests.test_normalized_b_current_dag.NormalizedCurrentDagTests.test_fixed_oracle_rejects_membership_drift",
+    "tests.test_normalized_b_current_dag.NormalizedCurrentDagTests.test_mixed_full_table_rejects_missing_or_identity_drift",
+    "tests.test_normalized_b_current_dag.NormalizedCurrentDagTests.test_three_models_seven_nodes_eleven_edges",
+    "tests.test_normalized_b_current_dag.NormalizedCurrentDagTests.test_upstream_failure_requires_skip_and_no_outputs"
   ]
 }

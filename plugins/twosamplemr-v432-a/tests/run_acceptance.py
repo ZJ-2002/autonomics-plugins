@@ -18,6 +18,7 @@ names = ["input.tsv","config.json","certificate.json","lock.tsv","proof.json"]
 def run(inputs, outputs, script, arguments=(), expect_success=True):
     outputs.mkdir()
     command = ["podman","run","--rm","--pull=never","--network=none",
+               "--userns=keep-id",f"--user={os.getuid()}:{os.getgid()}",
                "--security-opt=no-new-privileges","--cpus=2","--memory=2g",
                "-v",f"{PLUGIN}:/plugin:ro","-v",f"{inputs}:/inputs:ro","-v",f"{outputs}:/outputs:rw"]
     for i,name in enumerate(names):
@@ -40,6 +41,7 @@ for label,noise in [("under",.001),("over",.5)]:
     run(inputs,outputs,"/plugin/scripts/mr.R")
     # Verification reads the adapter output through a dedicated read-only mount.
     command = ["podman","run","--rm","--pull=never","--network=none",
+      "--userns=keep-id",f"--user={os.getuid()}:{os.getgid()}",
       "-v",f"{PLUGIN}:/plugin:ro","-v",f"{inputs}:/inputs:ro","-v",f"{outputs}:/outputs:rw",
       "--entrypoint=Rscript",image,"--vanilla","/plugin/tests/verify.R","/inputs","/outputs",label]
     result = subprocess.run(command,capture_output=True,text=True)

@@ -1,0 +1,186 @@
+{
+  "schema": "FROZEN_A_IO_CURRENT_DAG_PROOF_V1",
+  "status": "ACCEPTED_SCOPED_TECHNICAL_CANDIDATE_NOT_DEPLOYED",
+  "plugin": "twosamplemr-v432-a",
+  "kind": "twosamplemr_v432_a_exploratory",
+  "scope": "SYNTHETIC_METHOD_TEST_ONLY",
+  "source_script_sha256": "33009c9f40ca8964b4aa6e5729eff1856913838dce35679e5169eab4ed3595fe",
+  "source_manifest_sha256": "661e12b231f7b38540d5cba2fca8a31ee3d5d0831305998f00fa0e898d980324",
+  "method": {
+    "backend": "Official TwoSampleMR",
+    "version": "0.7.11",
+    "R": "4.6.1",
+    "seed": 432202610,
+    "bootstrap_n": 1000,
+    "methods": ["mr_ivw", "mr_egger_regression", "mr_weighted_median"],
+    "official_call_expression_and_rng_block_unchanged": true,
+    "existing_tsv_serialization_unchanged": true,
+    "mrlap_called": false,
+    "primary_p_source": "NA",
+    "family_p": 1,
+    "role": "LEGACY_EXPLORATORY_O2_PRIMARY_NA"
+  },
+  "image": "ghcr.io/zj-2002/mrlap-official@sha256:78f195b862a3b7c5f8d96a96576cfb2c66b08f9bd31a739da59a017726cd063d",
+  "repairs": [
+    "Fresh distinct output and resolved-input preflight before writes",
+    "Same-parent owned staging and exclusive no-clobber hard-link publication",
+    "Immediate post-link and final all-nine-port device/inode/SHA256 checks",
+    "All five input hashes checked again before scientific publication",
+    "Scientific rollback requires matching owned device/inode and content",
+    "Staging cleanup checks recorded directory device/inode",
+    "Error-log append checks owned staged-log identity",
+    "Read the checked canonical input rather than re-resolving its environment alias"
+  ],
+  "final_archives": {
+    "io": {
+      "session": "8590c2ae114e438abb065cf2b5c3e6b8",
+      "manifest_sha256": "cced275580c1c578b38a94c792bb8f7c01a55f31d6b588a503c84fb146d2a4d4",
+      "complete_manifest_members_rehashed": 269,
+      "worker_exit_status": 0,
+      "state": "CLEANED",
+      "containers_stopped": 22,
+      "cases": [
+        "input_log_alias", "output_duplicate", "existing_log", "existing_result",
+        "dangling_output", "output_symlink_input", "output_hardlink_input",
+        "parent_alias_input", "late_provenance_directory", "invalid_qualified_row",
+        "method_failure", "stage_write_failure", "publish_conflict",
+        "rollback_replaced_inode", "rollback_modified_content", "input_change_after_method",
+        "postlink_current_early", "postlink_current_last", "postlink_previous", "postlink_log_last",
+        "staging_directory_replaced", "staged_log_directory_replaced"
+      ]
+    },
+    "method": {
+      "session": "1f312ea09fab4cda915504195d289d63",
+      "manifest_sha256": "dc790d0952e97c347f27bfba9ff5a3870da1a48b67ff35be0bbbbd45346dff49",
+      "complete_manifest_members_rehashed": 102,
+      "worker_exit_status": 0,
+      "state": "CLEANED",
+      "positive_cases": 2,
+      "negative_contracts": 7,
+      "official_full_sequence_RDS_identical": true,
+      "independent_IVW_original_absolute_tolerance": 1e-12,
+      "all_nine_ports_read_back_per_positive": true,
+      "all_six_TSVs_exact_existing_write_table_serialization": true
+    },
+    "dag": {
+      "session": "4df28f3370674c25844f8bc692c13726",
+      "manifest_sha256": "31f274ee4bffc2c9fbc36eac184b418f77075416227fb9ba9f22433c891d96f2",
+      "complete_manifest_members_rehashed": 102,
+      "worker_exit_status": 0,
+      "state": "CLEANED",
+      "positive_graphs": 2,
+      "failed_method_graphs": 1,
+      "nodes_per_graph": 6,
+      "edges_per_graph": 5,
+      "actual_staged_input_bindings_hashed": 15,
+      "positive_published_ports_read_back": 18,
+      "complete_TSVs_byte_identical_to_immutable_oracle": 12,
+      "complete_RDS_objects_identical_to_immutable_oracle": 2,
+      "complete_logs_byte_identical_to_immutable_oracle": 2,
+      "provenance_only_adapter_source_sha_may_differ_and_both_identities_checked": true,
+      "bad_input_normal_scientific_files": 0,
+      "bad_input_diagnostic_logs": 1,
+      "containers_stopped": 4,
+      "max_concurrency": 1,
+      "input_hashing": "ContentRequired",
+      "incremental": false,
+      "native_statistical_factories_registered": false
+    }
+  },
+  "dag_engine": {
+    "source_revision": "4ceefbd821baab8deebb070645a2fb8b1fa8e1ba",
+    "executable_sha256": "bbc1a387b508ba05c50e79eb95b3dc15f87cf274a6e2c3983bcd320246339481",
+    "build_session": "f7e02ba49c024ceca6b934b4a123f751",
+    "build_manifest_sha256": "431dd1cdf0ea5c2ea66ce98621354b65ebdac356d03d081ee71045b0c81d4caf",
+    "complete_build_archive_members_rehashed": 14,
+    "new_build_started": false
+  },
+  "immutable_dag_oracle": {
+    "session": "ae8a6659b7b74833b0d3b55b73e3fed0",
+    "manifest_sha256": "a0fa6fb68487c7d2fbba7f0945a96e1313c3acfe3ec4adbab104a4b1b50cb65a",
+    "complete_manifest_members_rehashed": 102,
+    "adapter_sha256": "beec8ef591d96180ac720c909288fd1090a7803e610c048e980b3de92636a53b",
+    "scientific_expression_and_rng_block_equal_to_final": true,
+    "not_a_final_source_io_certificate": true
+  },
+  "historical_records_preserved_unchanged": [
+    {
+      "session": "bf7c68c3d99a4f7c8eef4c94a60cfa6f",
+      "manifest_sha256": "4a1df063e40beefeb23567137afdbefc74851af4489cae46ef2c8a1ec86ca25a",
+      "manifest_members": 46,
+      "worker_exit_status": 0,
+      "meaning": "Three original I/O defects reproduced; reproduction success is not adapter qualification"
+    },
+    {
+      "session": "7d7915c756f449969cf479bbf392f79a",
+      "manifest_sha256": "b1c9e4706f6a0038d54ac9821821b85ee9b74cca3946619807732cebb12a006c",
+      "manifest_members": 43,
+      "worker_exit_status": 1,
+      "meaning": "Verifier wrongly required universal absolute TSV tolerance; fixed verifier to original serialization, not scientific method or original IVW tolerance"
+    },
+    {
+      "session": "1b5a22e449ac4579bf863688fb74ec02",
+      "manifest_sha256": "d7af8c9cfe29c7b9cf4751a663fa6818f66932435ed679c0ef1aafc98e09c501",
+      "manifest_members": 179,
+      "worker_exit_status": 1,
+      "meaning": "R fault-injection quoting failed; final injection not executed or counted as passing"
+    },
+    {
+      "session": "775de072ee454482892e09ea30ec0725",
+      "manifest_sha256": "58cd6d3c86d8b1938f8ddb8c6a4e0e2db617198567a4cf19d0dae8c2e2bd57ce",
+      "manifest_members": 188,
+      "worker_exit_status": 0,
+      "meaning": "Intermediate 16-case source proof superseded after nonthrowing publication defect; not final-source qualification"
+    },
+    {
+      "session": "a837a1a84e6540c0a46d40c83ef88893",
+      "manifest_sha256": "6feccc7ede22325b71ca2f0c1955e972a05fd0004689405b75542e4735cd660e",
+      "manifest_members": 90,
+      "worker_exit_status": 0,
+      "meaning": "Four real nonthrowing post-link replacement defects reproduced on intermediate beec8ef5 source; method incorrectly exited zero"
+    },
+    {
+      "session": "c65b21fc3cda46d19e7978ff29aa44c2",
+      "manifest_sha256": "b53a33ef41a48c7240519153fe21f4b15e83a6783393ab8b813476231d674e9c",
+      "manifest_members": 12,
+      "worker_exit_status": 1,
+      "meaning": "Test boolean overwritten by archive Path; software correctly exited 2 but validator wrongly expected baseline zero"
+    },
+    {
+      "session": "b69e4d08803b4b3bb00068a7b465036e",
+      "manifest_sha256": "4ed2ff21db67dcc7d7c31d8c92e585ab25554c263e5b791cb5c02e2273e898e6",
+      "manifest_members": 241,
+      "worker_exit_status": 1,
+      "meaning": "Fixture substitution changed its sentinel text; only fixture repaired before final 22-case proof"
+    }
+  ],
+  "proof_driver": {
+    "path": "tools/prove_frozen_a_current_dag.py",
+    "sha256": "990f051ab8cde389624cf3edc4cac0e7839537f556b64f142c68ba7acdc1666d",
+    "test_path": "tests/test_frozen_a_current_dag.py",
+    "test_source_sha256": "84ebc40bdf31e3bbeebebd4509a448b64af2eb335278a55ab51b031ff204be91",
+    "self_cleaning_unit_tests_executed": 5,
+    "self_cleaning_unit_tests_passed": 5,
+    "ids": [
+      "tests.test_frozen_a_current_dag.FrozenACurrentDagTests.test_six_nodes_bind_all_five_inputs_in_order",
+      "tests.test_frozen_a_current_dag.FrozenACurrentDagTests.test_staged_input_requires_source_port_path_and_exact_bytes",
+      "tests.test_frozen_a_current_dag.FrozenACurrentDagTests.test_dag_report_requires_all_success_nodes_and_current_identity",
+      "tests.test_frozen_a_current_dag.FrozenACurrentDagTests.test_oracle_requires_all_six_exact_tsv_bytes",
+      "tests.test_frozen_a_current_dag.FrozenACurrentDagTests.test_provenance_comparison_ignores_only_adapter_path_identity"
+    ],
+    "shared_archive_helper_import_does_not_execute_opentargets": true
+  },
+  "limits": {
+    "upstream_real_frozen_source_audit_rerun": false,
+    "real_frozen_39_SNP_input_executed": false,
+    "LD_clumping_harmonisation_or_source_eligibility_requalified": false,
+    "overlap_resolved": false,
+    "multi_file_crash_atomicity_certified": false,
+    "power_loss_durability_or_adversarial_race_certified": false,
+    "resume_or_cache_reuse_certified": false,
+    "production_hot_install_or_restart_performed": false,
+    "actual_production_registration_qualified": false,
+    "scientific_authorization_granted": false,
+    "g0_granted": false
+  }
+}

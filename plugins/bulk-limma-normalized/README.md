@@ -29,7 +29,27 @@ sample identities, independent-unit declarations, fixed covariates and
 `eBayes(trend=TRUE, robust=TRUE)`. The denominator is the reference group;
 the estimated coefficient is numerator minus denominator. It retains
 constant and non-estimable rows with missing p values and writes the official
-R fit object. It performs no per-node BH/BY replacement of the full family.
+R fit object. After the unchanged fit, the LIMMA entry computes the two
+complete-vector `q_BH` and `q_BY` columns through official R4.6.1
+`stats::p.adjust`, with `n` equal to all retained rows and non-estimable raw
+p values represented by 1 only for adjustment. Raw missing values remain
+`NA`. The audit's `family_adjustment` records the backend, R/stats versions,
+methods, total row count and missing-value policy; output hashes bind the
+adjusted table and original fit RDS. The RDS remains the fitted limma object,
+not a claim that it contains an adjustment object. The downstream frozen
+family validates and consumes these official columns; it must not replace
+them with its own multiple-testing algorithm or pool the three models.
+
+Port publication refuses existing destinations and symlink ancestors.
+Failure rollback compares device/inode/owner and expected SHA256 before removing
+its own published links, preserving a foreign replacement instead of
+unconditionally unlinking that pathname. Each link and the completed port
+set are checked again before success. These checked-process failure tests
+do not establish crash-atomic publication or protection against every
+adversarial replacement after an identity check. Expected identities and content
+hashes for the entire private bundle are fixed before the first output link;
+each port and the complete published set are checked again. A same-inode edit
+is neither accepted as the original result nor deleted by rollback.
 
 | Node | Input ports, in order | Output ports |
 | --- | --- | --- |
@@ -84,3 +104,15 @@ process and compares primary, unadjusted and therapy_sensitivity beta/SE/df/CI/p
 The whole original frozen program and its study authorization guards are not
 executed by that parity test. It does not independently qualify the
 empirical-Bayes prior or the real source.
+
+`tests/run_publication_io.py` separately exercises the real R entry with a
+synthetic stub method to isolate output safety. It first reproduces the old
+foreign-replacement deletion, then checks normal publication, existing
+outputs, dangling links, input aliases, owned rollback and foreign
+replacement at two publication windows, plus six same-inode content-edit
+controls (early port, final port, earlier port at the final link, and late
+failure). This I/O proof is not the numerical
+method proof. The unchanged original 25-gene, three-model method test still
+compares beta/SE/df/CI/p and complete BH/BY vectors against the verbatim
+frozen R numerical block and reads the actual RDS in the locked environment.
+Candidate-source validation does not restart or hot-reload a running study.
