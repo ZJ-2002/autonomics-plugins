@@ -87,11 +87,11 @@
       },
       "current": {
         "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
-        "revision": "2bc0a40cc7de540287f4d893263490d2dc48cdde",
+        "revision": "724394139585ea978416c9428c5d9fa0c2c0ea19",
         "path": "plugins/deseq2/README.md",
-        "sha256": "fded283f8ddf017d5788393d75076615fc2593cda5e5a46a42d20ba07a65b45c",
-        "bytes": 7666,
-        "git_blob": "34bcc8e1ff3fbe69b522233343b05daa9e622bd6"
+        "sha256": "6b3ecfc3607984f0f81b9f290aeb128996db92947dd8df4f40608b045092e256",
+        "bytes": 7835,
+        "git_blob": "2edfb0e1d62a994635383c2b715d474aa6feb4fa"
       }
     },
     {

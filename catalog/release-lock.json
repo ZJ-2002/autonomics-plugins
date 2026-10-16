@@ -510,8 +510,8 @@
         },
         {
           "path": "README.md",
-          "sha256": "fded283f8ddf017d5788393d75076615fc2593cda5e5a46a42d20ba07a65b45c",
-          "bytes": 7666,
+          "sha256": "6b3ecfc3607984f0f81b9f290aeb128996db92947dd8df4f40608b045092e256",
+          "bytes": 7835,
           "executable": false
         },
         {
@@ -528,8 +528,8 @@
         },
         {
           "path": "dds_diagnostics.R",
-          "sha256": "ddcadc400171af7caa41ba7fa7a18ddccfa4eac49b8c2c5d7ce60f798981e536",
-          "bytes": 8819,
+          "sha256": "25b8eb17660f655853147388bcfd97e9777a2e133af3e010f684894406d77811",
+          "bytes": 9065,
           "executable": false
         },
         {
@@ -587,6 +587,12 @@
           "executable": true
         },
         {
+          "path": "tests/method_evidence_convergence.R",
+          "sha256": "6b80555f940c760e47fe348d656184e88e9e7f4eb9d0654248873ce553cec9d9",
+          "bytes": 2102,
+          "executable": false
+        },
+        {
           "path": "tests/method_evidence_fixture.R",
           "sha256": "62faaa3d0315276a344d7b2a94a22daaf46c52dfda721ea43f64adf79a95dc2a",
           "bytes": 1097,
@@ -594,8 +600,8 @@
         },
         {
           "path": "tests/method_evidence_reference.R",
-          "sha256": "5c66dfc7afabafdff2194783076dfaeca3b558aa6249ec71c3e6229605c4bec9",
-          "bytes": 5765,
+          "sha256": "838d60ec392c6b1f2f902e6077993d87b8b203cd7748b835158c1e5cfd954244",
+          "bytes": 5809,
           "executable": false
         },
         {
@@ -618,8 +624,8 @@
         },
         {
           "path": "tests/test_method_evidence.py",
-          "sha256": "a03d8e95aa8b0f371c24131fcc6aa53b25d010e2777863ad4b2679a9618bde24",
-          "bytes": 6345,
+          "sha256": "c053d531ff19e018a94dbc58a7fab7a012ad98c4d837f62c5f30b6093b45e397",
+          "bytes": 7509,
           "executable": false
         },
         {
