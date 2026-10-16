@@ -528,8 +528,8 @@
         },
         {
           "path": "dds_diagnostics.R",
-          "sha256": "7a23f61f506254515ea27e38cafcd4c67b7a19c68ff2f1fd8a0d7045ac208f5b",
-          "bytes": 7866,
+          "sha256": "0c9f2f2283f773522c3d1b247e32374651e07787b2f1ac7b5a8f73e4d30a6098",
+          "bytes": 7877,
           "executable": false
         },
         {
@@ -594,8 +594,8 @@
         },
         {
           "path": "tests/method_evidence_reference.R",
-          "sha256": "3bb11c03abfbfc6cde31d93ed428c1dce6359e1b5dcde19c1e316f030b17c0a6",
-          "bytes": 5269,
+          "sha256": "34bffe6dcad94d979026e6913840a9e3cac35b5bd3100df2efede0d30b388fc0",
+          "bytes": 5279,
           "executable": false
         },
         {
@@ -612,8 +612,8 @@
         },
         {
           "path": "tests/test_deseq2_boundaries.py",
-          "sha256": "b49070fc0511de74093162593bf93eb4a045e47f22fb7c35b2781f69cb92b0ad",
-          "bytes": 19112,
+          "sha256": "9cbff747ae619f3b849e74f7b563c578dff6360203f07f8b10e614c2064bc762",
+          "bytes": 20244,
           "executable": false
         },
         {
