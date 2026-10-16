@@ -9,7 +9,7 @@ same <- function(actual,expected) {
  stopifnot(all(abs(actual[keep]-expected[keep])<=1e-9+1e-9*abs(expected[keep])))
  checked <<- checked+sum(keep)
 }
-read_table <- function(path) read.delim(path,check.names=FALSE,quote='"',colClasses=NULL)
+read_table <- function(path) read.delim(path,check.names=FALSE,quote='"')
 for (name in c("forward","shuffled","reverse")) {
  dir <- file.path(root,name)
  dds <- readRDS(file.path(dir,"dataset.rds"))
