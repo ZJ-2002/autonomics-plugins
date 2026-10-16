@@ -47,7 +47,7 @@ class DESeq2Boundaries(unittest.TestCase):
         environment.update(changes or {})
         protected = fixture(directory) if fixture else []
         before = {str(filename): filename.read_bytes() for filename in protected}
-        command = ['podman', 'run', '--rm', '--pull=never', '--network=none', '--cpus=2', '--memory=3g',
+        command = [os.environ.get('AUTONOMICS_PODMAN_PROGRAM', 'podman'), *json.loads(os.environ.get('DESEQ2_BOUNDARY_BACKEND_JSON', '[]')), 'run', '--rm', '--pull=never', '--network=none', '--cpus=2', '--memory=3g',
             '--userns=keep-id', '--mount', f'type=bind,src={directory},dst=/work',
             '--entrypoint', '/opt/autonomics/Rscript-vanilla' if self.baked else 'Rscript']
         if not self.baked:
@@ -162,6 +162,9 @@ class DESeq2Boundaries(unittest.TestCase):
 
     def test_invalid_fit(self):
         self.check({'AUTONOMICS_DESEQ2_FIT_TYPE': 'bad'}, diagnostic='fit_type must be')
+
+    def test_invalid_fit_policy(self):
+        self.check({'AUTONOMICS_DESEQ2_FIT_POLICY': 'silently_change'}, diagnostic='fit_policy must be exact or native')
 
     def test_invalid_shrink(self):
         self.check({'AUTONOMICS_DESEQ2_LFC_SHRINK': 'bad'}, diagnostic='lfc_shrink must be')

@@ -59,7 +59,8 @@ condition_test = { type = "string", doc = "Test condition level (e.g. treated); 
 covariates = { type = "string", default = "", doc = "Comma-separated metadata covariate columns prepended to the design (e.g. type,batch); simple R identifiers, no duplicates, never sample_id or condition; empty means none" }
 # v0 has no enum param type; the runner rejects values outside
 # parametric/local/mean with the legacy message.
-fit_type = { type = "string", default = "parametric", doc = "DESeq2 dispersion-fit type passed to DESeq2::DESeq(): parametric, local, or mean" }
+fit_type = { type = "string", default = "parametric", doc = "Requested dispersion-fit type: parametric, local, or mean. Actual fit is checked under fit_policy." }
+fit_policy = { type = "string", default = "exact", doc = "exact (default): refuse output publication if DESeq2 changes the requested fit. native: explicitly accept official automatic fallback and report both fits; use only if the analysis contract permits it." }
 # v0 has no enum param type; the runner rejects values outside apeglm/none.
 # apeglm is the DESeq2-recommended shrinkage and the analysis default:
 # log2FoldChange/lfcSE become posterior (shrunk) estimates while the Wald
@@ -80,6 +81,7 @@ AUTONOMICS_DESEQ2_CONDITION_REFERENCE = "{{ condition_reference }}"
 AUTONOMICS_DESEQ2_CONDITION_TEST = "{{ condition_test }}"
 AUTONOMICS_DESEQ2_COVARIATES = "{{ covariates }}"
 AUTONOMICS_DESEQ2_FIT_TYPE = "{{ fit_type }}"
+AUTONOMICS_DESEQ2_FIT_POLICY = "{{ fit_policy }}"
 AUTONOMICS_DESEQ2_LFC_SHRINK = "{{ lfc_shrink }}"
 AUTONOMICS_DESEQ2_ALPHA = "{{ alpha }}"
 AUTONOMICS_DESEQ2_THREADS = "{{ threads }}"
@@ -92,3 +94,39 @@ cpus = 2.0
 memory = "4Gi"
 pids_limit = 256
 shm_size = "1Gi"
+
+
+[[nodes]]
+kind = "deseq2_dds_diagnostics"
+desc = "Read back a fitted official DESeqDataSet with per-gene missing-P diagnostics and MLE confidence intervals."
+doc = """
+Inputs: the fitted DDS RDS on deseq2_de port 3 and its original run_report.json
+on port 4, from the same exact run. Checks the recorded DDS checksum and actual
+fit identity. Reads the fitted object with official DESeq2; never calls DESeq
+or refits. Publishes every DDS gene, raw P, explicit missing-P reason,
+independent-filter flag, Cook's-filter flag, beta convergence, unshrunk MLE/SE,
+95% normal CI, and complete-DDS BH/BY with missing P kept NA and correction
+input 1. These are method diagnostics, not a study family authorization.
+Unknown missing-P causes fail rather than receiving a guessed explanation.
+Use explicit run IDs and dag_export_run format=crate to retrieve RDS and logs;
+PROV alone references files and is not a delivered binary-object readback.
+"""
+timeout_secs = 900
+artifact_prefix = "/artifacts/deseq2_dds_diagnostics"
+[nodes.ports]
+inputs = [
+ { type = "file", label = "fitted_dds_rds" },
+ { type = "file", label = "original_deseq2_run_report" },
+]
+outputs = [
+ { path = "gene_diagnostics.tsv", format = "deseq2_gene_diagnostics_tsv" },
+ { path = "diagnostic_report.json", format = "deseq2_diagnostic_report_json" },
+]
+[nodes.command]
+interpreter = "/opt/autonomics/Rscript-vanilla"
+argv = []
+script_file = "dds_diagnostics.R"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+pids_limit = 128

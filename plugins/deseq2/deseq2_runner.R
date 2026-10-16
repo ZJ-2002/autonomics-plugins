@@ -229,6 +229,7 @@ condition_reference <- required_env("AUTONOMICS_DESEQ2_CONDITION_REFERENCE")
 condition_test <- required_env("AUTONOMICS_DESEQ2_CONDITION_TEST")
 covariates <- parse_covariates(Sys.getenv("AUTONOMICS_DESEQ2_COVARIATES"))
 fit_type <- Sys.getenv("AUTONOMICS_DESEQ2_FIT_TYPE", "parametric")
+fit_policy <- Sys.getenv("AUTONOMICS_DESEQ2_FIT_POLICY", "exact")
 alpha <- as.numeric(Sys.getenv("AUTONOMICS_DESEQ2_ALPHA", "0.1"))
 threads_text <- Sys.getenv("AUTONOMICS_DESEQ2_THREADS", "1")
 threads <- suppressWarnings(as.integer(threads_text))
@@ -239,6 +240,9 @@ if (identical(condition_reference, condition_test)) {
 }
 if (!fit_type %in% c("parametric", "local", "mean")) {
   stop("fit_type must be parametric, local, or mean", call. = FALSE)
+}
+if (!fit_policy %in% c("exact", "native")) {
+  stop("fit_policy must be exact or native", call. = FALSE)
 }
 if (!lfc_shrink %in% c("apeglm", "none")) {
   stop("lfc_shrink must be apeglm or none", call. = FALSE)
@@ -392,6 +396,11 @@ dds <- DESeq2::DESeq(
   quiet = TRUE,
   parallel = FALSE
 )
+actual_fit_type <- attr(DESeq2::dispersionFunction(dds), "fitType")
+if (fit_policy == "exact" && !identical(actual_fit_type, fit_type)) {
+  stop(sprintf("dispersion fit contract mismatch: requested %s, actual %s (fit_policy=exact)",
+               fit_type, paste(actual_fit_type, collapse = ",")), call. = FALSE)
+}
 result <- DESeq2::results(
   dds,
   contrast = c("condition", condition_test, condition_reference),
@@ -490,7 +499,9 @@ report <- list(
     ),
     design = design_string,
     fit_type = fit_type,
-    actual_dispersion_fit_type = attr(DESeq2::dispersionFunction(dds), "fitType"),
+    fit_policy = fit_policy,
+    actual_dispersion_fit_type = actual_fit_type,
+    dispersion_fit_fallback = !identical(actual_fit_type, fit_type),
     lfc_shrink = lfc_shrink,
     alpha = alpha,
     independent_filtering = TRUE,

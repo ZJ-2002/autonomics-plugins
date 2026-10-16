@@ -83,3 +83,42 @@ an image automatically or deletes its evidence. Historical
 provenance, not the current numerical oracle. The data-boundary check covers
 /work, /opt, /tmp and /panels only; official package example datasets in
 /usr/local/lib/R/site-library/DESeq2/extdata are present and declared.
+
+### Fit policy and fitted-object evidence
+
+`fit_policy=exact` is the default: the runner checks the actual official
+DESeq2 dispersion fit before publishing outputs and rejects an automatic
+change from the requested fit type. A protocol that explicitly permits the
+official fallback can use `fit_policy=native`; the report records both requested
+and actual fits and the policy. Selecting `native` does not amend a frozen
+research contract or certify an analysis.
+
+`deseq2_dds_diagnostics` accepts the fitted DDS on port 3 and its run report on
+port 4 from one identified `deseq2_de` run. It verifies the report's DDS checksum,
+axes, package version and actual fit, then reads official results without
+refitting. Its table retains all DDS genes, missing raw P values and explicit
+NA reasons, unshrunk Wald MLE/SE and 95% normal intervals, and diagnostic BH/BY
+with missing P replaced by 1. These are diagnostic full-DDS corrections, not
+authorization of a study hypothesis family. Unknown missing-P causes reject
+publication. Shrunk apeglm coefficients must not be substituted for these MLE
+intervals.
+
+Use a concrete full run ID when exporting method evidence. On engines supporting
+identity-bound export, supply `expected_run_id` and `expected_snapshot_id` to
+`dag_export_run` with `format=crate`. This delivers fitted objects, captured logs,
+task manifests and the recorded run report; `format=prov` references files rather
+than delivering their bytes. Historical runs without recorded argv remain
+historical records without argv. Logs are the runtime's captured streams and may
+be subject to its capture limit.
+
+The additional managed synthetic regression is
+`tests/test_method_evidence.py`. Set `METHOD_EVIDENCE_ROOT` to a new directory
+under `AUTONOMICS_VALIDATION_PERMANENT`, and optionally declare the existing
+Podman backend in `METHOD_CONTAINER_BACKEND_JSON`. It exercises a 2,001-gene,
+4+4-sample strict-parametric fixture, reordered metadata, reversed effect/CI,
+complete-gene official R BH/BY, missing-P readback and report/DDS mismatch. It
+uses the same pinned dependency image with the declared current source scripts;
+it does not claim that the runner baked into that image has changed, nor that
+a separately built numerical environment was tested. Scientific eligibility,
+batch acceptance, T05, multiplicity continuity and reviewer signatures remain
+independent requirements.
