@@ -510,8 +510,8 @@
         },
         {
           "path": "README.md",
-          "sha256": "e2dd72caaed3900972a9a5eabd0f02630e78e88e35e3f1230f3bf028c4b9a908",
-          "bytes": 7489,
+          "sha256": "fded283f8ddf017d5788393d75076615fc2593cda5e5a46a42d20ba07a65b45c",
+          "bytes": 7666,
           "executable": false
         },
         {
@@ -528,8 +528,8 @@
         },
         {
           "path": "dds_diagnostics.R",
-          "sha256": "0c9f2f2283f773522c3d1b247e32374651e07787b2f1ac7b5a8f73e4d30a6098",
-          "bytes": 7877,
+          "sha256": "ddcadc400171af7caa41ba7fa7a18ddccfa4eac49b8c2c5d7ce60f798981e536",
+          "bytes": 8819,
           "executable": false
         },
         {
@@ -564,8 +564,8 @@
         },
         {
           "path": "manifest.toml",
-          "sha256": "8263b77644bac04a1fa34a558b12ca81392718a9852b9fb2cfe00c936395a9a0",
-          "bytes": 6964,
+          "sha256": "00787f36aba142b551ae1db07e9d7ee629bea7faf3c91a167a3a15825f059930",
+          "bytes": 7197,
           "executable": false
         },
         {
@@ -594,8 +594,8 @@
         },
         {
           "path": "tests/method_evidence_reference.R",
-          "sha256": "34bffe6dcad94d979026e6913840a9e3cac35b5bd3100df2efede0d30b388fc0",
-          "bytes": 5279,
+          "sha256": "5c66dfc7afabafdff2194783076dfaeca3b558aa6249ec71c3e6229605c4bec9",
+          "bytes": 5765,
           "executable": false
         },
         {
@@ -618,8 +618,8 @@
         },
         {
           "path": "tests/test_method_evidence.py",
-          "sha256": "cc774b7c9a5ba8c4cc84a29d3b67c314ff7550dd816e649f46af08e49eef71e2",
-          "bytes": 6208,
+          "sha256": "a03d8e95aa8b0f371c24131fcc6aa53b25d010e2777863ad4b2679a9618bde24",
+          "bytes": 6345,
           "executable": false
         },
         {
