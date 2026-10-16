@@ -15,7 +15,7 @@ CURRENT_LEGACY_PLUGINS={'bulk-limma-normalized':{'bulk_normalized_design','bulk_
     'frozen-b-project':{'frozen_b_legacy_intake','frozen_b_legacy_family'}}
 OPTIONAL_CURRENT_LEGACY_PLUGINS={'twosamplemr-v432-a':{'twosamplemr_v432_a_exploratory'}}
 CURRENT_OFFICIAL_METHOD_ADDITIONS={'r-stats-lm':{'r_stats_lm'}}
-CURRENT_TECHNICAL_ADDITIONS={'frozen-project-verifier':{'frozen_v432_readonly_full_verify'}}
+CURRENT_TECHNICAL_ADDITIONS={'frozen-project-verifier':{'frozen_v432_readonly_full_verify'},'rnaseq-qc':{'rnaseq_prestart_qc'}}
 CURRENT_FAMILY_EXTENSIONS={'deseq2':{'deseq2_dds_diagnostics'}}
 IMAGE_SHA={
  '/opt/b-bulk-build/SOURCE_LOCK.json':'5e12f6c8573004c40bd0724c66733152f3a394a530b30d8d283476aaeebcd9c2',

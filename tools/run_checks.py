@@ -5,6 +5,10 @@ from pathlib import Path
 import sys
 import unittest
 
+# Imports and nested test processes must not dirty canonical plugin sources.
+sys.dont_write_bytecode = True
+os.environ["PYTHONDONTWRITEBYTECODE"] = "1"
+
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from tools.catalog import ROOT, check_lock
 

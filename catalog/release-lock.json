@@ -1,8 +1,8 @@
 {
   "schema_version": "1.0",
   "scope": "SOURCE_AND_INTERFACE_INVENTORY_NOT_METHOD_CERTIFICATION",
-  "canonical_families": 36,
-  "canonical_kinds": 70,
+  "canonical_families": 37,
+  "canonical_kinds": 71,
   "families": [
     {
       "directory": "plugins/bulk-limma-normalized",
@@ -14572,6 +14572,37 @@
           "path": "tests/test_string_ppi.py",
           "sha256": "9e3b9438a777e5bac72eac2c4092699d74fdc74a7174a5e6bf453f98f4a4777b",
           "bytes": 7913,
+          "executable": false
+        }
+      ],
+      "source_inventory_only": true,
+      "scientific_certified": false,
+      "auto_enable": false
+    },
+    {
+      "directory": "plugins/rnaseq-qc",
+      "plugin_name": "rnaseq-qc",
+      "kinds": [
+        "rnaseq_prestart_qc"
+      ],
+      "image_reference": "ghcr.io/zj-2002/deseq2@sha256:5931c509f7f30d44177033877a96b062bf8532d16e5762daebfa20564278a59f",
+      "files": [
+        {
+          "path": "README.txt",
+          "sha256": "6368403853785ec217c69d361696f317512a566a9d7d5d64bf7980adb1402dcf",
+          "bytes": 502,
+          "executable": false
+        },
+        {
+          "path": "manifest.toml",
+          "sha256": "e4f994e1f7489212c6a70a1f9520206688bef145db6b226d68f996f83cb09555",
+          "bytes": 1929,
+          "executable": false
+        },
+        {
+          "path": "prestart_qc.R",
+          "sha256": "d95853dc411163fba059c5d4c2b23b9bd9baa8a5423117aedf3e7594406af66f",
+          "bytes": 14501,
           "executable": false
         }
       ],

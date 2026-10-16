@@ -1,0 +1,43 @@
+schema_version = 1
+plugin_name = "rnaseq-qc"
+[image]
+reference = "ghcr.io/zj-2002/deseq2@sha256:5931c509f7f30d44177033877a96b062bf8532d16e5762daebfa20564278a59f"
+license = "LGPL-3.0-or-later"
+[[nodes]]
+kind = "rnaseq_prestart_qc"
+desc = "Normalize raw counts and inspect samples without differential-effect fitting."
+doc = """
+Two TSV Files: raw nonnegative integer count matrix with gene_id then sample columns;
+metadata with sample_id first. Exact unique axes are required; metadata is reordered.
+Phenotype columns are unused. Official DESeq2 estimateSizeFactors(type=ratio) only,
+log2(normalized+1), centered unscaled PCA on ALL submitted genes, Euclidean sample
+distances, library/detection/size-factor tables. No DESeq, dispersion estimation,
+Wald/LRT testing, variable-feature selection or sample exclusion. PCA sign is arbitrary.
+Zero libraries and normalization without a valid ratio solution fail; no alternative
+is selected. All-zero gene rows remain. Constant transformed data return no PC axes
+and report NO_SAMPLE_VARIATION. Results are diagnostics, never scientific QC approval.
+Use host_resources for host memory/cgroup observations and vfs df for target disk;
+these observations do not reserve resources or authorize study execution.
+"""
+timeout_secs = 900
+artifact_prefix = "/artifacts/rnaseq_prestart_qc"
+[nodes.ports]
+inputs = [{type="file",label="raw_count_matrix"},{type="file",label="sample_metadata"}]
+outputs = [
+ {path="normalized_counts.tsv",format="tsv"},
+ {path="log2_normalized_counts.tsv",format="tsv"},
+ {path="pca_scores.tsv",format="tsv"},
+ {path="pca_variance.tsv",format="tsv"},
+ {path="sample_distances.tsv",format="tsv"},
+ {path="library_summary.tsv",format="tsv"},
+ {path="qc_report.json",format="json"},
+]
+[nodes.command]
+interpreter = "/opt/autonomics/Rscript-vanilla"
+argv = []
+script_file = "prestart_qc.R"
+[nodes.resources]
+cpus = 1.0
+memory = "4Gi"
+pids_limit = 128
+shm_size = "256Mi"
