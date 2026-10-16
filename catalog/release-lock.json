@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "scope": "SOURCE_AND_INTERFACE_INVENTORY_NOT_METHOD_CERTIFICATION",
   "canonical_families": 36,
-  "canonical_kinds": 69,
+  "canonical_kinds": 70,
   "families": [
     {
       "directory": "plugins/bulk-limma-normalized",
@@ -485,7 +485,8 @@
       "directory": "plugins/deseq2",
       "plugin_name": "deseq2",
       "kinds": [
-        "deseq2_de"
+        "deseq2_de",
+        "deseq2_dds_diagnostics"
       ],
       "image_reference": "ghcr.io/zj-2002/deseq2@sha256:5931c509f7f30d44177033877a96b062bf8532d16e5762daebfa20564278a59f",
       "files": [
@@ -509,8 +510,8 @@
         },
         {
           "path": "README.md",
-          "sha256": "77e3b30ba458925ef633ed453946a17244d76157000342e394e2f61f46f196ce",
-          "bytes": 4845,
+          "sha256": "e2dd72caaed3900972a9a5eabd0f02630e78e88e35e3f1230f3bf028c4b9a908",
+          "bytes": 7489,
           "executable": false
         },
         {
@@ -526,9 +527,15 @@
           "executable": false
         },
         {
+          "path": "dds_diagnostics.R",
+          "sha256": "7a23f61f506254515ea27e38cafcd4c67b7a19c68ff2f1fd8a0d7045ac208f5b",
+          "bytes": 7866,
+          "executable": false
+        },
+        {
           "path": "deseq2_runner.R",
-          "sha256": "ea10753445ba649cd87e74a8956c5974f9f7f1b8f4684d9ee6f7d982a5b80b34",
-          "bytes": 22903,
+          "sha256": "b74c79d0c696a3b42d89437d068509cad9edb7cba904d5929d6b6b6f2c8e5a15",
+          "bytes": 23457,
           "executable": false
         },
         {
@@ -557,8 +564,8 @@
         },
         {
           "path": "manifest.toml",
-          "sha256": "5720eeff4b44cd1285129b2f05d1a2fab780b150efa2c9d1a05421eae0f01782",
-          "bytes": 5149,
+          "sha256": "8263b77644bac04a1fa34a558b12ca81392718a9852b9fb2cfe00c936395a9a0",
+          "bytes": 6964,
           "executable": false
         },
         {
@@ -580,6 +587,18 @@
           "executable": true
         },
         {
+          "path": "tests/method_evidence_fixture.R",
+          "sha256": "62faaa3d0315276a344d7b2a94a22daaf46c52dfda721ea43f64adf79a95dc2a",
+          "bytes": 1097,
+          "executable": false
+        },
+        {
+          "path": "tests/method_evidence_reference.R",
+          "sha256": "3bb11c03abfbfc6cde31d93ed428c1dce6359e1b5dcde19c1e316f030b17c0a6",
+          "bytes": 5269,
+          "executable": false
+        },
+        {
           "path": "tests/official_reference.R",
           "sha256": "d3a62e566f5bb4ce934f6ebafdbb2e60fd67487837916a5a925e6cde48fa9766",
           "bytes": 6170,
@@ -593,8 +612,14 @@
         },
         {
           "path": "tests/test_deseq2_boundaries.py",
-          "sha256": "d92620ea571422d4fe7ea08fe3b25b157f3b917dbfb231c8d2d70d4349fcac20",
-          "bytes": 17718,
+          "sha256": "10f970d84001f0b282112248212cbb423994cd291988bff7bac94e6a35b0fa4c",
+          "bytes": 18082,
+          "executable": false
+        },
+        {
+          "path": "tests/test_method_evidence.py",
+          "sha256": "cc774b7c9a5ba8c4cc84a29d3b67c314ff7550dd816e649f46af08e49eef71e2",
+          "bytes": 6208,
           "executable": false
         },
         {
