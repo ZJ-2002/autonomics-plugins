@@ -19,8 +19,10 @@ class GovernanceTransportTests(unittest.TestCase):
         with_a=(ROOT/'plugins/twosamplemr-v432-a/manifest.toml').is_file()
         with_lm=(ROOT/'plugins/r-stats-lm/manifest.toml').is_file()
         with_verifier=(ROOT/'plugins/frozen-project-verifier/manifest.toml').is_file()
+        with_dds=any(n['kind']=='deseq2_dds_diagnostics' for n in tomllib.loads((ROOT/'plugins/deseq2/manifest.toml').read_text())['nodes'])
+        self.assertEqual(report['current_family_extensions'],{'deseq2':['deseq2_dds_diagnostics']} if with_dds else {})
         self.assertEqual((report['current_canonical_families'],report['current_canonical_kinds']),
-            (33+int(with_a)+int(with_lm)+int(with_verifier),66+int(with_a)+int(with_lm)+int(with_verifier)))
+            (33+int(with_a)+int(with_lm)+int(with_verifier),66+int(with_a)+int(with_lm)+int(with_verifier)+int(with_dds)))
         self.assertEqual(report['current_official_method_additions'],['r-stats-lm'] if with_lm else [])
         self.assertEqual(report['current_technical_additions'],['frozen-project-verifier'] if with_verifier else [])
         self.assertEqual(report['current_legacy_additions'],['bulk-limma-normalized','frozen-b-project']+

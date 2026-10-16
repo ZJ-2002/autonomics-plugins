@@ -113,12 +113,28 @@ class RPublicationOwnershipTests(unittest.TestCase):
             source.write_bytes(subprocess.run(['git', '-C', str(ROOT), 'show',
                 TOOL.BASELINE_REVISION + ':' + relative], check=True, capture_output=True).stdout)
             self.assertEqual(TOOL.file_fact(source)['sha256'], expected)
-            return TOOL.audit_sources(source, ROOT / relative, Path(directory) / 'audit')
+            current=ROOT / relative
+            if family=='deseq2':
+                # Publication-only parity is a historical, explicitly pinned proof.
+                # The new fit policy intentionally changes this scientific AST.
+                current=Path(directory)/'publication-repaired.R'
+                current.write_bytes(subprocess.check_output(['git','-C',str(ROOT),'show',
+                    '33fe0102567df90c3c5273fb5c721bff02a5d26f:'+relative]))
+                self.assertEqual(TOOL.file_fact(current)['sha256'],'ea10753445ba649cd87e74a8956c5974f9f7f1b8f4684d9ee6f7d982a5b80b34')
+            return TOOL.audit_sources(source, current, Path(directory) / 'audit')
 
-    def test_deseq2_statistical_AST_and_helper_fault_controls(self):
+    def test_historical_deseq2_statistical_AST_and_helper_fault_controls(self):
         record = self.source_audit('deseq2')
         self.assertTrue(record['statistical_AST_exact'])
         self.assertEqual(len(record['helper_controls']), 5)
+
+    def test_current_fit_policy_is_not_relabelled_as_historical_AST_parity(self):
+        relative,_=TOOL.SOURCES['deseq2']
+        with tempfile.TemporaryDirectory() as directory:
+            original=Path(directory)/'original.R'
+            original.write_bytes(subprocess.check_output(['git','-C',str(ROOT),'show',TOOL.BASELINE_REVISION+':'+relative]))
+            with self.assertRaisesRegex(ValueError,'statistical AST/helper equality failed'):
+                TOOL.audit_sources(original,ROOT/relative,Path(directory)/'audit')
 
     def test_limma_statistical_AST_and_helper_fault_controls(self):
         record = self.source_audit('limma')
@@ -132,7 +148,8 @@ class RPublicationOwnershipTests(unittest.TestCase):
             source.write_bytes(subprocess.run(['git', '-C', str(ROOT), 'show',
                 TOOL.BASELINE_REVISION + ':' + relative], check=True, capture_output=True).stdout)
             changed = Path(directory) / 'changed.R'
-            changed.write_text((ROOT / relative).read_text().replace('alpha <- as.numeric(',
+            fixed=subprocess.check_output(['git','-C',str(ROOT),'show','33fe0102567df90c3c5273fb5c721bff02a5d26f:'+relative]).decode()
+            changed.write_text(fixed.replace('alpha <- as.numeric(',
                 'alpha <- as.integer(', 1))
             with self.assertRaisesRegex(ValueError, 'statistical AST/helper equality failed'):
                 TOOL.audit_sources(source, changed, Path(directory) / 'audit')

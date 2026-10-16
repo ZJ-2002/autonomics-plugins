@@ -3,6 +3,7 @@ import hashlib
 import importlib.util
 from pathlib import Path
 import tempfile
+import subprocess
 import tomllib
 import unittest
 
@@ -63,13 +64,20 @@ class RPublicationRuntimeTests(unittest.TestCase):
         with self.assertRaises((ValueError, RuntimeError, AssertionError)):
             TOOL.validate_summary(value, label)
 
-    def test_exact_current_source_and_manifest_pins(self):
-        facts = TOOL.sources()
-        self.assertEqual(len(facts), 8)
+    def test_historical_source_pins_are_preserved_and_refuse_new_method_policy(self):
+        # Never retarget a frozen AST-equality proof to a new method policy.
+        with self.assertRaisesRegex(ValueError,'Exact reviewed R scripts'):
+            TOOL.sources()
+        pins={TOOL.INNER:TOOL.INNER_SHA,**TOOL.HELPERS}
         for item in TOOL.FAMILIES.values():
-            manifest = tomllib.loads((ROOT / item['manifest']).read_text())
-            self.assertEqual(manifest['image']['reference'], item['image'])
-            self.assertEqual(hashlib.sha256((ROOT / item['script']).read_bytes()).hexdigest(), item['fixed'])
+            pins[item['manifest']]=item['manifest_sha'];pins[item['script']]=item['fixed']
+            raw=subprocess.check_output(['git','-C',str(ROOT),'show',
+                '33fe0102567df90c3c5273fb5c721bff02a5d26f:'+item['manifest']])
+            self.assertEqual(tomllib.loads(raw.decode())['image']['reference'],item['image'])
+        self.assertEqual(len(pins),8)
+        for name,expected in pins.items():
+            raw=subprocess.check_output(['git','-C',str(ROOT),'show','33fe0102567df90c3c5273fb5c721bff02a5d26f:'+name])
+            self.assertEqual(hashlib.sha256(raw).hexdigest(),expected)
 
     def test_inner_executes_full_sys_source_and_preserves_scientific_ast(self):
         source = (ROOT / TOOL.INNER).read_text()
