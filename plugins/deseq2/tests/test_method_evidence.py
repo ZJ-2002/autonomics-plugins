@@ -29,7 +29,8 @@ class MethodEvidence(unittest.TestCase):
         cls.sources = {str(p.relative_to(cls.source)): hashlib.sha256(p.read_bytes()).hexdigest()
                        for p in [cls.source / 'deseq2_runner.R', cls.source / 'dds_diagnostics.R',
                                  cls.source / 'manifest.toml', Path(__file__),
-                                 cls.source / 'tests/method_evidence_fixture.R', cls.source / 'tests/method_evidence_reference.R']}
+                                 cls.source / 'tests/method_evidence_fixture.R', cls.source / 'tests/method_evidence_reference.R',
+                                 cls.source / 'tests/method_evidence_convergence.R']}
         (cls.root / 'SOURCE_BINDINGS.json').write_text(json.dumps(cls.sources, indent=2))
         cls.execute('fixture', cls.root, cls.source / 'tests/method_evidence_fixture.R', {'METHOD_FIXTURE_ROOT': '/work'})
 
@@ -97,6 +98,22 @@ class MethodEvidence(unittest.TestCase):
         self.assertFalse((forward / 'wrong-identity.tsv').exists())
         self.assertFalse((forward / 'wrong-identity.json').exists())
         self.assertFalse((forward / 'wrong-identity-cooks.tsv').exists())
+        for mode in ['nonconverged', 'unknown']:
+            directory = self.root / mode
+            directory.mkdir()
+            for filename in ['dataset.rds', 'report.json']:
+                shutil.copyfile(forward / filename, directory / filename)
+            self.execute('mutate', directory, self.source / 'tests/method_evidence_convergence.R',
+                         {'METHOD_EVIDENCE_ROOT': '/work', 'METHOD_CONVERGENCE_CONTROL': mode})
+            if mode == 'nonconverged':
+                self.diagnose(directory)
+                self.execute('verify', directory, self.source / 'tests/method_evidence_convergence.R',
+                             {'METHOD_EVIDENCE_ROOT': '/work', 'METHOD_CONVERGENCE_CONTROL': 'verify'})
+            else:
+                rejected = self.diagnose(directory, expected=1)
+                self.assertIn('convergence annotation incomplete', rejected.stderr.decode())
+                for filename in ['diagnostics.tsv', 'diagnostics.json', 'diagnostics-cooks.tsv']:
+                    self.assertFalse((directory / filename).exists())
         for name, expected in self.sources.items():
             self.assertEqual(hashlib.sha256((self.source / name).read_bytes()).hexdigest(), expected)
 

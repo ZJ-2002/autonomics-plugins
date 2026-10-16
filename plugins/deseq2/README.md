@@ -101,7 +101,9 @@ NA reasons, original gene/fitted/final dispersions, maximum Cook's statistic,
 unshrunk Wald MLE/SE and 95% normal intervals, and diagnostic BH/BY
 with missing P replaced by 1. These are diagnostic full-DDS corrections, not
 authorization of a study hypothesis family. A third output retains the complete original gene-by-sample Cook's assay.
-Unknown missing-P causes or missing fitted-object diagnostics reject publication. Shrunk apeglm coefficients must not be substituted for these MLE
+Unknown missing-P causes or missing fitted-object/convergence diagnostics reject publication.
+Nonconverged rows keep raw diagnostic values, receive `NOT_ESTIMABLE` and
+correction input 1 even if the stored official raw P is finite; no row is dropped. Shrunk apeglm coefficients must not be substituted for these MLE
 intervals.
 
 Use a concrete full run ID when exporting method evidence. On engines supporting

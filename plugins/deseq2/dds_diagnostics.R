@@ -73,16 +73,16 @@ if (!all(required_annotations %in% names(annotations))) stop("fitted DDS dispers
 raw <- result$pvalue
 all_zero <- rowSums(DESeq2::counts(dds))==0
 beta_conv <- S4Vectors::mcols(dds)$betaConv
-if (is.null(beta_conv)) beta_conv <- rep(NA, length(ids))
+if (is.null(beta_conv) || length(beta_conv)!=length(ids) || anyNA(beta_conv[!all_zero])) stop("fitted DDS convergence annotation incomplete")
 cooks_filtered <- is.na(raw) & !is.na(unfiltered$pvalue) & !all_zero
 independent_filtered <- !is.na(raw) & is.na(result$padj)
 reason <- rep("AVAILABLE", length(ids))
 reason[is.na(raw)] <- "UNRESOLVED_MISSING_P"
-reason[is.na(raw) & !is.na(beta_conv) & !beta_conv] <- "BETA_NOT_CONVERGED"
 reason[cooks_filtered] <- "COOKS_FILTERED"
+reason[!is.na(beta_conv) & !beta_conv] <- "BETA_NOT_CONVERGED"
 reason[all_zero] <- "ALL_ZERO"
 if (any(is.na(raw) & reason=="UNRESOLVED_MISSING_P")) stop("unresolved per-gene missing P reason; diagnostic acceptance incomplete")
-family_p <- ifelse(is.na(raw), 1, raw)
+family_p <- ifelse(is.na(raw) | reason!="AVAILABLE", 1, raw)
 z <- stats::qnorm(0.975)
 table <- data.frame(gene_id=ids, baseMean=result$baseMean,
  log2FoldChange=result$log2FoldChange, lfcSE=result$lfcSE,
@@ -94,14 +94,15 @@ table <- data.frame(gene_id=ids, baseMean=result$baseMean,
  gene_dispersion_estimate=annotations$dispGeneEst, fitted_dispersion=annotations$dispFit,
  final_dispersion=DESeq2::dispersions(dds), max_cooks=annotations$maxCooks,
  all_zero=all_zero, beta_converged=beta_conv, cooks_filtered=cooks_filtered,
- independent_filtered=independent_filtered, p_status=reason)
+ independent_filtered=independent_filtered, p_status=reason,
+ estimate_status=ifelse(reason=="AVAILABLE","ESTIMATED","NOT_ESTIMABLE"))
 info <- list(schema_version=1L, operation="FITTED_DDS_READBACK_NO_REFIT",
  scientific_authorization=FALSE, diagnostic_status="COMPLETE",
  genes=length(ids), samples=ncol(dds), actual_fit_type=actual_fit,
  cooks_assay="Complete gene x sample original DDS cooks assay, without refitting or sample exclusion",
  original_contrast=as.list(contrast), alpha=alpha,
- effect_semantics="unshrunk DESeq2 Wald MLE; 95% normal confidence interval",
- family_semantics="All DDS genes, missing raw P retained as NA, adjustment input 1. Not a study family authorization.",
+ effect_semantics="unshrunk DESeq2 Wald MLE diagnostics; 95% normal confidence interval; estimate_status gates eligible estimates",
+ family_semantics="All DDS genes, missing raw P retained as NA, missing or non-estimable correction input 1. Not a study family authorization.",
  input_md5=as.list(unname(tools::md5sum(c(input,source_report)))),
  session=utils::capture.output(sessionInfo()))
 stages <- character(); stage_identities <- character(); staged <- character()

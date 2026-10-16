@@ -49,6 +49,7 @@ for (name in c("forward","shuffled","reverse")) {
  same(tab$max_cooks,annotations$maxCooks)
  cook_table <- read_table(file.path(dir,"diagnostics-cooks.tsv"))
  stopifnot(identical(cook_table$gene_id,rownames(dds)),identical(names(cook_table)[-1],colnames(dds)))
+ rownames(cook_table) <- cook_table$gene_id
  same(as.matrix(cook_table[,-1]),SummarizedExperiment::assay(dds,"cooks"))
  same(tab$ci_lower,ref$log2FoldChange-qnorm(.975)*ref$lfcSE)
  same(tab$ci_upper,ref$log2FoldChange+qnorm(.975)*ref$lfcSE)
