@@ -151,7 +151,6 @@ publication_remove_owned_file <- function(filename, expected) {
   invisible(unlink(filename) == 0L)
 }
 
-
 main <- function() {
  count_path <- required_env("AUTONOMICS_INPUT0")
  metadata_path <- required_env("AUTONOMICS_INPUT1")
