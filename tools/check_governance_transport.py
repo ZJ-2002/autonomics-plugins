@@ -16,6 +16,7 @@ CURRENT_LEGACY_PLUGINS={'bulk-limma-normalized':{'bulk_normalized_design','bulk_
 OPTIONAL_CURRENT_LEGACY_PLUGINS={'twosamplemr-v432-a':{'twosamplemr_v432_a_exploratory'}}
 CURRENT_OFFICIAL_METHOD_ADDITIONS={'r-stats-lm':{'r_stats_lm'}}
 CURRENT_TECHNICAL_ADDITIONS={'frozen-project-verifier':{'frozen_v432_readonly_full_verify'}}
+CURRENT_FAMILY_EXTENSIONS={'deseq2':{'deseq2_dds_diagnostics'}}
 IMAGE_SHA={
  '/opt/b-bulk-build/SOURCE_LOCK.json':'5e12f6c8573004c40bd0724c66733152f3a394a530b30d8d283476aaeebcd9c2',
  '/opt/b-bulk-build/install-source.R':'1e014a6cd11c9768910ec6fc11334ef706b85f71d845b010fde07e7ae64487b7',
@@ -80,14 +81,21 @@ def check(root=ROOT):
     actual={r['plugin_name']:set(r['kinds']) for r in additions}
     require(all(actual.get(name)==kinds for name,kinds in CURRENT_LEGACY_PLUGINS.items()) and
         all(allowed[name]==kinds for name,kinds in actual.items()),'exact current independent LEGACY A/B plugin additions required')
+    extensions={}
+    for family in catalog['families']:
+        if family['directory'].startswith('plugins/') and family['plugin_name'] in CURRENT_FAMILY_EXTENSIONS:
+            known=CURRENT_FAMILY_EXTENSIONS[family['plugin_name']]
+            present=set(family['kinds']) & known
+            if present: extensions[family['plugin_name']]=sorted(present)
     require(catalog['canonical_families']-len(additions)==31 and
-        catalog['canonical_kinds']-sum(len(r['kinds']) for r in additions)==62,'original canonical import source scope changed')
+        catalog['canonical_kinds']-sum(len(r['kinds']) for r in additions)-sum(map(len,extensions.values()))==62,'original canonical import source scope changed')
     return {'scope':'OFFLINE_MANIFEST_SOURCE_AND_PORT_ABI_TRANSPORT_NOT_NATIVE_LOADER_IMAGE_WORKER_OR_SCIENCE_ACCEPTANCE',
         'selected_families':results,'new_unique_kinds':18,'canonical_families':31,'canonical_kinds':62,
         'current_canonical_families':catalog['canonical_families'],'current_canonical_kinds':catalog['canonical_kinds'],
         'current_legacy_additions':sorted(set(actual)-set(CURRENT_OFFICIAL_METHOD_ADDITIONS)-set(CURRENT_TECHNICAL_ADDITIONS)),
         'current_official_method_additions':sorted(set(actual)&set(CURRENT_OFFICIAL_METHOD_ADDITIONS)),
         'current_technical_additions':sorted(set(actual)&set(CURRENT_TECHNICAL_ADDITIONS)),
+        'current_family_extensions':extensions,
         'native_loader_construct_verified':False,'loaded_worker_registration_verified':False,'scientific_authorization':False,'auto_enable':False}
 
 if __name__=='__main__':

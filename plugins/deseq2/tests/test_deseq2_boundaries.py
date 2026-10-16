@@ -342,3 +342,7 @@ class DESeq2Boundaries(unittest.TestCase):
         self.assertEqual(report['gene_ledger']['all_zero_gene_ids'], ['zero_gene'])
         self.assertEqual(len(report['gene_ledger']['all_gene_ids']), 201)
         self.assertIn('zero_gene', report['gene_ledger']['pvalue_unavailable_gene_ids'])
+
+
+if __name__ == '__main__':
+    unittest.main()

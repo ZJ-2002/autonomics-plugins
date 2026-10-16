@@ -116,7 +116,11 @@ The additional managed synthetic regression is
 under `AUTONOMICS_VALIDATION_PERMANENT`, and optionally declare the existing
 Podman backend in `METHOD_CONTAINER_BACKEND_JSON`. It exercises a 2,001-gene,
 4+4-sample strict-parametric fixture, reordered metadata, reversed effect/CI,
-complete-gene official R BH/BY, missing-P readback and report/DDS mismatch. It
+complete-gene official R BH/BY, missing-P readback and report/DDS mismatch.
+Reversal is checked exactly on the same DDS; independently relevelled fits
+are compared to fresh official fits with their own parameterization. Any
+observed relevelled-fit differences are reported, not hidden by relaxing the
+official-parity tolerance. It
 uses the same pinned dependency image with the declared current source scripts;
 it does not claim that the runner baked into that image has changed, nor that
 a separately built numerical environment was tested. Scientific eligibility,
