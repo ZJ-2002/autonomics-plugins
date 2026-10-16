@@ -16,3 +16,13 @@ class PrestartQCContract(unittest.TestCase):
   self.assertTrue(qc.startswith(de[:de.index('parse_covariates <-')]))
 
   self.assertEqual(qc[qc.index("publication_identity <-"):qc.index("main <- function()")],de[de.index("publication_identity <-"):de.index("main <- function()")])
+
+ def test_catalog_runner_prevents_child_bytecode_in_plugin_source(self):
+  import os,subprocess,sys,tempfile
+  with tempfile.TemporaryDirectory() as tmp:
+   root=Path(tmp);(root/'synthetic_module.py').write_text('value = 7\n')
+   child='import sys;sys.path.insert(0,sys.argv[1]);import synthetic_module;assert synthetic_module.value==7'
+   launcher='import runpy,subprocess,sys;runpy.run_path(sys.argv[1],run_name="library");subprocess.check_call([sys.executable,"-S","-c",sys.argv[3],sys.argv[2]])'
+   env=dict(os.environ);env.pop('PYTHONDONTWRITEBYTECODE',None)
+   subprocess.run([sys.executable,'-S','-c',launcher,str(ROOT/'tools/run_checks.py'),str(root),child],env=env,check=True,capture_output=True)
+   self.assertFalse((root/'__pycache__').exists())
