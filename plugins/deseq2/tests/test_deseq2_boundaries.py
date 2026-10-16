@@ -6,6 +6,8 @@ from pathlib import Path
 import random
 import re
 import subprocess
+import shutil
+import tempfile
 import unittest
 
 
@@ -14,6 +16,8 @@ class DESeq2Boundaries(unittest.TestCase):
     def setUpClass(cls):
         cls.root = Path(os.environ['DESEQ2_BOUNDARY_EVIDENCE']).resolve()
         cls.root.mkdir(exist_ok=False)
+        cls.fixture_root = Path(tempfile.mkdtemp(prefix='deseq2-boundary-', dir=os.environ.get('TMPDIR')))
+        cls.addClassCleanup(shutil.rmtree, cls.fixture_root)
         cls.image = os.environ['DESEQ2_BOUNDARY_IMAGE']
         if not re.fullmatch(r'.+@sha256:[0-9a-f]{64}', cls.image):
             raise RuntimeError('Mandatory immutable real image required')
@@ -21,8 +25,11 @@ class DESeq2Boundaries(unittest.TestCase):
         cls.baked = os.environ.get('DESEQ2_BOUNDARY_BAKED') == '1'
 
     def check(self, changes=None, fixture=None, diagnostic=None, succeed=False):
-        directory = self.root / self.id().split('.')[-1]
+        case = self.id().split('.')[-1]
+        directory = self.fixture_root / case
         directory.mkdir()
+        evidence = self.root / case
+        evidence.mkdir()
         generator = random.Random(410612)
         samples = ['s' + str(index + 1) for index in range(12)]
         rows = []
@@ -61,6 +68,19 @@ class DESeq2Boundaries(unittest.TestCase):
         (directory / 'execution.json').write_text(json.dumps({'command': command, 'exit': result.returncode,
             'source_sha256': hashlib.sha256(self.script.read_bytes()).hexdigest(), 'diagnostic': diagnostic,
             'execution_mode': 'BAKED_IMAGE_RUNNER' if self.baked else 'SOURCE_BIND_OVERRIDE', 'G0': False}, indent=2) + '\n')
+        # Deliberate invalid symlinks are fixtures, not archiveable payloads.
+        # Preserve their exact metadata and regular bytes separately, then let
+        # the self-cleaning scratch fixture expire after the assertions.
+        links = []
+        for path in sorted(directory.rglob('*')):
+            relative = path.relative_to(directory)
+            if path.is_symlink():
+                links.append({'path': str(relative), 'target': os.readlink(path)})
+            elif path.is_file():
+                target = evidence / relative
+                target.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(path, target)
+        (evidence / 'fixture-links.json').write_text(json.dumps(links, indent=2)+'\n')
         if succeed:
             self.assertEqual(result.returncode, 0, result.stderr.decode())
             self.assertTrue(all((directory / name).stat().st_size for name in names))
