@@ -97,10 +97,11 @@ research contract or certify an analysis.
 port 4 from one identified `deseq2_de` run. It verifies the report's DDS checksum,
 axes, package version and actual fit, then reads official results without
 refitting. Its table retains all DDS genes, missing raw P values and explicit
-NA reasons, unshrunk Wald MLE/SE and 95% normal intervals, and diagnostic BH/BY
+NA reasons, original gene/fitted/final dispersions, maximum Cook's statistic,
+unshrunk Wald MLE/SE and 95% normal intervals, and diagnostic BH/BY
 with missing P replaced by 1. These are diagnostic full-DDS corrections, not
-authorization of a study hypothesis family. Unknown missing-P causes reject
-publication. Shrunk apeglm coefficients must not be substituted for these MLE
+authorization of a study hypothesis family. A third output retains the complete original gene-by-sample Cook's assay.
+Unknown missing-P causes or missing fitted-object diagnostics reject publication. Shrunk apeglm coefficients must not be substituted for these MLE
 intervals.
 
 Use a concrete full run ID when exporting method evidence. On engines supporting

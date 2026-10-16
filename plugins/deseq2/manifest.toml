@@ -104,10 +104,11 @@ Inputs: the fitted DDS RDS on deseq2_de port 3 and its original run_report.json
 on port 4, from the same exact run. Checks the recorded DDS checksum and actual
 fit identity. Reads the fitted object with official DESeq2; never calls DESeq
 or refits. Publishes every DDS gene, raw P, explicit missing-P reason,
-independent-filter flag, Cook's-filter flag, beta convergence, unshrunk MLE/SE,
+independent-filter flag, Cook's-filter flag, beta convergence, original gene/fitted/final dispersions, max Cook's, unshrunk MLE/SE,
 95% normal CI, and complete-DDS BH/BY with missing P kept NA and correction
 input 1. These are method diagnostics, not a study family authorization.
-Unknown missing-P causes fail rather than receiving a guessed explanation.
+A third output preserves the complete original gene-by-sample Cook's assay.
+Unknown missing-P causes or missing fitted-object diagnostics fail rather than receiving a guessed explanation.
 Use explicit run IDs and dag_export_run format=crate to retrieve RDS and logs;
 PROV alone references files and is not a delivered binary-object readback.
 """
@@ -121,6 +122,7 @@ inputs = [
 outputs = [
  { path = "gene_diagnostics.tsv", format = "deseq2_gene_diagnostics_tsv" },
  { path = "diagnostic_report.json", format = "deseq2_diagnostic_report_json" },
+ { path = "cooks_matrix.tsv", format = "deseq2_cooks_matrix_tsv" },
 ]
 [nodes.command]
 interpreter = "/opt/autonomics/Rscript-vanilla"

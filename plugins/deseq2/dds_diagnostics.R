@@ -41,7 +41,7 @@ publication_remove_owned_file <- function(filename, expected) {
 main <- function() {
 input <- required("AUTONOMICS_INPUT0")
 source_report <- required("AUTONOMICS_INPUT1")
-outputs <- c(required("AUTONOMICS_OUTPUT0"), required("AUTONOMICS_OUTPUT1"))
+outputs <- c(required("AUTONOMICS_OUTPUT0"), required("AUTONOMICS_OUTPUT1"), required("AUTONOMICS_OUTPUT2"))
 links <- Sys.readlink(outputs)
 if (anyDuplicated(outputs) || any(file.exists(outputs)) || any(!is.na(links) & nzchar(links))) stop("diagnostic outputs must be distinct and absent")
 if (any(!dir.exists(dirname(outputs)))) stop("diagnostic output parent must exist")
@@ -64,6 +64,12 @@ result <- DESeq2::results(dds, contrast=contrast, alpha=alpha, independentFilter
 unfiltered <- DESeq2::results(dds, contrast=contrast, alpha=alpha, independentFiltering=FALSE, cooksCutoff=FALSE)
 ids <- rownames(dds)
 if (anyNA(ids) || any(!nzchar(ids)) || anyDuplicated(ids) || !identical(ids, rownames(result))) stop("invalid DDS gene identity")
+if (!("cooks" %in% SummarizedExperiment::assayNames(dds))) stop("fitted DDS has no Cook's assay; diagnostics incomplete")
+cooks <- SummarizedExperiment::assay(dds,"cooks")
+if (!identical(dimnames(cooks),dimnames(dds))) stop("Cook's assay axes differ from DDS")
+annotations <- S4Vectors::mcols(dds)
+required_annotations <- c("dispGeneEst","dispFit","maxCooks")
+if (!all(required_annotations %in% names(annotations))) stop("fitted DDS dispersion/Cook annotations incomplete")
 raw <- result$pvalue
 all_zero <- rowSums(DESeq2::counts(dds))==0
 beta_conv <- S4Vectors::mcols(dds)$betaConv
@@ -85,11 +91,14 @@ table <- data.frame(gene_id=ids, baseMean=result$baseMean,
  raw_p=raw, official_padj=result$padj, adjustment_p=family_p,
  full_family_bh=stats::p.adjust(family_p, method="BH", n=length(ids)),
  full_family_by=stats::p.adjust(family_p, method="BY", n=length(ids)),
+ gene_dispersion_estimate=annotations$dispGeneEst, fitted_dispersion=annotations$dispFit,
+ final_dispersion=DESeq2::dispersions(dds), max_cooks=annotations$maxCooks,
  all_zero=all_zero, beta_converged=beta_conv, cooks_filtered=cooks_filtered,
  independent_filtered=independent_filtered, p_status=reason)
 info <- list(schema_version=1L, operation="FITTED_DDS_READBACK_NO_REFIT",
  scientific_authorization=FALSE, diagnostic_status="COMPLETE",
  genes=length(ids), samples=ncol(dds), actual_fit_type=actual_fit,
+ cooks_assay="Complete gene x sample original DDS cooks assay, without refitting or sample exclusion",
  original_contrast=as.list(contrast), alpha=alpha,
  effect_semantics="unshrunk DESeq2 Wald MLE; 95% normal confidence interval",
  family_semantics="All DDS genes, missing raw P retained as NA, adjustment input 1. Not a study family authorization.",
@@ -112,9 +121,10 @@ for (parent in dirname(outputs)) {
  stages <- c(stages,path); stage_identities <- c(stage_identities,publication_identity(path))
  if (is.na(tail(stage_identities,1))) stop("cannot verify diagnostic staging")
 }
-staged <- file.path(stages,c("genes.tsv","report.json"))
+staged <- file.path(stages,c("genes.tsv","report.json","cooks.tsv"))
 write.table(table, staged[[1]], sep="\t", quote=TRUE, row.names=FALSE, na="NA")
 jsonlite::write_json(info, staged[[2]], auto_unbox=TRUE, pretty=TRUE, null="null", na="null", digits=NA)
+write.table(data.frame(gene_id=ids,as.data.frame(cooks,check.names=FALSE),check.names=FALSE), staged[[3]], sep="\t", quote=TRUE, row.names=FALSE, na="NA")
 for (i in seq_along(outputs)) {
  owned[[i]] <- publication_file_identity(staged[[i]])
  if (is.na(owned[[i]])) stop("cannot bind diagnostic output")

@@ -78,7 +78,8 @@ class MethodEvidence(unittest.TestCase):
     def diagnose(self, directory, report='report.json', expected=0, label='diagnostics'):
         return self.execute(label, directory, self.source / 'dds_diagnostics.R', {
             'AUTONOMICS_INPUT0': '/work/dataset.rds', 'AUTONOMICS_INPUT1': '/work/'+report,
-            'AUTONOMICS_OUTPUT0': '/work/'+label+'.tsv', 'AUTONOMICS_OUTPUT1': '/work/'+label+'.json'}, expected)
+            'AUTONOMICS_OUTPUT0': '/work/'+label+'.tsv', 'AUTONOMICS_OUTPUT1': '/work/'+label+'.json',
+            'AUTONOMICS_OUTPUT2': '/work/'+label+'-cooks.tsv'}, expected)
 
     def test_complete_synthetic_method_evidence(self):
         forward = self.run_fit('forward')
@@ -95,6 +96,7 @@ class MethodEvidence(unittest.TestCase):
         self.assertIn('DDS does not match the original run report', failed.stderr.decode())
         self.assertFalse((forward / 'wrong-identity.tsv').exists())
         self.assertFalse((forward / 'wrong-identity.json').exists())
+        self.assertFalse((forward / 'wrong-identity-cooks.tsv').exists())
         for name, expected in self.sources.items():
             self.assertEqual(hashlib.sha256((self.source / name).read_bytes()).hexdigest(), expected)
 
