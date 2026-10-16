@@ -48,7 +48,7 @@ class DESeq2Boundaries(unittest.TestCase):
         protected = fixture(directory) if fixture else []
         before = {str(filename): filename.read_bytes() for filename in protected}
         command = [os.environ.get('AUTONOMICS_PODMAN_PROGRAM', 'podman'), *json.loads(os.environ.get('DESEQ2_BOUNDARY_BACKEND_JSON', '[]')), 'run', '--rm', '--pull=never', '--network=none', '--cpus=2', '--memory=3g',
-            '--userns=keep-id', '--mount', f'type=bind,src={directory},dst=/work',
+            '--userns=keep-id', '--user', f'{os.getuid()}:{os.getgid()}', '--mount', f'type=bind,src={directory},dst=/work',
             '--entrypoint', '/opt/autonomics/Rscript-vanilla' if self.baked else 'Rscript']
         if not self.baked:
             command += ['--mount', f'type=bind,src={self.script},dst=/method.R,ro=true']

@@ -36,7 +36,7 @@ class MethodEvidence(unittest.TestCase):
     @classmethod
     def execute(cls, label, directory, script, env, expected=0):
         cmd = [*cls.prefix, 'run', '--rm', '--pull=never', '--network=none', '--read-only',
-               '--security-opt=no-new-privileges', '--userns=keep-id', '--cpus=1', '--memory=1500m',
+               '--security-opt=no-new-privileges', '--userns=keep-id', '--user', f'{os.getuid()}:{os.getgid()}', '--cpus=1', '--memory=1500m',
                '--tmpfs=/tmp:rw,size=128m', '--mount', f'type=bind,src={directory},dst=/work',
                '--mount', f'type=bind,src={script},dst=/method.R,ro=true', '--entrypoint', '/opt/autonomics/Rscript-vanilla']
         for key, value in env.items():
