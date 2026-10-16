@@ -114,7 +114,7 @@ for (parent in dirname(outputs)) {
 }
 staged <- file.path(stages,c("genes.tsv","report.json"))
 write.table(table, staged[[1]], sep="\t", quote=TRUE, row.names=FALSE, na="NA")
-jsonlite::write_json(info, staged[[2]], auto_unbox=TRUE, pretty=TRUE, null="null", na="null")
+jsonlite::write_json(info, staged[[2]], auto_unbox=TRUE, pretty=TRUE, null="null", na="null", digits=NA)
 for (i in seq_along(outputs)) {
  owned[[i]] <- publication_file_identity(staged[[i]])
  if (is.na(owned[[i]])) stop("cannot bind diagnostic output")

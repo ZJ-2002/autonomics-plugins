@@ -62,12 +62,33 @@ class DESeq2Boundaries(unittest.TestCase):
         for name, value in environment.items():
             command += ['--env', name + '=' + value]
         command += [self.image, '/opt/autonomics/deseq2_runner.R'] if self.baked else [self.image, '--vanilla', '/method.R']
+        input_bindings = {}
+        for key in ['AUTONOMICS_INPUT0', 'AUTONOMICS_INPUT1']:
+            value = environment[key]
+            relative = Path(value).relative_to('/work')
+            path = directory / relative
+            entry = {'container_path': value, 'host_path': str(path)}
+            if path.is_symlink():
+                entry.update(kind='symlink', target=os.readlink(path))
+            elif path.is_file():
+                entry.update(kind='regular', bytes=path.stat().st_size,
+                             sha256=hashlib.sha256(path.read_bytes()).hexdigest())
+            elif path.is_dir():
+                entry.update(kind='directory')
+            else:
+                entry.update(kind='absent')
+            input_bindings[key] = entry
         result = subprocess.run(command, capture_output=True, timeout=180)
         (directory / 'stdout.txt').write_bytes(result.stdout)
         (directory / 'stderr.txt').write_bytes(result.stderr)
         (directory / 'execution.json').write_text(json.dumps({'command': command, 'exit': result.returncode,
             'source_sha256': hashlib.sha256(self.script.read_bytes()).hexdigest(), 'diagnostic': diagnostic,
-            'execution_mode': 'BAKED_IMAGE_RUNNER' if self.baked else 'SOURCE_BIND_OVERRIDE', 'G0': False}, indent=2) + '\n')
+            'execution_mode': 'BAKED_IMAGE_RUNNER' if self.baked else 'SOURCE_BIND_OVERRIDE',
+            'actual_input_bindings_before_execution': input_bindings, 'G0': False}, indent=2) + '\n')
+        for entry in input_bindings.values():
+            if entry['kind'] == 'regular':
+                self.assertEqual(hashlib.sha256(Path(entry['host_path']).read_bytes()).hexdigest(), entry['sha256'],
+                                 'The executed malformed/ordinary input was rewritten')
         # Deliberate invalid symlinks are fixtures, not archiveable payloads.
         # Preserve their exact metadata and regular bytes separately, then let
         # the self-cleaning scratch fixture expire after the assertions.

@@ -73,4 +73,4 @@ jsonlite::write_json(list(status="PASS",genes=2001L,samples=8L,numerical_fields=
  reparameterized_fit_differences=relevel_difference,
  official_parity_absolute_tolerance=1e-9,official_parity_relative_tolerance=1e-9,
  reference_scope="Independent R calls with the same pinned package environment; not a separately built numerical stack",
- scientific_authorization=FALSE),file.path(root,"NUMERICAL_ACCEPTANCE.json"),auto_unbox=TRUE,pretty=TRUE)
+ scientific_authorization=FALSE),file.path(root,"NUMERICAL_ACCEPTANCE.json"),auto_unbox=TRUE,pretty=TRUE,digits=NA)
