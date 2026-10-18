@@ -7,6 +7,7 @@ upstream = "Unmodified jinworks/CellChat 75253cd0c9e68410e6e721a6d3a0419a1d7e358
 license = "GPL-3.0-only"
 [[nodes]]
 kind = "cachexia_cellchat_official"
+artifact_prefix = "/artifacts/cellchat-official"
 desc = "Official nonspatial CellChat candidate inference with explicit scale, identities and complete LR universe."
 doc = "H5AD plus frozen contract JSON, no parameter defaults or normalization heuristic. Human/mouse full/secreted DB, official triMean/raw.use pipeline, fixed explicit seed/nboot, one worker. Eight outputs retain all inferred LR probabilities/P values (not significant-only), full S4, complete DB/group-pair ledger including not-estimated combinations, cells/genes, RNG/warnings, audit/log. Cell-label bootstrap is NOT donor-level inference, circulation, cross-organ transport, causal evidence or G0. Spatial/pooled tissues and unknown scale rejected. Isolated research adapter; not resident deployment or certification of the original wrapper/full method domain."
 timeout_secs = 600

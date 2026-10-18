@@ -1,0 +1,56 @@
+{
+  "schema": "CELLCHAT_EXPLICIT_COMPONENTS_CURRENT_CLOSURE_REVIEW_V1",
+  "positive_component_archive": {
+    "session": "2fbf811ac2834274a83ea83b272e9c97",
+    "seal": "54b4437268a088c55decd4358f47c6736848cdd3a265c21769cbe1945eabbe33",
+    "overall_batch_worker_exit": 1,
+    "batch_not_relabelled_successful": true,
+    "actual_method_exit": 0,
+    "actual_full_object_comparison_exit": 0,
+    "complete_ports": 8
+  },
+  "negative_archive": {
+    "session": "676b8e199b094180a5ff10e989c80bc8",
+    "seal": "44fef9f584afbb06ba57797f0a100e51af16bc68be1230870fdb8f6911234ddc",
+    "specific_refusal_dags": 2
+  },
+  "original_foreign_output_counterexamples": 8,
+  "fixed_publication_controls": 13,
+  "canonical_binding_tests": 5,
+  "unchanged_method_and_reader_functions": 13,
+  "fresh_S4_and_RNG_readback_exit": 0,
+  "new_method_computations": 0,
+  "full_canonical_family_runtime_not_certified": true,
+  "legacy_wrapper_not_certified": true,
+  "author_image": "ghcr.io/zj-2002/cellchat@sha256:6fdc08a21395fd2710cb9ac0d632079adb1364ae621fc4f8f809f5b368d09f4b",
+  "original_author_reference_positive_cases_reused": 11,
+  "scientific_release_granted": false,
+  "production_changed": false,
+  "g0_granted": false,
+  "candidate_kind": "cellchat_inference",
+  "selected_official_kind": "cachexia_cellchat_official",
+  "proof_session": "1b7d59eee0294b0ebbbaccb57117333a",
+  "proof_seal": "d2c5072ec763422f338876629d04ebbde116ae65df43b7aeda1203ea48c9e723",
+  "sources": [
+    {
+      "path": "plugins/cellchat/manifest.toml",
+      "bytes": 6156,
+      "sha256": "b064f409b777e6a4e5f96abb9c8e6ca4ba16390e48315e7acf5cc11735fe6522"
+    },
+    {
+      "path": "plugins/cellchat/scripts/cellchat.R",
+      "bytes": 16413,
+      "sha256": "a17adb5651a755bc815c7157d54e220b7c8e7e7cc36eb40d762124392c99aeca"
+    },
+    {
+      "path": "research-adapters/cachexia-cellchat/manifest.toml",
+      "bytes": 1932,
+      "sha256": "c49980eedddd19443b12741188ffde691ab73fc37c74b40dfdec6e10423030ac"
+    },
+    {
+      "path": "research-adapters/cachexia-cellchat/scripts/cellchat.R",
+      "bytes": 16413,
+      "sha256": "a17adb5651a755bc815c7157d54e220b7c8e7e7cc36eb40d762124392c99aeca"
+    }
+  ]
+}

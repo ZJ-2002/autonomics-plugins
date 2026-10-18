@@ -1,3 +1,40 @@
+main <- function() {
+  destination_root <- Sys.getenv("AUTONOMICS_WORKDIR", getwd())
+  dir.create(destination_root, recursive = TRUE, showWarnings = FALSE)
+  destination_root <- normalizePath(destination_root, mustWork = TRUE)
+  output_names <- c("values.tsv", "cellchat.rds", "audit.json", "cellchat.log", "cells.tsv", "genes.tsv", "state.rds", "family.tsv")
+  destinations <- file.path(destination_root, output_names)
+  inputs <- c(Sys.getenv("AUTONOMICS_INPUT0"), Sys.getenv("AUTONOMICS_INPUT1"))
+  if (any(!nzchar(inputs))) stop("Both declared input paths are required")
+  input_paths <- vapply(inputs, normalizePath, character(1), mustWork = TRUE)
+  if (any(destinations %in% input_paths)) stop("Input and output paths must be distinct")
+  path_present <- function(filename) {
+    target <- Sys.readlink(filename)
+    file.exists(filename) || (!is.na(target) && nzchar(target))
+  }
+  if (any(vapply(destinations, path_present, logical(1)))) stop("Refusing to overwrite existing output")
+  stage <- tempfile(pattern = ".cellchat-owned-", tmpdir = destination_root)
+  if (!dir.create(stage, mode = "0700")) stop("Private output staging could not be created")
+  created <- list()
+  completed <- FALSE
+  file_identity <- function(filename) {
+    value <- system2("stat", c("-c", shQuote("%d:%i"), shQuote(filename)), stdout = TRUE, stderr = TRUE)
+    if (!is.null(attr(value, "status")) || length(value) != 1L || !grepl("^[0-9]+:[0-9]+$", value)) {
+      stop("Output file identity unavailable")
+    }
+    value[[1L]]
+  }
+  on.exit({
+    if (!completed) {
+      for (owned in rev(created)) {
+        tryCatch({
+          if (path_present(owned$path) && identical(file_identity(owned$path), owned$identity)) unlink(owned$path)
+        }, error = function(error) warning(paste("Output rollback retained an unverified path:", conditionMessage(error))))
+      }
+    }
+    unlink(stage, recursive = TRUE)
+  }, add = TRUE)
+  exit_status <- 0L
 suppressPackageStartupMessages({
   library(CellChat)
   library(rhdf5)
@@ -5,7 +42,7 @@ suppressPackageStartupMessages({
   library(Matrix)
 })
 
-root <- Sys.getenv("AUTONOMICS_WORKDIR", getwd())
+root <- stage
 dir.create(root, recursive = TRUE, showWarnings = FALSE)
 output <- function(name) file.path(root, name)
 hash <- function(path) digest::digest(file = path, algo = "sha256")
@@ -232,5 +269,18 @@ tryCatch(run(), error = function(error) {
   log_message(paste("BLOCKED", conditionMessage(error)))
   writeLines(toJSON(list(status = "BLOCKED", error = conditionMessage(error), G0_granted = FALSE,
                          resident_deployment_granted = FALSE), auto_unbox = TRUE, pretty = TRUE), output("audit.json"))
-  quit(save = "no", status = 1L)
+  exit_status <<- 1L
 })
+
+  positions <- if (exit_status == 0L) seq_along(destinations) else c(3L, 4L)
+  for (position in positions) {
+    source <- output(output_names[[position]])
+    identity <- file_identity(source)
+    if (!file.link(source, destinations[[position]])) stop("Exclusive output publication failed")
+    created[[length(created) + 1L]] <- list(path = destinations[[position]], identity = identity)
+  }
+  completed <- TRUE
+  exit_status
+}
+exit_status <- main()
+if (exit_status != 0L) quit(save = "no", status = exit_status)

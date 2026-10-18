@@ -54,6 +54,19 @@ family.tsv 是候选宇宙账本，不宣称未估计项有有效 P 值，也不
 失败只保留 audit/log，清除本次分析产物，不回退其他算法。
 所有输出须按声明端口验收，不允许烟测人为补第九个端口。
 
+## 2026-10-19 产物保护整改
+
+原错误处理会删除已有分析文件、覆盖已有 audit 或追加已有日志；八个反例已实际复现。
+现先拒绝所有已有输出（包括悬空链接）及输入输出重合，在私有目录计算，使用排他硬链接
+发布，回滚只删除本次登记且 inode 身份未变的路径。失败诊断也不得覆盖其他运行的文件。
+显式 `artifact_prefix=/artifacts/cellchat-official` 让八端口产物持久写入 VFS；这不是研究参数变更。
+全部 13 个旧统计/读取辅助函数 AST 不变，不改官方算法、输入合同、seed、数据库或镜像。
+
+同一严格节点已添加到 canonical `plugins/cellchat` 家族；旧 `cellchat_inference` 声明保持原样，
+不因添加严格路线获得认证。当前真实 SDK 验证使用本适配器的完整单节点 family 清单。
+缓存验收器对另一旧节点的 baked argv 有限制，因此不能把本次证明说成 canonical 家族全部
+运行分支、当前 resident daemon 或研究放行。见 `docs/cellchat-publication-repair-20261019.md`。
+
 ## 复核
 
 `scripts/prove_cachexia_cellchat.py` 使用实际六节点 DAG，输出经 reader/typed SQL/sink

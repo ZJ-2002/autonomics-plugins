@@ -82,3 +82,25 @@ cpus = 8.0
 memory = "32Gi"
 pids_limit = 1024
 shm_size = "1Gi"
+[[nodes]]
+kind = "cachexia_cellchat_official"
+artifact_prefix = "/artifacts/cellchat-official"
+desc = "Official nonspatial CellChat candidate inference with explicit scale, identities and complete LR universe."
+doc = "H5AD plus frozen contract JSON, no parameter defaults or normalization heuristic. Human/mouse full/secreted DB, official triMean/raw.use pipeline, fixed explicit seed/nboot, one worker. Eight outputs retain all inferred LR probabilities/P values (not significant-only), full S4, complete DB/group-pair ledger including not-estimated combinations, cells/genes, RNG/warnings, audit/log. Cell-label bootstrap is NOT donor-level inference, circulation, cross-organ transport, causal evidence or G0. Spatial/pooled tissues and unknown scale rejected. Isolated research adapter; not resident deployment or certification of the original wrapper/full method domain."
+timeout_secs = 600
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}]
+outputs = [{path="values.tsv",format="tsv"}, {path="cellchat.rds",format="rds"}, {path="audit.json",format="json"}, {path="cellchat.log",format="text"}, {path="cells.tsv",format="tsv"}, {path="genes.tsv",format="tsv"}, {path="state.rds",format="rds"}, {path="family.tsv",format="tsv"}]
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/cellchat.R"
+[nodes.command.env]
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+LC_ALL = "C"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"

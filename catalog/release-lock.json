@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "scope": "SOURCE_AND_INTERFACE_INVENTORY_NOT_METHOD_CERTIFICATION",
   "canonical_families": 37,
-  "canonical_kinds": 71,
+  "canonical_kinds": 72,
   "families": [
     {
       "directory": "plugins/bulk-limma-normalized",
@@ -216,7 +216,8 @@
       "directory": "plugins/cellchat",
       "plugin_name": "cellchat",
       "kinds": [
-        "cellchat_inference"
+        "cellchat_inference",
+        "cachexia_cellchat_official"
       ],
       "image_reference": "ghcr.io/zj-2002/cellchat@sha256:6fdc08a21395fd2710cb9ac0d632079adb1364ae621fc4f8f809f5b368d09f4b",
       "files": [
@@ -258,8 +259,14 @@
         },
         {
           "path": "manifest.toml",
-          "sha256": "f151361ad30de167b11ca1bffdff6c5adea557ed4e22a4a20aa00c96d5b496be",
-          "bytes": 4654,
+          "sha256": "b064f409b777e6a4e5f96abb9c8e6ca4ba16390e48315e7acf5cc11735fe6522",
+          "bytes": 6156,
+          "executable": false
+        },
+        {
+          "path": "scripts/cellchat.R",
+          "sha256": "a17adb5651a755bc815c7157d54e220b7c8e7e7cc36eb40d762124392c99aeca",
+          "bytes": 16413,
           "executable": false
         },
         {
@@ -698,7 +705,7 @@
         },
         {
           "path": "source-lock.json",
-          "sha256": "4dae7f773570b2958e2a9f1d47ec8d42adaea14aca9a858e3e4afa62ca8513ff",
+          "sha256": "ef5cc8894f9f121b9bdaf73dcdc19ace097f767cb7d60aa0c181e0abf9a87cae",
           "bytes": 4076,
           "executable": false
         }
@@ -16298,20 +16305,20 @@
       "files": [
         {
           "path": "README.md",
-          "sha256": "7313d3c7af681f09489b45c11573583bebc2eaa0bb25a23704e74d33d31fbcea",
-          "bytes": 4247,
+          "sha256": "c4ca06157ff3d8453f23e998867d62dd007d4d63f14b1aa8b549cc539361b7f2",
+          "bytes": 5349,
           "executable": false
         },
         {
           "path": "manifest.toml",
-          "sha256": "02c9c2c89bc0307eb11778cf16959235b926fa014a45ec11079223d4c39e32cd",
-          "bytes": 1883,
+          "sha256": "c49980eedddd19443b12741188ffde691ab73fc37c74b40dfdec6e10423030ac",
+          "bytes": 1932,
           "executable": false
         },
         {
           "path": "scripts/cellchat.R",
-          "sha256": "d5f97889df19487cf8ea7bbe04477d2d4be2ee016c391c37aa9cc5481f796e17",
-          "bytes": 14007,
+          "sha256": "a17adb5651a755bc815c7157d54e220b7c8e7e7cc36eb40d762124392c99aeca",
+          "bytes": 16413,
           "executable": false
         }
       ],
