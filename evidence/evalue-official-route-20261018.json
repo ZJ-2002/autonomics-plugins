@@ -1,0 +1,123 @@
+{
+  "schema": "EVALUE_OFFICIAL_ROUTE_PROOF_CARD_V1",
+  "candidate_kind": "evalue",
+  "selected_official_kind": "cachexia_evalue_official",
+  "native_Rust_route_selected": false,
+  "official_method": {
+    "status": "DIRECT_UNMODIFIED_AUTHOR_PACKAGE_SCOPED_PROVEN",
+    "package": "EValue",
+    "version": "4.1.4",
+    "R_version": "4.6.1",
+    "methods": [
+      "RR",
+      "OR",
+      "HR",
+      "OLS",
+      "MD"
+    ],
+    "author_entry": "EValue::evalues.<measure>",
+    "reference": "https://cran.r-project.org/package=EValue"
+  },
+  "engineering_interface": {
+    "status": "UNCHANGED_ACTUAL_TESTED_ADAPTER_SOURCE",
+    "ports": {
+      "inputs": [
+        {
+          "type": "file"
+        },
+        {
+          "type": "file"
+        }
+      ],
+      "outputs": [
+        {
+          "path": "values.tsv",
+          "format": "tsv"
+        },
+        {
+          "path": "state.rds",
+          "format": "rds"
+        },
+        {
+          "path": "audit.json",
+          "format": "json"
+        },
+        {
+          "path": "sensitivity.log",
+          "format": "text"
+        },
+        {
+          "path": "input_ledger.tsv",
+          "format": "tsv"
+        }
+      ]
+    },
+    "resources": {
+      "cpus": 1,
+      "memory": "2Gi",
+      "network": "isolated",
+      "pull_policy": "never"
+    },
+    "input_binding": "Frozen effect JSON plus content-hash/ID/role-bound request JSON",
+    "nonfinite_semantics": "Explicit FINITE/MISSING/NAN/POS_INF/NEG_INF tags, not silent finite substitution"
+  },
+  "current_sources": [
+    {
+      "path": "research-adapters/cachexia-sensitivity/manifest.toml",
+      "bytes": 2973,
+      "sha256": "bb85e60767b29fa9e897cacac0960d3db317755006095e4d491f2fcf11798c9c"
+    },
+    {
+      "path": "research-adapters/cachexia-sensitivity/scripts/sensitivity.R",
+      "bytes": 15909,
+      "sha256": "12becb67fb8438a13c574b96443fc0329b7afc782183b5a8e64e92fbac8335fb"
+    },
+    {
+      "path": "research-adapters/cachexia-sensitivity-typed-values/manifest.toml",
+      "bytes": 1383,
+      "sha256": "6211dd45936f71f8a85fb7708bb32ecabd8f9778b3bcdb5f48a81a3ad7fbb538"
+    },
+    {
+      "path": "research-adapters/cachexia-sensitivity-typed-values/scripts/typed_values.py",
+      "bytes": 5252,
+      "sha256": "7572cf2bf2839d147f3b7d60f4e0bc81adff3dc0fca8d08787f4320f20176b2c"
+    }
+  ],
+  "isolated_DAG": {
+    "status": "EXACT_SOURCE_PRIOR_MATERIALIZING_CASE_EVIDENCE_REUSED",
+    "positive_cases": 66,
+    "blocked_cases": 22,
+    "finite_fields": 260,
+    "missing_fields": 128,
+    "max_abs_difference": 0,
+    "combined_EValue_and_metap_namespace_functions_equal": 117,
+    "new_method_runs": 0
+  },
+  "proof": {
+    "session": "91fe4f76f7e34093aecf718b6f41c79e",
+    "seal": "e3cdd8cb8618c05138fc217db96a9e7d3f108f98656cd051b13379e7248b5d29",
+    "frozen_recovery_session": "9df9bfbf3ff746cfa9859751ef08fcf8",
+    "frozen_recovery_seal": "0923765989fccb8b66cef7595281bb53feeeefe125a6e44a758ba2bdab924963",
+    "prior_metadata_guard_failure_retained": true,
+    "prior_metadata_guard_worker_exit": 1,
+    "new_method_runs": 0,
+    "method_source_modified": false
+  },
+  "plan_contract": {
+    "status": "NO_EXPLICIT_CURRENT_EVALUE_ENABLEMENT_LOCATED_NOT_GRANTED",
+    "package_sha256": "4c5af762ab1e9768a24b9446827ea367176a80407862cfc10ca09a95f44f1151",
+    "active_text_members_inspected": 156,
+    "explicit_EValue_software_lock_rows": 0,
+    "normalized_reference_matches": 0,
+    "interpretation": "No explicit EValue enablement or parameters located in these inspected frozen materials. This is a contract gap, not authority to add or remove a study method.",
+    "study_configuration_changed": false
+  },
+  "deployment": {
+    "status": "NOT_CURRENT_RESIDENT_OR_PORTABLE_IMAGE_ACCEPTANCE",
+    "image_reference": "localhost/cachexia-sensitivity@sha256:598f27c5f379e51614631e8f8d92eb99b6e3e5fe33c0be1e30a081cdc2bb6bc4",
+    "current_runtime_availability_not_checked_by_metadata_reuse": true
+  },
+  "whole_EValue_API_certified": false,
+  "scientific_release_granted": false,
+  "g0_granted": false
+}
