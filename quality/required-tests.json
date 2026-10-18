@@ -1071,6 +1071,14 @@
     "tests.test_survey_publication_binding.SurveyPublicationBindingTests.test_both_verified_entry_source_identities_are_explicit",
     "tests.test_survey_publication_binding.SurveyPublicationBindingTests.test_eleven_nodes_preserve_ports_and_limits",
     "tests.test_survey_publication_binding.SurveyPublicationBindingTests.test_manifest_and_image_are_unchanged",
-    "tests.test_survey_publication_binding.SurveyPublicationBindingTests.test_output_protection_is_independent_of_statistical_mode"
+    "tests.test_survey_publication_binding.SurveyPublicationBindingTests.test_output_protection_is_independent_of_statistical_mode",
+    "tests.test_survey_typed_values.SurveyTypedValuesTests.test_foreign_or_dangling_outputs_are_not_touched",
+    "tests.test_survey_typed_values.SurveyTypedValuesTests.test_invalid_input_publishes_only_blocked_diagnostics",
+    "tests.test_survey_typed_values.SurveyTypedValuesTests.test_lexical_ids_and_source_positions_are_exact",
+    "tests.test_survey_typed_values.SurveyTypedValuesTests.test_missing_and_nan_remain_distinct_null_states",
+    "tests.test_survey_typed_values.SurveyTypedValuesTests.test_missing_cannot_become_zero",
+    "tests.test_survey_typed_values.SurveyTypedValuesTests.test_ragged_extra_field_is_refused",
+    "tests.test_survey_typed_values.SurveyTypedValuesTests.test_wrong_row_coordinate_is_refused",
+    "tests.test_survey_typed_values.SurveyTypedValuesTests.test_wrong_summary_hash_is_refused"
   ]
 }

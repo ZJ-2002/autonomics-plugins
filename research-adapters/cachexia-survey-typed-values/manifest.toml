@@ -1,0 +1,23 @@
+schema_version = 1
+plugin_name = "cachexia-survey-typed-values"
+[image]
+reference = "localhost/autonomics/single-cell-preprocessor@sha256:5069c3ffaac0b11dfe950c1cd026f4195317be47b529b730572d9e670ad0f59b"
+tag = "pyarrow-25.0.1-survey-typed-boundary"
+upstream = "Official PyArrow 25.0.1 explicit-schema serialization; no survey statistics"
+license = "Apache-2.0"
+[[nodes]]
+kind = "cachexia_survey_values_to_parquet"
+desc = "Preserve complete survey summary coordinates and missing states with explicit Arrow types."
+doc = "Two files: successful technical survey summary TSV and matching audit. Four outputs: typed Parquet, audit, log and schema. String test/row/field/status columns, nullable float64 values and exact uint32 source positions. No reweighting, inference, row deletion or scientific permission. Only the synthetic technical survey contract is supported."
+timeout_secs = 600
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}]
+outputs = [{path="values.parquet",format="parquet"}, {path="typed_audit.json",format="json"}, {path="typed.log",format="text"}, {path="schema.json",format="json"}]
+[nodes.command]
+interpreter = "python"
+script_file = "scripts/typed_values.py"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"

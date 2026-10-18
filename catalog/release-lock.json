@@ -705,7 +705,7 @@
         },
         {
           "path": "source-lock.json",
-          "sha256": "272dc9c7beec6792f298ba1105ee0b4d173d355d16d470732cb07fc778623f47",
+          "sha256": "a04d94be0bb189b99d2aef949235a6a7e547f29dce2923ce1806ebe9f2c6ee89",
           "bytes": 4076,
           "executable": false
         }
@@ -17582,6 +17582,37 @@
           "path": "scripts/survey.R",
           "sha256": "f7d6c2bee9abf84474aaf4b3a78e35769d2bb58867c3f1b9508c9b70761c7716",
           "bytes": 27475,
+          "executable": false
+        }
+      ],
+      "source_inventory_only": true,
+      "scientific_certified": false,
+      "auto_enable": false
+    },
+    {
+      "directory": "research-adapters/cachexia-survey-typed-values",
+      "plugin_name": "cachexia-survey-typed-values",
+      "kinds": [
+        "cachexia_survey_values_to_parquet"
+      ],
+      "image_reference": "localhost/autonomics/single-cell-preprocessor@sha256:5069c3ffaac0b11dfe950c1cd026f4195317be47b529b730572d9e670ad0f59b",
+      "files": [
+        {
+          "path": "README.md",
+          "sha256": "5ac2d724419130711fe3b1fac397909dd1faf34b6390a0c284b7152a03eb59a3",
+          "bytes": 1351,
+          "executable": false
+        },
+        {
+          "path": "manifest.toml",
+          "sha256": "9b2402c96ad8c27b147d371c8f500c9412a2c8fd74b70e9f6ce74fff4b210f9a",
+          "bytes": 1270,
+          "executable": false
+        },
+        {
+          "path": "scripts/typed_values.py",
+          "sha256": "ceff7a428fc10ef89bd27142a14e07968fc58cae49065113916d464c30d7e76c",
+          "bytes": 7173,
           "executable": false
         }
       ],

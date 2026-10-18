@@ -1,0 +1,61 @@
+{
+  "schema": "SURVEY_CURRENT_OFFICIAL_COMPONENT_DAG_EVIDENCE_V1",
+  "proof_session": "b2b6ca0666884f1f999c7cf34185870c",
+  "proof_seal": "d3a8445ae5eb1317dcf0fb0e52bd5b32cdf05657aa073c38375a7ab021df557d",
+  "edge_session": "6c68303b968e40419f662b405e5de961",
+  "edge_seal": "f8b18dd60b3331fbed1e6009559b57ac720eb83fcc596a9b6eb09c150ef8f8a0",
+  "safety_session": "ce7ab5b4d0b14ebe86d3ad66e3ba997e",
+  "safety_seal": "3191793b86bc6add3d591f33225c4d631922d0fb7e9888bda4754de940d7bf3c",
+  "sources": [
+    {
+      "path": "research-adapters/cachexia-survey/manifest.toml",
+      "bytes": 11209,
+      "sha256": "dfd462f2393c5d8ac06a07f14e8443851bdcde5220c382fc073d3cc1a210c903"
+    },
+    {
+      "path": "research-adapters/cachexia-survey/scripts/survey.R",
+      "bytes": 27475,
+      "sha256": "f7d6c2bee9abf84474aaf4b3a78e35769d2bb58867c3f1b9508c9b70761c7716"
+    },
+    {
+      "path": "research-adapters/cachexia-survey/scripts/bind_contract.R",
+      "bytes": 9594,
+      "sha256": "ee8a4ebd6a0d861a31de3d1d08a62b5c6aa953e1aa625e4dda3854ae2ab5b684"
+    },
+    {
+      "path": "research-adapters/cachexia-survey-typed-values/manifest.toml",
+      "bytes": 1270,
+      "sha256": "9b2402c96ad8c27b147d371c8f500c9412a2c8fd74b70e9f6ce74fff4b210f9a"
+    },
+    {
+      "path": "research-adapters/cachexia-survey-typed-values/scripts/typed_values.py",
+      "bytes": 7173,
+      "sha256": "ceff7a428fc10ef89bd27142a14e07968fc58cae49065113916d464c30d7e76c"
+    }
+  ],
+  "engine_source": "4256643c55ae6fb50e8c867069330ed6ac2b4bc0",
+  "official_image": "localhost/cachexia-survey@sha256:8186f7fc9fa4a75023821b8f0f22634b82c2112916c426a20ee40075c4753243",
+  "typed_image": "localhost/autonomics/single-cell-preprocessor@sha256:5069c3ffaac0b11dfe950c1cd026f4195317be47b529b730572d9e670ad0f59b",
+  "positive_DAGs": 10,
+  "statistical_methods": 9,
+  "blocked_DAGs": 2,
+  "complete_RDS_comparisons": 10,
+  "finite_fields": 439,
+  "maximum_absolute_difference": 0.0,
+  "atol": 1e-12,
+  "rtol": 1e-12,
+  "actual_arrow_engineering_edge_controls": 13,
+  "typed_unit_controls": 8,
+  "new_engineering_dependency_not_additional_statistical_candidate": true,
+  "full_environment_identity_certified": false,
+  "production_changed": false,
+  "scientific_release_granted": false,
+  "g0_granted": false,
+  "B_S": "CONDITIONAL_NOT_READY",
+  "GS01": "OPEN",
+  "frozen_denominators": [
+    276,
+    288,
+    696
+  ]
+}
