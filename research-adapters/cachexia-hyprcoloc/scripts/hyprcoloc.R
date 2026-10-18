@@ -1,5 +1,42 @@
+main <- function() {
+  declared <- vapply(0:5, function(port) Sys.getenv(paste0("AUTONOMICS_OUTPUT", port)), character(1))
+  input_paths <- vapply(0:5, function(port) Sys.getenv(paste0("AUTONOMICS_INPUT", port)), character(1))
+  if (any(!nzchar(declared)) || any(!nzchar(input_paths))) stop("All six input and output paths are required")
+  destinations <- vapply(declared, function(filename) {
+    file.path(normalizePath(dirname(filename), mustWork = TRUE), basename(filename))
+  }, character(1))
+  if (anyDuplicated(destinations) || any(destinations %in% vapply(input_paths, normalizePath, character(1), mustWork = TRUE))) {
+    stop("Input and output paths must be distinct")
+  }
+  path_present <- function(filename) {
+    target <- Sys.readlink(filename)
+    file.exists(filename) || (!is.na(target) && nzchar(target))
+  }
+  if (any(vapply(destinations, path_present, logical(1)))) stop("Refusing to overwrite existing output")
+  stage <- tempfile(pattern = ".hyprcoloc-owned-", tmpdir = dirname(destinations[[1L]]))
+  if (!dir.create(stage, mode = "0700")) stop("Private output staging could not be created")
+  created <- list()
+  completed <- FALSE
+  file_identity <- function(filename) {
+    value <- system2("stat", c("-c", shQuote("%d:%i"), shQuote(filename)), stdout = TRUE, stderr = TRUE)
+    if (!is.null(attr(value, "status")) || length(value) != 1L || !grepl("^[0-9]+:[0-9]+$", value)) {
+      stop("Output file identity unavailable")
+    }
+    value[[1L]]
+  }
+  on.exit({
+    if (!completed) {
+      for (owned in rev(created)) {
+        tryCatch({
+          if (path_present(owned$path) && identical(file_identity(owned$path), owned$identity)) unlink(owned$path)
+        }, error = function(error) warning(paste("Output rollback retained an unverified path:", conditionMessage(error))))
+      }
+    }
+    unlink(stage, recursive = TRUE)
+  }, add = TRUE)
+  exit_status <- 0L
 options(warn = 1, digits = 17)
-outputs <- vapply(0:5, function(port) Sys.getenv(paste0("AUTONOMICS_OUTPUT", port)), character(1))
+outputs <- file.path(stage, paste0(seq_along(destinations), "-", basename(destinations)))
 analytic <- outputs[c(1, 2, 4, 6)]
 unlink(analytic)
 writeLines("status\tRUNNING\nscope\tTECHNICAL_ONLY_NOT_G0", outputs[3])
@@ -174,5 +211,17 @@ tryCatch({
   save_audit(audit)
   record("status\tBLOCKED", conditionMessage(error))
   message(conditionMessage(error))
-  quit(status = 2)
+  exit_status <<- 2L
 })
+  ports <- if (exit_status == 0L) seq_along(outputs) else c(3L, 5L)
+  for (position in ports) {
+    source <- outputs[[position]]
+    identity <- file_identity(source)
+    if (!file.link(source, destinations[[position]])) stop("Exclusive output publication failed")
+    created[[length(created) + 1L]] <- list(path = destinations[[position]], identity = identity)
+  }
+  completed <- TRUE
+  exit_status
+}
+exit_status <- main()
+if (exit_status != 0L) quit(status = exit_status)

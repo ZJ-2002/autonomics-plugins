@@ -30,7 +30,7 @@ class CachexiaContractTests(unittest.TestCase):
 
     def test_published_script_is_the_numerically_verified_source(self):
         self.assertEqual(hashlib.sha256((ROOT / 'scripts/hyprcoloc.R').read_bytes()).hexdigest(),
-            'c3710fe380902b6c729fa02f62e67393a6cf010f473b3e6bb90ed63c432c7ecb')
+            '080b6a638bde211e1f9ebd843e487d68b24708f70af6a665b4b1e93155238e6a')
 
     def test_node_names_do_not_collide(self):
         kinds = [node['kind'] for node in self.manifest['nodes']]

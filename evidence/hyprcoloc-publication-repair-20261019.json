@@ -1,0 +1,101 @@
+{
+  "schema": "HYPRCOLOC_OFFICIAL_ROUTE_PUBLICATION_REPAIR_V1",
+  "selected_kind": "cachexia_hyprcoloc_official",
+  "selected_family": "plugins/hyprcoloc",
+  "original_one_input_hyprcoloc_node_certified": false,
+  "image": "ghcr.io/auto-nomics/autonomics/hyprcoloc@sha256:395a36903d3c3ed6c753aef85f5b0a57044f86968e4d79804e4cc85f36aa5617",
+  "official_revision": "0348bbdd977be731d82e4efda115a9bed63cd44f",
+  "method_contract_and_typed_output_core_unchanged": true,
+  "historical_independent_official_comparisons_reused": {
+    "positive": 17,
+    "blocked": 51,
+    "original_proof_seal": "9bdde54b4df454e89498b312df38b0807f1ef23e562749e44327945ddf92f5ca"
+  },
+  "current_publication_controls": 13,
+  "original_counterexamples_reproduced": 6,
+  "actual_current_SDK_graphs": [
+    {
+      "name": "positive",
+      "exit_code": 0,
+      "nodes": 7,
+      "edges": 6,
+      "normal_ports": 6
+    },
+    {
+      "name": "bad-input-hash",
+      "exit_code": 2,
+      "nodes": 7,
+      "edges": 6,
+      "normal_ports": 0
+    },
+    {
+      "name": "existing-control",
+      "exit_code": 1,
+      "nodes": 7,
+      "edges": 6,
+      "normal_ports": 0
+    }
+  ],
+  "complete_official_RDS_identical": true,
+  "proof_archives": [
+    {
+      "session": "aa3712d840be413cb9780a8b2132240b",
+      "seal": "92881cd2973059080ae583bf24e482831486a91efe9a681c8f7f393f0f94f3bd"
+    },
+    {
+      "session": "88b997bf509f4a9ab98c48a823c3ca42",
+      "seal": "ad5fef8139ccf6e5e40b3da18fe0f4a480eb6a25f72285511e5eb73f7f13c4b9"
+    },
+    {
+      "session": "c7b306973f21443db9d374c8526d45bc",
+      "seal": "aa42ea91acb03920a461ef67776e4fc47b84f0c4a2ae74cf2bcd0df25195ec2e"
+    },
+    {
+      "session": "fd9a66bbf0ff4eae8dfa7fd54211982e",
+      "seal": "462d5e8e132621eaac3296b0333109e40d772a6b36ead33ef63605d6793bca8b"
+    },
+    {
+      "session": "dd862dbe13eb4eb3954fb211bd365774",
+      "seal": "294cc76a8be75d1c069868b32a7327c3f4ae6c2eb45eb9149601314141aa89aa"
+    }
+  ],
+  "tested_sources": {
+    "plugins/hyprcoloc/manifest.toml": {
+      "bytes": 6242,
+      "sha256": "5575a799359cfc3c2016722e9aedba6093a12e3c4581391ca183ae9dfc49f9f8"
+    },
+    "plugins/hyprcoloc/scripts/hyprcoloc.R": {
+      "bytes": 15306,
+      "sha256": "080b6a638bde211e1f9ebd843e487d68b24708f70af6a665b4b1e93155238e6a"
+    },
+    "plugins/hyprcoloc/scripts/hyprcoloc_runner.R": {
+      "bytes": 6547,
+      "sha256": "f72f16a7dd40d8ec746bc234df9e4f9da028360ddd5d15627f17b1841a4831f8"
+    },
+    "tests/hyprcoloc_publication_contract.R": {
+      "bytes": 4942,
+      "sha256": "8eb8a428881feea542c486fbe3f314a221a948401795107fe9e4b2b012f554a1"
+    }
+  },
+  "harness_correction": {
+    "retained_failed_session": "3d092c5da39848e5a10b6ad19e7136f2",
+    "reason": "The first R harness treated nzchar(NA) from a missing readlink as path presence. Corrected the harness, not the production source, then reran the six original and thirteen repaired controls.",
+    "failed_run_counted_as_pass": false
+  },
+  "study_literal_reference_scan": {
+    "text_members": 156,
+    "matches": [],
+    "no_new_method_automatically_enabled": true
+  },
+  "remaining": [
+    "Legacy one-input wrapper remains unqualified",
+    "Official rapid sensitivity snps.clc defect remains blocked",
+    "Full API/input domain, study matrix/locus/allele/ancestry qualification and current daemon are not certified",
+    "Hard-link publication requires existing compatible output parents"
+  ],
+  "synthetic_method_runs_this_repair": 1,
+  "images_pulled_or_built": 0,
+  "production_changed": false,
+  "scientific_release_granted": false,
+  "g0_granted": false
+}

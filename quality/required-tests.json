@@ -1036,6 +1036,11 @@
     "tests.test_mrpresso_image_binding.MRPressoImageBindingTests.test_docker_author_commit_and_runtime_match_image_contract",
     "tests.test_mrpresso_image_binding.MRPressoImageBindingTests.test_installed_owner_digest_not_missing_legacy_reference",
     "tests.test_mrpresso_image_binding.MRPressoImageBindingTests.test_method_parameters_and_call_script_not_replaced_by_adapter",
-    "tests.test_mrpresso_image_binding.MRPressoImageBindingTests.test_original_one_input_two_output_contract_is_preserved"
+    "tests.test_mrpresso_image_binding.MRPressoImageBindingTests.test_original_one_input_two_output_contract_is_preserved",
+    "tests.test_hyprcoloc_publication_binding.HyPrColocPublicationBindingTests.test_author_call_and_owned_publication_are_distinct_layers",
+    "tests.test_hyprcoloc_publication_binding.HyPrColocPublicationBindingTests.test_both_declared_routes_use_identical_repaired_source",
+    "tests.test_hyprcoloc_publication_binding.HyPrColocPublicationBindingTests.test_exact_author_image_and_existing_contract",
+    "tests.test_hyprcoloc_publication_binding.HyPrColocPublicationBindingTests.test_legacy_node_is_not_relabelled_as_repaired",
+    "tests.test_hyprcoloc_publication_binding.HyPrColocPublicationBindingTests.test_six_inputs_and_outputs_remain_explicit"
   ]
 }

@@ -8,6 +8,16 @@ trait identities, a frozen hash/method contract, trait correlation, overlap,
 and signed LD. It publishes the complete typed result, RDS, log and ledgers.
 It must not infer unknown covariance, call a missing result negative, or grant G0.
 
+The strict route's output-publication repair stages all files privately and
+refuses existing output paths (including dangling links), input/output aliases
+and duplicate destinations before writing. Successful outputs, or owned
+failure log/audit files, are published with exclusive hard links. If publication
+fails, rollback checks the recorded device/inode and does not remove a foreign
+replacement. Output parents must exist and support the required links; this
+is not a general filesystem transaction guarantee. This changes no official
+method code, contract keys or statistical parameters. It does not fix or
+certify the separate legacy one-input node.
+
 The scope and independently rebuilt official comparisons are recorded in
 `ZJ-2002/autonomics` at `docs/audits/cachexia-v4.1-2026-10-07/HYPRCOLOC_NODE_PROOF.md`.
 Publication does not update any deployed `plugins.toml` pin. Upstream rapid

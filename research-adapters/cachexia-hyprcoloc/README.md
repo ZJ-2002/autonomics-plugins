@@ -73,6 +73,12 @@ by the package. Sensitivity fields are not covered by that rounding; SNP scores
 are not rounded by this wrapper. All missing fields remain missing; explicit
 nullable casts are required in the proved read/SQL/materialization chain.
 Failures remove all four analytical ports and retain `BLOCKED` audit and log.
+Output files are now staged privately: existing destinations, dangling links
+and input/output aliases are refused without deleting prior files. Exclusive
+hard-link publication rolls back only identity-matching owned files if a later
+link fails. Failure log/audit publication follows the same ownership rules.
+Existing compatible output parent directories are required. This repair
+does not change the official call or frozen method contract.
 
 ## Explicit nonclaims
 
