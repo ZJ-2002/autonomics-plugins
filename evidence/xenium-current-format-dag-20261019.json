@@ -1,0 +1,24 @@
+{
+  "schema": "XENIUM_CURRENT_FORMAT_DAG_EVIDENCE_V1",
+  "proof_session": "86b217ee964f433cb4d6d1cea6ef1635",
+  "proof_seal": "3d7edc1f123ef304cace2169be56d4054ba39916c41e1d18d37feb23b2780fd1",
+  "sources": [
+    {
+      "bytes": 1850,
+      "sha256": "3cd6fcdfc6d7b4ce2cb9e230b2f65fe4e2a11182e306e100b522e8a000bc05ae"
+    },
+    {
+      "bytes": 19315,
+      "sha256": "a96504715fb466e3e518e0ff589355d91156349252e5e85df3cfa036df417fa8"
+    }
+  ],
+  "image": "ghcr.io/zj-2002/biotools-py@sha256:7ad6aeafa87672699d28b61b6bed12fc81fcdbfc43222a0abf17e2d56fb806f5",
+  "engine": "4256643c55ae6fb50e8c867069330ed6ac2b4bc0",
+  "positive_DAGs": 6,
+  "blocked_DAGs": 3,
+  "whole_integer_coordinates_compared": 120,
+  "owned_containers_stopped": 15,
+  "format_semantics_not_official_author_analysis_package": true,
+  "scientific_release_granted": false,
+  "g0_granted": false
+}
