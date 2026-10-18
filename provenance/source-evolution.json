@@ -1245,6 +1245,78 @@
         "sha256": "e6bb177efdb5f641179e45e1a2ebb47381f818d60ec5d401a8c171240956adb0",
         "git_blob": "745368b88d2bd3a386d38127f4ba761074090df3"
       }
+    },
+    {
+      "path": "plugins/cellchat/manifest.toml",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/cellchat-plugin.git",
+        "revision": "324f3b9ab750259f8d90108918a785b833a77b41",
+        "bytes": 4654,
+        "sha256": "f151361ad30de167b11ca1bffdff6c5adea557ed4e22a4a20aa00c96d5b496be",
+        "git_blob": "5a638d3eb213936cc71927e436643cf5828b0d49"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "7192044cd44d901fa1eee18cf75fb135322238d7",
+        "path": "plugins/cellchat/manifest.toml",
+        "bytes": 6156,
+        "sha256": "b064f409b777e6a4e5f96abb9c8e6ca4ba16390e48315e7acf5cc11735fe6522",
+        "git_blob": "b22a3fc815b0775062f4c71d74d15ad67a472ad2"
+      }
+    },
+    {
+      "path": "research-adapters/cachexia-cellchat/manifest.toml",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/autonomics.git",
+        "revision": "bdedf129011789e6eec3a594252d6515b6a67618",
+        "bytes": 1883,
+        "sha256": "02c9c2c89bc0307eb11778cf16959235b926fa014a45ec11079223d4c39e32cd",
+        "git_blob": "a76f0a9eecacf89405aa40048f704a2f286dab98"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "7192044cd44d901fa1eee18cf75fb135322238d7",
+        "path": "research-adapters/cachexia-cellchat/manifest.toml",
+        "bytes": 1932,
+        "sha256": "c49980eedddd19443b12741188ffde691ab73fc37c74b40dfdec6e10423030ac",
+        "git_blob": "bc331ff69978c63f7ead7a18f6106b0cc647f4cb"
+      }
+    },
+    {
+      "path": "research-adapters/cachexia-cellchat/scripts/cellchat.R",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/autonomics.git",
+        "revision": "bdedf129011789e6eec3a594252d6515b6a67618",
+        "bytes": 14007,
+        "sha256": "d5f97889df19487cf8ea7bbe04477d2d4be2ee016c391c37aa9cc5481f796e17",
+        "git_blob": "fcf138551309fbbdcabe58e5aa00937461cefcac"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "7192044cd44d901fa1eee18cf75fb135322238d7",
+        "path": "research-adapters/cachexia-cellchat/scripts/cellchat.R",
+        "bytes": 16413,
+        "sha256": "a17adb5651a755bc815c7157d54e220b7c8e7e7cc36eb40d762124392c99aeca",
+        "git_blob": "834a03ada77b3b95453fe57857afd18755614cc4"
+      }
+    },
+    {
+      "path": "research-adapters/cachexia-cellchat/README.md",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/autonomics.git",
+        "revision": "bdedf129011789e6eec3a594252d6515b6a67618",
+        "bytes": 4247,
+        "sha256": "7313d3c7af681f09489b45c11573583bebc2eaa0bb25a23704e74d33d31fbcea",
+        "git_blob": "1464446341c1c540c1704a7b9cf83909ef51ca25"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "7192044cd44d901fa1eee18cf75fb135322238d7",
+        "path": "research-adapters/cachexia-cellchat/README.md",
+        "bytes": 5349,
+        "sha256": "c4ca06157ff3d8453f23e998867d62dd007d4d63f14b1aa8b549cc539361b7f2",
+        "git_blob": "15a027a0db41c1c6973201c36f9e8368feaca5db"
+      }
     }
   ]
 }
