@@ -1,3 +1,48 @@
+main <- function() {
+  binder <- identical(Sys.getenv("CACHEXIA_LCMM_MODE"), "bind")
+  output_names <- if (binder) c("resolved_contract.json", "bind_audit.json", "bind.log") else
+    c("summary.tsv", "state.rds", "audit.json", "lcmm.log", "row_ledger.tsv", "subject_map.tsv")
+  port_names <- paste0("AUTONOMICS_OUTPUT", seq_along(output_names) - 1L)
+  original_outputs <- Sys.getenv(port_names)
+  if (any(!nzchar(original_outputs))) stop("Every declared output path is required")
+  destinations <- vapply(original_outputs, function(filename)
+    file.path(normalizePath(dirname(filename), mustWork = TRUE), basename(filename)), character(1))
+  if (anyDuplicated(destinations) || anyDuplicated(basename(destinations))) stop("Distinct output paths required")
+  inputs <- vapply(0:2, function(index) Sys.getenv(paste0("AUTONOMICS_INPUT", index)), "")
+  if (any(!nzchar(inputs))) stop("Three declared input paths are required")
+  input_paths <- vapply(inputs, normalizePath, character(1), mustWork = TRUE)
+  diagnostic <- file.path(dirname(destinations[[1L]]), "failed_fit.rds")
+  protected <- if (binder) destinations else c(destinations, diagnostic)
+  if (any(protected %in% input_paths)) stop("Input and output paths must be distinct")
+  path_present <- function(filename) {
+    target <- Sys.readlink(filename)
+    file.exists(filename) || (!is.na(target) && nzchar(target))
+  }
+  if (any(vapply(protected, path_present, logical(1)))) stop("Refusing to overwrite existing output")
+  stage <- tempfile(pattern = ".lcmm-owned-", tmpdir = dirname(destinations[[1L]]))
+  if (!dir.create(stage, mode = "0700")) stop("Private output staging could not be created")
+  created <- list()
+  completed <- FALSE
+  file_identity <- function(filename) {
+    value <- system2("stat", c("-c", shQuote("%d:%i"), shQuote(filename)), stdout = TRUE, stderr = TRUE)
+    if (!is.null(attr(value, "status")) || length(value) != 1L || !grepl("^[0-9]+:[0-9]+$", value)) {
+      stop("Output file identity unavailable")
+    }
+    value[[1L]]
+  }
+  on.exit({
+    do.call(Sys.setenv, as.list(original_outputs))
+    if (!completed) {
+      for (owned in rev(created)) {
+        tryCatch({
+          if (path_present(owned$path) && identical(file_identity(owned$path), owned$identity)) unlink(owned$path)
+        }, error = function(error) warning(paste("Output rollback retained an unverified path:", conditionMessage(error))))
+      }
+    }
+    unlink(stage, recursive = TRUE)
+  }, add = TRUE)
+  do.call(Sys.setenv, as.list(setNames(file.path(stage, basename(destinations)), port_names)))
+  exit_status <- 0L
 options(digits = 17, width = 200, contrasts = c("contr.treatment", "contr.poly"))
 ROLE <- "SYNTHETIC_TRAJECTORY_TECHNICAL_NOT_LANDMARK_PREDICTION"
 require_value <- function(value, message) if (!isTRUE(value)) stop(message, call. = FALSE)
@@ -236,5 +281,23 @@ tryCatch(run(), error = function(error) {
   if (nzchar(audit)) jsonlite::write_json(list(status = "BLOCKED", mode = mode, message = conditionMessage(error), G0_granted = FALSE, resident_deployment_granted = FALSE), audit, auto_unbox = TRUE, pretty = TRUE)
   if (nzchar(log)) cat(paste("BLOCKED", conditionMessage(error), "\n"), file = log)
   message(conditionMessage(error))
-  quit(status = 1L)
+  exit_status <<- 1L
 })
+  positions <- if (exit_status == 0L) seq_along(destinations) else if (binder) c(2L, 3L) else c(3L, 4L)
+  sources <- file.path(stage, basename(destinations[positions]))
+  targets <- destinations[positions]
+  failed_fit <- file.path(stage, "failed_fit.rds")
+  if (!binder && exit_status != 0L && file.exists(failed_fit)) {
+    sources <- c(sources, failed_fit)
+    targets <- c(targets, diagnostic)
+  }
+  for (position in seq_along(sources)) {
+    identity <- file_identity(sources[[position]])
+    if (!file.link(sources[[position]], targets[[position]])) stop("Exclusive output publication failed")
+    created[[length(created) + 1L]] <- list(path = targets[[position]], identity = identity)
+  }
+  completed <- TRUE
+  exit_status
+}
+exit_status <- main()
+if (exit_status != 0L) quit(save = "no", status = exit_status)

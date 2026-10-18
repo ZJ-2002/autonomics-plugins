@@ -1,0 +1,52 @@
+{
+  "schema": "LCMM_PUBLICATION_SAFETY_REPAIR_REVIEW_V1",
+  "sources": [
+    {
+      "path": "research-adapters/cachexia-lcmm/manifest.toml",
+      "bytes": 4599,
+      "sha256": "e2c79728840e6b010bfe50625f82ca1e98e6584a527309acab819b14033ce963"
+    },
+    {
+      "path": "research-adapters/cachexia-lcmm/scripts/lcmm.R",
+      "bytes": 23536,
+      "sha256": "92bedf32d5c48070df0354b0ee08c0d0f64e0fcb7cf44d7abd0da2945a0d43d8"
+    },
+    {
+      "path": "tests/lcmm_publication_contract.R",
+      "bytes": 4955,
+      "sha256": "ee28666e4fd62fc0ce1e2525d4a74e9cf832797a034238cf5406227d1db3a7d2"
+    },
+    {
+      "path": "tests/lcmm_method_body_contract.R",
+      "bytes": 1411,
+      "sha256": "ddd47decd9f6ec0fdb061c8c9005e6fdc2ac6d8edac6150d7be1f6adbce4fda1"
+    },
+    {
+      "path": "tests/test_lcmm_publication_binding.py",
+      "bytes": 2524,
+      "sha256": "79c9c765aea17f5865818582e12238ed6ec4b12700f119fa823721ccc4bb93a6"
+    }
+  ],
+  "baseline_foreign_output_failures": 21,
+  "fixed_output_controls": 41,
+  "unchanged_author_call_and_helper_ASTs": 18,
+  "source_manifest_binding_tests": 5,
+  "modes": [
+    "fit",
+    "predict",
+    "compare",
+    "bind"
+  ],
+  "new_author_computations": 0,
+  "historical_inventory_verified_files": 11217,
+  "historical_host_runtime_lock_changed": "/etc/ld.so.cache",
+  "official_image_changed": false,
+  "current_author_DAG_requalification": "PENDING",
+  "native_predict_compare_full_official_equivalence": false,
+  "production_changed": false,
+  "scientific_release_granted": false,
+  "g0_granted": false,
+  "proof_session": "def94e1a9e3a4cc2b816e93ef44e9063",
+  "proof_seal": "16f2c905fa12fe13cee815af4d08505916ccfb99b487e2f28f9e5b3821531546",
+  "newly_closed_candidates": 0
+}

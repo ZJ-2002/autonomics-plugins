@@ -1061,6 +1061,11 @@
     "tests.test_cellchat_publication_binding.CellChatPublicationBindingTests.test_exact_frozen_two_input_eight_output_contract",
     "tests.test_cellchat_publication_binding.CellChatPublicationBindingTests.test_fixed_image_and_author_identity_remain_explicit",
     "tests.test_cellchat_publication_binding.CellChatPublicationBindingTests.test_official_call_and_owned_publication_are_distinct_layers",
-    "tests.test_cellchat_publication_binding.CellChatPublicationBindingTests.test_original_legacy_node_is_not_silently_modified_or_certified"
+    "tests.test_cellchat_publication_binding.CellChatPublicationBindingTests.test_original_legacy_node_is_not_silently_modified_or_certified",
+    "tests.test_lcmm_publication_binding.LcmmPublicationBindingTests.test_existing_manifest_and_image_remain_unchanged",
+    "tests.test_lcmm_publication_binding.LcmmPublicationBindingTests.test_four_modes_preserve_declared_ports_and_offline_limits",
+    "tests.test_lcmm_publication_binding.LcmmPublicationBindingTests.test_official_calls_are_not_replaced_by_native_arithmetic",
+    "tests.test_lcmm_publication_binding.LcmmPublicationBindingTests.test_publication_has_private_staging_and_owned_rollback",
+    "tests.test_lcmm_publication_binding.LcmmPublicationBindingTests.test_verified_wrapper_identity_is_explicit"
   ]
 }
