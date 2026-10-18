@@ -6,6 +6,7 @@ import math
 import os
 from pathlib import Path
 import sys
+import tempfile
 
 import pyarrow as arrow
 import pyarrow.parquet as parquet
@@ -28,8 +29,7 @@ def unique_object(items):
     return dict(items)
 
 
-def main():
-    outputs = [Path(os.environ["AUTONOMICS_OUTPUT"+str(index)]) for index in range(4)]
+def write_products(outputs):
     require(len(set(filename.resolve() for filename in outputs)) == 4 and not any(filename.exists() for filename in outputs), "Missing/aliased/overwritten typed ports")
     audit = {"status": "RUNNING", "G0_granted": False, "resident_deployment_granted": False, "statistical_method": "NOT_APPLICABLE_ENGINEERING_TYPED_BOUNDARY"}
 
@@ -90,6 +90,45 @@ def main():
         save()
         with outputs[2].open("a") as stream:
             stream.write("BLOCKED "+str(error)+"\n")
+        print(str(error), file=sys.stderr)
+        return 2
+
+
+def execute():
+    outputs = [Path(os.environ['AUTONOMICS_OUTPUT' + str(index)]).absolute() for index in range(4)]
+    require(len(set(outputs)) == 4 and len({path.name for path in outputs}) == 4 and
+            len({path.parent.resolve() for path in outputs}) == 1, 'Distinct colocated output ports required')
+    require(not any(path.exists() or path.is_symlink() for path in outputs), 'Refusing existing or linked output')
+    inputs = [Path(os.environ['AUTONOMICS_INPUT' + str(index)]).resolve(strict=True) for index in range(2)]
+    require(not set(path.resolve() for path in outputs).intersection(inputs), 'Input/output alias forbidden')
+    created = []
+    completed = False
+    with tempfile.TemporaryDirectory(prefix='.mice-typed-owned-', dir=outputs[0].parent) as directory:
+        private = [Path(directory) / path.name for path in outputs]
+        try:
+            status = write_products(private)
+            require(type(status) is int and status in (0, 2), 'Invalid writer exit status')
+            for position in (range(4) if status == 0 else (1, 2)):
+                source_identity = private[position].stat()
+                os.link(private[position], outputs[position], follow_symlinks=False)
+                created.append((outputs[position], source_identity.st_dev, source_identity.st_ino))
+            completed = True
+            return status
+        finally:
+            if not completed:
+                for filename, device, inode in reversed(created):
+                    try:
+                        current = filename.lstat()
+                        if (current.st_dev, current.st_ino) == (device, inode):
+                            filename.unlink()
+                    except FileNotFoundError:
+                        pass
+
+
+def main():
+    try:
+        return execute()
+    except Exception as error:
         print(str(error), file=sys.stderr)
         return 2
 

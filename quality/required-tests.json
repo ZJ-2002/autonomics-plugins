@@ -1079,6 +1079,11 @@
     "tests.test_survey_typed_values.SurveyTypedValuesTests.test_missing_cannot_become_zero",
     "tests.test_survey_typed_values.SurveyTypedValuesTests.test_ragged_extra_field_is_refused",
     "tests.test_survey_typed_values.SurveyTypedValuesTests.test_wrong_row_coordinate_is_refused",
-    "tests.test_survey_typed_values.SurveyTypedValuesTests.test_wrong_summary_hash_is_refused"
+    "tests.test_survey_typed_values.SurveyTypedValuesTests.test_wrong_summary_hash_is_refused",
+    "tests.test_mice_publication_binding.MicePublicationBindingTests.test_all_declared_ports_remain_explicit",
+    "tests.test_mice_publication_binding.MicePublicationBindingTests.test_both_manifests_and_images_remain_unchanged",
+    "tests.test_mice_publication_binding.MicePublicationBindingTests.test_r_entries_share_explicit_owned_publication",
+    "tests.test_mice_publication_binding.MicePublicationBindingTests.test_three_verified_source_identities_are_explicit",
+    "tests.test_mice_publication_binding.MicePublicationBindingTests.test_typed_publication_and_raw_binding_do_not_change_statistics"
   ]
 }

@@ -1,0 +1,62 @@
+{
+  "schema": "MICE_PUBLICATION_REPAIR_SOURCE_REVIEW_V1",
+  "sources": [
+    {
+      "path": "research-adapters/cachexia-mice/manifest.toml",
+      "bytes": 5826,
+      "sha256": "eec37a826352f6501d8c53b60a0ff80a2027e01995798b156d4fd0f7a51d3780"
+    },
+    {
+      "path": "research-adapters/cachexia-mice/scripts/mice.R",
+      "bytes": 26581,
+      "sha256": "33d36247e60b0229965e1d2d559f91961888b7f959a82154a4996fbf4c10309e"
+    },
+    {
+      "path": "research-adapters/cachexia-mice/scripts/bind_contract.R",
+      "bytes": 9789,
+      "sha256": "77c1fd5bc3025d3e6c7c70dcbdf5945493194e6e6fefa261a737bba3f7adc14a"
+    },
+    {
+      "path": "research-adapters/cachexia-mice-typed-values/manifest.toml",
+      "bytes": 1184,
+      "sha256": "5cf91dcfff2ff4f9bbd0749d881f5dccb9a17c13040952987c07affb4d10c0e6"
+    },
+    {
+      "path": "research-adapters/cachexia-mice-typed-values/scripts/typed_values.py",
+      "bytes": 7170,
+      "sha256": "c503512f82c82ef7cf28950e0b64cbaf3e7ccf85f445ff0d11cf23a21b9189f8"
+    },
+    {
+      "path": "tests/mice_publication_contract.R",
+      "bytes": 5335,
+      "sha256": "7ae3a0b8294f3aeaba6fe7f9c5f9ec26e8dda6da6529d4f58f97acd73626abdb"
+    },
+    {
+      "path": "tests/mice_method_body_contract.R",
+      "bytes": 1539,
+      "sha256": "97215d03f22bfe4a7cb26bbfb27fb3c8738234ad726f6734853a59ed9e84e032"
+    },
+    {
+      "path": "tests/test_mice_publication_binding.py",
+      "bytes": 3235,
+      "sha256": "989d67d54d5ff3bd9e89db3b34f8b79f45989a2a2575a0fed260a3e85aedaed1"
+    }
+  ],
+  "old_R_dangling_failures": 9,
+  "fixed_R_publication_controls": 26,
+  "old_typed_dangling_failures": 4,
+  "fixed_actual_image_typed_controls": 13,
+  "old_R_function_ASTs_unchanged": 30,
+  "typed_writer_body_AST_unchanged": true,
+  "focused_binding_tests": 5,
+  "manifests_or_images_changed": false,
+  "statistical_calls": 0,
+  "current_method_DAG": "PENDING",
+  "production_changed": false,
+  "scientific_release_granted": false,
+  "g0_granted": false,
+  "proof_session": "05264a0c626e472e9ef4fbc8af903279",
+  "proof_seal": "f74d7f5ac8c60841bd376d54ffe639ca963d24ebe7d6559b974ec7bb88b71858",
+  "new_scoped_closures": 0,
+  "next_reference_strategy": "PLANNED_UNMODIFIED_AUTHOR_ENTRY_FRESH_RAW_RECOMPUTATION_NO_EXTRA_EXCLUSIONS"
+}

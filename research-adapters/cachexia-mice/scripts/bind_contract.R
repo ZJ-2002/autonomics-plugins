@@ -1,10 +1,4 @@
 options(digits = 17)
-outputs <- vapply(0:2, function(index) Sys.getenv(paste0("AUTONOMICS_OUTPUT", index)), "")
-if (any(!nzchar(outputs)) || anyDuplicated(normalizePath(outputs, mustWork = FALSE)) || any(file.exists(outputs))) stop("Refusing missing/aliased/overwritten bind ports")
-audit <- list(status = "RUNNING", G0_granted = FALSE, scientific_qualification_granted = FALSE, resident_deployment_granted = FALSE)
-save_audit <- function() jsonlite::write_json(audit, outputs[2], auto_unbox = TRUE, pretty = TRUE, null = "null", na = "null", digits = NA)
-save_audit()
-cat("RUNNING hash-only contract binding\n", file = outputs[3])
 require_value <- function(value, message) if (!isTRUE(value)) stop(message, call. = FALSE)
 checksum <- function(filename) {
   value <- system2("sha256sum", shQuote(filename), stdout = TRUE, stderr = TRUE)
@@ -59,6 +53,11 @@ bind_json_hash <- function(bytes, hash) {
   suffix <- if (finish < length(bytes)) bytes[seq.int(finish + 1L, length(bytes))] else raw()
   c(prefix, charToRaw(paste0('"', hash, '"')), suffix)
 }
+run_binding_entry <- function(outputs) {
+audit <- list(status = "RUNNING", G0_granted = FALSE, scientific_qualification_granted = FALSE, resident_deployment_granted = FALSE)
+save_audit <- function() jsonlite::write_json(audit, outputs[2], auto_unbox = TRUE, pretty = TRUE, null = "null", na = "null", digits = NA)
+save_audit()
+cat("RUNNING hash-only contract binding\n", file = outputs[3])
 status <- tryCatch({
   require_value(as.character(getRversion()) == "4.6.1" && as.character(packageVersion("mice")) == "3.19.0" && Sys.getenv("AUTONOMICS_INPUT_COUNT") == "2", "Pinned runtime/two input ports required")
   input <- Sys.getenv("AUTONOMICS_INPUT0")
@@ -103,5 +102,56 @@ status <- tryCatch({
   message(conditionMessage(error))
   2L
 })
-quit(status = status)
+status
+}
+publish_outputs <- function(writer, output_count, diagnostics, input_count) {
+  destinations <- vapply(seq_len(output_count) - 1L, function(index) Sys.getenv(paste0("AUTONOMICS_OUTPUT", index)), "")
+  if (any(!nzchar(destinations))) stop("Every declared output path is required")
+  destinations <- vapply(destinations, function(filename)
+    file.path(normalizePath(dirname(filename), mustWork = TRUE), basename(filename)), character(1))
+  if (anyDuplicated(destinations) || anyDuplicated(basename(destinations))) stop("Distinct output paths required")
+  inputs <- vapply(seq_len(input_count) - 1L, function(index) Sys.getenv(paste0("AUTONOMICS_INPUT", index)), "")
+  if (any(!nzchar(inputs))) stop("Both declared inputs are required")
+  input_paths <- vapply(inputs, normalizePath, character(1), mustWork = TRUE)
+  if (any(destinations %in% input_paths)) stop("Input and output paths must be distinct")
+  path_present <- function(filename) {
+    target <- Sys.readlink(filename)
+    file.exists(filename) || (!is.na(target) && nzchar(target))
+  }
+  if (any(vapply(destinations, path_present, logical(1)))) stop("Refusing to overwrite existing output")
+  stage <- tempfile(pattern = ".mice-owned-", tmpdir = dirname(destinations[[1L]]))
+  if (!dir.create(stage, mode = "0700")) stop("Private output staging could not be created")
+  created <- list()
+  completed <- FALSE
+  file_identity <- function(filename) {
+    value <- system2("stat", c("-c", shQuote("%d:%i"), shQuote(filename)), stdout = TRUE, stderr = TRUE)
+    if (!is.null(attr(value, "status")) || length(value) != 1L || !grepl("^[0-9]+:[0-9]+$", value)) {
+      stop("Output file identity unavailable")
+    }
+    value[[1L]]
+  }
+  on.exit({
+    if (!completed) {
+      for (owned in rev(created)) {
+        tryCatch({
+          if (path_present(owned$path) && identical(file_identity(owned$path), owned$identity)) unlink(owned$path)
+        }, error = function(error) warning(paste("Output rollback retained an unverified path:", conditionMessage(error))))
+      }
+    }
+    unlink(stage, recursive = TRUE)
+  }, add = TRUE)
+  private_outputs <- file.path(stage, basename(destinations))
+  status <- writer(private_outputs)
+  if (length(status) != 1L || !status %in% c(0L, 2L)) stop("Invalid wrapper exit status")
+  positions <- if (status == 0L) seq_along(destinations) else diagnostics
+  for (position in positions) {
+    identity <- file_identity(private_outputs[[position]])
+    if (!file.link(private_outputs[[position]], destinations[[position]])) stop("Exclusive output publication failed")
+    created[[length(created) + 1L]] <- list(path = destinations[[position]], identity = identity)
+  }
+  completed <- TRUE
+  status
+}
+exit_status <- publish_outputs(run_binding_entry, 3L, c(2L, 3L), 2L)
+if (exit_status != 0L) quit(save = "no", status = exit_status)
 
