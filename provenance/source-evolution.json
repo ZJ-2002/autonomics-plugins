@@ -1077,11 +1077,11 @@
       },
       "current": {
         "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
-        "revision": "2e33bc0471cc7aac82b0a2e1f34b437801d53c29",
+        "revision": "a99d2898fc58b71c304de019d469925cd1d10b41",
         "path": "plugins/mrpresso/manifest.toml",
-        "sha256": "0256ed3c044fe851faaa2d63f268b33258816669ddbf6f946ea5dd8dfe29e652",
-        "bytes": 2681,
-        "git_blob": "d3dfb708e8d13ab18d24565a17da1766a18fd69f"
+        "bytes": 2793,
+        "sha256": "c6a838d4a36757364719e41acccbff8c957b809351f9f057ce6decfe844473c9",
+        "git_blob": "3bea2c974daa8b64a7e7c408326fd29d25432be3"
       }
     },
     {
@@ -1095,11 +1095,29 @@
       },
       "current": {
         "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
-        "revision": "2e33bc0471cc7aac82b0a2e1f34b437801d53c29",
+        "revision": "a99d2898fc58b71c304de019d469925cd1d10b41",
         "path": "plugins/mrpresso/README.md",
-        "sha256": "85e85222ff2b19d3c2e163f254933e430bbd32d206c0a2f88d96aefe3eddf656",
-        "bytes": 4507,
-        "git_blob": "bc30872856976366cce92ca55d99a009d8403cb9"
+        "bytes": 5366,
+        "sha256": "c2539ad36f57aa95330d74347509e4b8e6aa65ebdeb047318aabc2628378d846",
+        "git_blob": "30b4eb0deeddfa5937e3d5c13caed8c4294aac94"
+      }
+    },
+    {
+      "path": "plugins/mrpresso/scripts/mrpresso.R.sh",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/mrpresso-plugin.git",
+        "revision": "670007a7432b0e9494797e5b12b10010bfc74b18",
+        "bytes": 2074,
+        "sha256": "b4cbfe20653fe662abef8c7b859731f12d4516c2ca23cbe4d41104a91fb6991f",
+        "git_blob": "0330e309a7bf0b0867c5c7ea3abb4b8642e4a818"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "a99d2898fc58b71c304de019d469925cd1d10b41",
+        "path": "plugins/mrpresso/scripts/mrpresso.R.sh",
+        "bytes": 4563,
+        "sha256": "a78d95ecd7b7d3cced72269f46f184190cda7cbe769a095301c5da6d67bcf9d3",
+        "git_blob": "96425b9dfd538a6d79c57f76124fd3c945425cb6"
       }
     }
   ]
