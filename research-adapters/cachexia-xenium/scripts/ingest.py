@@ -236,6 +236,22 @@ def ledger(filename, test_id, status, error=""):
         writer.writerow([test_id or "UNKNOWN_UNRECOVERABLE_ID", status, error, "NOT_GRANTED"])
 
 
+def publish_file(source, destination, published):
+    identity = source.stat()
+    os.link(source, destination, follow_symlinks=False)
+    published.append((destination, identity.st_dev, identity.st_ino))
+
+
+def remove_owned(published):
+    for filename, device, inode in reversed(published):
+        try:
+            current = filename.lstat()
+            if (current.st_dev, current.st_ino) == (device, inode):
+                filename.unlink()
+        except FileNotFoundError:
+            pass
+
+
 def main():
     inputs = [Path(os.environ["AUTONOMICS_INPUT" + str(position)]) for position in range(3)]
     outputs = [Path(os.environ.get("AUTONOMICS_OUTPUT" + str(position), "/work/" + name)) for position, name in enumerate(NAMES)]
@@ -247,7 +263,6 @@ def main():
         safe = True
         raw_text = inputs[2].read_text()
         audit["test_id"] = recover_test_id(raw_text)
-        json_file(outputs[5], dict(audit, status="STARTED_NOT_VERIFIED"))
         request = decode_json(inputs[2])
         validate(request)
         temporary = Path(tempfile.mkdtemp(prefix="xenium-publication-", dir=parent))
@@ -257,17 +272,24 @@ def main():
         audit.update(details, status="TECHNICAL_PASS_NOT_SCIENTIFIC", request=request, request_sha256=digest(inputs[2]), input_sha256=[digest(filename) for filename in inputs], output_sha256={str(position): digest(temporary / NAMES[position]) for position in range(len(NAMES)) if position != 5})
         json_file(temporary / NAMES[5], audit)
         for position, name in enumerate(NAMES):
-            (temporary / name).replace(outputs[position])
-            published.append(outputs[position])
+            publish_file(temporary / name, outputs[position], published)
     except Exception as error:
         audit.update(status="BLOCKED", error=str(error))
         audit.pop("output_sha256", None)
         if safe:
-            for filename in published:
-                filename.unlink()
-            json_file(outputs[5], audit)
-            ledger(outputs[6], audit["test_id"], "BLOCKED", str(error))
-            outputs[3].write_text(str(error) + "\n")
+            remove_owned(published)
+            if temporary is None:
+                temporary = Path(tempfile.mkdtemp(prefix="xenium-publication-", dir=outputs[0].parent))
+            failure = temporary / "failure"
+            failure.mkdir()
+            json_file(failure / NAMES[5], audit)
+            ledger(failure / NAMES[6], audit["test_id"], "BLOCKED", str(error))
+            (failure / NAMES[3]).write_text(str(error) + "\n")
+            for position in (5, 6, 3):
+                try:
+                    publish_file(failure / NAMES[position], outputs[position], [])
+                except FileExistsError:
+                    print("Preserved existing diagnostic: " + str(outputs[position]), file=sys.stderr)
         else:
             print(json.dumps(audit), file=sys.stderr)
         print(str(error), file=sys.stderr)

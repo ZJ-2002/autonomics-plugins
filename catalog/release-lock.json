@@ -705,7 +705,7 @@
         },
         {
           "path": "source-lock.json",
-          "sha256": "6abcb5cb1d53fe609a912955482774a7b3da04018a08aafbcd5bd4c6ba87f7c4",
+          "sha256": "97d796db59015dd90a30ae36b2ebcef114aff9363d92cf3a77391dfd67f50e3f",
           "bytes": 4076,
           "executable": false
         }
@@ -17762,8 +17762,8 @@
         },
         {
           "path": "scripts/ingest.py",
-          "sha256": "5f0dfae4060680152e1176f7de963022177f6cd950e2969cc0ccded326c68e96",
-          "bytes": 18438,
+          "sha256": "a96504715fb466e3e518e0ff589355d91156349252e5e85df3cfa036df417fa8",
+          "bytes": 19315,
           "executable": false
         }
       ],

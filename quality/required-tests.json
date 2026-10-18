@@ -1084,6 +1084,13 @@
     "tests.test_mice_publication_binding.MicePublicationBindingTests.test_both_manifests_and_images_remain_unchanged",
     "tests.test_mice_publication_binding.MicePublicationBindingTests.test_r_entries_share_explicit_owned_publication",
     "tests.test_mice_publication_binding.MicePublicationBindingTests.test_three_verified_source_identities_are_explicit",
-    "tests.test_mice_publication_binding.MicePublicationBindingTests.test_typed_publication_and_raw_binding_do_not_change_statistics"
+    "tests.test_mice_publication_binding.MicePublicationBindingTests.test_typed_publication_and_raw_binding_do_not_change_statistics",
+    "tests.test_xenium_publication.XeniumPublicationTests.test_failure_diagnostics_do_not_overwrite_late_foreign_file",
+    "tests.test_xenium_publication.XeniumPublicationTests.test_file_created_after_preflight_is_not_overwritten",
+    "tests.test_xenium_publication.XeniumPublicationTests.test_malformed_request_emits_failure_artifacts_only",
+    "tests.test_xenium_publication.XeniumPublicationTests.test_partial_publication_preserves_foreign_replacement",
+    "tests.test_xenium_publication.XeniumPublicationTests.test_partial_publication_rolls_back_only_owned_outputs",
+    "tests.test_xenium_publication.XeniumPublicationTests.test_preexisting_dangling_outputs_are_preserved",
+    "tests.test_xenium_publication.XeniumPublicationTests.test_success_has_all_ports_and_no_stage"
   ]
 }
