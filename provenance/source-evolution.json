@@ -1077,11 +1077,11 @@
       },
       "current": {
         "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
-        "revision": "7f98d3e9d878a7887e805b4750a91fc96370ed81",
+        "revision": "2e33bc0471cc7aac82b0a2e1f34b437801d53c29",
         "path": "plugins/mrpresso/manifest.toml",
-        "sha256": "9cc3b1dbf0a53edcd7c42dbfc9188e3881b9572d1d56a0c0b6dc5f736635d396",
-        "bytes": 2560,
-        "git_blob": "50033b9bd5a90eda8d84e4f6c70553435a21c753"
+        "sha256": "0256ed3c044fe851faaa2d63f268b33258816669ddbf6f946ea5dd8dfe29e652",
+        "bytes": 2681,
+        "git_blob": "d3dfb708e8d13ab18d24565a17da1766a18fd69f"
       }
     },
     {
@@ -1095,11 +1095,11 @@
       },
       "current": {
         "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
-        "revision": "7f98d3e9d878a7887e805b4750a91fc96370ed81",
+        "revision": "2e33bc0471cc7aac82b0a2e1f34b437801d53c29",
         "path": "plugins/mrpresso/README.md",
-        "sha256": "80576d5ffeb3697056e33bc99db0a31fd39f3270e41caf7308056efec9006d5f",
-        "bytes": 4082,
-        "git_blob": "9a4ccb3c40fc9a05185d9ce162384da5d79ccedd"
+        "sha256": "85e85222ff2b19d3c2e163f254933e430bbd32d206c0a2f88d96aefe3eddf656",
+        "bytes": 4507,
+        "git_blob": "bc30872856976366cce92ca55d99a009d8403cb9"
       }
     }
   ]
