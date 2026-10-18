@@ -34,6 +34,8 @@ class MRPressoImageBindingTests(unittest.TestCase):
         self.assertEqual(node['params']['nb_distribution']['default'], 1000)
         self.assertIs(node['params']['outlier_test']['default'], False)
         self.assertIs(node['params']['distortion_test']['default'], False)
+        self.assertIn('global test is always computed', node['params']['outlier_test']['doc'])
+        self.assertIn('change in the causal estimate', node['params']['distortion_test']['doc'])
         source = (ROOT / 'plugins/mrpresso/scripts/mrpresso.R.sh').read_text()
         self.assertIn('result <- MRPRESSO::mr_presso(', source)
 

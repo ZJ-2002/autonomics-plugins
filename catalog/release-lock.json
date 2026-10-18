@@ -7629,8 +7629,8 @@
         },
         {
           "path": "README.md",
-          "sha256": "80576d5ffeb3697056e33bc99db0a31fd39f3270e41caf7308056efec9006d5f",
-          "bytes": 4082,
+          "sha256": "85e85222ff2b19d3c2e163f254933e430bbd32d206c0a2f88d96aefe3eddf656",
+          "bytes": 4507,
           "executable": false
         },
         {
@@ -7641,8 +7641,8 @@
         },
         {
           "path": "manifest.toml",
-          "sha256": "9cc3b1dbf0a53edcd7c42dbfc9188e3881b9572d1d56a0c0b6dc5f736635d396",
-          "bytes": 2560,
+          "sha256": "0256ed3c044fe851faaa2d63f268b33258816669ddbf6f946ea5dd8dfe29e652",
+          "bytes": 2681,
           "executable": false
         },
         {

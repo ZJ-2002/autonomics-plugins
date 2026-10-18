@@ -32,8 +32,8 @@ beta_outcome = { type = "string", doc = "Outcome beta-effect column name in the 
 sd_outcome = { type = "string", doc = "Outcome standard-error column name in the input table" }
 beta_exposure = { type = "string_array", min_len = 1, doc = "Exposure beta-effect column names, one per exposure" }
 sd_exposure = { type = "string_array", min_len = 1, doc = "Exposure standard-error column names; same order and length as beta_exposure" }
-outlier_test = { type = "bool", default = false, doc = "Run the global heterogeneity (outlier) test" }
-distortion_test = { type = "bool", default = false, doc = "Run the balancing-test distortion correction" }
+outlier_test = { type = "bool", default = false, doc = "Run individual-SNP outlier tests after the global test; the global test is always computed" }
+distortion_test = { type = "bool", default = false, doc = "Test the change in the causal estimate after removing detected outliers; evaluated only when outlier testing is active" }
 signif_threshold = { type = "number", default = 0.05, min = 0.0, max = 1.0, doc = "Significance threshold for outlier detection" }
 nb_distribution = { type = "int", default = 1000, min = 1.0, doc = "Number of simulations for the global test null distribution" }
 seed = { type = "int", default = 123, doc = "Random seed fixed via set.seed before the run" }

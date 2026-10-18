@@ -39,6 +39,12 @@ review items; this image repair does not close the entire node or grant
 scientific use. The label `1.0.0` describes the image, not the official
 package version, which is `1.0`.
 
+The global test is always computed by the author function. `outlier_test`
+controls the subsequent individual-SNP test, not whether to run the global
+test. `distortion_test` concerns the change in the causal estimate after
+outlier removal and is effective only when outlier testing is active; it
+is not a covariate balancing test.
+
 ## Migration parity
 
 The golden test (`crates/container-plugin/tests/mrpresso_migration.rs`)
@@ -56,8 +62,10 @@ log epilogue, and the `saveRDS` artifact. Deliberate deltas:
   spec accepted per-node overrides, the plugin DSL does not.
 - **Params travel via env** (`MRPRESSO_*`). String arrays are space-joined
   by the env renderer and re-split in R with a single-space `fixed = TRUE`
-  `strsplit` — the exact inverse of the join. Array elements containing
-  spaces cannot round-trip; GWAS effect/SE column names never contain them.
+  `strsplit`. This is lossless only when every element contains no spaces;
+  the current schema does not enforce that restriction. Lossless array
+  transport remains an open wrapper repair, not an assumed property of
+  every GWAS input column.
 - **Booleans** render as `true`/`false` and are read with `as.logical()`,
   which accepts both spellings, matching the legacy embedded `TRUE`/`FALSE`.
 - **Numbers** are read with `as.numeric()`; R parses the rendered literals

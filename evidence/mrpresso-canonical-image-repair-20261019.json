@@ -11,18 +11,6 @@
   "package_version": "1.0",
   "R_version": "4.5.1",
   "body_and_formals_equal_to_pinned_author": true,
-  "sources": [
-    {
-      "path": "plugins/mrpresso/manifest.toml",
-      "bytes": 2560,
-      "sha256": "9cc3b1dbf0a53edcd7c42dbfc9188e3881b9572d1d56a0c0b6dc5f736635d396"
-    },
-    {
-      "path": "plugins/mrpresso/scripts/mrpresso.R.sh",
-      "bytes": 2074,
-      "sha256": "b4cbfe20653fe662abef8c7b859731f12d4516c2ca23cbe4d41104a91fb6991f"
-    }
-  ],
   "identity_proof": {
     "session": "c008f79519fc41088383cb721a795780",
     "seal": "6eb1e076dbcdb093d9e20d13266af34aa253451a51baf1201b8d49299def1a07"
@@ -50,5 +38,47 @@
   "whole_node_closed": false,
   "production_changed": false,
   "scientific_release_granted": false,
-  "g0_granted": false
+  "g0_granted": false,
+  "SDK_executed_sources": [
+    {
+      "path": "plugins/mrpresso/manifest.toml",
+      "bytes": 2560,
+      "sha256": "9cc3b1dbf0a53edcd7c42dbfc9188e3881b9572d1d56a0c0b6dc5f736635d396"
+    },
+    {
+      "path": "plugins/mrpresso/scripts/mrpresso.R.sh",
+      "bytes": 2074,
+      "sha256": "b4cbfe20653fe662abef8c7b859731f12d4516c2ca23cbe4d41104a91fb6991f"
+    }
+  ],
+  "current_sources": [
+    {
+      "path": "plugins/mrpresso/manifest.toml",
+      "bytes": 2681,
+      "sha256": "0256ed3c044fe851faaa2d63f268b33258816669ddbf6f946ea5dd8dfe29e652"
+    },
+    {
+      "path": "plugins/mrpresso/scripts/mrpresso.R.sh",
+      "bytes": 2074,
+      "sha256": "b4cbfe20653fe662abef8c7b859731f12d4516c2ca23cbe4d41104a91fb6991f"
+    }
+  ],
+  "doc_only_followup": {
+    "session": "24e3e4f524ed4e2d99f8f544bf04bb62",
+    "seal": "ca70ce30567ded250a2bf7e86d98df2bc8314f5f7b211f558d0714e295e0d1f9",
+    "allowed_differences": {
+      "outlier_test": {
+        "tested_doc": "Run the global heterogeneity (outlier) test",
+        "corrected_doc": "Run individual-SNP outlier tests after the global test; the global test is always computed"
+      },
+      "distortion_test": {
+        "tested_doc": "Run the balancing-test distortion correction",
+        "corrected_doc": "Test the change in the causal estimate after removing detected outliers; evaluated only when outlier testing is active"
+      }
+    },
+    "all_other_manifest_execution_fields_identical": true,
+    "call_script_unchanged": true,
+    "current_declaration_tests": 4,
+    "statistical_calculations_repeated": false
+  }
 }
