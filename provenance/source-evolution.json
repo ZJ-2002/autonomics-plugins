@@ -1371,6 +1371,60 @@
         "sha256": "ee8a4ebd6a0d861a31de3d1d08a62b5c6aa953e1aa625e4dda3854ae2ab5b684",
         "git_blob": "2edb4e930e69548adbdd808dda8fa152b99b157c"
       }
+    },
+    {
+      "path": "research-adapters/cachexia-mice/scripts/mice.R",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/autonomics.git",
+        "revision": "bdedf129011789e6eec3a594252d6515b6a67618",
+        "bytes": 23859,
+        "sha256": "fef8f01fb8e4a9de7de258cf274cef7b4a39512cd8d2da42770ddb7331f504da",
+        "git_blob": "4f9848cde4e58cd32bab1a55f308dbabb9cf0584"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "95d35db7f1581c2aeab0fc0af86b9bf3e430f405",
+        "path": "research-adapters/cachexia-mice/scripts/mice.R",
+        "bytes": 26581,
+        "sha256": "33d36247e60b0229965e1d2d559f91961888b7f959a82154a4996fbf4c10309e",
+        "git_blob": "b93972b396be20204e7f1e27f2f2cb87bb2951f8"
+      }
+    },
+    {
+      "path": "research-adapters/cachexia-mice/scripts/bind_contract.R",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/autonomics.git",
+        "revision": "bdedf129011789e6eec3a594252d6515b6a67618",
+        "bytes": 7200,
+        "sha256": "5638fa42f184941a392d6a9b14bf800b1d09db895043df711f4c82da7f0ba1c1",
+        "git_blob": "c114e8d9286344c399a99f0763aabc28ece4c867"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "95d35db7f1581c2aeab0fc0af86b9bf3e430f405",
+        "path": "research-adapters/cachexia-mice/scripts/bind_contract.R",
+        "bytes": 9789,
+        "sha256": "77c1fd5bc3025d3e6c7c70dcbdf5945493194e6e6fefa261a737bba3f7adc14a",
+        "git_blob": "2b8aec240cca8960e2bc24ac46bbf18680f1d3b9"
+      }
+    },
+    {
+      "path": "research-adapters/cachexia-mice-typed-values/scripts/typed_values.py",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/autonomics.git",
+        "revision": "bdedf129011789e6eec3a594252d6515b6a67618",
+        "bytes": 5323,
+        "sha256": "eb676dfa25d4a6ac5a1ee8dd3a8ad8092ec2401a8135ebe6f9a9f8d22999247d",
+        "git_blob": "38f9d0aaee6fac26fead73fc93e3acd070ed32bb"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "95d35db7f1581c2aeab0fc0af86b9bf3e430f405",
+        "path": "research-adapters/cachexia-mice-typed-values/scripts/typed_values.py",
+        "bytes": 7170,
+        "sha256": "c503512f82c82ef7cf28950e0b64cbaf3e7ccf85f445ff0d11cf23a21b9189f8",
+        "git_blob": "8dfa4e41c8dc0b2044b321790f4f1bb101ac8e80"
+      }
     }
   ]
 }
