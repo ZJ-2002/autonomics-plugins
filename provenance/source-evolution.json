@@ -1425,6 +1425,24 @@
         "sha256": "c503512f82c82ef7cf28950e0b64cbaf3e7ccf85f445ff0d11cf23a21b9189f8",
         "git_blob": "8dfa4e41c8dc0b2044b321790f4f1bb101ac8e80"
       }
+    },
+    {
+      "path": "research-adapters/cachexia-xenium/scripts/ingest.py",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/autonomics.git",
+        "revision": "bdedf129011789e6eec3a594252d6515b6a67618",
+        "bytes": 18438,
+        "sha256": "5f0dfae4060680152e1176f7de963022177f6cd950e2969cc0ccded326c68e96",
+        "git_blob": "cf3a6af925466a773f033795ec3802b306716425"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "d3b6b6e61853044de498acb3023db68c12ac5049",
+        "path": "research-adapters/cachexia-xenium/scripts/ingest.py",
+        "bytes": 19315,
+        "sha256": "a96504715fb466e3e518e0ff589355d91156349252e5e85df3cfa036df417fa8",
+        "git_blob": "67934296886f11db5985c0b6765b7ab3e17688cf"
+      }
     }
   ]
 }
