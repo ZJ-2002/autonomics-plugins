@@ -1,0 +1,59 @@
+schema_version = 1
+plugin_name = "synthetic-rule-net"
+
+[image]
+reference = "docker.io/library/python@sha256:5560e9ab8709f459489e5b8aa696eda8a07ef821e14bb122be62d91234bfa98b"
+
+[[nodes]]
+kind = "evaluate"
+desc = "SYNTHETIC_ONLY synchronous finite discrete rule-network reference evaluator (CMM v2.0 §12/§23 hand-calculation reference)"
+doc = """
+SYNTHETIC_ONLY mathematical reference, implementation 2.0.0 / result schema 2.
+Zero file inputs: all model content comes from the JSON spec parameter.
+Synchronous rule_semantics=next_state assigns table values directly (default).
+rule_semantics=target_unit_step moves each node at most one unit toward the table target using the previous state.
+Inputs must be clamped or explicitly declare value; required=true still requires a clamp in every arm.
+Attractors include complete periodic states, per-attractor period summaries and readout_kind.
+Arm readout is null for multiple attractors and for cycles without an explicit readout.cycle_policy=period_mean.
+point_prediction_allowed controls scalar use; attractor_readout_values/range retain summaries without selecting a state or weights.
+Delta is null unless both arm scalar predictions are allowed. No initial-state fallback.
+No network, no research data, no biological qualification, no full BMA compatibility claim.
+Missing rules fail INCOMPLETE_RULE; absent rules are never filled from defaults or previous results.
+Read README.md for schema migration, finite method scope and protected-execution requirements.
+"""
+deprecated = false
+terminal = false
+timeout_secs = 300
+artifact_prefix = "/artifacts/synthetic_rule_net"
+
+[nodes.ports]
+inputs = []
+
+[[nodes.ports.outputs]]
+path = "result.json"
+format = "json"
+label = "result"
+
+[[nodes.ports.outputs]]
+path = "summary.tsv"
+format = "tsv"
+label = "summary"
+
+[nodes.params.spec]
+type = "string"
+default = ""
+doc = "JSON-encoded rule-network spec: {name, state_domains?, nodes[{id, kind: rule|input|constant, parents?, table?, value?, required?}], update: 'synchronous', rule_semantics?: 'next_state'|'target_unit_step', initial_states?: 'exhaustive'|{node: [values]}, clamps?, max_nodes?, max_steps?, readout {type: mean_nodes|node_value, nodes?|node?}, intervention? {clamps}}. Empty default fails closed OUT_OF_DECLARED_SCOPE. The whole model is carried by this string; see node doc for the declared semantics and error taxonomy."
+
+[nodes.command]
+interpreter = "python3"
+script_file = "scripts/evaluate.py"
+
+[nodes.command.env]
+RULENET_SPEC = "{{ spec }}"
+
+[nodes.resources]
+network = "isolated"
+read_only_rootfs = true
+pull_policy = "never"
+cpus = 1.0
+memory = "512m"

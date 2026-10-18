@@ -18702,6 +18702,49 @@
       "auto_enable": false
     },
     {
+      "directory": "research-adapters/synthetic-rule-net",
+      "plugin_name": "synthetic-rule-net",
+      "kinds": [
+        "evaluate"
+      ],
+      "image_reference": "docker.io/library/python@sha256:5560e9ab8709f459489e5b8aa696eda8a07ef821e14bb122be62d91234bfa98b",
+      "files": [
+        {
+          "path": "README.md",
+          "sha256": "8d6e7c1d56668908e0411aa4470572ef5832d9c2a2b5e00f7289a0dafc1834a0",
+          "bytes": 6676,
+          "executable": false
+        },
+        {
+          "path": "manifest.toml",
+          "sha256": "499c645df79250a17f98003eba4f70937d84acb669efd0f82a3f182786d7701f",
+          "bytes": 2618,
+          "executable": false
+        },
+        {
+          "path": "scripts/evaluate.py",
+          "sha256": "dd99f033926037182898f68c6c5859050f96b82078b5a645ef0b845a32ddb62e",
+          "bytes": 27267,
+          "executable": false
+        },
+        {
+          "path": "scripts/test_semantics.py",
+          "sha256": "59d1a612613a9c2d6b9a97a272646885e7a96f7e6376586595ba6da35a82aaaf",
+          "bytes": 8428,
+          "executable": false
+        },
+        {
+          "path": "scripts/test_synthetic.py",
+          "sha256": "9e7b5d6ab35456e8227656db65f5fb834d82c40464496f7a66a2b77c58ccbf61",
+          "bytes": 22510,
+          "executable": false
+        }
+      ],
+      "source_inventory_only": true,
+      "scientific_certified": false,
+      "auto_enable": false
+    },
+    {
       "directory": "research-adapters/visualization",
       "plugin_name": "visualization",
       "kinds": [
