@@ -1317,6 +1317,24 @@
         "sha256": "c4ca06157ff3d8453f23e998867d62dd007d4d63f14b1aa8b549cc539361b7f2",
         "git_blob": "15a027a0db41c1c6973201c36f9e8368feaca5db"
       }
+    },
+    {
+      "path": "research-adapters/cachexia-lcmm/scripts/lcmm.R",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/autonomics.git",
+        "revision": "bdedf129011789e6eec3a594252d6515b6a67618",
+        "bytes": 20137,
+        "sha256": "59836e573a78c5285aaadbcd1c4e9734481fca7be086add828796d97e407f046",
+        "git_blob": "5e18c6b2fb2fb7c7068013846055e5cf7b3c0c5a"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "6b6b045b2ade467c5fba132a007b905c5f46d8b2",
+        "path": "research-adapters/cachexia-lcmm/scripts/lcmm.R",
+        "bytes": 23536,
+        "sha256": "92bedf32d5c48070df0354b0ee08c0d0f64e0fcb7cf44d7abd0da2945a0d43d8",
+        "git_blob": "b5d2709760c476e8eacf7723661877fa921aa335"
+      }
     }
   ]
 }
