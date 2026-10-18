@@ -15,11 +15,11 @@
       },
       "current": {
         "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
-        "revision": "c1b221df8954b8788b8ac65c7a8b3ebf09df4eb1",
+        "revision": "4630ea812020b7464f14e9108a215b290260e200",
         "path": "plugins/ucell/scripts/ucell.R",
-        "sha256": "0ee592ccb766d784451a8d429f13d4cda3d7d2ea774ad7397b3ba6915ed582fd",
-        "bytes": 7236,
-        "git_blob": "69d7fb422f2b335afdf6e9897f5485f642d8a655"
+        "bytes": 15881,
+        "sha256": "101212cac5bde9a90b7105c0e4311651d8d12c42d9e06afb3f39deb3f8aa9b5f",
+        "git_blob": "6c13290af457a8380e5dc465d7f0c81a9fa6fff5"
       }
     },
     {
@@ -974,6 +974,60 @@
         "sha256": "43fb66628521a85cbc05131367907488d65fc447224adedd8b6977a2e77ee857",
         "bytes": 2130,
         "git_blob": "0ec5b7991512e6e0bd1d8d9db97375cb4a2b2eb9"
+      }
+    },
+    {
+      "path": "plugins/geo/README.md",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/geo-plugin.git",
+        "revision": "29bebf7fc37209bdfed5865cd51cee7a56000527",
+        "sha256": "e95b4c40bf82a4cc64b44d311c35d73f50dc3ab4a1ed0b4a56ca8eb04abaef04",
+        "bytes": 2282,
+        "git_blob": "57bf82a33fb8caf3671fc764338f2f738f71f71c"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "4630ea812020b7464f14e9108a215b290260e200",
+        "path": "plugins/geo/README.md",
+        "bytes": 3883,
+        "sha256": "7fde170571a18e8882149345453df8a9d0af7d9a56fd8992032e009bfbd5186b",
+        "git_blob": "8babe66a0c4ffe30830ceed6fbfa0217e9dca7ec"
+      }
+    },
+    {
+      "path": "plugins/geo/manifest.toml",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/geo-plugin.git",
+        "revision": "29bebf7fc37209bdfed5865cd51cee7a56000527",
+        "sha256": "c597266ddba00a212e33123b025d2c566ac8a302eb315656284affd3f253560e",
+        "bytes": 7830,
+        "git_blob": "3b365fa53e017e4dcb16d7a9baffd941b23afe0f"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "4630ea812020b7464f14e9108a215b290260e200",
+        "path": "plugins/geo/manifest.toml",
+        "bytes": 9224,
+        "sha256": "f5bf5f098bc7e7c84388fe3f4b2bd976df2e7e3f3e21fdd75b48650a7b452fbf",
+        "git_blob": "679c239c4f9e5bf0a573321747bf1925c1657eb3"
+      }
+    },
+    {
+      "path": "plugins/geo/scripts/geo_fetch.py",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/geo-plugin.git",
+        "revision": "29bebf7fc37209bdfed5865cd51cee7a56000527",
+        "sha256": "1100256653c87e8d260b9852250719a029a218df61ae1e9d4f03b0f96e0dfaf3",
+        "bytes": 11865,
+        "git_blob": "e59b15ac68210608b4855a70ff9af905e25a7c65"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "4630ea812020b7464f14e9108a215b290260e200",
+        "path": "plugins/geo/scripts/geo_fetch.py",
+        "bytes": 29324,
+        "sha256": "0b490d277fbf39bd9acc44af0d95df57151d03616f47a5918bd67addba79e32a",
+        "git_blob": "c96165665c2b8717e9c4bf9387a8378de87b486b"
       }
     }
   ]
