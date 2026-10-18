@@ -1335,6 +1335,42 @@
         "sha256": "92bedf32d5c48070df0354b0ee08c0d0f64e0fcb7cf44d7abd0da2945a0d43d8",
         "git_blob": "b5d2709760c476e8eacf7723661877fa921aa335"
       }
+    },
+    {
+      "path": "research-adapters/cachexia-survey/scripts/survey.R",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/autonomics.git",
+        "revision": "bdedf129011789e6eec3a594252d6515b6a67618",
+        "bytes": 24785,
+        "sha256": "c8d0d62ba5b52e5210a456498211fcf88f57139b666bb4f730ed05011903a799",
+        "git_blob": "950a9ecfa26eb34ceb5b0d6e1121b3da9a59169b"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "981c8b11961cfdf6b2b592a1635ae03394ad347a",
+        "path": "research-adapters/cachexia-survey/scripts/survey.R",
+        "bytes": 27475,
+        "sha256": "f7d6c2bee9abf84474aaf4b3a78e35769d2bb58867c3f1b9508c9b70761c7716",
+        "git_blob": "8b875594d28cb1d90c9ca87da312ac59683f08c4"
+      }
+    },
+    {
+      "path": "research-adapters/cachexia-survey/scripts/bind_contract.R",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/autonomics.git",
+        "revision": "bdedf129011789e6eec3a594252d6515b6a67618",
+        "bytes": 7041,
+        "sha256": "a7f90345740dca6b9b4f48ed31acaf50c8c66666820420f63561501fca2bc7bc",
+        "git_blob": "4603cf4d6cfe790932f73df4c0a859b8a229aeba"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "981c8b11961cfdf6b2b592a1635ae03394ad347a",
+        "path": "research-adapters/cachexia-survey/scripts/bind_contract.R",
+        "bytes": 9594,
+        "sha256": "ee8a4ebd6a0d861a31de3d1d08a62b5c6aa953e1aa625e4dda3854ae2ab5b684",
+        "git_blob": "2edb4e930e69548adbdd808dda8fa152b99b157c"
+      }
     }
   ]
 }
