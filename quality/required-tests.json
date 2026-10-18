@@ -1052,6 +1052,10 @@
     "tests.test_msigdb_publication.MSigDBPublicationTests.test_fetch_publication_with_explicit_synthetic_transport",
     "tests.test_msigdb_publication.MSigDBPublicationTests.test_input_output_alias_is_preserved",
     "tests.test_msigdb_publication.MSigDBPublicationTests.test_racing_foreign_output_not_replaced",
-    "tests.test_msigdb_publication.MSigDBPublicationTests.test_rollback_does_not_delete_foreign_replacement"
+    "tests.test_msigdb_publication.MSigDBPublicationTests.test_rollback_does_not_delete_foreign_replacement",
+    "tests.test_h5ad_obs_evidence_binding.H5ADObsEvidenceBindingTests.test_exact_published_node_source_and_called_resolvers_are_bound",
+    "tests.test_h5ad_obs_evidence_binding.H5ADObsEvidenceBindingTests.test_existing_complete_functional_cases_are_not_new_recomputations",
+    "tests.test_h5ad_obs_evidence_binding.H5ADObsEvidenceBindingTests.test_normalization_and_deployment_boundaries_are_explicit",
+    "tests.test_h5ad_obs_evidence_binding.H5ADObsEvidenceBindingTests.test_original_native_io_is_not_mislabelled_as_an_author_package"
   ]
 }

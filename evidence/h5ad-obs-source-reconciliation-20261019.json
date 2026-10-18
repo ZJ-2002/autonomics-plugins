@@ -1,0 +1,92 @@
+{
+  "schema": "H5AD_OBS_CURRENT_SOURCE_RECONCILIATION_V1",
+  "current_source": {
+    "path": "crates/node-bundles/nodes-io/src/h5ad_obs_to_dataframe.rs",
+    "bytes": 70656,
+    "sha256": "d537173c057f80de38a999d3b4373dad24d15c4f2b183a894c9a48edd7fe77f8"
+  },
+  "original_node_native_IO_not_new_Rust_statistical_method": true,
+  "direct_official_AnnData_runtime_claimed": false,
+  "statistical_official_layer": "NOT_APPLICABLE",
+  "root_packet_reverification": {
+    "seal_sha256": "96e8c6f1e4a35e8363399a4d0c9fbbb58e533d0dbf6271af91f698fa4d878713",
+    "regular_files_rehashed": 432,
+    "bytes_rehashed": 665950866
+  },
+  "retained_dependency_reverification": {
+    "seal_sha256": "95d3015b588ad118c72b14859747b64f6a1e9f63418f3d8bd04eac255c996fdb",
+    "regular_files_rehashed": 1196,
+    "bytes_rehashed": 496549204
+  },
+  "called_path_resolvers_identical_to_published_tested_versions": [
+    {
+      "signature": "fn normalize_path(",
+      "sha256": "6770bcb392d8348a589c051e34453cde638ae35e7bc5550bb2c0f4f7ad41a42e"
+    },
+    {
+      "signature": "fn source_path(",
+      "sha256": "8b712038d36de29374e853eca2e54a7165a928de9daeac22a50993ce40abe330"
+    },
+    {
+      "signature": "fn file_port_path(",
+      "sha256": "45a8bca21054a5021b55e9f933ecfaeadeb888e6c96a9844a5dacb489c9512fd"
+    }
+  ],
+  "source_published_revision": "e28f58a32d0eda996fde0b6644421fd889bc750e",
+  "reused_positive_full_schema_value_SQL_cases": 16,
+  "reused_specific_refusals": 20,
+  "reused_namespace_cases": 4,
+  "reused_unit_tests": 10,
+  "reused_actual_DAGs": 7,
+  "official_comparison_mutants_rejected": 4,
+  "dictionary_key_width_and_empty_category_type_are_explicit_normalizations": true,
+  "new_source_repairs": 0,
+  "new_builds_or_method_recomputations": 0,
+  "retained_failed_verifier_session": "d7d0c532c16a4fd5a13c6503cbb3212f",
+  "verifier_correction": "Ignore reader-updated atime, while retaining device/inode/size/mtime/ctime and full SHA256 checks; no old evidence or scientific result changed",
+  "current_whole_engine_or_daemon_certified": false,
+  "scientific_release_granted": false,
+  "g0_granted": false,
+  "proof_archive": {
+    "session": "1a747fe8f1e4436d952d87ceb6e66879",
+    "seal": "eb5dd38e88db95665e19ad85890c39424a34803c3238be55639a5985aad5d660"
+  },
+  "reference_packages": [
+    {
+      "package": "scanpy",
+      "version": "1.11.3",
+      "files_exact": 136
+    },
+    {
+      "package": "anndata",
+      "version": "0.11.4",
+      "files_exact": 46
+    },
+    {
+      "package": "numpy",
+      "version": "2.1.3",
+      "files_exact": 941
+    },
+    {
+      "package": "scipy",
+      "version": "1.14.1",
+      "files_exact": 1384
+    },
+    {
+      "package": "pandas",
+      "version": "2.2.3",
+      "files_exact": 1504
+    },
+    {
+      "package": "h5py",
+      "version": "3.16.0",
+      "files_exact": 93
+    },
+    {
+      "package": "pyarrow",
+      "version": "25.0.1",
+      "files_exact": 748
+    }
+  ],
+  "fresh_independent_installation_claimed": false
+}
