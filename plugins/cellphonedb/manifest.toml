@@ -61,7 +61,7 @@ debug_seed = { type = "int", default = -1, doc = "Official v5.0.1 testing-only R
 
 [nodes.command]
 interpreter = "python"
-argv = ["/opt/autonomics/driver.py"]
+script_file = "driver.py"
 
 [nodes.command.env]
 CPDB_CLUSTER_COLUMN = "{{ cluster_column }}"

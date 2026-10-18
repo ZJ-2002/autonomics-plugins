@@ -1,0 +1,56 @@
+{
+  "schema": "CPDB_CALL_PARAMETER_REPAIR_SCOPE_V1",
+  "node_kind": "cellphonedb_statistical_analysis",
+  "scope": "Wrapper call argument preservation and declared source loading; not official statistical algorithm recertification or deployed scientific admission",
+  "defect": "The driver silently discarded unsupported requested keyword arguments, including scoring, seed or threads, before invoking the official package.",
+  "fix": "Validate the entire requested call using inspect.signature(call).bind(**kwargs); reject incompatible APIs before invocation. Load driver.py through the plugin script_file instead of the stale baked entry.",
+  "sources": {
+    "source": {
+      "sha256": "71b58d03c2044bf1faeceea47617993447a1e93958aa28077b2a0a600494f72e",
+      "bytes": 5824
+    },
+    "test_source": {
+      "sha256": "186a395c1fcbbd8560a991424af3559daf2d9e4094d108cedfa9f97a81eea9e1",
+      "bytes": 6159
+    },
+    "manifest": {
+      "sha256": "06920e79113f10c60039ad78f96dbc49ae5b0c0145beda196c8f507b97136438",
+      "bytes": 4081
+    }
+  },
+  "official_image_reference_unchanged": "ghcr.io/zj-2002/cellphonedb@sha256:faf639f2a6598c1df29a81854eb48c05bccd8127a8d7639c58cc3a4dbd004d19",
+  "baseline": {
+    "session": "3e991b81d0024e588bbfd887112147ae",
+    "seal": "d7160ee20a65bdb0e9464b975df5f6f8d827cccb2a95bd6bfd5c402f70c51e80",
+    "reproduced_counterexamples": 3,
+    "expected_errors": 3
+  },
+  "regression": {
+    "session": "f378a7c640af468da27ff1f156ce38dc",
+    "seal": "c1bc9547a218bbcf1e104010d322827350316421c6f223e33ab9761864fc9e80",
+    "executed_tests": 9,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "test_ids": [
+      "cpdb_call_contract_tests.CellPhoneDBCallContractTests.test_absent_seed_preserves_official_rng_defaults",
+      "cpdb_call_contract_tests.CellPhoneDBCallContractTests.test_all_requested_arguments_reach_official_call",
+      "cpdb_call_contract_tests.CellPhoneDBCallContractTests.test_new_required_argument_refuses_before_call",
+      "cpdb_call_contract_tests.CellPhoneDBCallContractTests.test_positional_only_argument_refuses_before_call",
+      "cpdb_call_contract_tests.CellPhoneDBCallContractTests.test_seed_and_single_thread_are_forwarded",
+      "cpdb_call_contract_tests.CellPhoneDBCallContractTests.test_unsupported_scoring_argument_refuses_before_call",
+      "cpdb_call_contract_tests.CellPhoneDBCallContractTests.test_unsupported_seed_argument_refuses_before_call",
+      "cpdb_call_contract_tests.CellPhoneDBCallContractTests.test_unsupported_threads_argument_refuses_before_call",
+      "cpdb_call_contract_tests.CellPhoneDBCallContractTests.test_variadic_official_entry_receives_all_requested_arguments"
+    ]
+  },
+  "test_method": "Fake author entry records the requested arguments then stops before calculation. These tests are not an independent CellPhoneDB numerical reference.",
+  "official_algorithm_reimplemented": false,
+  "official_statistical_method_tests_repeated": false,
+  "current_isolated_DAG": "PENDING_FOR_CHANGED_MANIFEST_AND_SCRIPT_MOUNT",
+  "deployment": "PENDING_NOT_CHANGED",
+  "other_output_ownership_and_full_input_semantics": "NOT_CLOSED_BY_THIS_REPAIR",
+  "whole_node_certified": false,
+  "scientific_release_granted": false,
+  "g0_granted": false
+}

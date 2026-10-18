@@ -93,12 +93,12 @@ def main():
         print(f"driver: CPDB_SEED={seed} -> debug_seed={seed} with threads=1 "
               "(official testing-only seed, honored in single-thread mode)",
               flush=True)
-    accepted = set(inspect.signature(cpdb_statistical_analysis_method.call).parameters)
-    dropped = sorted(k for k in kwargs if k not in accepted)
-    kwargs = {k: v for k, v in kwargs.items() if k in accepted}
+    try:
+        inspect.signature(cpdb_statistical_analysis_method.call).bind(**kwargs)
+    except (TypeError, ValueError) as error:
+        raise SystemExit(f"driver: official CellPhoneDB call signature incompatible: {error}") from error
 
-    print(f"driver: db={os.path.basename(zips[0])} kwargs={sorted(kwargs)} "
-          f"dropped_unsupported={dropped}", flush=True)
+    print(f"driver: db={os.path.basename(zips[0])} kwargs={sorted(kwargs)}", flush=True)
     result = cpdb_statistical_analysis_method.call(**kwargs)
 
     print("driver: result keys:", sorted(result) if hasattr(result, "keys") else type(result), flush=True)
