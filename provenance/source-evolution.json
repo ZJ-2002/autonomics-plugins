@@ -1029,6 +1029,42 @@
         "sha256": "0b490d277fbf39bd9acc44af0d95df57151d03616f47a5918bd67addba79e32a",
         "git_blob": "c96165665c2b8717e9c4bf9387a8378de87b486b"
       }
+    },
+    {
+      "path": "plugins/cellphonedb/driver.py",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/cellphonedb-plugin.git",
+        "revision": "b7101b3d2f748a95600a2293074e0b67dc9f1aa2",
+        "sha256": "ad965191d4ffc031c880a7d29b1245b05539335ddfddd3230cbcdf3a118cd786",
+        "bytes": 5841,
+        "git_blob": "f35ebf7816061ff7ac6c06b413fb3e8ff6515d6f"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "3487990645c310c2c3039e5f870ea481a6af9ece",
+        "path": "plugins/cellphonedb/driver.py",
+        "bytes": 5824,
+        "sha256": "71b58d03c2044bf1faeceea47617993447a1e93958aa28077b2a0a600494f72e",
+        "git_blob": "5dba096ea61d27af0bd9d67b2418499e6cbdce7d"
+      }
+    },
+    {
+      "path": "plugins/cellphonedb/manifest.toml",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/cellphonedb-plugin.git",
+        "revision": "b7101b3d2f748a95600a2293074e0b67dc9f1aa2",
+        "sha256": "1135cb143b3e99adc848e14e2277592620f9614d71d76b4bf7dfa556482c4ff2",
+        "bytes": 4092,
+        "git_blob": "969abd42af1e725bdf0749e5dfce6a9496fab132"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "3487990645c310c2c3039e5f870ea481a6af9ece",
+        "path": "plugins/cellphonedb/manifest.toml",
+        "bytes": 4081,
+        "sha256": "06920e79113f10c60039ad78f96dbc49ae5b0c0145beda196c8f507b97136438",
+        "git_blob": "7f3cf60a752f229502f6229e6c540ad0c49b7a26"
+      }
     }
   ]
 }
