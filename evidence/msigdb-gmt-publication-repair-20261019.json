@@ -1,0 +1,95 @@
+{
+  "schema": "MSIGDB_GMT_PUBLICATION_REPAIR_V1",
+  "statistical_official_layer": "NOT_APPLICABLE",
+  "official_format_reference": "https://docs.gsea-msigdb.org/GSEA/Data_Formats/#gmt-gene-matrix-transposed-file-format-gmt",
+  "selected_parse_kind": "cachexia_gmt_import",
+  "selected_fetch_kind": "cachexia_msigdb_gmt",
+  "legacy_original_wrappers_certified": false,
+  "original_host_counterexamples": 4,
+  "current_pinned_image_tests": 11,
+  "current_negative_DAGs": [
+    {
+      "name": "bad-hash",
+      "kind": "cachexia_gmt_import",
+      "exit_code": 2,
+      "nodes": 3,
+      "edges": 2,
+      "normal_ports": 0,
+      "independent_all_port_comparison": null
+    },
+    {
+      "name": "existing-control",
+      "kind": "cachexia_gmt_import",
+      "exit_code": 2,
+      "nodes": 3,
+      "edges": 2,
+      "normal_ports": 0,
+      "independent_all_port_comparison": null
+    }
+  ],
+  "current_complete_parse_source_session": "1ef2d374d6e947aa9dc2674b48f65880",
+  "prior_attempt_overall_failed_and_not_relabelled_successful": true,
+  "successful_parse_has_explicit_method_exit_and_complete_independent_comparison": true,
+  "complete_current_parse": {
+    "sets": 50,
+    "memberships": 7322,
+    "all_seven_ports_compared": true
+  },
+  "historical_resource_evidence_reused": {
+    "actual_DAGs": 78,
+    "real_fetches": 4,
+    "complete_parses": 4,
+    "original_seal": "353b2bbeaf78c2e9cf52e94954b3b0f99785aac4982be93c122fc96467f596b6"
+  },
+  "contract_HTTP_transport_and_parser_unchanged": true,
+  "current_SQL_materialization_claimed": false,
+  "fetch_current_deployment_status": "NOT_READY_INHERITED_LOOPBACK_PROXY",
+  "network_diagnostic": {
+    "proxy_environment_present": {
+      "http_proxy": true,
+      "https_proxy": true,
+      "HTTP_PROXY": false,
+      "HTTPS_PROXY": false
+    },
+    "dns_address_count": 3,
+    "inherited_proxy": {
+      "error_type": "ProxyError"
+    },
+    "direct_diagnostic_only": {
+      "status": 200
+    }
+  },
+  "network_configuration_or_proxy_credentials_changed": false,
+  "direct_request_was_HEAD_diagnostic_not_node_fetch_acceptance": true,
+  "source_proofs": [
+    {
+      "session": "bb9b97bc09914d0f9278037dfe5af69a",
+      "seal": "a2752606e2375348468ba991c3ead7d0d99d0f4cd971a92c788c77dfa4d1609a"
+    },
+    {
+      "session": "44e6d45aa6b8429d90d632d169110f30",
+      "seal": "26e2acfabf0b1c73a1a2a3bbed2bc88565f6e69a09809eb20555453d54cf0ff1"
+    },
+    {
+      "session": "edc93aafa37d4a239ba1e6373abad77e",
+      "seal": "2dfe95bdeb3d44e85850e4667cd8ac59dfa9556afae9188281332cf5f2bc9948"
+    }
+  ],
+  "current_sources": [
+    {
+      "path": "research-adapters/cachexia-msigdb/manifest.toml",
+      "bytes": 2909,
+      "sha256": "8758d87c86c488ebb22100c47686a59dff21155414ac72b0eea0d8e44f12d503"
+    },
+    {
+      "path": "research-adapters/cachexia-msigdb/scripts/gmt.py",
+      "bytes": 17906,
+      "sha256": "9224757a039f7c2cd9f0dc2f47cfe70c49ed2b916cc48d14d4cb449ec255d5fa"
+    }
+  ],
+  "full_GSEA_Java_API_certified": false,
+  "gene_mapping_scoring_signature_or_study_eligibility_granted": false,
+  "production_changed": false,
+  "scientific_release_granted": false,
+  "g0_granted": false
+}

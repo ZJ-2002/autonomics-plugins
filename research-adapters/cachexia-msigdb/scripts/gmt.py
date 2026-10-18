@@ -209,6 +209,24 @@ def parse_gmt(raw, request, members_file, sets_file):
             "identifier_mapping_performed": False, "gene_case_or_identifier_normalization_performed": False}
 
 
+def publish_file(source, target, published):
+    information = source.stat(follow_symlinks=False)
+    os.link(source, target)
+    published.append((target, (information.st_dev, information.st_ino)))
+
+
+def rollback_files(published):
+    for path, expected in reversed(published):
+        try:
+            information = path.stat(follow_symlinks=False)
+            if (information.st_dev, information.st_ino) == expected:
+                path.unlink()
+        except FileNotFoundError:
+            pass
+        except OSError as error:
+            print("Unverified output retained during rollback: " + type(error).__name__, file=sys.stderr)
+
+
 def main():
     work = Path(os.environ.get("AUTONOMICS_WORKDIR", "/work")).resolve()
     outputs = []
@@ -227,9 +245,10 @@ def main():
         contract = inputs[-1]
         audit["contract_sha256"] = digest(contract)
         audit["test_id"] = recover_request_id(contract)
-        outputs = [Path(os.environ["AUTONOMICS_OUTPUT" + str(port)]).resolve() for port in range(7)]
+        declared = [Path(os.environ["AUTONOMICS_OUTPUT" + str(port)]) for port in range(7)]
+        outputs = [path.parent.resolve() / path.name for path in declared]
         require(len(set(outputs)) == 7 and not set(inputs) & set(outputs) and
-                all(path.is_relative_to(work) and path != work and not path.exists() for path in outputs), "Unsafe or pre-existing publication path")
+                all(path.is_relative_to(work) and path != work and not path.exists() and not path.is_symlink() for path in outputs), "Unsafe or pre-existing publication path")
         safe_outputs = True
         request = read_contract(contract, mode)
         audit.update(test_id=request["test_id"], request=request, mode=mode, source_url=request_url(request),
@@ -254,24 +273,34 @@ def main():
             staged[3].write_text(json.dumps(audit, indent=2, allow_nan=False) + "\n")
             for source, target in zip(staged, outputs, strict=True):
                 target.parent.mkdir(parents=True, exist_ok=True)
-                source.replace(target)
-                published.append(target)
+                publish_file(source, target, published)
         return 0
     except Exception as error:
-        for path in published:
-            path.unlink(missing_ok=True)
+        rollback_files(published)
         audit.update(status="BLOCKED", error=type(error).__name__ + ": " + str(error))
         diagnostic_paths = [outputs[3], outputs[4], outputs[5]] if safe_outputs else [work / "blocked-audit.json", work / "blocked.log", work / "blocked-http-attempts.tsv"]
         for path in diagnostic_paths:
             path.parent.mkdir(parents=True, exist_ok=True)
-            require(not path.exists(), "Refuse to overwrite existing diagnostic")
-        diagnostic_paths[0].write_text(json.dumps(audit, indent=2, allow_nan=False) + "\n")
-        diagnostic_paths[1].write_text("BLOCKED " + audit["error"] + "\n")
-        write_tsv(diagnostic_paths[2], ATTEMPT_COLUMNS, [[record[key] for key in ATTEMPT_COLUMNS] for record in attempts])
-        if audit["test_id"] is not None:
-            ledger = work / "blocked-request.tsv"
-            require(not ledger.exists(), "Refuse to overwrite existing request ledger")
-            write_tsv(ledger, ["request_id", "status"], [[audit["test_id"], "BLOCKED"]])
+            require(not path.exists() and not path.is_symlink(), "Refuse to overwrite existing diagnostic")
+        diagnostics_published = []
+        try:
+            with tempfile.TemporaryDirectory(prefix="msigdb-diagnostic-", dir=work) as directory:
+                stage = Path(directory)
+                staged = [stage / str(position) for position in range(3)]
+                staged[0].write_text(json.dumps(audit, indent=2, allow_nan=False) + "\n")
+                staged[1].write_text("BLOCKED " + audit["error"] + "\n")
+                write_tsv(staged[2], ATTEMPT_COLUMNS, [[record[key] for key in ATTEMPT_COLUMNS] for record in attempts])
+                if audit["test_id"] is not None:
+                    ledger = work / "blocked-request.tsv"
+                    require(not ledger.exists() and not ledger.is_symlink(), "Refuse to overwrite existing request ledger")
+                    staged.append(stage / "request")
+                    diagnostic_paths.append(ledger)
+                    write_tsv(staged[-1], ["request_id", "status"], [[audit["test_id"], "BLOCKED"]])
+                for source, target in zip(staged, diagnostic_paths, strict=True):
+                    publish_file(source, target, diagnostics_published)
+        except Exception:
+            rollback_files(diagnostics_published)
+            raise
         print(audit["error"], file=sys.stderr)
         return 2
 
