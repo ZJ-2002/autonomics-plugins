@@ -1,21 +1,21 @@
 {
-  "schema": "CPDB_CALL_PARAMETER_REPAIR_SCOPE_V1",
+  "schema": "CPDB_CALL_AND_OWNED_OUTPUT_REPAIR_SCOPE_V2",
   "node_kind": "cellphonedb_statistical_analysis",
-  "scope": "Wrapper call argument preservation and declared source loading; not official statistical algorithm recertification or deployed scientific admission",
+  "scope": "Parameter preservation, owned complete output publication and exact source-mounted isolated SDK; not resident deployment or scientific release.",
   "defect": "The driver silently discarded unsupported requested keyword arguments, including scoring, seed or threads, before invoking the official package.",
   "fix": "Validate the entire requested call using inspect.signature(call).bind(**kwargs); reject incompatible APIs before invocation. Load driver.py through the plugin script_file instead of the stale baked entry.",
   "sources": {
     "source": {
-      "sha256": "71b58d03c2044bf1faeceea47617993447a1e93958aa28077b2a0a600494f72e",
-      "bytes": 5824
+      "bytes": 7546,
+      "sha256": "ba2e6fd5e933a5e070d45bef6a0898838182400079759c47a8d059e24a4a2397"
     },
     "test_source": {
-      "sha256": "186a395c1fcbbd8560a991424af3559daf2d9e4094d108cedfa9f97a81eea9e1",
-      "bytes": 6159
+      "bytes": 6159,
+      "sha256": "186a395c1fcbbd8560a991424af3559daf2d9e4094d108cedfa9f97a81eea9e1"
     },
     "manifest": {
-      "sha256": "06920e79113f10c60039ad78f96dbc49ae5b0c0145beda196c8f507b97136438",
-      "bytes": 4081
+      "bytes": 4081,
+      "sha256": "06920e79113f10c60039ad78f96dbc49ae5b0c0145beda196c8f507b97136438"
     }
   },
   "official_image_reference_unchanged": "ghcr.io/zj-2002/cellphonedb@sha256:faf639f2a6598c1df29a81854eb48c05bccd8127a8d7639c58cc3a4dbd004d19",
@@ -26,8 +26,8 @@
     "expected_errors": 3
   },
   "regression": {
-    "session": "f378a7c640af468da27ff1f156ce38dc",
-    "seal": "c1bc9547a218bbcf1e104010d322827350316421c6f223e33ab9761864fc9e80",
+    "session": "c23b7d29f8074a36b9bd3dd52558dd4a",
+    "seal": "662b1fee07e6a9761f3240f95f765a99bde64426efae91da7a328f18772a11d1",
     "executed_tests": 9,
     "failures": 0,
     "errors": 0,
@@ -47,10 +47,45 @@
   "test_method": "Fake author entry records the requested arguments then stops before calculation. These tests are not an independent CellPhoneDB numerical reference.",
   "official_algorithm_reimplemented": false,
   "official_statistical_method_tests_repeated": false,
-  "current_isolated_DAG": "PENDING_FOR_CHANGED_MANIFEST_AND_SCRIPT_MOUNT",
+  "current_isolated_DAG": "EXACT_SOURCE_MOUNTED_OFFICIAL_CALL_AND_FOREIGN_OUTPUT_REFUSAL_PASSED_CACHED_SDK",
   "deployment": "PENDING_NOT_CHANGED",
-  "other_output_ownership_and_full_input_semantics": "NOT_CLOSED_BY_THIS_REPAIR",
+  "other_output_ownership_and_full_input_semantics": "Enumerated output ownership cases passed; full input/method domains remain outside this proof.",
   "whole_node_certified": false,
   "scientific_release_granted": false,
-  "g0_granted": false
+  "g0_granted": false,
+  "output_test_source": {
+    "bytes": 6693,
+    "sha256": "fd5ffcb06a7f0379da4ad9ab37ce48596d31fcef94250b599055d8bc80fa303e"
+  },
+  "output_repair": {
+    "defect": "Existing table/provenance overwrite and partial or non-owned publication",
+    "fix": "Private author staging, complete regular nonempty table set, exclusive hardlink publication and identity-bound rollback",
+    "baseline_session": "ff667e7b326043ad94f8f15b5ddb121a",
+    "baseline_seal": "4e303718eef837a8bcd1e3c94f7ca567c053317d654da8afe4280ad9950fcdc2",
+    "original_overwrites_reproduced": 2,
+    "regression_session": "5cf4599db998468eada68118c113db19",
+    "regression_seal": "5d16f06e5a9c9b23d20a5fd9729e05cdc39ff6c9fc2cfa9243381c28a5557121",
+    "executed_tests": 11,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "SDK_review": {
+    "session": "e206967160bc4cf291691104c244b12e",
+    "seal": "6d4afba9c961cea92faf154453b0143773926b09567d06ff596339a9e6c29ed0",
+    "engine_commit": "4256643c55ae6fb50e8c867069330ed6ac2b4bc0",
+    "image_reference": "ghcr.io/zj-2002/cellphonedb@sha256:faf639f2a6598c1df29a81854eb48c05bccd8127a8d7639c58cc3a4dbd004d19",
+    "author_package": "cellphonedb 5.0.1",
+    "positive_source_session": "1f16c76da89f4645a8e3d481a279c87e",
+    "original_harness_worker_exit": 1,
+    "original_harness_failure_retained": true,
+    "unintended_additional_synthetic_method_run": 1,
+    "corrected_negative_session": "6ab350157a9e42c0af5f59abd5c357ae",
+    "corrected_negative_author_method_runs": 0,
+    "positive_method_not_recomputed": true,
+    "all_4_owned_containers_observed_stopped": true,
+    "parent_memory_limit_bytes": 2147483648,
+    "node_declared_memory_bytes": 17179869184,
+    "full_declared_scale_not_certified": true
+  }
 }

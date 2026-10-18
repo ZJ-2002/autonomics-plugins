@@ -13,7 +13,14 @@ import inspect
 import json
 import os
 import re
+import stat
 import sys
+import tempfile
+
+
+TABLES = ("pvalues", "means", "significant_means", "deconvoluted",
+          "deconvoluted_percents", "interaction_scores")
+OUTPUTS = tuple(f"cpdb_{name}.txt" for name in TABLES) + ("cpdb_provenance.json",)
 
 
 def env_str(name, default=None):
@@ -34,13 +41,45 @@ def env_typed(name, default, cast):
     return default if raw in (None, "") else cast(raw)
 
 
-def main():
-    counts = os.environ.get("AUTONOMICS_INPUT0") or (sys.argv[1] if len(sys.argv) > 1 else None)
-    if not counts or not os.path.isfile(counts):
-        sys.exit(f"driver: counts input missing or not a file: {counts!r}")
-    # Outputs go to the workdir root so the manifest lists flat relative
-    # paths (mtag/single-cell convention).
-    out_dir = env_str("AUTONOMICS_WORKDIR", os.getcwd())
+def official_outputs(staging):
+    found = {}
+    for name in sorted(os.listdir(staging)):
+        matched = re.fullmatch(r"statistical_analysis_(.+?)_\d{2}_\d{2}_\d{4}_\d{6}\.txt", name)
+        if not matched or matched.group(1) not in TABLES:
+            continue
+        table = matched.group(1)
+        source = os.path.join(staging, name)
+        information = os.lstat(source)
+        if table in found or not stat.S_ISREG(information.st_mode) or information.st_size == 0:
+            raise SystemExit(f"driver: duplicate, empty or nonregular official table: {table}")
+        found[table] = source
+    if set(found) != set(TABLES):
+        raise SystemExit(f"driver: missing required official tables: {sorted(set(TABLES) - set(found))}")
+    return found
+
+
+def publish_outputs(out_dir, staging, tables):
+    sources = {f"cpdb_{name}.txt": tables[name] for name in TABLES}
+    sources["cpdb_provenance.json"] = os.path.join(staging, "cpdb_provenance.json")
+    created = []
+    try:
+        for name, source in sources.items():
+            information = os.lstat(source)
+            destination = os.path.join(out_dir, name)
+            os.link(source, destination, follow_symlinks=False)
+            created.append((destination, information.st_dev, information.st_ino))
+    except BaseException:
+        for destination, device, inode in reversed(created):
+            try:
+                current = os.lstat(destination)
+                if (current.st_dev, current.st_ino) == (device, inode):
+                    os.unlink(destination)
+            except FileNotFoundError:
+                pass
+        raise
+
+
+def run_analysis(counts, out_dir, staging):
 
     meta = env_str("AUTONOMICS_INPUT1", "")
     cluster_col = env_str("CPDB_CLUSTER_COLUMN", "cluster")
@@ -48,7 +87,6 @@ def main():
         # I/O translation: derive the official 2-column meta file from the
         # h5ad cell metadata instead of requiring the caller to materialize
         # it. Container-local scratch, not an artifact.
-        import tempfile
         import anndata
         adata = anndata.read_h5ad(counts)
         if cluster_col not in adata.obs.columns:
@@ -56,7 +94,7 @@ def main():
                 f"driver: cluster column {cluster_col!r} not in h5ad obs "
                 f"(available: {sorted(map(str, adata.obs.columns))})"
             )
-        meta = os.path.join(tempfile.mkdtemp(prefix="cpdb-"), "derived_meta.tsv")
+        meta = os.path.join(staging, "derived_meta.tsv")
         adata.obs[[cluster_col]].rename(columns={cluster_col: "cluster"}).to_csv(
             meta, sep="\t", index_label="Cell")
 
@@ -74,7 +112,7 @@ def main():
         threshold=env_typed("CPDB_THRESHOLD", 0.1, float),
         iterations=env_typed("CPDB_ITERATIONS", 1000, int),
         score_interactions=True,  # v1 contract: always produce interaction_scores
-        output_path=out_dir,
+        output_path=staging,
     )
     seed = env_typed("CPDB_SEED", None, int)
     if seed is not None and seed >= 0:
@@ -103,15 +141,8 @@ def main():
 
     print("driver: result keys:", sorted(result) if hasattr(result, "keys") else type(result), flush=True)
 
-    # Official outputs carry run timestamps in their names; rename to the
-    # stable node contract (contents untouched).
-    renames = {}
-    for name in sorted(os.listdir(out_dir)):
-        m = re.match(r"^statistical_analysis_(.+?)_\d{2}_\d{2}_\d{4}_\d{6}\.txt$", name)
-        if m:
-            fixed = f"cpdb_{m.group(1)}.txt"
-            os.replace(os.path.join(out_dir, name), os.path.join(out_dir, fixed))
-            renames[m.group(1)] = fixed
+    tables = official_outputs(staging)
+    renames = {name: f"cpdb_{name}.txt" for name in tables}
 
     # Provenance: the digest pins this image, this records what ran.
     db_sha = hashlib.sha256(open(zips[0], "rb").read()).hexdigest()
@@ -125,12 +156,25 @@ def main():
         "meta_input": "provided" if env_str("AUTONOMICS_INPUT1", "") else "derived_from_obs",
         "renamed_outputs": renames,
     }
-    with open(os.path.join(out_dir, "cpdb_provenance.json"), "w") as fh:
+    with open(os.path.join(staging, "cpdb_provenance.json"), "x") as fh:
         json.dump(provenance, fh, indent=2, sort_keys=True)
+    publish_outputs(out_dir, staging, tables)
 
-    for name in sorted(os.listdir(out_dir)):
+    for name in OUTPUTS:
         path = os.path.join(out_dir, name)
         print(f"driver: output {name} ({os.path.getsize(path)} bytes)", flush=True)
+
+
+def main():
+    counts = os.environ.get("AUTONOMICS_INPUT0") or (sys.argv[1] if len(sys.argv) > 1 else None)
+    if not counts or not os.path.isfile(counts):
+        sys.exit(f"driver: counts input missing or not a file: {counts!r}")
+    out_dir = os.path.abspath(env_str("AUTONOMICS_WORKDIR", os.getcwd()))
+    for name in OUTPUTS:
+        if os.path.lexists(os.path.join(out_dir, name)):
+            raise SystemExit(f"driver: output destination already exists: {name}")
+    with tempfile.TemporaryDirectory(prefix=".cpdb-owned-", dir=out_dir) as staging:
+        run_analysis(counts, out_dir, staging)
 
 
 if __name__ == "__main__":
