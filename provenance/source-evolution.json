@@ -1119,6 +1119,96 @@
         "sha256": "a78d95ecd7b7d3cced72269f46f184190cda7cbe769a095301c5da6d67bcf9d3",
         "git_blob": "96425b9dfd538a6d79c57f76124fd3c945425cb6"
       }
+    },
+    {
+      "path": "plugins/hyprcoloc/scripts/hyprcoloc.R",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/hyprcoloc-plugin.git",
+        "revision": "a7e2dd6a41f551244a14f0aba0e14a529aaca323",
+        "bytes": 12947,
+        "sha256": "c3710fe380902b6c729fa02f62e67393a6cf010f473b3e6bb90ed63c432c7ecb",
+        "git_blob": "c60992dbf34db922819c08021e5797dd9c3f56d8"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "b73a8a862cf3f5e7dfb171f5fffac7cb46553fa7",
+        "path": "plugins/hyprcoloc/scripts/hyprcoloc.R",
+        "bytes": 15306,
+        "sha256": "080b6a638bde211e1f9ebd843e487d68b24708f70af6a665b4b1e93155238e6a",
+        "git_blob": "6452d817e49dbdeb59cd7e20b4f3ac4d3e44b7d8"
+      }
+    },
+    {
+      "path": "research-adapters/cachexia-hyprcoloc/scripts/hyprcoloc.R",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/autonomics.git",
+        "revision": "bdedf129011789e6eec3a594252d6515b6a67618",
+        "bytes": 12947,
+        "sha256": "c3710fe380902b6c729fa02f62e67393a6cf010f473b3e6bb90ed63c432c7ecb",
+        "git_blob": "c60992dbf34db922819c08021e5797dd9c3f56d8"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "b73a8a862cf3f5e7dfb171f5fffac7cb46553fa7",
+        "path": "research-adapters/cachexia-hyprcoloc/scripts/hyprcoloc.R",
+        "bytes": 15306,
+        "sha256": "080b6a638bde211e1f9ebd843e487d68b24708f70af6a665b4b1e93155238e6a",
+        "git_blob": "6452d817e49dbdeb59cd7e20b4f3ac4d3e44b7d8"
+      }
+    },
+    {
+      "path": "plugins/hyprcoloc/README.md",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/hyprcoloc-plugin.git",
+        "revision": "a7e2dd6a41f551244a14f0aba0e14a529aaca323",
+        "bytes": 3495,
+        "sha256": "1a138ddfecb99ed6a47a6a8d15e7bae53b59278fb6c9c901913ab25f9a78bb00",
+        "git_blob": "8ec7ac5f866e04f57a7011b4de5b916e3448c88f"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "b73a8a862cf3f5e7dfb171f5fffac7cb46553fa7",
+        "path": "plugins/hyprcoloc/README.md",
+        "bytes": 4152,
+        "sha256": "825e654758ec16b9c0eb7e00e49980e6aff0984ba1221890999ca69764eb875e",
+        "git_blob": "c6f4f26bf8216e1b4e0e39eb933587910dfb9617"
+      }
+    },
+    {
+      "path": "research-adapters/cachexia-hyprcoloc/README.md",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/autonomics.git",
+        "revision": "bdedf129011789e6eec3a594252d6515b6a67618",
+        "bytes": 5449,
+        "sha256": "3eb4ca2481c71f3417aaf14238b003dfa76afe8857d45ec4cb1f30b6714b1e27",
+        "git_blob": "8686c9df6fe8d3e33d1274186323fe188c991bc7"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "b73a8a862cf3f5e7dfb171f5fffac7cb46553fa7",
+        "path": "research-adapters/cachexia-hyprcoloc/README.md",
+        "bytes": 5891,
+        "sha256": "6750f2d784d4e0a57823abb99c8d48a1bfe4e5a0113d877ca699ef6cec2bc128",
+        "git_blob": "08f57252e30489097b762330872c0f21094e0c17"
+      }
+    },
+    {
+      "path": "plugins/hyprcoloc/tests/test_cachexia_contract.py",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/hyprcoloc-plugin.git",
+        "revision": "a7e2dd6a41f551244a14f0aba0e14a529aaca323",
+        "bytes": 1949,
+        "sha256": "a26dc983405caf4ee11bff5fee3e42d79f29aa20bb0ba2b96b372c8f74f909da",
+        "git_blob": "00b941d314b88ead463f5fbc2e463bb75830c4f7"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "b73a8a862cf3f5e7dfb171f5fffac7cb46553fa7",
+        "path": "plugins/hyprcoloc/tests/test_cachexia_contract.py",
+        "bytes": 1949,
+        "sha256": "9e5dc70922fafada84911276f9f69b9892b5ade28da42756613d519abf82b36c",
+        "git_blob": "789540d17cf09dd6ad8c368b2273cf59520b5838"
+      }
     }
   ]
 }
