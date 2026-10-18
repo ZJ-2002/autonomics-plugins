@@ -209,31 +209,125 @@ def score(data, matrix, programs, summaries):
 
 
 def publish(data, report, output, report_path):
+    import stat
+
+    if not all(isinstance(path, Path) for path in [output, report_path]) or output.absolute() == report_path.absolute():
+        raise ContractError('two distinct output paths are required')
+    for path in [output, report_path]:
+        if os.path.lexists(path):
+            raise ContractError('refusing to overwrite existing output: ' + str(path))
+
+    def signature(status):
+        return (status.st_dev, status.st_ino, status.st_uid, status.st_gid, status.st_mode,
+                status.st_size, status.st_mtime_ns)
+
+    def directory_identity(path):
+        status = path.lstat()
+        if not stat.S_ISDIR(status.st_mode) or status.st_uid != os.getuid():
+            raise ContractError('publication requires an owned staging directory')
+        return status.st_dev, status.st_ino, status.st_uid, status.st_gid, status.st_mode
+
+    def verify_directories():
+        for directory, expected in directories:
+            if directory_identity(directory) != expected:
+                raise ContractError('publication staging directory identity changed')
+
+    def file_identity(path):
+        for directory, expected in directories:
+            if path.parent == directory and directory_identity(directory) != expected:
+                raise ContractError('publication staging directory identity changed before file read')
+        before = path.lstat()
+        if not stat.S_ISREG(before.st_mode) or before.st_uid != os.getuid():
+            raise ContractError('publication requires an owned regular file')
+        descriptor = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+        with os.fdopen(descriptor, 'rb') as handle:
+            opened = os.fstat(handle.fileno())
+            if signature(opened) != signature(before):
+                raise ContractError('publication file identity changed before read')
+            checksum = hashlib.file_digest(handle, 'sha256').hexdigest()
+            if signature(os.fstat(handle.fileno())) != signature(before):
+                raise ContractError('publication file identity changed during read')
+        if signature(path.lstat()) != signature(before):
+            raise ContractError('publication file identity changed after read')
+        for directory, expected in directories:
+            if path.parent == directory and directory_identity(directory) != expected:
+                raise ContractError('publication staging directory identity changed during file read')
+        return signature(before), checksum
+
+    def verify(path, expected):
+        if file_identity(path) != expected:
+            raise ContractError('publication file identity or content changed')
+
+    def remove_owned(path, expected):
+        try:
+            if file_identity(path) == expected:
+                path.unlink()
+        except (OSError, ContractError):
+            pass
+
     published = []
-    with ExitStack() as stack:
-        directory = Path(stack.enter_context(tempfile.TemporaryDirectory(prefix='.ucell-', dir=output.parent)))
-        report_directory = Path(stack.enter_context(tempfile.TemporaryDirectory(prefix='.ucell-', dir=report_path.parent)))
+    directories, staged_files = [], []
+    complete = False
+    try:
+        for parent in [output.parent, report_path.parent]:
+            directory = Path(tempfile.mkdtemp(prefix='.ucell-', dir=parent))
+            directories.append((directory, directory_identity(directory)))
+        directory, report_directory = [entry[0] for entry in directories]
         staged, staged_report = directory / 'output.h5ad', report_directory / 'report.json'
+        verify_directories()
         data.write_h5ad(staged, compression='lzf')
-        report['outputs'] = [{'port': 0, 'name': output.name, 'bytes': staged.stat().st_size, 'sha256': digest(staged)}]
+        verify_directories()
+        data_identity = file_identity(staged)
+        staged_files.append((staged, data_identity))
+        report['outputs'] = [{'port': 0, 'name': output.name, 'bytes': data_identity[0][5], 'sha256': data_identity[1]}]
         report['report_hash_policy'] = 'port_1_hash_recorded_externally_not_recursively'
+        verify_directories()
         staged_report.write_text(json.dumps(report, indent=2, sort_keys=True, ensure_ascii=False, allow_nan=False) + '\n')
+        verify_directories()
+        report_identity = file_identity(staged_report)
+        staged_files.append((staged_report, report_identity))
         for path in [staged, staged_report]:
             with path.open('rb') as handle:
                 os.fsync(handle.fileno())
         try:
-            for source, destination in [(staged, output), (staged_report, report_path)]:
-                status = source.stat()
+            verify_directories()
+            for path, expected in staged_files:
+                verify(path, expected)
+            for (source, expected), destination in zip(staged_files, [output, report_path], strict=True):
+                verify_directories()
+                verify(source, expected)
+                verify_directories()
                 os.link(source, destination)
-                published.append((destination, (status.st_dev, status.st_ino)))
-        except OSError:
-            for destination, identity in reversed(published):
-                try:
-                    status = destination.lstat()
-                    if (status.st_dev, status.st_ino) == identity:
-                        destination.unlink()
-                except FileNotFoundError:
-                    pass
+                published.append((destination, expected))
+                verify_directories()
+                verify(destination, expected)
+            for destination, expected in published:
+                verify_directories()
+                verify(destination, expected)
+            verify_directories()
+            complete = True
+        except BaseException:
+            for destination, expected in reversed(published):
+                remove_owned(destination, expected)
+            raise
+    finally:
+        for directory, expected_directory in reversed(directories):
+            try:
+                if directory_identity(directory) != expected_directory:
+                    continue
+                for path, expected in reversed(staged_files):
+                    if path.parent == directory:
+                        remove_owned(path, expected)
+                directory.rmdir()
+            except (OSError, ContractError):
+                pass
+    if complete:
+        try:
+            for destination, expected in published:
+                verify(destination, expected)
+        except BaseException:
+            for destination, expected in reversed(published):
+                remove_owned(destination, expected)
             raise
 
 

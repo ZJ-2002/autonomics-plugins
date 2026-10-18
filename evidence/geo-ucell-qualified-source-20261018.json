@@ -1,0 +1,42 @@
+{
+  "schema": "GEO_UCELL_QUALIFIED_SOURCE_RELEASE_V1",
+  "geo": {
+    "kinds": ["geo_series_matrix", "geo_soft", "geo_suppl", "sra_runinfo"],
+    "script_sha256": "0b490d277fbf39bd9acc44af0d95df57151d03616f47a5918bd67addba79e32a",
+    "manifest_sha256": "f5bf5f098bc7e7c84388fe3f4b2bd976df2e7e3f3e21fdd75b48650a7b452fbf",
+    "session": "d957c3ba811049bcb0490fe3ddeafed1",
+    "seal": "57953abf3b71a5cdd4af3c2a90c2a201de3e243b286b491a1c61a8a3e92204cc",
+    "reused_exact_source_regressions": 38,
+    "new_targeted_offline_tests": 8,
+    "downloads": 0,
+    "current_native_DAG_requalified": false
+  },
+  "ucell_h5ad": {
+    "script_sha256": "eb36132059f988864c0be04995d7b72aef04ff988e6e20faae8d9ca602c79af8",
+    "session": "7addeb1b968941e096a2434f4be518a0",
+    "seal": "84a90f04c5634417818f7baef8176eddfe5280031d4613614e4a0a707117469e",
+    "actual_DAGs": 46,
+    "complete_reference_comparisons": 20,
+    "finite_values": 148165,
+    "owned_containers_stopped": 54
+  },
+  "ucell_tsv": {
+    "script_sha256": "101212cac5bde9a90b7105c0e4311651d8d12c42d9e06afb3f39deb3f8aa9b5f",
+    "session": "1814918adbce40778d2bea1a86ec8312",
+    "seal": "8d4e94a2ccecbcdd4a84913789046cc6f777917964573beaa379aad02c457736",
+    "actual_DAGs": 13,
+    "complete_reference_RDS_comparisons": 12,
+    "score_values": 208,
+    "owned_containers_stopped": 30,
+    "new_oracle_generated": false,
+    "preserved_failed_sessions": ["23c1a699f5404c9ebc2b1d9df09c7b1d", "d8ce50aeb31e4087932517b5e2ec80cb"]
+  },
+  "official_UCell_version": "2.16.0",
+  "algorithm_reimplemented": false,
+  "production_changed": false,
+  "full_package_API_certified": false,
+  "scientific_authorization_granted": false,
+  "B_S": "CONDITIONAL_NOT_READY",
+  "GS01": "OPEN",
+  "g0_granted": false
+}

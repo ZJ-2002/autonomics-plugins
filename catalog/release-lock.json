@@ -698,7 +698,7 @@
         },
         {
           "path": "source-lock.json",
-          "sha256": "a97a7f20ce8cb9af73b727de6a639b209176b53ebe07082f1fb15e045475b219",
+          "sha256": "d7f9bb03e0908e4ddbbfac82209d42f715e6d09b7e11fa9b7c7b9ae09a8ed734",
           "bytes": 4076,
           "executable": false
         }
@@ -770,20 +770,32 @@
         },
         {
           "path": "README.md",
-          "sha256": "e95b4c40bf82a4cc64b44d311c35d73f50dc3ab4a1ed0b4a56ca8eb04abaef04",
-          "bytes": 2282,
+          "sha256": "7fde170571a18e8882149345453df8a9d0af7d9a56fd8992032e009bfbd5186b",
+          "bytes": 3883,
+          "executable": false
+        },
+        {
+          "path": "RESOURCE_CONTRACT.md",
+          "sha256": "2cdbccd98fdd49ac825fb41600f5d892f47a90ef2c356a08b2e709a1b72cfba4",
+          "bytes": 6331,
           "executable": false
         },
         {
           "path": "manifest.toml",
-          "sha256": "c597266ddba00a212e33123b025d2c566ac8a302eb315656284affd3f253560e",
-          "bytes": 7830,
+          "sha256": "f5bf5f098bc7e7c84388fe3f4b2bd976df2e7e3f3e21fdd75b48650a7b452fbf",
+          "bytes": 9224,
           "executable": false
         },
         {
           "path": "scripts/geo_fetch.py",
-          "sha256": "1100256653c87e8d260b9852250719a029a218df61ae1e9d4f03b0f96e0dfaf3",
-          "bytes": 11865,
+          "sha256": "0b490d277fbf39bd9acc44af0d95df57151d03616f47a5918bd67addba79e32a",
+          "bytes": 29324,
+          "executable": false
+        },
+        {
+          "path": "scripts/test_geo_fetch_contract.py",
+          "sha256": "dbb403c8e684282bb1a8487b2cc1c3513f613ebf4cad2de9fde95088eb582558",
+          "bytes": 25826,
           "executable": false
         },
         {
@@ -15466,8 +15478,8 @@
         },
         {
           "path": "scripts/ucell.R",
-          "sha256": "0ee592ccb766d784451a8d429f13d4cda3d7d2ea774ad7397b3ba6915ed582fd",
-          "bytes": 7236,
+          "sha256": "101212cac5bde9a90b7105c0e4311651d8d12c42d9e06afb3f39deb3f8aa9b5f",
+          "bytes": 15881,
           "executable": false
         },
         {
@@ -15527,8 +15539,8 @@
         },
         {
           "path": "scripts/score.py",
-          "sha256": "a7a9dff18744e702c9caffa5d12076cd0fa008511892237b972e590d27f3b861",
-          "bytes": 14757,
+          "sha256": "eb36132059f988864c0be04995d7b72aef04ff988e6e20faae8d9ca602c79af8",
+          "bytes": 19054,
           "executable": false
         },
         {

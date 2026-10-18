@@ -60,19 +60,41 @@ execute_ucell <- function() {
   if (anyDuplicated(outputs) || any(outputs %in% inputs)) stop("Input and output paths must be distinct")
   links <- Sys.readlink(outputs)
   if (any(file.exists(outputs)) || any(!is.na(links) & nzchar(links))) stop("Refusing to overwrite any existing output")
-  stat_program <- Sys.which("stat")
-  if (!nzchar(stat_program)) stop("File ownership inspection requires stat")
-  inode <- function(filename) {
-    information <- suppressWarnings(system2(stat_program, c("-c", "%d:%i", "--", shQuote(filename)),
-                                             stdout = TRUE, stderr = TRUE))
-    if (!is.null(attr(information, "status")) || length(information) != 1 ||
-        !grepl("^[0-9]+:[0-9]+$", information)) stop("Cannot prove artifact file ownership")
-    information
+  if (!all(file.exists(c("/usr/bin/stat", "/usr/bin/sha256sum", "/usr/bin/rmdir", "/usr/bin/id")))) {
+    stop("File ownership inspection requires GNU stat, sha256sum, rmdir and id")
   }
-  staging_directories <- character()
+  operator_uid <- suppressWarnings(system2("/usr/bin/id", "-u", stdout = TRUE, stderr = FALSE))
+  if (length(operator_uid) != 1 || !grepl("^[0-9]+$", operator_uid)) stop("Cannot determine artifact owner")
+  metadata <- function(filename, directory = FALSE, detailed = FALSE, owned = TRUE) {
+    link <- Sys.readlink(filename)
+    if (!file.exists(filename) || (!is.na(link) && nzchar(link))) return(NULL)
+    format <- if (detailed) "%d:%i:%f:%u:%g:%s:%y:%z" else "%d:%i:%f:%u:%g:%s"
+    information <- suppressWarnings(system2("/usr/bin/stat", c("-c", shQuote(format), "--", shQuote(filename)),
+      stdout = TRUE, stderr = FALSE))
+    if (!is.null(attr(information, "status")) || length(information) != 1) return(NULL)
+    fields <- strsplit(information, ":", fixed = TRUE)[[1]]
+    if (length(fields) < 6 || (owned && !identical(fields[[4]], operator_uid)) ||
+        bitwAnd(strtoi(fields[[3]], base = 16L), 61440L) != if (directory) 16384L else 32768L) return(NULL)
+    if (directory) paste(fields[1:5], collapse = ":") else information
+  }
+  file_fact <- function(filename, detailed = FALSE, owned = TRUE) {
+    before <- metadata(filename, detailed = detailed, owned = owned)
+    if (is.null(before)) return(NULL)
+    checksum <- tryCatch(suppressWarnings(system2("/usr/bin/sha256sum", stdin = filename,
+      stdout = TRUE, stderr = FALSE)), error = function(error) character())
+    if (length(checksum) != 1 || !is.null(attr(checksum, "status")) ||
+        !grepl("^[0-9a-f]{64}  -$", checksum) || !identical(metadata(filename, detailed = detailed, owned = owned), before)) return(NULL)
+    list(metadata = before, sha256 = substr(checksum, 1, 64))
+  }
+  input_facts <- lapply(inputs, file_fact, detailed = TRUE, owned = FALSE)
+  if (any(vapply(input_facts, is.null, logical(1)))) stop("Cannot verify complete input identities")
+  parent_identities <- lapply(parents, metadata, directory = TRUE, owned = FALSE)
+  if (any(vapply(parent_identities, is.null, logical(1)))) stop("Cannot verify output parent ownership")
+  stages <- list()
   published <- list()
   completed <- FALSE
   log_connection <- NULL
+  original_log_identity <- NULL
   sink_level <- sink.number()
   close_log <- function() {
     while (sink.number() > sink_level) sink()
@@ -81,37 +103,158 @@ execute_ucell <- function() {
       log_connection <<- NULL
     }
   }
+  remove_owned <- function(path, expected) {
+    if (!is.null(expected) && identical(file_fact(path), expected)) unlink(path)
+  }
   on.exit({
     try(close_log(), silent = TRUE)
     if (!completed) {
       for (record in rev(published)) {
-        current <- tryCatch(inode(record$path), error = function(error) NA_character_)
-        if (identical(current, record$identity)) unlink(record$path)
+        if (record$position != 3L) try(remove_owned(record$path, record$fact), silent = TRUE)
       }
     }
-    for (directory in staging_directories) unlink(directory, recursive = TRUE)
+    for (record in stages) {
+      if (identical(metadata(record$directory, directory = TRUE), record$identity)) {
+        try(remove_owned(record$path, record$fact), silent = TRUE)
+        if (identical(metadata(record$directory, directory = TRUE), record$identity) &&
+            length(list.files(record$directory, all.files = TRUE, no.. = TRUE)) == 0) {
+          suppressWarnings(system2("/usr/bin/rmdir", c("--", shQuote(record$directory)), stdout = FALSE, stderr = FALSE))
+        }
+      }
+    }
   }, add = TRUE)
-  staged <- vapply(seq_along(outputs), function(position) {
+  new_stage <- function(position) {
+    if (!identical(metadata(parents[[position]], directory = TRUE, owned = FALSE), parent_identities[[position]])) stop("Output parent changed")
     directory <- tempfile(".ucell-stage-", tmpdir = parents[position])
     if (!dir.create(directory, mode = "0700")) stop("Cannot create owned staging directory")
-    staging_directories <<- c(staging_directories, directory)
-    file.path(directory, basename(outputs[position]))
-  }, character(1))
+    identity <- metadata(directory, directory = TRUE)
+    if (is.null(identity)) stop("Cannot verify owned staging directory")
+    record <- list(directory = directory, path = file.path(directory, basename(outputs[position])),
+      identity = identity, fact = NULL)
+    stages[[length(stages) + 1L]] <<- record
+    record$path
+  }
+  staged <- vapply(seq_along(outputs), new_stage, character(1))
+  check_stages <- function(with_contents = TRUE) {
+    for (position in seq_along(outputs)) {
+      record <- stages[[position]]
+      if (!identical(metadata(record$directory, directory = TRUE), record$identity) ||
+          !identical(metadata(parents[[position]], directory = TRUE, owned = FALSE), parent_identities[[position]]) ||
+          (with_contents && (is.null(record$fact) || !identical(file_fact(record$path), record$fact)))) {
+        stop("Owned staging identity or contents changed")
+      }
+    }
+  }
+  failure_log <- function(message) {
+    link <- Sys.readlink(outputs[[3]])
+    if (file.exists(outputs[[3]]) && (is.na(link) || !nzchar(link))) {
+      positions <- which(vapply(published, function(record) {
+        identical(record$position, 3L) && identical(record$path, outputs[[3]])
+      }, logical(1)))
+      if (length(positions) != 1L) return(invisible(FALSE))
+      published_position <- positions[[1]]
+      expected <- published[[published_position]]$fact
+      record <- stages[[3]]
+      unchanged <- function() {
+        !is.null(expected) && identical(record$fact, expected) &&
+          identical(metadata(record$directory, directory = TRUE), record$identity) &&
+          identical(metadata(parents[[3]], directory = TRUE, owned = FALSE), parent_identities[[3]]) &&
+          identical(file_fact(record$path), expected) && identical(file_fact(outputs[[3]]), expected)
+      }
+      if (!unchanged()) return(invisible(FALSE))
+      previous <- readBin(record$path, "raw", n = file.info(record$path)$size)
+      if (!unchanged()) return(invisible(FALSE))
+      connection <- file(record$path, open = "ab")
+      tryCatch({
+        if (!unchanged()) stop("Published failure log changed before diagnostic append")
+        writeBin(charToRaw(paste0("BLOCKED: ", message, "\n")), connection)
+        flush(connection)
+      }, finally = close(connection))
+      if (!identical(metadata(record$directory, directory = TRUE), record$identity) ||
+          !identical(metadata(parents[[3]], directory = TRUE, owned = FALSE), parent_identities[[3]])) {
+        stop("Published failure log directory changed during diagnostic append")
+      }
+      updated <- file_fact(record$path)
+      if (is.null(updated) ||
+          !identical(strsplit(updated$metadata, ":", fixed = TRUE)[[1]][1:5],
+            strsplit(expected$metadata, ":", fixed = TRUE)[[1]][1:5]) ||
+          !identical(file_fact(outputs[[3]]), updated) ||
+          !identical(readBin(record$path, "raw", n = file.info(record$path)$size),
+            c(previous, charToRaw(paste0("BLOCKED: ", message, "\n"))))) {
+        stop("Published failure log identity or contents changed during diagnostic append")
+      }
+      stages[[3]]$fact <<- updated
+      published[[published_position]]$fact <<- updated
+      return(invisible(TRUE))
+    }
+    if (file.exists(outputs[[3]]) || (!is.na(link) && nzchar(link)) ||
+        !identical(metadata(parents[[3]], directory = TRUE, owned = FALSE), parent_identities[[3]])) return(invisible(FALSE))
+    path <- new_stage(3L)
+    position <- length(stages)
+    link <- Sys.readlink(path)
+    if (!identical(metadata(stages[[position]]$directory, directory = TRUE), stages[[position]]$identity) ||
+        file.exists(path) || (!is.na(link) && nzchar(link))) return(invisible(FALSE))
+    connection <- file(path, open = "wx")
+    tryCatch(writeLines(paste("BLOCKED:", message), connection), finally = close(connection))
+    if (!identical(metadata(stages[[position]]$directory, directory = TRUE), stages[[position]]$identity)) {
+      stop("Failure log staging directory changed during writing")
+    }
+    expected <- file_fact(path)
+    if (is.null(expected)) return(invisible(FALSE))
+    if (!identical(metadata(stages[[position]]$directory, directory = TRUE), stages[[position]]$identity)) {
+      stop("Failure log staging directory changed before approval")
+    }
+    stages[[position]]$fact <<- expected
+    if (!identical(metadata(stages[[position]]$directory, directory = TRUE), stages[[position]]$identity) ||
+        !identical(file_fact(path), expected)) stop("Failure log changed before exclusive publication")
+    if (!isTRUE(suppressWarnings(file.link(path, outputs[[3]])))) return(invisible(FALSE))
+    published[[length(published) + 1L]] <<- list(path = outputs[[3]], fact = expected, position = 3L)
+    if (!identical(metadata(stages[[position]]$directory, directory = TRUE), stages[[position]]$identity) ||
+        !identical(file_fact(path), expected) || !identical(file_fact(outputs[[3]]), expected)) {
+      stop("Failure log changed during exclusive publication")
+    }
+    invisible(TRUE)
+  }
   tryCatch({
-    log_connection <- file(staged[3], open = "wt")
-    if (!isTRUE(suppressWarnings(file.link(staged[3], outputs[3])))) stop("Fresh log publication refused")
+    check_stages(with_contents = FALSE)
+    log_connection <- file(staged[3], open = "wx")
+    check_stages(with_contents = FALSE)
+    initial_log <- file_fact(staged[[3]])
+    if (is.null(initial_log) || !identical(strsplit(initial_log$metadata, ":", fixed = TRUE)[[1]][[6]], "0")) {
+      stop("Cannot confirm exclusive empty initial log identity")
+    }
+    original_log_identity <- strsplit(initial_log$metadata, ":", fixed = TRUE)[[1]][1:5]
+    stages[[3]]$fact <- initial_log
     sink(log_connection, split = TRUE)
     run_ucell(inputs, staged)
     close_log()
-    for (position in c(1, 2, 4)) {
-      identity <- inode(staged[position])
+    check_stages(with_contents = FALSE)
+    if (!identical(lapply(inputs, file_fact, detailed = TRUE, owned = FALSE), input_facts)) stop("Input identity changed during UCell execution")
+    for (position in seq_along(outputs)) {
+      expected <- file_fact(staged[[position]])
+      if (is.null(expected)) stop("Cannot verify complete staged output identity")
+      if (position == 3L && !identical(strsplit(expected$metadata, ":", fixed = TRUE)[[1]][1:5], original_log_identity)) {
+        stop("Initial log identity changed during UCell execution")
+      }
+      stages[[position]]$fact <- expected
+    }
+    for (position in c(3L, 1L, 2L, 4L)) {
+      check_stages()
+      links <- Sys.readlink(outputs[[position]])
+      if (file.exists(outputs[[position]]) || (!is.na(links) && nzchar(links))) stop("Fresh result publication refused")
       if (!isTRUE(suppressWarnings(file.link(staged[position], outputs[position])))) stop("Fresh result publication refused")
-      published[[length(published) + 1]] <- list(path = outputs[position], identity = identity)
+      expected <- stages[[position]]$fact
+      published[[length(published) + 1L]] <- list(path = outputs[[position]], fact = expected, position = position)
+      if (!identical(file_fact(outputs[[position]]), expected)) stop("Published output identity or contents changed")
+    }
+    check_stages()
+    for (record in published) {
+      if (!identical(file_fact(record$path), record$fact)) stop("Published output changed at final checkpoint")
     }
     completed <- TRUE
   }, error = function(error) {
     try(close_log(), silent = TRUE)
-    cat("BLOCKED:", conditionMessage(error), "\n", file = staged[3], append = TRUE)
+    try(failure_log(conditionMessage(error)), silent = TRUE)
     stop(error)
   })
 }

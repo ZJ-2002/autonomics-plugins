@@ -20,9 +20,10 @@ doc = """
 输出：series_matrix.txt.gz（原始字节，未解压）+ geo_fetch.log
 （URL、HTTP 状态、字节数、下载文件的 sha256 —— 自带内容锚，可直接进运行账本）。
 输入构念：处理后的表达矩阵 + 样本表（如 GSE130563 等 §8.3 资源）。
-失败处理：accession 不匹配 GSE\\d+ → 退出 2；HTTP 重试 3 次仍失败或 gzip
-魔数不符 → 非零退出。解释边界：多平台 GSE 的 gz 内含多个 series 块，
-解析责任在下游节点。
+可选 matrix_file 必须是当前 accession 的确切官方矩阵文件名；默认只请求
+原 canonical 文件，不自动选择平台。完整 gzip CRC、系列身份与闭合表标记校验；
+HTTP/内容失败保留诊断但不发布正常 payload。多平台需明确冻结文件名，
+本节点不组装平台或授予资源/供者资格。
 """
 timeout_secs = 14400
 artifact_prefix = "/artifacts/geo_series_matrix"
@@ -36,6 +37,7 @@ outputs = [
 
 [nodes.params]
 accession = { type = "string", doc = "GEO series accession, e.g. GSE130563" }
+matrix_file = { type = "string", default = "", doc = "Optional exact accession/platform matrix filename; empty retains canonical filename, never chooses a platform" }
 
 [nodes.command]
 interpreter = "python3"
@@ -44,6 +46,7 @@ script_file = "scripts/geo_fetch.py"
 [nodes.command.env]
 GEO_ACCESSION = "{{ accession }}"
 GEO_MODE = "matrix"
+GEO_MATRIX_FILE = "{{ matrix_file }}"
 
 [nodes.resources]
 network = "egress"
@@ -55,10 +58,13 @@ pull_policy = "never"
 kind = "geo_soft"
 desc = "Download GEO SOFT family file (full sample/series metadata) for a GSE accession"
 doc = """
-按 GSE accession 下载 family.soft.tgz（SOFT 格式全量元数据：样本属性、
+按 GSE accession 下载官方 family.soft.gz（SOFT 格式全量元数据：样本属性、
 平台注释、submitter 提供的临床字段）。输出：family.soft.tgz + geo_fetch.log。
 用途：供者→样本映射、临床表型字段核验（FILE_VERIFIED 证据的一部分）。
-失败处理同 geo_series_matrix。解释边界：SOFT 里的 submitter 字段未经
+为兼容原 IO，输出 basename 仍 family.soft.tgz、原 format 标签仍 geo_soft；
+其真实内容是 gzip 压缩的 SOFT 文本，不是 tar，日志显式记录该格式。
+完整 gzip CRC、SOFT 结构和系列身份校验。失败处理同 geo_series_matrix。
+解释边界：SOFT 里的 submitter 字段未经
 统一编码，字段语义核验在下游完成，本节点不解释内容。
 """
 timeout_secs = 14400
@@ -92,12 +98,16 @@ pull_policy = "never"
 kind = "sra_runinfo"
 desc = "Download SRA RunInfo table (run-level metadata) for a GEO/SRA accession"
 doc = """
-按 accession（GSE/SRP/SRX 均可）从 NCBI Run Selector 的公开端点拉取
-RunInfo TSV：每 run 一行，含 Run、SampleName、LibraryName、spots/bases、
+按 accession（GSE/SRP/SRX/SRR）从官方 SRA backend runinfo CSV 获取并
+逐字段无损转为 TSV：每 run 一行，含 Run、SampleName、LibraryName、spots/bases、
 Platform 等。输出：runinfo.tsv + geo_fetch.log。
 用途：pooled 库供者身份审计（方案 §8.4：pooled 库的细胞数不增加生物学
 重复；run↔sample↔library 映射是核验起点）。
-失败处理：非 200 或空表 → 重试 3 次后非零退出。解释边界：RunInfo 的
+GSE 仅通过官方 self-SOFT 的明确 SRA study relation 技术解析；唯一关系可解析，
+无/多关系不猜。多关系可由 sra_accession 显式选择，必须属于官方关系集；
+原关系/源摘要/解析ID完整入日志，但不代表科研冻结或队列资格。
+失败处理：非 200、空表、重复Run、表结构或查询身份不符均非零且保留诊断。
+解释边界：这不是 Run Selector 额外临床字段表。RunInfo 的
  biosample 映射不含供者临床信息，供者身份仍以 GEO/SOFT 与原文为准。
 """
 timeout_secs = 3600
@@ -112,6 +122,7 @@ outputs = [
 
 [nodes.params]
 accession = { type = "string", doc = "GSE / SRP / SRX / SRR accession" }
+sra_accession = { type = "string", default = "", doc = "Optional explicit SRP study selection among official GSE SRA relations; never bypasses relation validation" }
 
 [nodes.command]
 interpreter = "python3"
@@ -120,6 +131,7 @@ script_file = "scripts/geo_fetch.py"
 [nodes.command.env]
 SRA_ACCESSION = "{{ accession }}"
 GEO_MODE = "runinfo"
+GEO_SRA_ACCESSION = "{{ sra_accession }}"
 
 [nodes.resources]
 network = "egress"
@@ -135,10 +147,12 @@ doc = """
 不解压）。用途：LINCS/CMap 参考谱（GSE92742_Broad_LINCS_Level5_COMPZ.
 MODZ_n473647x12328.gctx.gz 等）、gene_info/pert_info 映射表——方案 §18.2
 的参考数据入口。
-输出：与上游同名的文件 + geo_fetch.log（URL/sha256 自锚；GSE92742 还有
+输出：保留原固定 basename suppl_file、format 标签 geo_suppl，原始上游文件名
+在日志中记录（不是把输出路径改成参数）；字节原样 + geo_fetch.log（URL/sha256 自锚；GSE92742 还有
 官方 SHA512SUMS 可交叉核对）。
-失败处理：accession 不符 GSE\\d+、文件名含 / 或 .. → 退出 2；gzip 魔数
-不符（.gz 后缀时）→ 退出 3。解释边界：gctx 内部行标识符按上游发布口径
+失败处理：accession 或单段安全文件名不符（含 /、反斜线、控制字符或 . / .. 段）
+→ 退出 2；HTML、完整 gzip CRC 不符（.gz 后缀时）→ 非零，保留诊断且不发布
+正常 payload。解释边界：gctx 内部行标识符按上游发布口径
 （LINCS 用 Entrez ID，符号映射用同目录 gene_info 在下游完成），本节点
 只负责字节忠实 + 内容锚。
 """
