@@ -1065,6 +1065,42 @@
         "sha256": "06920e79113f10c60039ad78f96dbc49ae5b0c0145beda196c8f507b97136438",
         "git_blob": "7f3cf60a752f229502f6229e6c540ad0c49b7a26"
       }
+    },
+    {
+      "path": "plugins/mrpresso/manifest.toml",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/mrpresso-plugin.git",
+        "revision": "670007a7432b0e9494797e5b12b10010bfc74b18",
+        "bytes": 2452,
+        "sha256": "519a29de96445e155726c0774ef10139ef6a008de6371aabd49630f447fe8a01",
+        "git_blob": "70f6da55aab1a8c6843f1d65682f315750d66eae"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "7f98d3e9d878a7887e805b4750a91fc96370ed81",
+        "path": "plugins/mrpresso/manifest.toml",
+        "sha256": "9cc3b1dbf0a53edcd7c42dbfc9188e3881b9572d1d56a0c0b6dc5f736635d396",
+        "bytes": 2560,
+        "git_blob": "50033b9bd5a90eda8d84e4f6c70553435a21c753"
+      }
+    },
+    {
+      "path": "plugins/mrpresso/README.md",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/mrpresso-plugin.git",
+        "revision": "670007a7432b0e9494797e5b12b10010bfc74b18",
+        "bytes": 3122,
+        "sha256": "55ec6cf21aae94f605642ab6f8a009d4e1345688a405911a980ffb715e39c5b3",
+        "git_blob": "c17d2315b997df7428c45550970d91265dee86ea"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "7f98d3e9d878a7887e805b4750a91fc96370ed81",
+        "path": "plugins/mrpresso/README.md",
+        "sha256": "80576d5ffeb3697056e33bc99db0a31fd39f3270e41caf7308056efec9006d5f",
+        "bytes": 4082,
+        "git_blob": "9a4ccb3c40fc9a05185d9ce162384da5d79ccedd"
+      }
     }
   ]
 }
