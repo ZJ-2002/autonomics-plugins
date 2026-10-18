@@ -38,6 +38,10 @@ class MRPressoImageBindingTests(unittest.TestCase):
         self.assertIn('change in the causal estimate', node['params']['distortion_test']['doc'])
         source = (ROOT / 'plugins/mrpresso/scripts/mrpresso.R.sh').read_text()
         self.assertIn('result <- MRPRESSO::mr_presso(', source)
+        self.assertEqual(node['command']['env_r_arrays'], {
+            'MRPRESSO_BETA_EXPOSURE_R': 'beta_exposure',
+            'MRPRESSO_SD_EXPOSURE_R': 'sd_exposure'})
+        self.assertNotIn('strsplit(Sys.getenv("MRPRESSO_BETA_EXPOSURE")', source)
 
     def test_docker_author_commit_and_runtime_match_image_contract(self):
         dockerfile = (ROOT / 'plugins/mrpresso/Dockerfile').read_text()

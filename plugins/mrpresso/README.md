@@ -32,12 +32,20 @@ The installed method's complete function body and formals were compared
 with the author's exact source at the pinned commit. No image was rebuilt,
 pulled or substituted merely because it had a similar package name.
 
-This corrects image availability only. The one-input/two-output wrapper is
-not certified by the two-input/five-output research adapter's proof. Its
-space-joined array transport and output-overwrite behavior remain separate
-review items; this image repair does not close the entire node or grant
-scientific use. The label `1.0.0` describes the image, not the official
-package version, which is `1.0`.
+The canonical one-input/two-output wrapper has its own evidence, independent
+of the two-input/five-output research adapter. The subsequent wrapper repair
+uses lossless array transport and exclusive output publication. Thirteen
+recording-stub controls cover argument boundaries, errors, existing outputs
+and publication races; these are interface tests, not numerical references.
+Three actual SDK graphs exercise success and two refusals. The successful
+graph's complete official result object is identical to the frozen pre-repair
+result for the same synthetic input and seed. See
+`evidence/mrpresso-wrapper-repair-20261019.json`.
+
+This closes the enumerated image/transport/publication defects in the tested
+scope, not the whole author API or scientific admission. Production loading,
+study-specific input qualification and scientific review remain separate.
+The label `1.0.0` describes the image, not the official package version `1.0`.
 
 The global test is always computed by the author function. `outlier_test`
 controls the subsequent individual-SNP test, not whether to run the global
@@ -48,11 +56,9 @@ is not a covariate balancing test.
 ## Migration parity
 
 The golden test (`crates/container-plugin/tests/mrpresso_migration.rs`)
-compares the compiled `ContainerCommandSpec` against the legacy Rust
-wrapper: image, outputs, resources, and command are byte-equal; the
-script differs structurally (env-driven instead of Rust string building)
-but preserves the exact `MRPRESSO::mr_presso` call, the `sink`/`print`
-log epilogue, and the `saveRDS` artifact. Deliberate deltas:
+checks the compiled `ContainerCommandSpec` against the legacy Rust wrapper,
+including explicit migration deltas. The script preserves the direct
+`MRPRESSO::mr_presso` call and complete `saveRDS` artifact. Deliberate deltas:
 
 - **Kind rename**: `mrpresso_container` → `mrpresso`; the artifact prefix
   follows the kind (`/artifacts/mrpresso_container` → `/artifacts/mrpresso`).
@@ -60,12 +66,17 @@ log epilogue, and the `saveRDS` artifact. Deliberate deltas:
 - **`timeout_secs` / `artifact_prefix` are node-level constants** (900 s,
   `/artifacts/mrpresso`) instead of per-instance spec params; the legacy
   spec accepted per-node overrides, the plugin DSL does not.
-- **Params travel via env** (`MRPRESSO_*`). String arrays are space-joined
-  by the env renderer and re-split in R with a single-space `fixed = TRUE`
-  `strsplit`. This is lossless only when every element contains no spaces;
-  the current schema does not enforce that restriction. Lossless array
-  transport remains an open wrapper repair, not an assumed property of
-  every GWAS input column.
+- **Params travel via env** (`MRPRESSO_*`). Exposure arrays use the engine's
+  `env_r_arrays` channel and are parsed as character literals without `eval`.
+  The old space-joined variables remain for compatibility but are not read.
+  Missing lossless channels fail rather than silently reverting to splitting.
+  The author's formula construction requires syntactically valid R column
+  names; unsupported names are explicitly rejected, not renamed.
+- **Output publication** refuses pre-existing result/log paths, including
+  dangling symlinks. Results are staged privately and published by exclusive
+  hard links. Failed publication rolls back only recorded, identity-matching
+  owned outputs. Output parents must already exist on a filesystem supporting
+  the required links; this is not a general filesystem transaction guarantee.
 - **Booleans** render as `true`/`false` and are read with `as.logical()`,
   which accepts both spellings, matching the legacy embedded `TRUE`/`FALSE`.
 - **Numbers** are read with `as.numeric()`; R parses the rendered literals

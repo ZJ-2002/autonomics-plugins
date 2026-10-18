@@ -1,0 +1,61 @@
+{
+  "schema": "MRPRESSO_CANONICAL_WRAPPER_SCOPED_REPAIR_V1",
+  "node_kind": "mrpresso",
+  "scope": "Enumerated image, array transport and output-publication defects; not whole-method or scientific admission",
+  "image": "ghcr.io/zj-2002/mrpresso@sha256:5ecce3690fc69a051483463c7697df3147772c2cc69a171c5d83784b238a9ca8",
+  "official_package": "MRPRESSO 1.0",
+  "R_version": "4.5.1",
+  "author_revision": "3e3c92d7eda6dce0d1d66077373ec0f7ff4f7e87",
+  "author_body_and_formals_proof": {
+    "session": "c008f79519fc41088383cb721a795780",
+    "seal": "6eb1e076dbcdb093d9e20d13266af34aa253451a51baf1201b8d49299def1a07"
+  },
+  "baseline_counterexamples": {
+    "session": "bfedc83b25cc418cbeb47516e289e2c3",
+    "seal": "f06d38e5422bba1b2eea50e24312e72c4dd6c2232b7217f540b87c36355e0cf8",
+    "reproduced": 3
+  },
+  "repaired_recording_stub_controls": {
+    "session": "ae155147e39f432f8de397e8c84e8475",
+    "seal": "bba07ddcbe8260bdb8742da29c37a27513b8714f10af37b0c1ec6ab95eefeb79",
+    "passed": 13,
+    "author_statistical_computations": 0,
+    "synthetic_dangling_symlink_preserved_in_tar_before_lifecycle_recovery": true,
+    "worker_exit_status": 0
+  },
+  "actual_SDK_graphs": {
+    "session": "6a20add9f6614625bd72042c7c975bc7",
+    "seal": "0a4cb63a7cf8a9672a10c1a703d77735356e3ed1820074fedd52313890dbd003",
+    "engine_revision": "4256643c55ae6fb50e8c867069330ed6ac2b4bc0",
+    "successful_graphs": 1,
+    "expected_failed_graphs": 2,
+    "nodes_per_graph": 2,
+    "edges_per_graph": 1,
+    "successful_output_ports": 2,
+    "failed_output_ports": 0,
+    "full_official_RDS_identical_to_frozen_reference": true,
+    "frozen_reference_session": "f8dc56abae7f40f4bcb22c2167a3d2c8",
+    "lossless_array_boundary_verified": true,
+    "foreign_result_preserved": true,
+    "owned_containers_observed_stopped": 3
+  },
+  "tested_sources": {
+    "plugins/mrpresso/manifest.toml": {"bytes": 2793, "sha256": "c6a838d4a36757364719e41acccbff8c957b809351f9f057ce6decfe844473c9"},
+    "plugins/mrpresso/scripts/mrpresso.R.sh": {"bytes": 4563, "sha256": "a78d95ecd7b7d3cced72269f46f184190cda7cbe769a095301c5da6d67bcf9d3"},
+    "tests/mrpresso_wrapper_contract.R": {"bytes": 7781, "sha256": "892fc2d4bb5889afabef57bf205b11759466954b97252539714a8bac384b9bd7"}
+  },
+  "algorithm_reimplemented_or_author_package_changed": false,
+  "default_method_parameters_changed": false,
+  "images_pulled_or_built": 0,
+  "limitations": [
+    "Multivariate wrapper transport is tested with an argument recorder, not certified as a study-specific multivariable analysis",
+    "Formula column names must be syntactically valid R names",
+    "Exclusive hard-link publication requires existing compatible output parents",
+    "All parameters, input domains, Monte Carlo precision and scientific assumptions are not certified",
+    "Current resident daemon loading and study-specific admission remain unverified"
+  ],
+  "full_method_domain_certified": false,
+  "production_changed": false,
+  "scientific_release_granted": false,
+  "g0_granted": false
+}

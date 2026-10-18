@@ -7629,8 +7629,8 @@
         },
         {
           "path": "README.md",
-          "sha256": "85e85222ff2b19d3c2e163f254933e430bbd32d206c0a2f88d96aefe3eddf656",
-          "bytes": 4507,
+          "sha256": "c2539ad36f57aa95330d74347509e4b8e6aa65ebdeb047318aabc2628378d846",
+          "bytes": 5366,
           "executable": false
         },
         {
@@ -7641,14 +7641,14 @@
         },
         {
           "path": "manifest.toml",
-          "sha256": "0256ed3c044fe851faaa2d63f268b33258816669ddbf6f946ea5dd8dfe29e652",
-          "bytes": 2681,
+          "sha256": "c6a838d4a36757364719e41acccbff8c957b809351f9f057ce6decfe844473c9",
+          "bytes": 2793,
           "executable": false
         },
         {
           "path": "scripts/mrpresso.R.sh",
-          "sha256": "b4cbfe20653fe662abef8c7b859731f12d4516c2ca23cbe4d41104a91fb6991f",
-          "bytes": 2074,
+          "sha256": "a78d95ecd7b7d3cced72269f46f184190cda7cbe769a095301c5da6d67bcf9d3",
+          "bytes": 4563,
           "executable": false
         },
         {

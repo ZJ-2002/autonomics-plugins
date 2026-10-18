@@ -52,3 +52,7 @@ MRPRESSO_DISTORTION_TEST = "{{ distortion_test }}"
 MRPRESSO_SIGNIF_THRESHOLD = "{{ signif_threshold }}"
 MRPRESSO_NB_DISTRIBUTION = "{{ nb_distribution }}"
 MRPRESSO_SEED = "{{ seed }}"
+
+[nodes.command.env_r_arrays]
+MRPRESSO_BETA_EXPOSURE_R = "beta_exposure"
+MRPRESSO_SD_EXPOSURE_R = "sd_exposure"
