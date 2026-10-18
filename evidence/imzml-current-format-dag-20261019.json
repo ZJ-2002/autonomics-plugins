@@ -1,0 +1,31 @@
+{
+  "schema": "IMZML_CURRENT_FORMAT_DAG_EVIDENCE_V1",
+  "proof_session": "5b4e4a709a9f4985a798dd18afaf6461",
+  "proof_seal": "09c7eb79f0ffdaa33f30d7b8582ac08205bc9f99ff231d303d9ae3a592ff57c1",
+  "sources": [
+    {
+      "path": "research-adapters/cachexia-imzml/manifest.toml",
+      "bytes": 1899,
+      "sha256": "43a67483d000fd626577537faf7b09342426164640d377bc2a2deeafee74f5f5"
+    },
+    {
+      "path": "research-adapters/cachexia-imzml/ingest.py",
+      "bytes": 22969,
+      "sha256": "60b9b09c577a8ae939222fdf52133cbeadeea34d254bec378ae3abe8c55ea521"
+    }
+  ],
+  "image": "ghcr.io/zj-2002/biotools-py@sha256:7ad6aeafa87672699d28b61b6bed12fc81fcdbfc43222a0abf17e2d56fb806f5",
+  "engine": "4256643c55ae6fb50e8c867069330ed6ac2b4bc0",
+  "positive_DAGs": 6,
+  "blocked_DAGs": 4,
+  "author_parser_full_array_profiles": 4,
+  "extension_profiles_not_upstream_equivalent": [
+    "zlib",
+    "float16"
+  ],
+  "complete_format_reference_runs": 6,
+  "owned_containers_stopped": 16,
+  "full_pyimzml_API_equivalence": false,
+  "scientific_release_granted": false,
+  "g0_granted": false
+}

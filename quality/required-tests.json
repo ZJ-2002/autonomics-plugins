@@ -1091,6 +1091,13 @@
     "tests.test_xenium_publication.XeniumPublicationTests.test_partial_publication_preserves_foreign_replacement",
     "tests.test_xenium_publication.XeniumPublicationTests.test_partial_publication_rolls_back_only_owned_outputs",
     "tests.test_xenium_publication.XeniumPublicationTests.test_preexisting_dangling_outputs_are_preserved",
-    "tests.test_xenium_publication.XeniumPublicationTests.test_success_has_all_ports_and_no_stage"
+    "tests.test_xenium_publication.XeniumPublicationTests.test_success_has_all_ports_and_no_stage",
+    "tests.test_imzml_publication.ImzmlPublicationTests.test_failure_diagnostics_do_not_overwrite_late_foreign_file",
+    "tests.test_imzml_publication.ImzmlPublicationTests.test_file_created_after_preflight_is_not_overwritten",
+    "tests.test_imzml_publication.ImzmlPublicationTests.test_malformed_request_emits_failure_artifacts_only",
+    "tests.test_imzml_publication.ImzmlPublicationTests.test_partial_publication_preserves_foreign_replacement",
+    "tests.test_imzml_publication.ImzmlPublicationTests.test_partial_publication_rolls_back_only_owned_outputs",
+    "tests.test_imzml_publication.ImzmlPublicationTests.test_preexisting_dangling_outputs_are_preserved",
+    "tests.test_imzml_publication.ImzmlPublicationTests.test_success_has_all_ports_and_no_stage"
   ]
 }

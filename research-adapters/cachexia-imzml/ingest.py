@@ -270,6 +270,22 @@ def ledger(filename, test_id, status):
         writer.writerow([test_id or "UNKNOWN_UNRECOVERABLE_ID", status, "NOT_GRANTED"])
 
 
+def publish_file(source, destination, published):
+    identity = source.stat()
+    os.link(source, destination, follow_symlinks=False)
+    published.append((destination, identity.st_dev, identity.st_ino))
+
+
+def remove_owned(published):
+    for filename, device, inode in reversed(published):
+        try:
+            current = filename.lstat()
+            if (current.st_dev, current.st_ino) == (device, inode):
+                filename.unlink()
+        except FileNotFoundError:
+            pass
+
+
 def main():
     outputs = [Path(os.environ.get("AUTONOMICS_OUTPUT" + str(position), "/work/" + name)) for position, name in enumerate(NAMES)]
     audit = {"status": "BLOCKED", "test_id": None, "G0_granted": False, "statistical_official_layer": "NOT_APPLICABLE", "resident_daemon_certified": False}
@@ -288,14 +304,23 @@ def main():
         audit.update(details, status="TECHNICAL_PASS_NOT_SCIENTIFIC", request=request, input_sha256=[digest(filename) for filename in inputs], output_sha256={str(position): digest(temporary / name) for position, name in enumerate(NAMES) if position != 4})
         save_json(temporary / NAMES[4], audit)
         for position, name in enumerate(NAMES):
-            (temporary / name).replace(outputs[position]); published.append(outputs[position])
+            publish_file(temporary / name, outputs[position], published)
     except Exception as error:
         audit.update(status="BLOCKED", error=str(error)); audit.pop("output_sha256", None)
         if safe:
-            for filename in published: filename.unlink()
-            save_json(outputs[4], audit)
-            ledger(outputs[5], audit["test_id"], "BLOCKED")
-            outputs[6].write_text(str(error) + "\n")
+            remove_owned(published)
+            if temporary is None:
+                temporary = Path(tempfile.mkdtemp(prefix="imzml-publication-", dir=outputs[0].parent))
+            failure = temporary / "failure"
+            failure.mkdir()
+            save_json(failure / NAMES[4], audit)
+            ledger(failure / NAMES[5], audit["test_id"], "BLOCKED")
+            (failure / NAMES[6]).write_text(str(error) + "\n")
+            for position in (4, 5, 6):
+                try:
+                    publish_file(failure / NAMES[position], outputs[position], [])
+                except FileExistsError:
+                    print("Preserved existing diagnostic: " + str(outputs[position]), file=sys.stderr)
         print(str(error), file=sys.stderr)
         return 1
     finally:
