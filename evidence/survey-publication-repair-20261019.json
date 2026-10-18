@@ -1,0 +1,50 @@
+{
+  "schema": "SURVEY_PUBLICATION_REPAIR_SOURCE_REUSE_REVIEW_V1",
+  "sources": [
+    {
+      "path": "research-adapters/cachexia-survey/manifest.toml",
+      "bytes": 11209,
+      "sha256": "dfd462f2393c5d8ac06a07f14e8443851bdcde5220c382fc073d3cc1a210c903"
+    },
+    {
+      "path": "research-adapters/cachexia-survey/scripts/survey.R",
+      "bytes": 27475,
+      "sha256": "f7d6c2bee9abf84474aaf4b3a78e35769d2bb58867c3f1b9508c9b70761c7716"
+    },
+    {
+      "path": "research-adapters/cachexia-survey/scripts/bind_contract.R",
+      "bytes": 9594,
+      "sha256": "ee8a4ebd6a0d861a31de3d1d08a62b5c6aa953e1aa625e4dda3854ae2ab5b684"
+    },
+    {
+      "path": "tests/survey_publication_contract.R",
+      "bytes": 5213,
+      "sha256": "63991e07e9e44f90c715f47ad41cdd61be3bb2f5731b9df6aa229058fdafc270"
+    },
+    {
+      "path": "tests/survey_method_body_contract.R",
+      "bytes": 1541,
+      "sha256": "d24d94b0fe43f31d183cf98adc6d84c2efa09d0388459d4e3db77116f155a6df"
+    },
+    {
+      "path": "tests/test_survey_publication_binding.py",
+      "bytes": 2804,
+      "sha256": "f3d013d21be38e2348d6a82a00f6b3723eefb4bf5b2c3c59a25f37092b734406"
+    }
+  ],
+  "baseline_dangling_output_failures": 8,
+  "fixed_publication_controls": 24,
+  "unchanged_old_function_ASTs": 30,
+  "matching_shared_publisher_ASTs": true,
+  "focused_binding_tests": 5,
+  "historical_independent_review_passed": true,
+  "official_image_or_manifest_changed": false,
+  "official_statistics_recomputed": 0,
+  "current_official_DAG": "PENDING",
+  "production_changed": false,
+  "scientific_release_granted": false,
+  "g0_granted": false,
+  "proof_session": "ce7ab5b4d0b14ebe86d3ad66e3ba997e",
+  "proof_seal": "3191793b86bc6add3d591f33225c4d631922d0fb7e9888bda4754de940d7bf3c",
+  "new_scoped_closures": 0
+}

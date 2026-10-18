@@ -1066,6 +1066,11 @@
     "tests.test_lcmm_publication_binding.LcmmPublicationBindingTests.test_four_modes_preserve_declared_ports_and_offline_limits",
     "tests.test_lcmm_publication_binding.LcmmPublicationBindingTests.test_official_calls_are_not_replaced_by_native_arithmetic",
     "tests.test_lcmm_publication_binding.LcmmPublicationBindingTests.test_publication_has_private_staging_and_owned_rollback",
-    "tests.test_lcmm_publication_binding.LcmmPublicationBindingTests.test_verified_wrapper_identity_is_explicit"
+    "tests.test_lcmm_publication_binding.LcmmPublicationBindingTests.test_verified_wrapper_identity_is_explicit",
+    "tests.test_survey_publication_binding.SurveyPublicationBindingTests.test_binding_keeps_raw_json_and_no_scientific_permission",
+    "tests.test_survey_publication_binding.SurveyPublicationBindingTests.test_both_verified_entry_source_identities_are_explicit",
+    "tests.test_survey_publication_binding.SurveyPublicationBindingTests.test_eleven_nodes_preserve_ports_and_limits",
+    "tests.test_survey_publication_binding.SurveyPublicationBindingTests.test_manifest_and_image_are_unchanged",
+    "tests.test_survey_publication_binding.SurveyPublicationBindingTests.test_output_protection_is_independent_of_statistical_mode"
   ]
 }

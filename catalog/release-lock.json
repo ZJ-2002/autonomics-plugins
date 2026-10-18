@@ -705,7 +705,7 @@
         },
         {
           "path": "source-lock.json",
-          "sha256": "75b614f2334040bc2a02f3cf439403adc45961e25b368c2531761064bef0100b",
+          "sha256": "272dc9c7beec6792f298ba1105ee0b4d173d355d16d470732cb07fc778623f47",
           "bytes": 4076,
           "executable": false
         }
@@ -17574,14 +17574,14 @@
         },
         {
           "path": "scripts/bind_contract.R",
-          "sha256": "a7f90345740dca6b9b4f48ed31acaf50c8c66666820420f63561501fca2bc7bc",
-          "bytes": 7041,
+          "sha256": "ee8a4ebd6a0d861a31de3d1d08a62b5c6aa953e1aa625e4dda3854ae2ab5b684",
+          "bytes": 9594,
           "executable": false
         },
         {
           "path": "scripts/survey.R",
-          "sha256": "c8d0d62ba5b52e5210a456498211fcf88f57139b666bb4f730ed05011903a799",
-          "bytes": 24785,
+          "sha256": "f7d6c2bee9abf84474aaf4b3a78e35769d2bb58867c3f1b9508c9b70761c7716",
+          "bytes": 27475,
           "executable": false
         }
       ],
