@@ -18,11 +18,26 @@ directory = one plugin family = one git-able unit.
 
 ## Provenance
 
-- Image: `ghcr.io/auto-nomics/autonomics/mrpresso@sha256:a3c467…7e2a4`,
-  tag `1.0.0`, from `Dockerfile` (base `rocker/r-ver:4.5.1`).
+- Image: `ghcr.io/zj-2002/mrpresso@sha256:5ecce3690fc69a051483463c7697df3147772c2cc69a171c5d83784b238a9ca8`,
+  actual package `MRPRESSO 1.0` on `R 4.5.1`, from the fixed-author-source image.
 - Upstream: [rondolab/MR-PRESSO](https://github.com/rondolab/MR-PRESSO)
   at revision `3e3c92d7eda6dce0d1d66077373ec0f7ff4f7e87`, installed from
   source; license GPL-3.
+
+The former `auto-nomics` reference was absent from both inspected local
+backends. The selected reference is already installed, is the reference
+expected by the engine migration test, and resolves to the same image
+configuration and layers as the existing official research-adapter image.
+The installed method's complete function body and formals were compared
+with the author's exact source at the pinned commit. No image was rebuilt,
+pulled or substituted merely because it had a similar package name.
+
+This corrects image availability only. The one-input/two-output wrapper is
+not certified by the two-input/five-output research adapter's proof. Its
+space-joined array transport and output-overwrite behavior remain separate
+review items; this image repair does not close the entire node or grant
+scientific use. The label `1.0.0` describes the image, not the official
+package version, which is `1.0`.
 
 ## Migration parity
 

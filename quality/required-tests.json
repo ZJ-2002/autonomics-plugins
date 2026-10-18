@@ -1032,6 +1032,10 @@
     "tests.test_cellphonedb_output_publication.CellPhoneDBOutputPublicationTests.test_link_failure_rolls_back_only_owned_results",
     "tests.test_cellphonedb_output_publication.CellPhoneDBOutputPublicationTests.test_missing_required_table_publishes_nothing",
     "tests.test_cellphonedb_output_publication.CellPhoneDBOutputPublicationTests.test_prior_timestamped_file_is_not_ingested_or_changed",
-    "tests.test_cellphonedb_output_publication.CellPhoneDBOutputPublicationTests.test_symlink_author_output_is_not_published"
+    "tests.test_cellphonedb_output_publication.CellPhoneDBOutputPublicationTests.test_symlink_author_output_is_not_published",
+    "tests.test_mrpresso_image_binding.MRPressoImageBindingTests.test_docker_author_commit_and_runtime_match_image_contract",
+    "tests.test_mrpresso_image_binding.MRPressoImageBindingTests.test_installed_owner_digest_not_missing_legacy_reference",
+    "tests.test_mrpresso_image_binding.MRPressoImageBindingTests.test_method_parameters_and_call_script_not_replaced_by_adapter",
+    "tests.test_mrpresso_image_binding.MRPressoImageBindingTests.test_original_one_input_two_output_contract_is_preserved"
   ]
 }

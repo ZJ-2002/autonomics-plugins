@@ -698,7 +698,7 @@
         },
         {
           "path": "source-lock.json",
-          "sha256": "083f2f5e362bc835e2ab7a32a0a34ad18d1c8d4c2016ae3f3270f6d10cc9ce80",
+          "sha256": "f26291879efa1a39c69c7d63c44a7a875b41f50213a4f263bae3f8ef9a1676a9",
           "bytes": 4076,
           "executable": false
         }
@@ -7619,7 +7619,7 @@
       "kinds": [
         "mrpresso"
       ],
-      "image_reference": "ghcr.io/auto-nomics/autonomics/mrpresso@sha256:a3c46770506e07141dd89d3b805a3ec3d04b56367738b81917675c860ad7e2a4",
+      "image_reference": "ghcr.io/zj-2002/mrpresso@sha256:5ecce3690fc69a051483463c7697df3147772c2cc69a171c5d83784b238a9ca8",
       "files": [
         {
           "path": "Dockerfile",
@@ -7629,8 +7629,8 @@
         },
         {
           "path": "README.md",
-          "sha256": "55ec6cf21aae94f605642ab6f8a009d4e1345688a405911a980ffb715e39c5b3",
-          "bytes": 3122,
+          "sha256": "80576d5ffeb3697056e33bc99db0a31fd39f3270e41caf7308056efec9006d5f",
+          "bytes": 4082,
           "executable": false
         },
         {
@@ -7641,8 +7641,8 @@
         },
         {
           "path": "manifest.toml",
-          "sha256": "519a29de96445e155726c0774ef10139ef6a008de6371aabd49630f447fe8a01",
-          "bytes": 2452,
+          "sha256": "9cc3b1dbf0a53edcd7c42dbfc9188e3881b9572d1d56a0c0b6dc5f736635d396",
+          "bytes": 2560,
           "executable": false
         },
         {

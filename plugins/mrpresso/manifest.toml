@@ -2,9 +2,9 @@ schema_version = 1
 plugin_name = "mrpresso"
 
 [image]
-reference = "ghcr.io/auto-nomics/autonomics/mrpresso@sha256:a3c46770506e07141dd89d3b805a3ec3d04b56367738b81917675c860ad7e2a4"
-tag = "1.0.0"
-upstream = "rondolab MR-PRESSO 1.0.0 @ 3e3c92d"
+reference = "ghcr.io/zj-2002/mrpresso@sha256:5ecce3690fc69a051483463c7697df3147772c2cc69a171c5d83784b238a9ca8"
+tag = "MRPRESSO-1.0-R-4.5.1"
+upstream = "rondolab/MR-PRESSO@3e3c92d7eda6dce0d1d66077373ec0f7ff4f7e87; actual package Version 1.0, R 4.5.1; image label 1.0.0 is not the package version"
 license = "GPL-3"
 
 [[nodes]]

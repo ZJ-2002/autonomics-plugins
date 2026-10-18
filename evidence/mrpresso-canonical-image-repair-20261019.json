@@ -1,0 +1,54 @@
+{
+  "schema": "MRPRESSO_CANONICAL_IMAGE_REPAIR_PARTIAL_NODE_CARD_V1",
+  "node_kind": "mrpresso",
+  "date": "2026-10-19",
+  "original_missing_reference": "ghcr.io/auto-nomics/autonomics/mrpresso@sha256:a3c46770506e07141dd89d3b805a3ec3d04b56367738b81917675c860ad7e2a4",
+  "selected_reference": "ghcr.io/zj-2002/mrpresso@sha256:5ecce3690fc69a051483463c7697df3147772c2cc69a171c5d83784b238a9ca8",
+  "same_existing_adapter_image_content": true,
+  "author_commit": "3e3c92d7eda6dce0d1d66077373ec0f7ff4f7e87",
+  "author_source_url": "https://raw.githubusercontent.com/rondolab/MR-PRESSO/3e3c92d7eda6dce0d1d66077373ec0f7ff4f7e87/R/mr_presso.R",
+  "author_source_sha256": "fd3c83f4d591b43a1355a02a69df2257ae47c10efad5ae85b17591c4d7ef808b",
+  "package_version": "1.0",
+  "R_version": "4.5.1",
+  "body_and_formals_equal_to_pinned_author": true,
+  "sources": [
+    {
+      "path": "plugins/mrpresso/manifest.toml",
+      "bytes": 2560,
+      "sha256": "9cc3b1dbf0a53edcd7c42dbfc9188e3881b9572d1d56a0c0b6dc5f736635d396"
+    },
+    {
+      "path": "plugins/mrpresso/scripts/mrpresso.R.sh",
+      "bytes": 2074,
+      "sha256": "b4cbfe20653fe662abef8c7b859731f12d4516c2ca23cbe4d41104a91fb6991f"
+    }
+  ],
+  "identity_proof": {
+    "session": "c008f79519fc41088383cb721a795780",
+    "seal": "6eb1e076dbcdb093d9e20d13266af34aa253451a51baf1201b8d49299def1a07"
+  },
+  "canonical_SDK_proof": {
+    "session": "f8dc56abae7f40f4bcb22c2167a3d2c8",
+    "seal": "8abc65c38d2fbd11be09b6c6fa7e6a5dc3e19320095124aed62dbeb1eb501f23",
+    "engine_commit": "4256643c55ae6fb50e8c867069330ed6ac2b4bc0",
+    "nodes": 2,
+    "edges": 1,
+    "input_ports": 1,
+    "output_ports": 2,
+    "method_exit": 0,
+    "complete_RDS_readback": true,
+    "declaration_tests": 4,
+    "synthetic_method_runs": 1
+  },
+  "images_pulled_or_built": 0,
+  "algorithm_reimplemented": false,
+  "research_adapter_not_silently_used_as_canonical_node": true,
+  "remaining_known_wrapper_items": [
+    "Lossy space-joined exposure arrays",
+    "Existing output ownership/publication guards"
+  ],
+  "whole_node_closed": false,
+  "production_changed": false,
+  "scientific_release_granted": false,
+  "g0_granted": false
+}
