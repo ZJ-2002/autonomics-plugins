@@ -1,0 +1,55 @@
+{
+  "schema": "LCMM_OFFICIAL_ADAPTER_CURRENT_COMPONENT_DAG_EVIDENCE_V1",
+  "proof_session": "328e548e4c064595a59b59c7de4fdd53",
+  "proof_seal": "79f3e001e99bd2a47f47ab375e7ef8c5d11d59a00fb738d4582d0a9e804361b9",
+  "safety_session": "def94e1a9e3a4cc2b816e93ef44e9063",
+  "safety_seal": "16f2c905fa12fe13cee815af4d08505916ccfb99b487e2f28f9e5b3821531546",
+  "sources": [
+    {
+      "path": "research-adapters/cachexia-lcmm/manifest.toml",
+      "bytes": 4599,
+      "sha256": "e2c79728840e6b010bfe50625f82ca1e98e6584a527309acab819b14033ce963"
+    },
+    {
+      "path": "research-adapters/cachexia-lcmm/scripts/lcmm.R",
+      "bytes": 23536,
+      "sha256": "92bedf32d5c48070df0354b0ee08c0d0f64e0fcb7cf44d7abd0da2945a0d43d8"
+    },
+    {
+      "path": "research-adapters/cachexia-lcmm-typed-values/manifest.toml",
+      "bytes": 1354,
+      "sha256": "92c55a4c198a6e93ff96cb386c08f22172a2caa8e8bccf1309b152b81d6c6b84"
+    },
+    {
+      "path": "research-adapters/cachexia-lcmm-typed-values/scripts/typed_values.py",
+      "bytes": 5105,
+      "sha256": "978ab903b9a50b1834ecc3ac6f87a824815fc84b915d1eb040ed09118bd8dd8f"
+    }
+  ],
+  "official_image": "localhost/cachexia-lcmm@sha256:602bbf79fa81124edc1d78f366a71e2f8e55f1c768377810104eb81bb03ac97a",
+  "engine_source": "4256643c55ae6fb50e8c867069330ed6ac2b4bc0",
+  "positive_component_DAGs": 3,
+  "blocked_DAGs": 2,
+  "complete_RDS_comparisons": 3,
+  "finite_fields": 27604,
+  "missing_fields_retained": 1,
+  "maximum_absolute_difference": 0.0,
+  "new_model_fits_in_first_batch": 1,
+  "new_model_fits_in_successful_final_run": 0,
+  "reused_explicit_successful_component_DAGs": 2,
+  "failed_batch_relabelled_passed": false,
+  "counterexample": "Direct TSV inference failed on legitimate NA; corrected comparison graph uses existing explicit-schema Parquet bridge, without row deletion or policy changes.",
+  "new_single_combined_refit_prediction_comparison_pipeline_proven": false,
+  "typed_bridge_scope": "FRESH_MANAGED_OWNED_WORKSPACE_NOT_GENERAL_HOSTILE_WORKSPACE_CERTIFICATION",
+  "host_runtime_changed_lock_not_bypassed": "/etc/ld.so.cache",
+  "production_changed": false,
+  "scientific_release_granted": false,
+  "g0_granted": false,
+  "B_S": "CONDITIONAL_NOT_READY",
+  "GS01": "OPEN",
+  "frozen_denominators": [
+    276,
+    288,
+    696
+  ]
+}
