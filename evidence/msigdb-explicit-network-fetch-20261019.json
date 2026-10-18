@@ -1,0 +1,63 @@
+{
+  "schema": "MSIGDB_EXPLICIT_NETWORK_PUBLIC_CARD_V1",
+  "sources": [
+    {
+      "path": "research-adapters/cachexia-msigdb/manifest.toml",
+      "bytes": 2909,
+      "sha256": "8758d87c86c488ebb22100c47686a59dff21155414ac72b0eea0d8e44f12d503"
+    },
+    {
+      "path": "research-adapters/cachexia-msigdb/scripts/gmt.py",
+      "bytes": 17906,
+      "sha256": "9224757a039f7c2cd9f0dc2f47cfe70c49ed2b916cc48d14d4cb449ec255d5fa"
+    }
+  ],
+  "image": "ghcr.io/zj-2002/biotools-py@sha256:7ad6aeafa87672699d28b61b6bed12fc81fcdbfc43222a0abf17e2d56fb806f5",
+  "engine_commit": "4256643c55ae6fb50e8c867069330ed6ac2b4bc0",
+  "nodes": 2,
+  "edges": 1,
+  "normal_ports": 7,
+  "actual_method_exit_code": 0,
+  "comparison": {
+    "complete_raw_and_all_ports_identical": true,
+    "sets": 50,
+    "memberships": 7322,
+    "typed_lexical_fields_identical": 29288,
+    "metadata_fields_identical": 450,
+    "duplicates_preserved": 0,
+    "G0_granted": false
+  },
+  "one_real_HTTP_fetch_performed": true,
+  "policy": {
+    "scope": "VALIDATION_CHILD_PROCESS_ONLY",
+    "proxy_exception_added": "data.broadinstitute.org",
+    "existing_proxy_and_exception_values_not_recorded": true,
+    "host_environment_changed": false,
+    "host_or_production_configuration_files_modified": false,
+    "TLS_verification_disabled": false,
+    "network_profile": "egress/default",
+    "algorithm_or_manifest_changed": false
+  },
+  "owned_containers_observed_stopped": 1,
+  "default_inherited_proxy_route_certified": false,
+  "current_production_environment_changed": false,
+  "scientific_release_granted": false,
+  "g0_granted": false,
+  "proof_archives": [
+    {
+      "session": "8f09a8b8aaae4e8e98ab0d1500b9f395",
+      "seal": "5eec2e83471dba0ff05aac0e4c672579911a960c430056386d664f49936807fa"
+    },
+    {
+      "session": "c5487b12939c4776b4ff5187ace5a7aa",
+      "seal": "d0b8735887cd472b51f7dbc2cb9e3cc21e355a72aedeb80f586aa2bff3b0bb2b"
+    },
+    {
+      "session": "642ef80f7e5842ef81bf412858635874",
+      "seal": "151c6624bd2fdfd48109e03b670147f691e1cba43f0184cb1549ae8488cdccd6"
+    }
+  ],
+  "scope": "Exact frozen resource and explicit child-only network policy; not default or current production availability",
+  "statistical_official_layer": "NOT_APPLICABLE",
+  "current_SQL_materialization_claimed": false
+}
