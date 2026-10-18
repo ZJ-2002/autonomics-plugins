@@ -1,0 +1,59 @@
+{
+  "schema": "MICE_CURRENT_CONNECTED_AUTHOR_DAG_EVIDENCE_V1",
+  "proof_session": "17b811b90140430d940f1310188c5d77",
+  "proof_seal": "f8b3cb1cb7d38a1887f9759e26de6231ac969784413663e7c329f6d5bcf25239",
+  "safety_session": "05264a0c626e472e9ef4fbc8af903279",
+  "safety_seal": "f74d7f5ac8c60841bd376d54ffe639ca963d24ebe7d6559b974ec7bb88b71858",
+  "sources": [
+    {
+      "path": "research-adapters/cachexia-mice/manifest.toml",
+      "bytes": 5826,
+      "sha256": "eec37a826352f6501d8c53b60a0ff80a2027e01995798b156d4fd0f7a51d3780"
+    },
+    {
+      "path": "research-adapters/cachexia-mice/scripts/mice.R",
+      "bytes": 26581,
+      "sha256": "33d36247e60b0229965e1d2d559f91961888b7f959a82154a4996fbf4c10309e"
+    },
+    {
+      "path": "research-adapters/cachexia-mice/scripts/bind_contract.R",
+      "bytes": 9789,
+      "sha256": "77c1fd5bc3025d3e6c7c70dcbdf5945493194e6e6fefa261a737bba3f7adc14a"
+    },
+    {
+      "path": "research-adapters/cachexia-mice-typed-values/manifest.toml",
+      "bytes": 1184,
+      "sha256": "5cf91dcfff2ff4f9bbd0749d881f5dccb9a17c13040952987c07affb4d10c0e6"
+    },
+    {
+      "path": "research-adapters/cachexia-mice-typed-values/scripts/typed_values.py",
+      "bytes": 7170,
+      "sha256": "c503512f82c82ef7cf28950e0b64cbaf3e7ccf85f445ff0d11cf23a21b9189f8"
+    }
+  ],
+  "engine_source": "4256643c55ae6fb50e8c867069330ed6ac2b4bc0",
+  "official_image": "localhost/cachexia-mice@sha256:0a7b397b9fb5fca8128381525ab9482098445a2f29e309135464a8cd45fc0f57",
+  "typed_image": "localhost/autonomics/single-cell-preprocessor@sha256:5069c3ffaac0b11dfe950c1cd026f4195317be47b529b730572d9e670ad0f59b",
+  "positive_DAGs": 4,
+  "blocked_DAGs": 2,
+  "author_method_instances": 5,
+  "fresh_reference_runs": 4,
+  "complete_RDS_RNG_comparisons": 4,
+  "complete_numeric_fields_including_parent": 7037,
+  "final_output_finite_cells": 1554,
+  "maximum_absolute_difference": 0.0,
+  "frozen_diagnostic_and_mask_ledger_instances_byte_identical": 5,
+  "new_metadata_exclusions": false,
+  "new_independent_compilation_claimed": false,
+  "original_native_full_domain_certified": false,
+  "production_changed": false,
+  "scientific_release_granted": false,
+  "g0_granted": false,
+  "B_S": "CONDITIONAL_NOT_READY",
+  "GS01": "OPEN",
+  "frozen_denominators": [
+    276,
+    288,
+    696
+  ]
+}
