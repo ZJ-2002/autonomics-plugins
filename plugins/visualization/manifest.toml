@@ -2,7 +2,7 @@ schema_version = 1
 plugin_name = "visualization"
 
 [image]
-reference = "ghcr.io/auto-nomics/autonomics/visualization@sha256:ee9592b77bc5ea0cebfafafbe39550c377204019f451d7a37e13e4ce2e884f15"
+reference = "ghcr.io/zj-2002/visualization@sha256:8f31b667355a7b3ab0fbabdac49e1c5c7f91ab81b560564efdddb3d7d59f94d6"
 tag = "0.1.0"
 upstream = "rocker/r-ver 4.5.3 + arrow 23.0.1.2 + ggplot2 4.0.3"
 license = "GPL-3"
@@ -14,16 +14,18 @@ license = "GPL-3"
 # ContainerCommandNode and exposed to the container as AUTONOMICS_INPUT1.
 [[nodes]]
 kind = "visualization"
-desc = "Terminal-only renderer for plot-ready data and a constrained ggplot2 script."
+terminal = true
+desc = "Terminal-only renderer for plot-ready data and a trusted frozen ggplot2 script."
 doc = """
 Terminal-only plot renderer in an isolated R/ggplot2 OCI container. Input
 port 0 (`data`) must already contain plot-ready data (`csv`, `tsv`,
 `parquet`, Arrow IPC stream, or Arrow IPC file; pick the encoding with
 data_format). Input port 1 (`r_script`) is a File holding a small R script
-that must assign the plot to a variable named `p` as a single ggplot2
-layer chain, e.g. `p <- ggplot2::ggplot(df, ggplot2::aes(x, y)) +
+that must assign the plot to a variable named `p`, e.g.
+`p <- ggplot2::ggplot(df, ggplot2::aes(x, y)) +
 ggplot2::geom_point()`. The script is sourced with the plot-ready data
-available as `df`; keep it to the plot expression — the render fails if
+available as `df`; use an operator-reviewed frozen script. This is not an
+enforced R syntax grammar or an arbitrary-code security sandbox. The render fails if
 `p` is missing. The node emits immutable `plot.png` and cannot have
 downstream DAG edges. The container runs with networking disabled, a
 read-only root filesystem, and CPU, memory, and PID limits.

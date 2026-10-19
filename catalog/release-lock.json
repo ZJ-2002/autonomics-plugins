@@ -705,7 +705,7 @@
         },
         {
           "path": "source-lock.json",
-          "sha256": "e2e37de30d506befe545fb9df901df155b5210eafddf105e9747e2cf8a0b2baf",
+          "sha256": "cec525adc399beb3c06cd3002a266705929bb122cea5ab809ea64c96d710d2fd",
           "bytes": 4076,
           "executable": false
         }
@@ -15597,7 +15597,7 @@
       "kinds": [
         "visualization"
       ],
-      "image_reference": "ghcr.io/auto-nomics/autonomics/visualization@sha256:ee9592b77bc5ea0cebfafafbe39550c377204019f451d7a37e13e4ce2e884f15",
+      "image_reference": "ghcr.io/zj-2002/visualization@sha256:8f31b667355a7b3ab0fbabdac49e1c5c7f91ab81b560564efdddb3d7d59f94d6",
       "files": [
         {
           "path": "Dockerfile",
@@ -15613,8 +15613,8 @@
         },
         {
           "path": "manifest.toml",
-          "sha256": "05d22663da4b85ea58645e0674ff0e67b75212a0f8767d3a14586b9e9f181ac4",
-          "bytes": 2987,
+          "sha256": "181e289de869231a5c78372e738421bd452c94969347b2abeff3941078602e86",
+          "bytes": 3044,
           "executable": false
         },
         {
@@ -15625,8 +15625,8 @@
         },
         {
           "path": "scripts/render.R.sh",
-          "sha256": "cd895075ae13aaf2b8ae15619c734116d8007db45f14a53cf59446c94a11ee51",
-          "bytes": 2153,
+          "sha256": "e51ce37a3aa9bc5ec673ed6fc455ef0f497c106b16850495a3756c498e930d6d",
+          "bytes": 2152,
           "executable": false
         },
         {

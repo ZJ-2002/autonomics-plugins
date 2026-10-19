@@ -33,7 +33,7 @@ df <- switch(
   stop("unsupported visualization data format: ", data_format)
 )
 
-script_env <- new.env(parent = emptyenv())
+script_env <- new.env(parent = baseenv())
 script_env$df <- df
 source(script_path, local = script_env)
 if (!exists("p", envir = script_env, inherits = FALSE) || is.null(script_env$p)) {
