@@ -1,0 +1,23 @@
+{
+  "schema": "MRLAP_PUBLICATION_REPAIR_EVIDENCE_V1",
+  "status": "PUBLICATION_CONTROLS_VERIFIED_NEW_IMAGE_AND_DAG_QUALIFICATION_PENDING",
+  "proof_session": "72b4cbcdbb624039b17da276fc531fd9",
+  "proof_seal": "56cf7bbc9938ea73ed9bf41ddac552d684d3cbabcf1d7f60c95e263d1697b5de",
+  "script_sha256": "7d0e4b458fa90b4804f26948f2cd837f921616b92aaad544e0a26721328cc14a",
+  "manifest_sha256": "8dcc2b973b844150f660b9fcd9209b564d4642f118ed716fc219cc4a072c81c6",
+  "original_script_sha256": "16d4c48bb5724f597b23b0f4054689f871fb934f9cf56c1e6176a58256025dc6",
+  "R_controls": 19,
+  "actual_Rscript_entry_failure_cases": 2,
+  "entire_original_method_AST_compared_with_only_explicit_wrapper_normalization": true,
+  "old_foreign_summary_overwrite_reproduced_in_serialization_tail": true,
+  "synthetic_result_list_is_filesystem_fixture_not_author_reference": true,
+  "author_MRlap_calls": 0,
+  "fresh_actual_image_or_complete_DAG_or_numerical_equivalence_claimed": false,
+  "four_file_atomic_transaction_claimed": false,
+  "hostile_namespace_replacement_protection_claimed": false,
+  "old_numerical_evidence_kept_historical": true,
+  "native_Rust_mrlap": "FORBIDDEN",
+  "production_changed": false,
+  "scientific_release_granted": false,
+  "g0_granted": false
+}

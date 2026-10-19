@@ -705,7 +705,7 @@
         },
         {
           "path": "source-lock.json",
-          "sha256": "f8879c52d65301cad592d2431211f0fa9d36893857cfe7b3438fce38662f098a",
+          "sha256": "4a39e3e0de4ef6ea7588114eb1291a6a960d51aa5f84f9082005c1fc594886b3",
           "bytes": 4076,
           "executable": false
         }
@@ -7581,8 +7581,8 @@
         },
         {
           "path": "scripts/mrlap.sh",
-          "sha256": "16d4c48bb5724f597b23b0f4054689f871fb934f9cf56c1e6176a58256025dc6",
-          "bytes": 7041,
+          "sha256": "7d0e4b458fa90b4804f26948f2cd837f921616b92aaad544e0a26721328cc14a",
+          "bytes": 10217,
           "executable": false
         },
         {
@@ -7590,6 +7590,12 @@
           "sha256": "f4787622465a537428f8e6aa7f15cef5614e8222e754181ee0bdc854e81c26a7",
           "bytes": 3315,
           "executable": true
+        },
+        {
+          "path": "tests/publication_controls.R",
+          "sha256": "39297e788f3638de04f7d7b29ea516fe3b4d6e4daadedc0f4ee63ffc334d229b",
+          "bytes": 7229,
+          "executable": false
         },
         {
           "path": "tests/test_boundaries.py",

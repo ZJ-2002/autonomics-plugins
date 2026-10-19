@@ -1117,6 +1117,11 @@
     "tests.test_iut_reuse_binding.IutReuseBindingTests.test_exact_previously_repaired_assembly_and_adjustment_sources",
     "tests.test_iut_reuse_binding.IutReuseBindingTests.test_loader_executes_the_verified_buffer_without_reopening",
     "tests.test_iut_reuse_binding.IutReuseBindingTests.test_replacement_is_explicit_not_native_boolean_alias",
-    "tests.test_iut_reuse_binding.IutReuseBindingTests.test_strict_iut_does_not_silently_remove_missing_components"
+    "tests.test_iut_reuse_binding.IutReuseBindingTests.test_strict_iut_does_not_silently_remove_missing_components",
+    "tests.test_mrlap_publication_binding.MrlapPublicationBindingTests.test_direct_author_call_seed_and_complete_result_remain",
+    "tests.test_mrlap_publication_binding.MrlapPublicationBindingTests.test_exclusive_links_and_owned_rollback_are_explicit",
+    "tests.test_mrlap_publication_binding.MrlapPublicationBindingTests.test_frozen_manifest_image_and_resources_unchanged",
+    "tests.test_mrlap_publication_binding.MrlapPublicationBindingTests.test_original_three_inputs_and_four_outputs_remain",
+    "tests.test_mrlap_publication_binding.MrlapPublicationBindingTests.test_reviewed_entry_and_executed_R_control_identities"
   ]
 }

@@ -17,13 +17,16 @@
 #          set of WOE4_mrlap_summary_seed1.tsv; NA stays NA), port 1 full
 #          result RDS, port 2 print(res) text, port 3 run log.
 
+run_mrlap <- function(outputs) {
+initial_sinks <- sink.number()
+on.exit(while (sink.number() > initial_sinks) sink(), add = TRUE)
 input_exp <- Sys.getenv("AUTONOMICS_INPUT0")
 input_out <- Sys.getenv("AUTONOMICS_INPUT1")
 input_iv  <- Sys.getenv("AUTONOMICS_INPUT2")
-summary_path <- Sys.getenv("AUTONOMICS_OUTPUT0")
-rds_path  <- Sys.getenv("AUTONOMICS_OUTPUT1")
-txt_path  <- Sys.getenv("AUTONOMICS_OUTPUT2")
-log_path  <- Sys.getenv("AUTONOMICS_OUTPUT3")
+summary_path <- outputs[[1L]]
+rds_path  <- outputs[[2L]]
+txt_path  <- outputs[[3L]]
+log_path  <- outputs[[4L]]
 
 if (!all(nzchar(c(input_exp, input_out, input_iv, summary_path, rds_path, txt_path, log_path)))) {
   stop("All declared input/output ports are required", call. = FALSE)
@@ -134,4 +137,65 @@ sink()
 write.table(s, summary_path, sep = "\t", row.names = FALSE, quote = FALSE)
 cat("\n== mrlap_official summary ==\n")
 print(s, digits = 10)
-q(status = 0)
+0L
+}
+
+publish_mrlap_outputs <- function(writer) {
+  need <- function(condition, message) {
+    if (!isTRUE(condition)) stop(message, call. = FALSE)
+  }
+  destinations <- vapply(0:3, function(index) Sys.getenv(paste0("AUTONOMICS_OUTPUT", index)), "")
+  need(all(nzchar(destinations)), "All declared output ports are required")
+  destinations <- vapply(destinations, function(filename)
+    file.path(normalizePath(dirname(filename), mustWork = TRUE), basename(filename)), character(1))
+  need(!anyDuplicated(destinations), "Output paths must be distinct")
+  path_present <- function(filename) {
+    target <- Sys.readlink(filename)
+    file.exists(filename) || (!is.na(target) && nzchar(target))
+  }
+  need(!any(vapply(destinations, path_present, logical(1))), "Existing output must not be overwritten")
+  stage <- tempfile(pattern = ".mrlap-owned-", tmpdir = dirname(destinations[[1L]]))
+  need(dir.create(stage, mode = "0700"), "Private output staging could not be created")
+  private_outputs <- file.path(stage, c("mrlap_summary.tsv", "mrlap.RDS", "mrlap_result.txt", "mrlap.log"))
+  created <- list()
+  completed <- FALSE
+  file_identity <- function(filename) {
+    value <- system2("stat", c("-c", shQuote("%d:%i"), shQuote(filename)), stdout = TRUE, stderr = TRUE)
+    need(is.null(attr(value, "status")) && length(value) == 1L && grepl("^[0-9]+:[0-9]+$", value), "Output file identity unavailable")
+    value[[1L]]
+  }
+  on.exit({
+    if (!completed) {
+      for (owned in rev(created)) {
+        tryCatch({
+          if (path_present(owned$path) && identical(file_identity(owned$path), owned$identity)) unlink(owned$path)
+        }, error = function(error) warning(paste("Output rollback retained an unverified path:", conditionMessage(error))))
+      }
+    }
+    unlink(stage, recursive = TRUE)
+  }, add = TRUE)
+  status <- tryCatch(writer(private_outputs), error = function(error) {
+    target <- Sys.readlink(private_outputs[[4L]])
+    need(is.na(target) || !nzchar(target), "Failure log must not be a symlink")
+    need(!file.exists(private_outputs[[4L]]) || file_test("-f", private_outputs[[4L]]), "Failure log must be a regular file")
+    cat("BLOCKED ", conditionMessage(error), "\n", file = private_outputs[[4L]], append = TRUE, sep = "")
+    1L
+  })
+  need(is.numeric(status) && length(status) == 1L && !is.na(status) && is.finite(status) && status %in% c(0L, 1L), "Invalid wrapper exit status")
+  positions <- if (status == 0L) seq_along(destinations) else 4L
+  for (position in positions) {
+    filename <- private_outputs[[position]]
+    target <- Sys.readlink(filename)
+    need(file_test("-f", filename) && (is.na(target) || !nzchar(target)), "Required staged output must be a regular non-symlink file")
+    identity <- file_identity(filename)
+    need(file.link(filename, destinations[[position]]), "Exclusive output publication failed")
+    created[[length(created) + 1L]] <- list(path = destinations[[position]], identity = identity)
+  }
+  completed <- TRUE
+  status
+}
+
+if (sys.nframe() == 0L) {
+  exit_status <- publish_mrlap_outputs(run_mrlap)
+  if (exit_status != 0L) quit(save = "no", status = exit_status)
+}
