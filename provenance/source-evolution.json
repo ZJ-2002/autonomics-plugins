@@ -1533,6 +1533,42 @@
         "sha256": "7190eabb90c0704ce6da3b33c53d90def40cbdad009f2e23a90ca504d0a94189",
         "git_blob": "c081765567973ec0f90b95453e927b33df3d4775"
       }
+    },
+    {
+      "path": "plugins/visualization/manifest.toml",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/visualization-plugin.git",
+        "revision": "aab8ef00e480883e037dff0f0cebc9024a496ad3",
+        "bytes": 2987,
+        "sha256": "05d22663da4b85ea58645e0674ff0e67b75212a0f8767d3a14586b9e9f181ac4",
+        "git_blob": "b0b6f5f8d68d4dbee3f67f6543e2a2000d7c0184"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "5eefbf404d3b371d64f39a599ad8d3ccf698817e",
+        "path": "plugins/visualization/manifest.toml",
+        "bytes": 3044,
+        "sha256": "181e289de869231a5c78372e738421bd452c94969347b2abeff3941078602e86",
+        "git_blob": "11d2a3b6172048b9fb8cb0baa0cfbc45e6d202c3"
+      }
+    },
+    {
+      "path": "plugins/visualization/scripts/render.R.sh",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/visualization-plugin.git",
+        "revision": "aab8ef00e480883e037dff0f0cebc9024a496ad3",
+        "bytes": 2153,
+        "sha256": "cd895075ae13aaf2b8ae15619c734116d8007db45f14a53cf59446c94a11ee51",
+        "git_blob": "3eb728d94cc90fce451a63009c15473d072e001d"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "5eefbf404d3b371d64f39a599ad8d3ccf698817e",
+        "path": "plugins/visualization/scripts/render.R.sh",
+        "bytes": 2152,
+        "sha256": "e51ce37a3aa9bc5ec673ed6fc455ef0f497c106b16850495a3756c498e930d6d",
+        "git_blob": "a2b34fcdf3e6345af76521ddcb7b1a5a5b95bfcb"
+      }
     }
   ]
 }
