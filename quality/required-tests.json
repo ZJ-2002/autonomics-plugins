@@ -1098,6 +1098,11 @@
     "tests.test_imzml_publication.ImzmlPublicationTests.test_partial_publication_preserves_foreign_replacement",
     "tests.test_imzml_publication.ImzmlPublicationTests.test_partial_publication_rolls_back_only_owned_outputs",
     "tests.test_imzml_publication.ImzmlPublicationTests.test_preexisting_dangling_outputs_are_preserved",
-    "tests.test_imzml_publication.ImzmlPublicationTests.test_success_has_all_ports_and_no_stage"
+    "tests.test_imzml_publication.ImzmlPublicationTests.test_success_has_all_ports_and_no_stage",
+    "tests.test_nichenet_publication_binding.NichenetPublicationBindingTests.test_all_declared_ports_remain_explicit",
+    "tests.test_nichenet_publication_binding.NichenetPublicationBindingTests.test_author_calls_and_complete_object_are_not_replaced",
+    "tests.test_nichenet_publication_binding.NichenetPublicationBindingTests.test_explicit_exclusive_publication_and_rollback",
+    "tests.test_nichenet_publication_binding.NichenetPublicationBindingTests.test_frozen_manifest_and_image_unchanged",
+    "tests.test_nichenet_publication_binding.NichenetPublicationBindingTests.test_reviewed_entry_source_identity"
   ]
 }

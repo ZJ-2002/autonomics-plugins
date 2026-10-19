@@ -1,0 +1,17 @@
+{
+  "schema": "NICHENET_PUBLICATION_REPAIR_EVIDENCE_V1",
+  "proof_session": "0302fd54cbea4ec095759bccff20cc9f",
+  "proof_seal": "5185f9133b1345ff3ef088310f029e7145288adddd7ec26faf592a897bd007d5",
+  "source": {
+    "path": "research-adapters/cachexia-nichenet/scripts/h5ad_reader.R",
+    "bytes": 21771,
+    "sha256": "dadd46d027650fe31e883d97a487cca661712e6891059759fd5f2dc727c1b4c7"
+  },
+  "baseline_unprotected_outputs": 8,
+  "actual_R_wrapper_controls_passed": 20,
+  "old_global_function_ASTs_unchanged": 11,
+  "author_statistical_calls": 0,
+  "method_or_current_DAG_qualification_granted": false,
+  "scientific_release_granted": false,
+  "g0_granted": false
+}

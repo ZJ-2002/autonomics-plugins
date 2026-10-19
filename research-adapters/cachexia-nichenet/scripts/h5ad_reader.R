@@ -249,8 +249,7 @@ run_nichenet <- function(outputs, audit) {
   audit
 }
 
-if (nzchar(Sys.getenv("AUTONOMICS_INPUT_COUNT"))) {
-  outputs <- vapply(0:7, function(index) Sys.getenv(paste0("AUTONOMICS_OUTPUT", index)), character(1))
+run_nichenet_entry <- function(outputs) {
   need(all(nzchar(outputs)) && !anyDuplicated(outputs) && !any(file.exists(outputs)), "Eight distinct non-overwritten declared ports required")
   log_connection <- file(outputs[[4L]], "wt")
   sink(log_connection)
@@ -267,5 +266,57 @@ if (nzchar(Sys.getenv("AUTONOMICS_INPUT_COUNT"))) {
   sink(type = "message")
   sink()
   close(log_connection)
-  quit(save = "no", status = if (audit$status == "TECHNICAL_PASS_NOT_SCIENTIFIC") 0L else 1L)
+  if (audit$status == "TECHNICAL_PASS_NOT_SCIENTIFIC") 0L else 1L
+}
+
+publish_nichenet_outputs <- function(writer) {
+  destinations <- vapply(0:7, function(index) Sys.getenv(paste0("AUTONOMICS_OUTPUT", index)), "")
+  need(all(nzchar(destinations)), "Every declared output path is required")
+  destinations <- vapply(destinations, function(filename)
+    file.path(normalizePath(dirname(filename), mustWork = TRUE), basename(filename)), character(1))
+  need(!anyDuplicated(destinations) && !anyDuplicated(basename(destinations)), "Distinct output paths required")
+  inputs <- vapply(0:2, function(index) Sys.getenv(paste0("AUTONOMICS_INPUT", index)), "")
+  need(all(nzchar(inputs)), "Three declared inputs are required")
+  input_paths <- vapply(inputs, normalizePath, character(1), mustWork = TRUE)
+  need(!any(destinations %in% input_paths), "Input and output paths must be distinct")
+  path_present <- function(filename) {
+    target <- Sys.readlink(filename)
+    file.exists(filename) || (!is.na(target) && nzchar(target))
+  }
+  need(!any(vapply(destinations, path_present, logical(1))), "Refusing to overwrite existing output")
+  stage <- tempfile(pattern = ".nichenet-owned-", tmpdir = dirname(destinations[[1L]]))
+  need(dir.create(stage, mode = "0700"), "Private output staging could not be created")
+  created <- list()
+  completed <- FALSE
+  file_identity <- function(filename) {
+    value <- system2("stat", c("-c", shQuote("%d:%i"), shQuote(filename)), stdout = TRUE, stderr = TRUE)
+    need(is.null(attr(value, "status")) && length(value) == 1L && grepl("^[0-9]+:[0-9]+$", value), "Output file identity unavailable")
+    value[[1L]]
+  }
+  on.exit({
+    if (!completed) {
+      for (owned in rev(created)) {
+        tryCatch({
+          if (path_present(owned$path) && identical(file_identity(owned$path), owned$identity)) unlink(owned$path)
+        }, error = function(error) warning(paste("Output rollback retained an unverified path:", conditionMessage(error))))
+      }
+    }
+    unlink(stage, recursive = TRUE)
+  }, add = TRUE)
+  private_outputs <- file.path(stage, basename(destinations))
+  status <- writer(private_outputs)
+  need(length(status) == 1L && status %in% c(0L, 1L), "Invalid wrapper exit status")
+  positions <- if (status == 0L) seq_along(destinations) else c(3L, 4L)
+  for (position in positions) {
+    identity <- file_identity(private_outputs[[position]])
+    need(file.link(private_outputs[[position]], destinations[[position]]), "Exclusive output publication failed")
+    created[[length(created) + 1L]] <- list(path = destinations[[position]], identity = identity)
+  }
+  completed <- TRUE
+  status
+}
+
+if (nzchar(Sys.getenv("AUTONOMICS_INPUT_COUNT"))) {
+  exit_status <- publish_nichenet_outputs(run_nichenet_entry)
+  if (exit_status != 0L) quit(save = "no", status = exit_status)
 }
