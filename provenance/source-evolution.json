@@ -375,11 +375,11 @@
       },
       "current": {
         "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
-        "revision": "794cb7ebd39c3f5aa49dee46fa0c47b91846ebd4",
+        "revision": "10fb08e727794ce7892ea28441a6d67504fcc9e4",
         "path": "plugins/mrlap/scripts/mrlap.sh",
-        "sha256": "16d4c48bb5724f597b23b0f4054689f871fb934f9cf56c1e6176a58256025dc6",
-        "bytes": 7041,
-        "git_blob": "f1ca39f99d944038d3ba87f587d56b9cd26c8afb"
+        "bytes": 10217,
+        "sha256": "7d0e4b458fa90b4804f26948f2cd837f921616b92aaad544e0a26721328cc14a",
+        "git_blob": "db3db4c0c230bb84fd7b3126055d7b47bba11cc1"
       }
     },
     {
