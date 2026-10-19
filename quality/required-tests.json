@@ -1172,6 +1172,9 @@
     "tests.test_ieugwasr_dispatch_contract.IeugwasrDispatchContractTests.test_request_only_rejects_clump",
     "tests.test_ieugwasr_dispatch_contract.IeugwasrDispatchContractTests.test_request_only_rejects_undeclared_dataset",
     "tests.test_ieugwasr_dispatch_contract.IeugwasrDispatchContractTests.test_unknown_policy_is_refused",
-    "tests.test_ieugwasr_dispatch_contract.IeugwasrDispatchContractTests.test_wrong_input_count_is_refused"
+    "tests.test_ieugwasr_dispatch_contract.IeugwasrDispatchContractTests.test_wrong_input_count_is_refused",
+    "tests.test_donor_composition_official.DonorCompositionOfficialTests.test_actual_R_contract_and_publication_helpers_without_fit",
+    "tests.test_donor_composition_official.DonorCompositionOfficialTests.test_embedded_original_independent_reference_bytes_unchanged",
+    "tests.test_donor_composition_official.DonorCompositionOfficialTests.test_manifest_exact_two_inputs_five_outputs_no_method_defaults"
   ]
 }

@@ -1,8 +1,8 @@
 {
   "schema_version": "1.0",
   "scope": "SOURCE_AND_INTERFACE_INVENTORY_NOT_METHOD_CERTIFICATION",
-  "canonical_families": 37,
-  "canonical_kinds": 72,
+  "canonical_families": 38,
+  "canonical_kinds": 73,
   "families": [
     {
       "directory": "plugins/bulk-limma-normalized",
@@ -653,6 +653,37 @@
       "auto_enable": false
     },
     {
+      "directory": "plugins/donor-composition-official",
+      "plugin_name": "donor-composition-official",
+      "kinds": [
+        "donor_composition_official"
+      ],
+      "image_reference": "ghcr.io/zj-2002/mrlap-official@sha256:78f195b862a3b7c5f8d96a96576cfb2c66b08f9bd31a739da59a017726cd063d",
+      "files": [
+        {
+          "path": "README.md",
+          "sha256": "25aaba542af19a241b6248bed039eeb27caddd4ee04b142da20cb4e0fae3bbdc",
+          "bytes": 3220,
+          "executable": false
+        },
+        {
+          "path": "manifest.toml",
+          "sha256": "63cfeda1728c84f757fe75d0fea7a42f80cb0517496b9edd04674ba2c9f878db",
+          "bytes": 2859,
+          "executable": false
+        },
+        {
+          "path": "scripts/donor_composition.R",
+          "sha256": "d19f5913f02f38bf3bcd85fa45f357e1a9a2e1c2236c268256fd4de77dc770b9",
+          "bytes": 18680,
+          "executable": false
+        }
+      ],
+      "source_inventory_only": true,
+      "scientific_certified": false,
+      "auto_enable": false
+    },
+    {
       "directory": "plugins/frozen-b-project",
       "plugin_name": "frozen-b-project",
       "kinds": [
@@ -705,7 +736,7 @@
         },
         {
           "path": "source-lock.json",
-          "sha256": "80201ac847f989359756e45ff743c6b25390cf6490d41a8394e733d2eb644f48",
+          "sha256": "a1e963526c7b83bca8617af3ba7f659d670276ee3b6bf73792505bad50083ec0",
           "bytes": 4076,
           "executable": false
         }

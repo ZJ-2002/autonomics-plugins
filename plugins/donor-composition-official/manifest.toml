@@ -1,0 +1,60 @@
+schema_version = 1
+plugin_name = "donor-composition-official"
+
+[image]
+reference = "ghcr.io/zj-2002/mrlap-official@sha256:78f195b862a3b7c5f8d96a96576cfb2c66b08f9bd31a739da59a017726cd063d"
+tag = "existing-R-4.6.1-stats-jsonlite"
+upstream = "R Core stats4.6.1 glm and p.adjust; existing pinned image, no new statistical package"
+license = "GPL-2.0-or-later"
+
+[[nodes]]
+kind = "donor_composition_official"
+desc = "Direct official grouped-binomial glm with complete donor composition and frozen-family missing rows."
+doc = """
+Two Files: explicit technical request JSON and literal cell-level TSV. Request
+binds the exact input SHA256/column order and all donor/type/condition/cell-ID
+bindings, reference/test levels, complete cell_types family, minimum donor-cell
+and donor-group thresholds, and correction. No defaults, automatic family or
+method selection. All four bound cell columns are exact nonempty strings;
+globally unique cell IDs and one condition per donor are required.
+Direct stats::glm(cbind(count, donor_total-count) ~ condition, binomial) and
+stats::p.adjust are used; complete official models, raw input, configuration,
+composition, tests and sessionInfo are retained in RDS. NON_FINITE_MLE and
+INSUFFICIENT_DONORS rows retain missing P and the full family denominator,
+including a legal entirely nonestimable family. Fatal errors publish no normal
+tables/RDS/audit; a newly owned diagnostic log may remain.
+This is the same grouped-binomial model, NOT donor-overdispersion, donor-robust
+SE, covariate adjustment, a random-effect model or donor permutation. Reported
+proportion means are donor-equally averaged but fitted log odds pool binomial
+successes/trials; these estimands are not interchangeable. Technical-only scope
+does not freeze a research design, replace the native alias or grant G0.
+Four normal outputs use staged no-clobber publication with content/identity
+rollback on ordinary errors. No crash-atomic multi-file transaction or protection
+against hostile concurrent parent-directory/namespace mutation is claimed.
+"""
+timeout_secs = 600
+stage_in_mode = "copy"
+artifact_prefix = "/artifacts/donor_composition_official"
+
+[nodes.ports]
+inputs = [{type="file",label="explicit_request",accepted_formats=["json"]}, {type="file",label="cell_table",accepted_formats=["tsv"]}]
+outputs = [{path="tests.tsv",format="tsv"}, {path="composition.tsv",format="tsv"}, {path="models.RDS",format="r_rds"}, {path="audit.json",format="json"}, {path="donor_composition.log",format="text"}]
+
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/donor_composition.R"
+
+[nodes.command.env]
+R_PROFILE_USER = "/dev/null"
+R_ENVIRON_USER = "/dev/null"
+R_ENABLE_JIT = "0"
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+read_only_rootfs = true
+pull_policy = "never"
+pids_limit = 64
