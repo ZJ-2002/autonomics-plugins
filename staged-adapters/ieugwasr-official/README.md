@@ -1,10 +1,14 @@
-# Direct official ieugwasr adapter — not yet admitted
+# Direct official ieugwasr adapter — local runtime verified, not admitted
 
 This adapter calls the installed author package `ieugwasr` **1.2.0**, without
 rewriting its request batching, formatting, defaults, sorting or clumping.
-It has no built image, plugin manifest, deployed registration or scientific
-admission yet. Version checking is not a substitute for a locked package and
-dependency identity. The host default package 1.1.0 is deliberately rejected.
+Its offline derived image has been built and tested locally; exact identities
+and sealed evidence are listed in [LOCAL_BUILD_STATUS.md](LOCAL_BUILD_STATUS.md).
+Authenticated immutable registry publication is verified, but the package is
+private and anonymous access is not available. There is no plugin manifest,
+deployed registration or scientific admission yet. The host default package 1.1.0 is deliberately
+rejected. The source lock and immutable base, not version checking alone, bind
+the package and dependency identity.
 
 `AUTONOMICS_INPUT0` is a JSON object containing exactly `operation` and `arguments`.
 `AUTONOMICS_INPUT1` is an optional complete RDS data.frame, used only by `ld_clump_api`.
@@ -48,5 +52,11 @@ References: [author query functions](https://github.com/MRCIEU/ieugwasr/blob/v1.
 [variant functions](https://github.com/MRCIEU/ieugwasr/blob/v1.2.0/R/variants.R),
 [LD clumping](https://github.com/MRCIEU/ieugwasr/blob/v1.2.0/R/ld_clump.R).
 
-The accompanying tests inject a toy resolver to test transport/publication only.
-They are not official numerical, network, image, DAG or deployment certification.
+The accompanying Python tests inject a toy resolver to test transport/publication
+only. Separately, the locally built image passes the unchanged author-package
+HTTP-fixture harness: seven complete result objects and request semantics match
+direct official calls, including two error controls. Six real container-main
+port controls cover standard output ports 0–3 and failure publication. Network
+transport alone is mocked; author methods and formatting are not replaced.
+These are bounded offline image/interface proofs, not real-service, full DAG,
+deployment, complete parameter-domain or scientific certification.

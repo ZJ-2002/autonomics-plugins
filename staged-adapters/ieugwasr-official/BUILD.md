@@ -1,8 +1,10 @@
-# Unbuilt, offline derived image plan
+# Offline derived image: local build complete
 
-No derived image has been built, published or assigned a digest. There is no
-deployment manifest. The existing MRlap image and its certified pin are not
-modified or replaced by this proposal.
+The derived image has been built and tested locally. Its actual config ID and
+local OCI manifest digest are recorded in [LOCAL_BUILD_STATUS.md](LOCAL_BUILD_STATUS.md).
+Authenticated registry publication is also verified, but the package is private,
+anonymous access is unavailable, and there is no deployment manifest.
+The existing MRlap image and its certified pin are not modified or replaced.
 
 ## Fixed sources
 
@@ -40,29 +42,46 @@ The checksum list itself is SHA256-bound in the Dockerfile. All 13 source files
 and the source inventory are checked before installation. The image build
 refuses absent base dependencies rather than fetching mutable replacements.
 
-## Future controlled build, not yet executed
+## Controlled build and worker ownership
 
-From the engine repository, after the build slot is available and lifecycle
-admission permits it:
+The completed build used a dedicated lifecycle-managed build service with its
+8 GiB parent memory limit and a verified, initially empty OCI subgroup inside
+that service. Buildah's `--cgroup-parent` uses the supplied group directly: it
+must not point to the populated subgroup containing the driver. A first failed
+attempt established that restriction and remains recorded as failed.
 
-```sh
-python3 -B scripts/research_validation_session.py --profile build run -- \
-  podman build --pull=never --network=none \
-  -f /home/zj-normal/Work/autonomics-plugins/staged-adapters/ieugwasr-official/Dockerfile \
-  /home/zj-normal/Work/autonomics-plugins/staged-adapters/ieugwasr-official
-```
+The successful driver fixes `cgroupfs`, the exact empty OCI subgroup,
+`--cgroupns=host`, `--network=none`, `--pull=never`, one job and forced removal of
+intermediate build containers. It supplies a newly created empty registry auth
+file and no inherited credential variables. Only the sixteen locked build
+context files are copied; no dependency environment is cloned.
 
-This is only a command plan, not an acceptance driver: the actual build must
-also retain its image ID, source hashes, inherited dependency records and logs,
-then verify owned build workers have stopped. It must not start detached
-scratch consumers or infer success from an image tag. There is no automatic
-production restart or old-cache removal.
+Finally, two stable service-process snapshots contain only the original driver
+ancestors, the external-container census has no new remaining entries, all
+sampled workers belong to the service, and source hashes remain unchanged.
+Permission failures or unknown consumers are not ignored. The exact empty
+subgroup is retired only after its inode identity and emptiness are checked.
 
-After a successful build, independently inspect the actual local config ID;
-run the untouched author/mock-HTTP harness in that image, retain the full RDS
-comparisons and error controls, then test the declared plugin ports in an
-isolated DAG. Only after publishing and inspecting a real immutable registry
-digest should a manifest reference it. No digest is fabricated in advance.
+Future builds must retain this explicit worker-ownership and stoppage contract;
+merely putting a bare `podman build` inside a session is not equivalent. The
+generic lifecycle shim currently tracks `run/create` intents, not build workers.
+There is no production restart or shared-image/cache pruning.
+
+The actual local config ID was independently inspected. The untouched
+author/mock-HTTP harness and actual container-main output-port controls pass
+in that image, with seven owned containers stopped. Isolated plugin DAG
+integration remains outstanding. The actual immutable registry manifest and
+configuration have now been independently read back and hash-verified; this
+is separate from local digest inspection. The package remains private: neither
+public availability nor clean-host deployment is claimed. A future manifest
+must account for its actual credential/cache requirements rather than assuming
+anonymous pulls will work.
+
+`runtime-source-lock.json` remains the immutable pre-build input. Its
+`derived_image_digest: null` means no registry deployment pin was specified;
+the historical `build_executed: false` describes the input snapshot, not the
+current build status. Actual build/test facts are recorded separately rather
+than changing an already-used image source lock.
 
 Those checks would qualify an explicit official replacement in its tested
 scope, not native REST equivalence, real-service availability, scientific

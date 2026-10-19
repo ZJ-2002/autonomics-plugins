@@ -1140,6 +1140,22 @@
     "tests.test_ieugwasr_official_contract.IeugwasrOfficialContractTests.test_official_error_is_not_converted_to_empty_success",
     "tests.test_ieugwasr_official_contract.IeugwasrOfficialContractTests.test_projection_failure_publishes_no_ports",
     "tests.test_ieugwasr_official_contract.IeugwasrOfficialContractTests.test_typed_projection_preserves_special_values",
-    "tests.test_ieugwasr_official_contract.IeugwasrOfficialContractTests.test_unknown_and_credential_arguments_are_rejected"
+    "tests.test_ieugwasr_official_contract.IeugwasrOfficialContractTests.test_unknown_and_credential_arguments_are_rejected",
+    "tests.test_hashutil_publication.HashutilPublicationTests.test_dangling_log_symlink_is_not_followed",
+    "tests.test_hashutil_publication.HashutilPublicationTests.test_dangling_output_symlink_is_not_deleted",
+    "tests.test_hashutil_publication.HashutilPublicationTests.test_dangling_partial_symlink_is_not_deleted",
+    "tests.test_hashutil_publication.HashutilPublicationTests.test_empty_file_remains_valid",
+    "tests.test_hashutil_publication.HashutilPublicationTests.test_existing_log_is_not_truncated",
+    "tests.test_hashutil_publication.HashutilPublicationTests.test_existing_partial_is_not_deleted",
+    "tests.test_hashutil_publication.HashutilPublicationTests.test_existing_result_is_not_replaced",
+    "tests.test_hashutil_publication.HashutilPublicationTests.test_fresh_result_matches_exact_sha256_and_tsv_contract",
+    "tests.test_hashutil_publication.HashutilPublicationTests.test_input_alias_is_never_removed",
+    "tests.test_hashutil_publication.HashutilPublicationTests.test_invalid_parameters_leave_only_owned_failure_diagnostic",
+    "tests.test_hashutil_publication.HashutilPublicationTests.test_late_foreign_partial_is_not_overwritten",
+    "tests.test_hashutil_publication.HashutilPublicationTests.test_late_foreign_result_is_not_overwritten",
+    "tests.test_hashutil_publication.HashutilPublicationTests.test_output_symlink_and_target_are_not_replaced",
+    "tests.test_hashutil_publication.HashutilPublicationTests.test_replaced_log_is_not_appended_or_removed",
+    "tests.test_hashutil_publication.HashutilPublicationTests.test_replaced_partial_during_serialization_survives_cleanup",
+    "tests.test_hashutil_publication.HashutilPublicationTests.test_serialization_failure_removes_only_owned_partial"
   ]
 }

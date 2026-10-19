@@ -60,42 +60,92 @@ def file_digests(filename, algorithms, chunk):
     return [(filename.name, algorithm, hashers[algorithm].hexdigest(), size) for algorithm in algorithms]
 
 
-def main(environment):
-    output = Path(environment["AUTONOMICS_OUTPUT0"])
-    logfile = Path(environment["AUTONOMICS_OUTPUT1"])
-    temporary = output.with_name(output.name + ".partial")
-    safe_paths = False
+def owned_path(filename, expected):
     try:
+        observed = filename.lstat()
+    except FileNotFoundError:
+        return False
+    return stat.S_ISREG(observed.st_mode) and (observed.st_dev, observed.st_ino) == expected
+
+
+def unlink_owned(filename, expected):
+    if expected is not None and owned_path(filename, expected):
+        filename.unlink()
+        return True
+    return False
+
+
+def main(environment):
+    output = None
+    temporary = None
+    logfile = None
+    log_stream = None
+    owned = {}
+    try:
+        output = Path(environment["AUTONOMICS_OUTPUT0"])
+        logfile = Path(environment["AUTONOMICS_OUTPUT1"])
+        output = output.parent.resolve() / output.name
+        logfile = logfile.parent.resolve() / logfile.name
+        temporary = output.with_name(output.name + ".partial")
         filename = Path(environment["AUTONOMICS_INPUT0"])
         paths = (filename, output, temporary, logfile)
+        if any(os.path.lexists(candidate) for candidate in (output, temporary, logfile)):
+            raise ValueError("Output, diagnostic and fixed partial paths must be fresh; existing objects are not replaced")
         existing = [candidate for candidate in paths if candidate.exists()]
         inodes = [(candidate.stat().st_dev, candidate.stat().st_ino) for candidate in existing]
         if len({candidate.resolve() for candidate in paths}) != 4 or len(set(inodes)) != len(inodes):
             raise ValueError("Input, outputs and temporary publication paths must be distinct")
-        safe_paths = True
-        output.unlink(missing_ok=True)
-        temporary.unlink(missing_ok=True)
-        logfile.write_text("status\tRUNNING\nidentity_scope\tSTAGED_BYTES_NOT_SOURCE_AUTHENTICITY_NOT_G0\n")
+        log_stream = logfile.open("x", encoding="utf-8")
+        observed = os.fstat(log_stream.fileno())
+        owned[logfile] = (observed.st_dev, observed.st_ino)
+        log_stream.write("status\tRUNNING\nidentity_scope\tSTAGED_BYTES_NOT_SOURCE_AUTHENTICITY_NOT_G0\n")
+        log_stream.flush()
         algorithms, chunk = parameters(environment)
         rows = file_digests(filename, algorithms, chunk)
-        with temporary.open("w", newline="", encoding="utf-8") as stream:
+        if not owned_path(logfile, owned[logfile]):
+            raise ValueError("Diagnostic pathname ownership changed")
+        with temporary.open("x", newline="", encoding="utf-8") as stream:
+            observed = os.fstat(stream.fileno())
+            owned[temporary] = (observed.st_dev, observed.st_ino)
             writer = csv.writer(stream, delimiter="\t", lineterminator="\n")
             writer.writerow(["file", "algorithm", "digest", "size_bytes"])
             writer.writerows(rows)
-        temporary.replace(output)
-        with logfile.open("a") as stream:
-            stream.write(f"status\tPASS\nfiles\t1\nrows\t{len(rows)}\nchunk_bytes\t{chunk}\n")
+        if not owned_path(temporary, owned[temporary]) or not owned_path(logfile, owned[logfile]):
+            raise ValueError("Temporary or diagnostic pathname ownership changed")
+        os.link(temporary, output, follow_symlinks=False)
+        owned[output] = owned[temporary]
+        if not owned_path(output, owned[output]):
+            raise ValueError("Published output pathname ownership changed")
+        if not unlink_owned(temporary, owned[temporary]):
+            raise ValueError("Temporary pathname changed before retirement")
+        log_stream.write(f"status\tPASS\nfiles\t1\nrows\t{len(rows)}\nchunk_bytes\t{chunk}\n")
+        log_stream.flush()
+        if not owned_path(logfile, owned[logfile]):
+            raise ValueError("Diagnostic pathname ownership changed after publication")
+        log_stream.close()
         return 0
     except Exception as error:
-        if safe_paths:
-            output.unlink(missing_ok=True)
-            temporary.unlink(missing_ok=True)
+        for candidate in (output, temporary):
+            if candidate is not None:
+                try:
+                    unlink_owned(candidate, owned.get(candidate))
+                except OSError:
+                    pass
         message = f"status\tBLOCKED\nerror\t{type(error).__name__}: {error}\n"
-        if safe_paths:
-            with logfile.open("a") as stream:
-                stream.write(message)
+        if log_stream is not None and not log_stream.closed:
+            try:
+                log_stream.write(message)
+                log_stream.flush()
+            except OSError:
+                pass
         print(message, file=sys.stderr)
         return 2
+    finally:
+        if log_stream is not None and not log_stream.closed:
+            try:
+                log_stream.close()
+            except OSError:
+                pass
 
 
 if __name__ == "__main__":
