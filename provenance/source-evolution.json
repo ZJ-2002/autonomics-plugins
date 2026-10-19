@@ -1479,6 +1479,24 @@
         "sha256": "dadd46d027650fe31e883d97a487cca661712e6891059759fd5f2dc727c1b4c7",
         "git_blob": "ce18b9bd0afbf8aa7ae9401c3552b92fb9852305"
       }
+    },
+    {
+      "path": "research-adapters/cachexia-permutation/scripts/permutation.py",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/autonomics.git",
+        "revision": "bdedf129011789e6eec3a594252d6515b6a67618",
+        "bytes": 15127,
+        "sha256": "77800907c575322fbaf10045a62590122c4f47a9d4342bca385686d0f8e72bd9",
+        "git_blob": "82c6ac3eb72524e2dad8877d2bc83ae9a0d88bd1"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "358478f47938e5143e839a20063a6656ac532c87",
+        "path": "research-adapters/cachexia-permutation/scripts/permutation.py",
+        "bytes": 17657,
+        "sha256": "4ed7b28998948510f8f9c3d5491afb023282f8cb15f59297f9907484d3f083d8",
+        "git_blob": "1123e40a2cbff7877bf1b7b5d12102553ea275b4"
+      }
     }
   ]
 }
