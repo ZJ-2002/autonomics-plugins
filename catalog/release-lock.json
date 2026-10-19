@@ -705,7 +705,7 @@
         },
         {
           "path": "source-lock.json",
-          "sha256": "e25d0cb28d4804291c3c7d6129ada9dec95fa7b7913e8de84824af753fc0537e",
+          "sha256": "7473c843664b2bc8e1ff96dff71c70409f5858541012c9cd5258960bd2c83f78",
           "bytes": 4076,
           "executable": false
         }
@@ -17228,8 +17228,8 @@
         },
         {
           "path": "scripts/permutation.py",
-          "sha256": "77800907c575322fbaf10045a62590122c4f47a9d4342bca385686d0f8e72bd9",
-          "bytes": 15127,
+          "sha256": "4ed7b28998948510f8f9c3d5491afb023282f8cb15f59297f9907484d3f083d8",
+          "bytes": 17657,
           "executable": false
         }
       ],

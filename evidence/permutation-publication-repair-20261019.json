@@ -1,0 +1,19 @@
+{
+  "schema": "PERMUTATION_PUBLICATION_REPAIR_EVIDENCE_V1",
+  "proof_session": "8b0f9246b9534635ad86e58d517e1331",
+  "proof_seal": "64820e5feb14ca7ed90a3392d5fa2450226ea969d08440b5639650b9cd3eb368",
+  "source": {
+    "path": "research-adapters/cachexia-permutation/scripts/permutation.py",
+    "bytes": 17657,
+    "sha256": "4ed7b28998948510f8f9c3d5491afb023282f8cb15f59297f9907484d3f083d8"
+  },
+  "author_statistical_calls": 0,
+  "method_or_current_DAG_qualification_granted": false,
+  "scientific_release_granted": false,
+  "g0_granted": false,
+  "original_entry_import_isolated_dangling_counterexamples": 5,
+  "pure_publisher_tests": 9,
+  "package_imports_or_actual_image_tested": false,
+  "statistical_writer_body_unchanged_except_output_environment_assignment": true,
+  "auxiliary_failure_state_preserved_as_workspace_diagnostic_not_sixth_port": true
+}

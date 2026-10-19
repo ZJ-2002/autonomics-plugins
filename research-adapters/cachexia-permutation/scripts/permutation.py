@@ -6,7 +6,9 @@ import math
 import os
 from pathlib import Path
 import pickle
+import shutil
 import sys
+import tempfile
 import warnings
 
 import numpy as np
@@ -87,8 +89,7 @@ def distinct_count(kind, sizes, limit=100000):
     return count
 
 
-def main():
-    outputs = [Path(os.environ["AUTONOMICS_OUTPUT"+str(index)]) for index in range(5)]
+def write_products(outputs):
     require(len({path.resolve() for path in outputs}) == 5 and not any(path.exists() for path in outputs), "Five distinct non-overwritten output ports required")
     audit = {"status": "RUNNING", "G0_granted": False, "resident_deployment_granted": False, "scientific_qualification_granted": False}
     state = None
@@ -212,6 +213,57 @@ def main():
             stream.write("BLOCKED "+str(error)+"\n")
         print(str(error), file=sys.stderr)
         return 2
+
+
+def publish_outputs(writer):
+    names = ["values.parquet", "state.pkl", "audit.json", "permutation.log", "input_ledger.tsv"]
+    auxiliary = "failed-official-state.pkl"
+    outputs = [Path(os.environ["AUTONOMICS_OUTPUT" + str(index)]) for index in range(5)]
+    stage = None
+    published = []
+    complete = False
+    try:
+        require(all(path.is_absolute() for path in outputs), "Absolute declared output paths required")
+        outputs = [path.parent.resolve(strict=True) / path.name for path in outputs]
+        parent = outputs[0].parent
+        require([path.name for path in outputs] == names and all(path.parent == parent for path in outputs), "Exact declared output names and common parent required")
+        destinations = outputs + [parent / auxiliary]
+        require(not any(os.path.lexists(path) for path in destinations), "Refusing to overwrite existing output or diagnostic")
+        inputs = [Path(os.environ["AUTONOMICS_INPUT" + str(index)]).resolve(strict=True) for index in range(2)]
+        require(not set(inputs) & set(destinations), "Input and output paths must be distinct")
+        stage = Path(tempfile.mkdtemp(prefix=".permutation-owned-", dir=parent))
+        private = [stage / name for name in names]
+        status = writer(private)
+        require(type(status) is int and status in (0, 2), "Invalid writer status")
+        positions = range(5) if status == 0 else (2, 3)
+        products = [(private[position], outputs[position]) for position in positions]
+        if status == 2 and os.path.lexists(stage / auxiliary):
+            products.append((stage / auxiliary, parent / auxiliary))
+        for source, destination in products:
+            require(source.is_file() and not source.is_symlink(), "Regular owned staged file required")
+            identity = source.stat()
+            os.link(source, destination, follow_symlinks=False)
+            published.append((destination, identity.st_dev, identity.st_ino))
+        complete = True
+        return status
+    except Exception as error:
+        print(str(error), file=sys.stderr)
+        return 2
+    finally:
+        if not complete:
+            for filename, device, inode in reversed(published):
+                try:
+                    current = filename.lstat()
+                    if (current.st_dev, current.st_ino) == (device, inode):
+                        filename.unlink()
+                except FileNotFoundError:
+                    pass
+        if stage is not None:
+            shutil.rmtree(stage)
+
+
+def main():
+    return publish_outputs(write_products)
 
 
 if __name__ == "__main__":

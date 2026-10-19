@@ -1103,6 +1103,15 @@
     "tests.test_nichenet_publication_binding.NichenetPublicationBindingTests.test_author_calls_and_complete_object_are_not_replaced",
     "tests.test_nichenet_publication_binding.NichenetPublicationBindingTests.test_explicit_exclusive_publication_and_rollback",
     "tests.test_nichenet_publication_binding.NichenetPublicationBindingTests.test_frozen_manifest_and_image_unchanged",
-    "tests.test_nichenet_publication_binding.NichenetPublicationBindingTests.test_reviewed_entry_source_identity"
+    "tests.test_nichenet_publication_binding.NichenetPublicationBindingTests.test_reviewed_entry_source_identity",
+    "tests.test_permutation_publication.PermutationPublicationTests.test_boolean_writer_status_is_not_success",
+    "tests.test_permutation_publication.PermutationPublicationTests.test_diagnostic_state_is_retained_without_normal_results",
+    "tests.test_permutation_publication.PermutationPublicationTests.test_every_dangling_output_or_diagnostic_is_preserved",
+    "tests.test_permutation_publication.PermutationPublicationTests.test_every_existing_output_or_diagnostic_is_preserved",
+    "tests.test_permutation_publication.PermutationPublicationTests.test_late_diagnostic_collision_rolls_back_only_owned_files",
+    "tests.test_permutation_publication.PermutationPublicationTests.test_late_foreign_analytical_output_is_preserved",
+    "tests.test_permutation_publication.PermutationPublicationTests.test_rollback_preserves_foreign_replacement",
+    "tests.test_permutation_publication.PermutationPublicationTests.test_stage_is_removed_after_unhandled_writer_failure",
+    "tests.test_permutation_publication.PermutationPublicationTests.test_success_has_five_ports_and_no_stage"
   ]
 }
