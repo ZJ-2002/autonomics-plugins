@@ -1,0 +1,34 @@
+{
+  "schema": "PERMUTATION_CURRENT_OFFICIAL_DAG_EVIDENCE_V1",
+  "proofs": {
+    "0004c32d18e24c858ceee0305757125d": "77087cd32294f72e3adc30d6eec4a03a3424e1f48e5cea395fd4efda8c8b6e40",
+    "c4274d3407b748308365524980efa45f": "3aa7a58620110bde3a1142dd9d95f07a708bcf70685a00183582f51659f6304e",
+    "8b0f9246b9534635ad86e58d517e1331": "64820e5feb14ca7ed90a3392d5fa2450226ea969d08440b5639650b9cd3eb368"
+  },
+  "sources": [
+    {
+      "path": "research-adapters/cachexia-permutation/manifest.toml",
+      "bytes": 1867,
+      "sha256": "47ecf4ef550a3ac6c096f51c2b75e118ee03b171e483e7f02d2787a6ee552dfb"
+    },
+    {
+      "path": "research-adapters/cachexia-permutation/scripts/permutation.py",
+      "bytes": 17657,
+      "sha256": "4ed7b28998948510f8f9c3d5491afb023282f8cb15f59297f9907484d3f083d8"
+    }
+  ],
+  "image": "localhost/cachexia-permutation@sha256:5b87558f07b40777be22a204723f3dbbadf0e2905b852473dd4922419c37a079",
+  "engine": "4256643c55ae6fb50e8c867069330ed6ac2b4bc0",
+  "positive_DAGs": 4,
+  "blocked_DAGs": 4,
+  "full_object_null_RNG_warning_reference_runs": 4,
+  "finite_comparison_fields": 99,
+  "max_abs_difference": 0,
+  "materialized_finite_values": 36,
+  "materialized_missing_values": 2,
+  "whole_final_schema_and_float_bits_identical": true,
+  "frozen_failed_state_pickle_byte_identical": true,
+  "owned_containers_stopped": 14,
+  "full_SciPy_API_or_scientific_qualification_granted": false,
+  "g0_granted": false
+}

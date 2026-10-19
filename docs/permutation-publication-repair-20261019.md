@@ -1,4 +1,4 @@
-# Permutation publication repair — method/DAG verification pending
+# Permutation publication repair and scoped current DAG proof
 
 The frozen SciPy adapter previously wrote through dangling output symlinks and
 removed analytical symlinks during error cleanup. Five counterexamples execute
@@ -28,8 +28,34 @@ helpers, frozen constants, statistic registry, official calls, complete null
 distribution, RNG state, missingness policy and numerical failure-state
 serialization remain unchanged. No frozen parameters or goldens are edited.
 
-Current status is source repair pending fixed-image, author-result and current
-DAG verification. There is no new research enablement or resident deployment.
+## Current fixed-image author and DAG verification
+
+Four positive DAGs completed using frozen inputs: an exact independent-sample
+test, paired sample swaps, paired pairings, and explicit missing propagation.
+The unchanged independent author entry recomputed complete result objects,
+all null draws, input/request, PCG64 state and warning classes/messages. All
+99 finite object/table comparison fields matched with zero maximum absolute
+difference under the original 1e-12 tolerance. The four final materialized
+tables preserve all 36 finite values, two missing values, complete row identities,
+six column types, nullability and floating-point bits. This materialization
+review did not rerun any statistical computation.
+
+Four failure DAGs reject a wrong input hash, an inappropriate spatial null,
+nonfinite correlation output, and a foreign state file; both downstream consumers
+remain skipped and no analytical ports are exposed. The complete nonfinite
+failed-state pickle is byte-identical to its original frozen diagnostic, and
+its hash matches the failure audit. The foreign file is retained unchanged.
+Thirteen main-proof containers and one materialization-review container were
+observed stopped.
+
+The eight author function source/module hashes were rechecked against previously
+wheel-verified identities inside the same immutable official runtime. There was
+no new independent wheel installation. The previous 37 positive/27 blocked-case
+proof is reused only for unchanged code and is not claimed as newly rerun.
+This is scoped 1D scalar-registry qualification, not the entire SciPy API or
+arbitrary callbacks, broadcasting, exchangeability models or parameters.
+
+There is no new research enablement or resident deployment.
 This is not a full hostile same-UID race security guarantee or an all-file
 transaction. The supported donor permutation models do not substitute for a
 spatial, network, stratified or batch-preserving null. B-S remains
