@@ -1515,6 +1515,24 @@
         "sha256": "ebe8c9a89b94a20987b2386d7732e8af3be513afd0ad8b83ce50bdd69b7a8014",
         "git_blob": "5bf6baef60620010f04ad22f8ee0911086f11455"
       }
+    },
+    {
+      "path": "research-adapters/cachexia-hashutil/scripts/file_hashes.py",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/autonomics.git",
+        "revision": "bdedf129011789e6eec3a594252d6515b6a67618",
+        "bytes": 4249,
+        "sha256": "d340a8b321f90e25b88ec2b87afa1b482bf838b0e0433ed2d4ec95a3756aa2eb",
+        "git_blob": "0c31ce73c91d217e3b94dd95115c7af8c4c8affe"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "5faebe4c2b2881de9303b7f59e2ce14bda34bb3c",
+        "path": "research-adapters/cachexia-hashutil/scripts/file_hashes.py",
+        "bytes": 6423,
+        "sha256": "7190eabb90c0704ce6da3b33c53d90def40cbdad009f2e23a90ca504d0a94189",
+        "git_blob": "c081765567973ec0f90b95453e927b33df3d4775"
+      }
     }
   ]
 }
