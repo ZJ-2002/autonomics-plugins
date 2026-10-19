@@ -705,7 +705,7 @@
         },
         {
           "path": "source-lock.json",
-          "sha256": "cec525adc399beb3c06cd3002a266705929bb122cea5ab809ea64c96d710d2fd",
+          "sha256": "80201ac847f989359756e45ff743c6b25390cf6490d41a8394e733d2eb644f48",
           "bytes": 4076,
           "executable": false
         }
@@ -18060,6 +18060,44 @@
           "path": "scripts/gate.py",
           "sha256": "6c921c4ed2cfece1bc56031a0a40b83c1c1efbdd643d6e32f370ee851da42537",
           "bytes": 18545,
+          "executable": false
+        }
+      ],
+      "source_inventory_only": true,
+      "scientific_certified": false,
+      "auto_enable": false
+    },
+    {
+      "directory": "research-adapters/ieugwasr-official",
+      "plugin_name": "ieugwasr-official",
+      "kinds": [
+        "official_ieugwasr_call",
+        "official_ieugwasr_call_with_dataset"
+      ],
+      "image_reference": "ghcr.io/zj-2002/ieugwasr-official@sha256:c8631fb88461135ea1b570f0e08a5bfb04366ef2bc835e874d30c7326fdc2395",
+      "files": [
+        {
+          "path": "DAG_STATUS.md",
+          "sha256": "87e90706126756bc74c02389e3797eb35a60298bc42ba5775d25608305d4226b",
+          "bytes": 5848,
+          "executable": false
+        },
+        {
+          "path": "README.md",
+          "sha256": "e363d4b69f23f2c91a387f484e9c66730ffa68dbbdcf20ae2055b7dcc9a84bf4",
+          "bytes": 3591,
+          "executable": false
+        },
+        {
+          "path": "manifest.toml",
+          "sha256": "7611d0a7ea4efd229c75ec1f114d9871b9420509e1eb62aaa52f4063a634094e",
+          "bytes": 3368,
+          "executable": false
+        },
+        {
+          "path": "scripts/dispatch.R",
+          "sha256": "b2d1c715a182b9d5630b42598e29649bf82f024cb568b00b1e3d01cc77a9dafe",
+          "bytes": 11783,
           "executable": false
         }
       ],

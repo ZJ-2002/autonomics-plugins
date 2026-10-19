@@ -1164,6 +1164,14 @@
     "tests.test_visualization_profile_binding.VisualizationProfileBindingTests.test_file_ports_and_single_png_are_unchanged",
     "tests.test_visualization_profile_binding.VisualizationProfileBindingTests.test_resources_interpreter_and_bindings_are_unchanged",
     "tests.test_visualization_profile_binding.VisualizationProfileBindingTests.test_terminal_is_execution_metadata",
-    "tests.test_visualization_profile_binding.VisualizationProfileBindingTests.test_trusted_script_scope_does_not_claim_a_sandbox"
+    "tests.test_visualization_profile_binding.VisualizationProfileBindingTests.test_trusted_script_scope_does_not_claim_a_sandbox",
+    "tests.test_ieugwasr_dispatch_contract.IeugwasrDispatchContractTests.test_dataset_kind_cannot_use_null_to_switch_operation",
+    "tests.test_ieugwasr_dispatch_contract.IeugwasrDispatchContractTests.test_dataset_kind_rejects_null_and_non_dataframe",
+    "tests.test_ieugwasr_dispatch_contract.IeugwasrDispatchContractTests.test_dispatch_has_exact_original_wrapper_suffix",
+    "tests.test_ieugwasr_dispatch_contract.IeugwasrDispatchContractTests.test_manifest_has_two_required_port_shapes",
+    "tests.test_ieugwasr_dispatch_contract.IeugwasrDispatchContractTests.test_request_only_rejects_clump",
+    "tests.test_ieugwasr_dispatch_contract.IeugwasrDispatchContractTests.test_request_only_rejects_undeclared_dataset",
+    "tests.test_ieugwasr_dispatch_contract.IeugwasrDispatchContractTests.test_unknown_policy_is_refused",
+    "tests.test_ieugwasr_dispatch_contract.IeugwasrDispatchContractTests.test_wrong_input_count_is_refused"
   ]
 }

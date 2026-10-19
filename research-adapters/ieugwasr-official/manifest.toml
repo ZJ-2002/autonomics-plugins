@@ -1,0 +1,72 @@
+schema_version = 1
+plugin_name = "ieugwasr-official"
+
+[image]
+reference = "ghcr.io/zj-2002/ieugwasr-official@sha256:c8631fb88461135ea1b570f0e08a5bfb04366ef2bc835e874d30c7326fdc2395"
+tag = "1.2.0-20261019-v1-private"
+upstream = "MRCIEU/ieugwasr 1.2.0 at 0c5b4cc6bc5e675afe222262950c8bb488f8d2f3; direct author functions, not legacy REST aliases"
+license = "MIT"
+
+[[nodes]]
+kind = "official_ieugwasr_call"
+desc = "Direct official ieugwasr request-only call; operation is explicit in request JSON."
+doc = "One JSON file with operation and author arguments. Allowed operations: associations, phewas, tophits, variants_rsid, variants_chrpos, gwasinfo. Produces complete author RDS plus strict typed JSON projection, technical audit and log. Not legacy REST-equivalent. Image is private; clean-host pull and secure live API credential injection are not admitted. Do not pass JWT through request parameters or public command env. Offline transport fixtures are tested separately and do not prove authenticated live API availability or scientific release."
+timeout_secs = 900
+stage_in_mode = "copy"
+artifact_prefix = "/artifacts/official_ieugwasr_call"
+
+[nodes.ports]
+inputs = [{type="file", label="explicit_author_request", accepted_formats=["json"]}]
+outputs = [{path="complete_result.RDS",format="r_rds"}, {path="typed_dataframe.json",format="json"}, {path="technical_audit.json",format="json"}, {path="ieugwasr.log",format="text"}]
+
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/dispatch.R"
+
+[nodes.command.env]
+AUTONOMICS_IEUGWASR_INPUT_POLICY = "request_only"
+R_LIBS = "/opt/ieugwasr-library"
+R_LIBS_USER = "/opt/ieugwasr-library"
+R_ENABLE_JIT = "0"
+R_PROFILE_USER = "/dev/null"
+R_ENVIRON_USER = "/dev/null"
+
+[nodes.resources]
+cpus = 1.0
+memory = "1Gi"
+network = "egress"
+read_only_rootfs = true
+pull_policy = "never"
+pids_limit = 64
+
+[[nodes]]
+kind = "official_ieugwasr_call_with_dataset"
+desc = "Direct official ieugwasr ld_clump_api call with original data.frame RDS."
+doc = "Exactly two files: explicit ld_clump_api JSON request and a non-NULL data.frame RDS containing rsid and pval. Other operations and NULL dummy RDS are refused. All author clump parameters are explicit; complete original columns and row names are retained by the author function. Four outputs match the request-only call. Image is private and secure live API credential injection remains pending. No legacy node substitution, independent validation, scientific eligibility or G0 is implied."
+timeout_secs = 900
+stage_in_mode = "copy"
+artifact_prefix = "/artifacts/official_ieugwasr_call_with_dataset"
+
+[nodes.ports]
+inputs = [{type="file", label="explicit_author_request", accepted_formats=["json"]}, {type="file", label="original_dataframe", accepted_formats=["r_rds"]}]
+outputs = [{path="complete_result.RDS",format="r_rds"}, {path="typed_dataframe.json",format="json"}, {path="technical_audit.json",format="json"}, {path="ieugwasr.log",format="text"}]
+
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/dispatch.R"
+
+[nodes.command.env]
+AUTONOMICS_IEUGWASR_INPUT_POLICY = "with_dataset"
+R_LIBS = "/opt/ieugwasr-library"
+R_LIBS_USER = "/opt/ieugwasr-library"
+R_ENABLE_JIT = "0"
+R_PROFILE_USER = "/dev/null"
+R_ENVIRON_USER = "/dev/null"
+
+[nodes.resources]
+cpus = 1.0
+memory = "1Gi"
+network = "egress"
+read_only_rootfs = true
+pull_policy = "never"
+pids_limit = 64
