@@ -165,7 +165,7 @@ def write_package_products(record, outputs, audit):
         handle.write("\n")
 
 
-def package_products(record, outputs, audit):
+def validated_output_destinations(outputs):
     if len(outputs) != 4 or any(not path for path in outputs):
         raise ValueError("Four declared output paths required")
     destinations = [os.path.join(os.path.realpath(os.path.dirname(os.path.abspath(path))), os.path.basename(path)) for path in outputs]
@@ -173,6 +173,11 @@ def package_products(record, outputs, audit):
         raise ValueError("Four distinct fresh normalized outputs required")
     if any(not os.path.isdir(os.path.dirname(path)) for path in destinations):
         raise ValueError("Every output parent must already exist")
+    return destinations
+
+
+def package_products(record, outputs, audit):
+    destinations = validated_output_destinations(outputs)
     stage = tempfile.mkdtemp(prefix=".mtag-publish-", dir=os.path.dirname(destinations[0]))
     created = []
     completed = False
@@ -214,6 +219,8 @@ def runtime_identity(root):
 
 
 def main():
+    outputs = [os.environ["AUTONOMICS_OUTPUT" + str(index)] for index in range(4)]
+    validated_output_destinations(outputs)
     values = parameters(os.environ)
     identity = runtime_identity("/opt/mtag")
     inputs = [os.environ["AUTONOMICS_INPUT0"], os.environ["AUTONOMICS_INPUT1"]]
@@ -229,7 +236,6 @@ def main():
     tokens = command(inputs, prefix, panel, values)
     code = subprocess.call(tokens)
     record = collect(prefix, values, code)
-    outputs = [os.environ["AUTONOMICS_OUTPUT" + str(index)] for index in range(4)]
     package_products(record, outputs, {"official_command": tokens, "parameters": values, "input_sha256": hashes,
         "observed_panel_sha256": panel_hashes, "observed_hashes_are_not_plan_freeze_approval": True,
         "runtime_package_versions": identity, "declared_source_sha256": SOURCE_HASHES,

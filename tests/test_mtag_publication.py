@@ -140,6 +140,30 @@ class MtagPublicationTests(unittest.TestCase):
             self.assertEqual(handle.read(), b'FOREIGN_LOG')
         self.assert_no_outputs([0, 2, 3])
 
+    def test_main_refuses_foreign_output_before_parameters_or_runtime(self):
+        with open(self.outputs[0], 'wb') as handle:
+            handle.write(b'FOREIGN_BEFORE_METHOD')
+        environment = {'AUTONOMICS_OUTPUT' + str(index): filename for index, filename in enumerate(self.outputs)}
+        original = NAMESPACE['parameters']
+        calls = []
+
+        def unexpected(unused_environment):
+            calls.append('parameters')
+            raise ValueError('METHOD_SETUP_REACHED_BEFORE_OUTPUT_REFUSAL')
+
+        NAMESPACE['parameters'] = unexpected
+        try:
+            with patched(os, 'environ', environment):
+                with self.assertRaises(ValueError) as caught:
+                    NAMESPACE['main']()
+        finally:
+            NAMESPACE['parameters'] = original
+        self.assertIn('fresh normalized outputs', str(caught.exception))
+        self.assertEqual(calls, [])
+        with open(self.outputs[0], 'rb') as handle:
+            self.assertEqual(handle.read(), b'FOREIGN_BEFORE_METHOD')
+        self.assert_no_outputs([1, 2, 3])
+
 
 if __name__ == '__main__':
     unittest.main()

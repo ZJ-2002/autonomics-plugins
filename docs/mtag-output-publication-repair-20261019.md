@@ -39,3 +39,24 @@ The successful combined record is session `80b8c4861dda4ed7a9b81355fe14caff`, se
 `58b713d02f1d365d2df6aca9860aa46fc44cf7ab3860c067909989b81175ad7b`.
 Matching package version strings and author source do not establish complete
 cross-runtime BLAS/binary identity or replace numerical/DAG qualification.
+
+## Early occupied-output refusal
+
+The entry now validates all four normalized output destinations before parameter
+setup, package loading or author estimation. The same validation runs again at
+publication time to catch later competitors. This avoids computing a large MTAG
+job only to discover a pre-existing result at the end.
+
+A ninth control proves that an occupied output reaches neither parameter setup
+nor the author runtime, while preserving foreign bytes. Against the original
+entry the same nine controls reproduce six failures; all nine pass in both the
+current host harness and frozen Python 2 image. Existing method functions and
+raw-packaging body remain AST-identical; the entry differs only by moving its
+original output-path assignment forward and adding this explicit preflight.
+
+Current entry SHA256 is
+`ebe8c9a89b94a20987b2386d7732e8af3be513afd0ad8b83ce50bdd69b7a8014`.
+The combined record is session `43aac6c9228f47e78764ebb57372bf06`, seal
+`d18f4e1ee3abee6b0dcd11ee58a2c8c2d0f94dd0e55a987d0deafb41fbe6f5b5`.
+It performs zero statistical estimations. Earlier eight-control records are
+retained for their exact earlier source identities, not relabelled as this entry.
