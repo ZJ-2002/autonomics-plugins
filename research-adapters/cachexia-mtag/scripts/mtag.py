@@ -8,6 +8,7 @@ import math
 import os
 import re
 import shutil
+import stat
 import subprocess
 import sys
 import tarfile
@@ -141,7 +142,7 @@ def collect(prefix, values, returncode):
         "index": index, "files": files, "log_path": log_path}
 
 
-def package_products(record, outputs, audit):
+def write_package_products(record, outputs, audit):
     if len(outputs) != 4 or len(set(outputs)) != 4 or any(os.path.lexists(path) for path in outputs):
         raise ValueError("Four distinct fresh output paths required; no old artifact overwritten")
     with tarfile.open(outputs[0], "w") as archive:
@@ -162,6 +163,39 @@ def package_products(record, outputs, audit):
             raw_artifact_index=record["index"], g0_granted=False, scientific_signoff_granted=False,
             full_official_numerical_certification_granted=False, raw_file_bytes_preserved=True), handle, indent=2, allow_nan=False)
         handle.write("\n")
+
+
+def package_products(record, outputs, audit):
+    if len(outputs) != 4 or any(not path for path in outputs):
+        raise ValueError("Four declared output paths required")
+    destinations = [os.path.join(os.path.realpath(os.path.dirname(os.path.abspath(path))), os.path.basename(path)) for path in outputs]
+    if len(set(destinations)) != 4 or any(os.path.lexists(path) for path in destinations):
+        raise ValueError("Four distinct fresh normalized outputs required")
+    if any(not os.path.isdir(os.path.dirname(path)) for path in destinations):
+        raise ValueError("Every output parent must already exist")
+    stage = tempfile.mkdtemp(prefix=".mtag-publish-", dir=os.path.dirname(destinations[0]))
+    created = []
+    completed = False
+    try:
+        private_outputs = [os.path.join(stage, "port-" + str(index)) for index in range(4)]
+        write_package_products(record, private_outputs, audit)
+        for private, destination in zip(private_outputs, destinations):
+            identity = os.lstat(private)
+            if not stat.S_ISREG(identity.st_mode) or identity.st_nlink != 1:
+                raise ValueError("Staged output must be a private regular file")
+            os.link(private, destination)
+            created.append((destination, identity.st_dev, identity.st_ino))
+        completed = True
+    finally:
+        if not completed:
+            for destination, device, inode in reversed(created):
+                try:
+                    current = os.lstat(destination)
+                    if (current.st_dev, current.st_ino) == (device, inode):
+                        os.unlink(destination)
+                except OSError:
+                    pass
+        shutil.rmtree(stage)
 
 
 def runtime_identity(root):
