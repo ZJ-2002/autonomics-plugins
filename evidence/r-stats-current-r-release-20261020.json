@@ -1,0 +1,18 @@
+{
+  "schema": "R_STATS_SCOPED_SOFTWARE_SOURCE_RELEASE_V1",
+  "status": "published",
+  "SDK_session": "30177185c8e142e4b8bd86f3edfd86f1",
+  "SDK_seal": "42f16aae00b69a2715bdb87d9a40589461c6660e02f226fb0deccb7ca3b5990b",
+  "host_session": "9c63bfcbb30d49d5998cba252878d58e",
+  "host_seal": "c145243356ced686650fbed2f76e42cc19de41ff4be71e7d050b06a9d1858853",
+  "manifest_sha256": "43fc5827ea5d1bd02efd22b08826da00ef7b2795985fb13ed4d34dd2e49c69c6",
+  "method_sha256": "aeaf7ea6073029eb4c3450303c332bf15e2f8077b704f6fd958ce6e1ba5acec5",
+  "lifecycle_status_only_change_since_SDK": true,
+  "method_image_ports_and_parameters_unchanged": true,
+  "tested_scope": "168 host cases, 127 reference matches and 41 specific refusals; 11 positive SDK DAGs and one row-limit refusal; see separate source-version evidence cards",
+  "independent_resident_loading_proof_still_required": true,
+  "all_R_overloads_or_unknown_inputs_certified": false,
+  "frozen_R_4_5_1_profile_migrated": false,
+  "scientific_release_granted": false,
+  "g0_granted": false
+}

@@ -13,7 +13,7 @@ class CurrentRStatisticsCandidateTests(unittest.TestCase):
     def test_six_canonical_operations_use_the_existing_fixed_r_image(self):
         manifest = tomllib.loads((ROOT / 'plugins/r-stats/manifest.toml').read_text())
         self.assertEqual(manifest['plugin_name'], 'r-stats')
-        self.assertEqual(manifest['status'], 'validating')
+        self.assertEqual(manifest['status'], 'published')
         self.assertEqual(manifest['image']['reference'], 'ghcr.io/zj-2002/mrlap-official@sha256:78f195b862a3b7c5f8d96a96576cfb2c66b08f9bd31a739da59a017726cd063d')
         expected = dict(t_test='t', cor_test='cor', var_test='var', wilcox_test='wilcox', prop_test='prop', p_adjust='adjust')
         self.assertEqual({node['kind'] for node in manifest['nodes']}, set(expected))
@@ -57,6 +57,7 @@ class CurrentRStatisticsCandidateTests(unittest.TestCase):
             if name == 'manifest.toml':
                 self.assertEqual(payload.count(b'network = "isolated"\nread_only_rootfs = true\npull_policy = "never"\n'), 6)
                 payload = payload.replace(b'network = "isolated"\nread_only_rootfs = true\npull_policy = "never"\n', b'')
+                payload = payload.replace(b'status = "published"', b'status = "validating"')
             self.assertEqual(hashlib.sha256(payload).hexdigest(), evidence[key])
         self.assertEqual(evidence['positive_full_reference_comparisons'] + evidence['specific_refusals'], evidence['current_cases'])
         self.assertEqual(evidence['current_cases'], 168)

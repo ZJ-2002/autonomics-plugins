@@ -55,4 +55,7 @@ nodes. Six installed stats function bodies/formals also match the host exactly.
 Ten already executed DAGs were reused from a sealed failed parent batch; only
 the two remaining DAGs were newly executed. The parent batch stays failed.
 See `evidence/r-stats-current-r-sdk-20261020.json`. This is not a resident-daemon
-execution/deployment proof, and the profile remains `validating`.
+execution/deployment proof. The source release is now `published` after these
+bounded host/container/SDK checks; installation and resident loading must be
+recorded separately. Publication does not migrate a frozen R 4.5.1 study profile
+or certify all unknown inputs, R overloads or scientific uses.

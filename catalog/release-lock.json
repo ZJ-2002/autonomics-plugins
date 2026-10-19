@@ -14600,14 +14600,14 @@
       "files": [
         {
           "path": "README.md",
-          "sha256": "ff3801ab215ff99a20e134dcdf8a6567b6ccff9370ade7ddec3c482bef201b65",
-          "bytes": 3831,
+          "sha256": "02593adbd2a382f4e00e3b931c58c7e9e3da1ba7a139ceee7c2b68936903bd17",
+          "bytes": 4064,
           "executable": false
         },
         {
           "path": "manifest.toml",
-          "sha256": "dcd5d5a0f653e2e9ee16352096812d0c910cbc8f0dbff4fb0595ef1991d591eb",
-          "bytes": 6771,
+          "sha256": "43fc5827ea5d1bd02efd22b08826da00ef7b2795985fb13ed4d34dd2e49c69c6",
+          "bytes": 6770,
           "executable": false
         },
         {

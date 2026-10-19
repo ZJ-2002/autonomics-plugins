@@ -1,6 +1,6 @@
 schema_version = 1
 plugin_name = "r-stats"
-status = "validating"
+status = "published"
 
 [image]
 reference = "ghcr.io/zj-2002/mrlap-official@sha256:78f195b862a3b7c5f8d96a96576cfb2c66b08f9bd31a739da59a017726cd063d"
