@@ -1131,6 +1131,15 @@
     "tests.test_mtag_publication.MtagPublicationTests.test_mid_packaging_failure_leaves_no_published_ports",
     "tests.test_mtag_publication.MtagPublicationTests.test_nonfinite_audit_failure_leaves_no_published_ports",
     "tests.test_mtag_publication.MtagPublicationTests.test_normalized_aliases_are_rejected_before_any_write",
-    "tests.test_mtag_publication.MtagPublicationTests.test_main_refuses_foreign_output_before_parameters_or_runtime"
+    "tests.test_mtag_publication.MtagPublicationTests.test_main_refuses_foreign_output_before_parameters_or_runtime",
+    "tests.test_ieugwasr_official_contract.IeugwasrOfficialContractTests.test_complete_rds_roundtrip_and_four_ports",
+    "tests.test_ieugwasr_official_contract.IeugwasrOfficialContractTests.test_exact_author_arguments_and_complete_return_are_preserved",
+    "tests.test_ieugwasr_official_contract.IeugwasrOfficialContractTests.test_existing_dangling_and_alias_destinations_are_refused",
+    "tests.test_ieugwasr_official_contract.IeugwasrOfficialContractTests.test_late_foreign_output_is_not_overwritten",
+    "tests.test_ieugwasr_official_contract.IeugwasrOfficialContractTests.test_lossy_projection_is_rejected",
+    "tests.test_ieugwasr_official_contract.IeugwasrOfficialContractTests.test_official_error_is_not_converted_to_empty_success",
+    "tests.test_ieugwasr_official_contract.IeugwasrOfficialContractTests.test_projection_failure_publishes_no_ports",
+    "tests.test_ieugwasr_official_contract.IeugwasrOfficialContractTests.test_typed_projection_preserves_special_values",
+    "tests.test_ieugwasr_official_contract.IeugwasrOfficialContractTests.test_unknown_and_credential_arguments_are_rejected"
   ]
 }

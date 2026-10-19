@@ -1,0 +1,96 @@
+{
+  "schema": "IEUGWASR_DERIVED_RUNTIME_SOURCE_LOCK_V1",
+  "author_repository": "https://github.com/MRCIEU/ieugwasr",
+  "author_tag": "v1.2.0",
+  "author_commit": "0c5b4cc6bc5e675afe222262950c8bb488f8d2f3",
+  "source_files": [
+    {
+      "path": "DESCRIPTION",
+      "bytes": 1243,
+      "sha256": "ecba5f8810346884c3402393052f71c8ac4c821f9d73ad97eb250d542889295c",
+      "git_blob_sha1": "2543ba16935afdbcd5331c510ec83b8008cb0e23"
+    },
+    {
+      "path": "LICENSE",
+      "bytes": 43,
+      "sha256": "1a78a3ee942f05d5c2b0e6d6be9133202b7ce595b43094d884b92e71b67a21af",
+      "git_blob_sha1": "7f8579110d70bbf5f91ec242b7715706eef61c15"
+    },
+    {
+      "path": "NAMESPACE",
+      "bytes": 797,
+      "sha256": "769a5ee795c4197cd23171e11ae627f1e3071631cfe03ce59b77b1501d50b398",
+      "git_blob_sha1": "c1593370aef1eadd3c85fac418245a9cf2915e36"
+    },
+    {
+      "path": "R/afl2.r",
+      "bytes": 4630,
+      "sha256": "503ce26d4f3c6c9aca31312a8a82c7ce57cf44c5a4f4a37162fc54d14ede1414",
+      "git_blob_sha1": "caedae17dcc5099ea2790a6882d9409baa099c20"
+    },
+    {
+      "path": "R/api.R",
+      "bytes": 2609,
+      "sha256": "272a0c785551df0ed3c6d579072440df06e059b04f48ac7eebdf444f7a6051ce",
+      "git_blob_sha1": "523a2744d7f099cbfdc23ee50597f31852ac819d"
+    },
+    {
+      "path": "R/backwards.R",
+      "bytes": 1231,
+      "sha256": "0a328abf93cbc8c7f126f1615e7e296d76bb964bd5e5d497de0950058539f77e",
+      "git_blob_sha1": "99c32a68b7b7daaa24a7fb34fb463969055f8430"
+    },
+    {
+      "path": "R/globals.R",
+      "bytes": 40,
+      "sha256": "4c88a4a92c1f63951b6184aa56f0be562bc3c9a067ad8f50730c8790bb2b87f7",
+      "git_blob_sha1": "99760d02ba9a4f036849ea6e4472d78c50d47996"
+    },
+    {
+      "path": "R/ieugwasr-package.R",
+      "bytes": 121,
+      "sha256": "cf93695cf13375893d917d6134d2cde4a0b1f5ffccd24e63534a11b7f30542d8",
+      "git_blob_sha1": "ebc9994b3770b2e930ae3f3660e054e261f5c46e"
+    },
+    {
+      "path": "R/ld_clump.R",
+      "bytes": 8662,
+      "sha256": "a339b21c941cbf60e9bfcaf9f52cc3fd36d52a62d405fd8989eda18db4d3e83b",
+      "git_blob_sha1": "e925ef73955dc7028c413fea046491fc52965666"
+    },
+    {
+      "path": "R/ld_matrix.R",
+      "bytes": 5249,
+      "sha256": "a58c30ab7b3de9222a6f6bdaae9dd623c196300e4d572ca3a2ae56ae7df06502",
+      "git_blob_sha1": "86167ac13eedcfe5b80226d1faf8ee39615a3ef6"
+    },
+    {
+      "path": "R/query.R",
+      "bytes": 18680,
+      "sha256": "1eb9e34c8c3ee4a588bf3ee6d8de52119b6b47dc90671f27755a274d7f5d1efb",
+      "git_blob_sha1": "5ee9cf4312bdd98596de204bf5485a18d41e15c8"
+    },
+    {
+      "path": "R/variants.R",
+      "bytes": 4053,
+      "sha256": "c953397603a3551519ad08796fd6b7def773456459faa610d93ef89f57188e38",
+      "git_blob_sha1": "39b022bcf0509f5fca937bfde2f6f6da096f4e65"
+    },
+    {
+      "path": "R/zzz.R",
+      "bytes": 1598,
+      "sha256": "4abb8df01810f63829037f1d5bd5014b8527c155b977de978de91716a3e0b15e",
+      "git_blob_sha1": "f594ca0cc533f5163fc2ef608398c5096f903788"
+    }
+  ],
+  "source_checksums_sha256": "1f35bc50083dae44c7a0284f833f437d887cb4641297431847b8f6f9ebea2084",
+  "base_image": "ghcr.io/zj-2002/mrlap-official@sha256:78f195b862a3b7c5f8d96a96576cfb2c66b08f9bd31a739da59a017726cd063d",
+  "base_config_id": "294152508a320bf7bbefa9ba53a095a121535cc3643e79a842950609843ea84c",
+  "derived_image_digest": null,
+  "installed_library": "/opt/ieugwasr-library",
+  "R_ENABLE_JIT": "0",
+  "original_MRlap_environment_changed": false,
+  "build_executed": false,
+  "container_or_DAG_verified": false,
+  "scientific_release_granted": false
+}
