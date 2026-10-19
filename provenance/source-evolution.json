@@ -1509,11 +1509,11 @@
       },
       "current": {
         "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
-        "revision": "a4c1c0f2ac99a6f7f98c8bcad596ff40cbfe2684",
+        "revision": "0e76f1bb956454e2202226ca60ee020f1e15994f",
         "path": "research-adapters/cachexia-mtag/scripts/mtag.py",
-        "bytes": 12868,
-        "sha256": "b3bbfe54d9b18dc2e8508e1a0d97d3a3c41b2e51ce3cc632c4ffe79b40823095",
-        "git_blob": "bf9f8e5032c7f46e96aa4f1d4e1b62b44c5497ae"
+        "bytes": 13039,
+        "sha256": "ebe8c9a89b94a20987b2386d7732e8af3be513afd0ad8b83ce50bdd69b7a8014",
+        "git_blob": "5bf6baef60620010f04ad22f8ee0911086f11455"
       }
     }
   ]
