@@ -1461,6 +1461,24 @@
         "sha256": "60b9b09c577a8ae939222fdf52133cbeadeea34d254bec378ae3abe8c55ea521",
         "git_blob": "7d92c04431724dfe7fa1710d0c66c3f34750f338"
       }
+    },
+    {
+      "path": "research-adapters/cachexia-nichenet/scripts/h5ad_reader.R",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/autonomics.git",
+        "revision": "bdedf129011789e6eec3a594252d6515b6a67618",
+        "bytes": 19164,
+        "sha256": "dec072adc0ab31af4ee29f77314bd9fb01133f3016803e1cf11aad57da7f0c12",
+        "git_blob": "1214efbb703149e8339b8df5a75e85d4b41e469d"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "00ed6ca99d35205147c6546a0d35c342a0863c74",
+        "path": "research-adapters/cachexia-nichenet/scripts/h5ad_reader.R",
+        "bytes": 21771,
+        "sha256": "dadd46d027650fe31e883d97a487cca661712e6891059759fd5f2dc727c1b4c7",
+        "git_blob": "ce18b9bd0afbf8aa7ae9401c3552b92fb9852305"
+      }
     }
   ]
 }
