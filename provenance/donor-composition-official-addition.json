@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "scope": "MONOREPO_NATIVE_FAMILY_ADDITION_NOT_METHOD_CERTIFICATION",
+  "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+  "source_commit": "a9f03041bd10d27fd3c75d293512aec588adfa87",
+  "directory": "plugins/donor-composition-official",
+  "kinds": [
+    "donor_composition_official"
+  ],
+  "origin": "New monorepo wrapper; no legacy repository/import record is invented or rewritten",
+  "upstream_method": "R Core stats4.6.1 glm grouped-binomial dispersion1 Wald and full-family p.adjust",
+  "unchanged_reference_core_sha256": "53c3bd5d1ffaa254ad1161a3d325f722f99c7816753c7ebdb4bc02e5416e7001",
+  "sources": [
+    {
+      "path": "plugins/donor-composition-official/README.md",
+      "bytes": 3220,
+      "sha256": "25aaba542af19a241b6248bed039eeb27caddd4ee04b142da20cb4e0fae3bbdc",
+      "git_blob": "01a7136d00876277094f07e219a8c8a33ae15a5a"
+    },
+    {
+      "path": "plugins/donor-composition-official/manifest.toml",
+      "bytes": 2859,
+      "sha256": "63cfeda1728c84f757fe75d0fea7a42f80cb0517496b9edd04674ba2c9f878db",
+      "git_blob": "f8e7527617c6f44dc1ffc51c3320d8e0356c5030"
+    },
+    {
+      "path": "plugins/donor-composition-official/scripts/donor_composition.R",
+      "bytes": 18680,
+      "sha256": "d19f5913f02f38bf3bcd85fa45f357e1a9a2e1c2236c268256fd4de77dc770b9",
+      "git_blob": "45799de1894d5597ad4af55f1d351ef3ed6adb2e"
+    },
+    {
+      "path": "tests/donor_composition_official_contract.R",
+      "bytes": 6383,
+      "sha256": "d61859bb032e6b3b81ce23abe969a8e37c015ad6e1a74a17c60b9c0cce8380f4",
+      "git_blob": "7c012b7ddef2255202af83dc8396f380cb14ae46"
+    },
+    {
+      "path": "tests/test_donor_composition_official.py",
+      "bytes": 2191,
+      "sha256": "94246be74d11a3610b03c038d0ee01d11fbab29009bfbfa6115f1a65dec839a5",
+      "git_blob": "4831eb7293c6764d96f1ddc473fcaa700e1d1c72"
+    }
+  ],
+  "default_scope": "TECHNICAL_ONLY_NOT_G0; not donor-overdispersion or donor-robust inference",
+  "auto_enable": false,
+  "scientific_certified": false,
+  "private_runtime_evidence_included": false,
+  "frozen_DAG_changed": false,
+  "native_alias_replaced": false,
+  "G0": false
+}
