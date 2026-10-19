@@ -1112,6 +1112,11 @@
     "tests.test_permutation_publication.PermutationPublicationTests.test_late_foreign_analytical_output_is_preserved",
     "tests.test_permutation_publication.PermutationPublicationTests.test_rollback_preserves_foreign_replacement",
     "tests.test_permutation_publication.PermutationPublicationTests.test_stage_is_removed_after_unhandled_writer_failure",
-    "tests.test_permutation_publication.PermutationPublicationTests.test_success_has_five_ports_and_no_stage"
+    "tests.test_permutation_publication.PermutationPublicationTests.test_success_has_five_ports_and_no_stage",
+    "tests.test_iut_reuse_binding.IutReuseBindingTests.test_complete_frozen_denominators_remain_276_edges_288_paths",
+    "tests.test_iut_reuse_binding.IutReuseBindingTests.test_exact_previously_repaired_assembly_and_adjustment_sources",
+    "tests.test_iut_reuse_binding.IutReuseBindingTests.test_loader_executes_the_verified_buffer_without_reopening",
+    "tests.test_iut_reuse_binding.IutReuseBindingTests.test_replacement_is_explicit_not_native_boolean_alias",
+    "tests.test_iut_reuse_binding.IutReuseBindingTests.test_strict_iut_does_not_silently_remove_missing_components"
   ]
 }
