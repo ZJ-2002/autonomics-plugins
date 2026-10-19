@@ -15,6 +15,9 @@ doc = "Data TSV with lexical row_id and x/y or explicit group labels plus a full
 timeout_secs = 300
 artifact_prefix = "/artifacts/r_stats_t_test"
 [nodes.resources]
+network = "isolated"
+read_only_rootfs = true
+pull_policy = "never"
 cpus = 1.0
 memory = "2Gi"
 [nodes.ports]
@@ -35,6 +38,9 @@ doc = "Complete row pairs; exact auto/true/false and continuity explicit. exact=
 timeout_secs = 300
 artifact_prefix = "/artifacts/r_stats_cor_test"
 [nodes.resources]
+network = "isolated"
+read_only_rootfs = true
+pull_policy = "never"
 cpus = 1.0
 memory = "2Gi"
 [nodes.ports]
@@ -55,6 +61,9 @@ doc = "Wide independent samples or frozen ordered groups; ratio/alternative/conf
 timeout_secs = 300
 artifact_prefix = "/artifacts/r_stats_var_test"
 [nodes.resources]
+network = "isolated"
+read_only_rootfs = true
+pull_policy = "never"
 cpus = 1.0
 memory = "2Gi"
 [nodes.ports]
@@ -75,6 +84,9 @@ doc = "One/paired/wide/frozen groups; mu, alternative, exact auto/true/false, co
 timeout_secs = 300
 artifact_prefix = "/artifacts/r_stats_wilcox_test"
 [nodes.resources]
+network = "isolated"
+read_only_rootfs = true
+pull_policy = "never"
 cpus = 1.0
 memory = "2Gi"
 [nodes.ports]
@@ -95,6 +107,9 @@ doc = "Counts and totals, explicit p vector or NULL, alternative/correction/conf
 timeout_secs = 300
 artifact_prefix = "/artifacts/r_stats_prop_test"
 [nodes.resources]
+network = "isolated"
+read_only_rootfs = true
+pull_policy = "never"
 cpus = 1.0
 memory = "2Gi"
 [nodes.ports]
@@ -115,6 +130,9 @@ doc = "One p-value per lexical row_id; explicit method/n_total/alpha. All rows i
 timeout_secs = 300
 artifact_prefix = "/artifacts/r_stats_p_adjust"
 [nodes.resources]
+network = "isolated"
+read_only_rootfs = true
+pull_policy = "never"
 cpus = 1.0
 memory = "2Gi"
 [nodes.ports]

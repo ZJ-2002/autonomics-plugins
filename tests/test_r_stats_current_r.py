@@ -24,6 +24,9 @@ class CurrentRStatisticsCandidateTests(unittest.TestCase):
             self.assertEqual(node['command']['env']['STATISTICS_OPERATION'], expected[node['kind']])
             self.assertEqual(node['command']['env']['R_PROFILE_USER'], '/dev/null')
             self.assertEqual(node['command']['env']['R_ENVIRON_USER'], '/dev/null')
+            self.assertEqual(node['resources']['network'], 'isolated')
+            self.assertTrue(node['resources']['read_only_rootfs'])
+            self.assertEqual(node['resources']['pull_policy'], 'never')
 
     def test_only_version_and_adjustment_row_limit_change_the_frozen_wrapper(self):
         current = (ROOT / 'plugins/r-stats/scripts/statistics.R').read_text()
@@ -50,7 +53,11 @@ class CurrentRStatisticsCandidateTests(unittest.TestCase):
     def test_host_evidence_does_not_grant_container_dag_or_deployment(self):
         evidence = json.loads((ROOT / 'evidence/r-stats-current-r-host-20261020.json').read_text())
         for name, key in [('scripts/statistics.R', 'method_source_sha256'), ('manifest.toml', 'manifest_sha256')]:
-            self.assertEqual(hashlib.sha256((ROOT / 'plugins/r-stats' / name).read_bytes()).hexdigest(), evidence[key])
+            payload = (ROOT / 'plugins/r-stats' / name).read_bytes()
+            if name == 'manifest.toml':
+                self.assertEqual(payload.count(b'network = "isolated"\nread_only_rootfs = true\npull_policy = "never"\n'), 6)
+                payload = payload.replace(b'network = "isolated"\nread_only_rootfs = true\npull_policy = "never"\n', b'')
+            self.assertEqual(hashlib.sha256(payload).hexdigest(), evidence[key])
         self.assertEqual(evidence['positive_full_reference_comparisons'] + evidence['specific_refusals'], evidence['current_cases'])
         self.assertEqual(evidence['current_cases'], 168)
         self.assertFalse(evidence['legacy_R_4_5_1_numeric_answers_reused'])
