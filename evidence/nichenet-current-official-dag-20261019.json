@@ -1,0 +1,36 @@
+{
+  "schema": "NICHENET_CURRENT_OFFICIAL_DAG_EVIDENCE_V1",
+  "proofs": {
+    "0b74348715494312acf2b72a8839a3ef": "069cedec09c5a39d2b4c51b7f710e913e321189521ff3144b52fefa0981ca454",
+    "3b7aae11b14c46da9e129f61fdbaf9cd": "146dd0a91ad7a137eb647dc8fe5f879d11b2cae77421e729c19023c82e730660",
+    "0302fd54cbea4ec095759bccff20cc9f": "5185f9133b1345ff3ef088310f029e7145288adddd7ec26faf592a897bd007d5"
+  },
+  "sources": [
+    {
+      "path": "research-adapters/cachexia-nichenet/manifest.toml",
+      "bytes": 1899,
+      "sha256": "f46ff792c25585f31b018d82958faa8798e7039e731ca94721f284ae30097d7f"
+    },
+    {
+      "path": "research-adapters/cachexia-nichenet/scripts/h5ad_reader.R",
+      "bytes": 21771,
+      "sha256": "dadd46d027650fe31e883d97a487cca661712e6891059759fd5f2dc727c1b4c7"
+    }
+  ],
+  "image": "ghcr.io/zj-2002/nichenetr@sha256:f0ee4a511531f91839d2d9d9cb83535bd7f7f6b12905e26635684f8a081f0c19",
+  "engine": "4256643c55ae6fb50e8c867069330ed6ac2b4bc0",
+  "positive_DAGs": 2,
+  "blocked_DAGs": 3,
+  "official_functions_per_namespace": 206,
+  "table_fields": 736,
+  "numeric_fields": 312,
+  "max_abs_difference": 0,
+  "complete_object_RNG_warnings_and_prior_objects_identical": true,
+  "complete_ligand_family_rows_per_profile": 1226,
+  "owned_containers_stopped": 9,
+  "cached_independent_namespace_reused_not_new_compilation": true,
+  "current_independent_prior_download_claimed": false,
+  "artifact_aliases_retired_without_computation_or_RDS_byte_change": 2,
+  "full_API_or_actual_study_or_resident_admission_granted": false,
+  "g0_granted": false
+}
