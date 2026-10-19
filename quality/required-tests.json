@@ -1178,6 +1178,11 @@
     "tests.test_donor_composition_official.DonorCompositionOfficialTests.test_manifest_exact_two_inputs_five_outputs_no_method_defaults",
     "tests.test_mtag_official_source_reuse.SourceReuseTests.test_entry_script_is_the_retained_verified_source",
     "tests.test_mtag_official_source_reuse.SourceReuseTests.test_explicit_two_input_four_output_contract_is_not_legacy",
-    "tests.test_mtag_official_source_reuse.SourceReuseTests.test_only_explicit_identity_and_provenance_docs_changed"
+    "tests.test_mtag_official_source_reuse.SourceReuseTests.test_only_explicit_identity_and_provenance_docs_changed",
+    "tests.test_r_stats_current_r.CurrentRStatisticsCandidateTests.test_all_calculations_still_call_stats_directly",
+    "tests.test_r_stats_current_r.CurrentRStatisticsCandidateTests.test_candidate_r_entry_parses_in_the_existing_local_runtime",
+    "tests.test_r_stats_current_r.CurrentRStatisticsCandidateTests.test_host_evidence_does_not_grant_container_dag_or_deployment",
+    "tests.test_r_stats_current_r.CurrentRStatisticsCandidateTests.test_only_version_and_adjustment_row_limit_change_the_frozen_wrapper",
+    "tests.test_r_stats_current_r.CurrentRStatisticsCandidateTests.test_six_canonical_operations_use_the_existing_fixed_r_image"
   ]
 }

@@ -1,8 +1,8 @@
 {
   "schema_version": "1.0",
   "scope": "SOURCE_AND_INTERFACE_INVENTORY_NOT_METHOD_CERTIFICATION",
-  "canonical_families": 39,
-  "canonical_kinds": 74,
+  "canonical_families": 40,
+  "canonical_kinds": 80,
   "families": [
     {
       "directory": "plugins/bulk-limma-normalized",
@@ -14578,6 +14578,42 @@
           "path": "tests/test_pseudobulk_counts.py",
           "sha256": "fc1979171929fdcefbf8eb2e44844768e35f1d25f99db97027a59a72f67044a0",
           "bytes": 15059,
+          "executable": false
+        }
+      ],
+      "source_inventory_only": true,
+      "scientific_certified": false,
+      "auto_enable": false
+    },
+    {
+      "directory": "plugins/r-stats",
+      "plugin_name": "r-stats",
+      "kinds": [
+        "t_test",
+        "cor_test",
+        "var_test",
+        "wilcox_test",
+        "prop_test",
+        "p_adjust"
+      ],
+      "image_reference": "ghcr.io/zj-2002/mrlap-official@sha256:78f195b862a3b7c5f8d96a96576cfb2c66b08f9bd31a739da59a017726cd063d",
+      "files": [
+        {
+          "path": "README.md",
+          "sha256": "14a0b0fd21bf95fa9a832fad6fd8422097dfcfdc941d37b272f715c8164152b0",
+          "bytes": 2405,
+          "executable": false
+        },
+        {
+          "path": "manifest.toml",
+          "sha256": "6362cdc9eb895920cd5f5f4761c55ffb9fb80535748f61c9f6c605419ad234f0",
+          "bytes": 6369,
+          "executable": false
+        },
+        {
+          "path": "scripts/statistics.R",
+          "sha256": "aeaf7ea6073029eb4c3450303c332bf15e2f8077b704f6fd958ce6e1ba5acec5",
+          "bytes": 13446,
           "executable": false
         }
       ],
