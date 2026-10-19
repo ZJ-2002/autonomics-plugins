@@ -1175,6 +1175,9 @@
     "tests.test_ieugwasr_dispatch_contract.IeugwasrDispatchContractTests.test_wrong_input_count_is_refused",
     "tests.test_donor_composition_official.DonorCompositionOfficialTests.test_actual_R_contract_and_publication_helpers_without_fit",
     "tests.test_donor_composition_official.DonorCompositionOfficialTests.test_embedded_original_independent_reference_bytes_unchanged",
-    "tests.test_donor_composition_official.DonorCompositionOfficialTests.test_manifest_exact_two_inputs_five_outputs_no_method_defaults"
+    "tests.test_donor_composition_official.DonorCompositionOfficialTests.test_manifest_exact_two_inputs_five_outputs_no_method_defaults",
+    "tests.test_mtag_official_source_reuse.SourceReuseTests.test_entry_script_is_the_retained_verified_source",
+    "tests.test_mtag_official_source_reuse.SourceReuseTests.test_explicit_two_input_four_output_contract_is_not_legacy",
+    "tests.test_mtag_official_source_reuse.SourceReuseTests.test_only_explicit_identity_and_provenance_docs_changed"
   ]
 }

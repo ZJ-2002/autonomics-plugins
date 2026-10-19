@@ -1,8 +1,8 @@
 {
   "schema_version": "1.0",
   "scope": "SOURCE_AND_INTERFACE_INVENTORY_NOT_METHOD_CERTIFICATION",
-  "canonical_families": 38,
-  "canonical_kinds": 73,
+  "canonical_families": 39,
+  "canonical_kinds": 74,
   "families": [
     {
       "directory": "plugins/bulk-limma-normalized",
@@ -736,7 +736,7 @@
         },
         {
           "path": "source-lock.json",
-          "sha256": "a1e963526c7b83bca8617af3ba7f659d670276ee3b6bf73792505bad50083ec0",
+          "sha256": "4c6da353a32bca004cdb5338e3d8a729021cd71e801722d476cc976990b2ea3e",
           "bytes": 4076,
           "executable": false
         }
@@ -14042,6 +14042,43 @@
           "path": "test_mtag_containers.sh",
           "sha256": "44e94b59a2ad0be33ec5e3f088ac8c5d7db348b317b96d739df097a937011a57",
           "bytes": 4855,
+          "executable": false
+        }
+      ],
+      "source_inventory_only": true,
+      "scientific_certified": false,
+      "auto_enable": false
+    },
+    {
+      "directory": "plugins/mtag-official",
+      "plugin_name": "mtag-official",
+      "kinds": [
+        "mtag_official"
+      ],
+      "image_reference": "ghcr.io/zj-2002/mtag@sha256:d89f1e607804ec66a26f12151e6f6fcc495a1f67a077d9ac900085a9b77cb7e8",
+      "files": [
+        {
+          "path": "README.md",
+          "sha256": "98e9b7ba95dd090e6498556433a00081b7a65481062bb906a94836c272d8944b",
+          "bytes": 2401,
+          "executable": false
+        },
+        {
+          "path": "manifest.toml",
+          "sha256": "6cfd5361a0f4a6bdb1d09928a09f43835e2c065ca104e2a4088aba555b5b95b9",
+          "bytes": 3653,
+          "executable": false
+        },
+        {
+          "path": "reuse-lock.json",
+          "sha256": "db08e1bafac687f686008a0d64319cabd90ef546fcc34aef3541fdf402bc66b3",
+          "bytes": 2025,
+          "executable": false
+        },
+        {
+          "path": "scripts/mtag.py",
+          "sha256": "ebe8c9a89b94a20987b2386d7732e8af3be513afd0ad8b83ce50bdd69b7a8014",
+          "bytes": 13039,
           "executable": false
         }
       ],

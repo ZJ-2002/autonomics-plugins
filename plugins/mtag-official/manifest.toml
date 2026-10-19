@@ -1,0 +1,52 @@
+schema_version = 1
+plugin_name = "mtag-official"
+
+[image]
+reference = "ghcr.io/zj-2002/mtag@sha256:d89f1e607804ec66a26f12151e6f6fcc495a1f67a077d9ac900085a9b77cb7e8"
+upstream = "JonJala MTAG1.0.8 @ 9e17f3cf1fbcf57b6bc466daefdc51fd0de3c5dc; 11 official/vendored/image-source files matched in bounded host proof. Bounded retained component-DAG evidence is mapped in reuse-lock.json; this family rename is not current resident deployment."
+license = "GPL-3"
+
+[[panels]]
+binding = "ld_ref"
+mount = "/panels/ld_ref"
+bundle = "wjixiang/catalog-mtag-ld-ref-1000g-eur-w-ld"
+
+[[nodes]]
+kind = "mtag_official"
+desc = "Guarded original MTAG invocation with mode-correct complete raw artifact bundle."
+doc = "Two GWAS Files, same six official flags and optimizer parameters. Calls unchanged pinned Python2 MTAG. All 48 valid flag combinations retained, including equal_h2+perfect_gencov meta-analysis. Outputs are FOUR Files: full raw result TAR with canonical metadata, official log, complete artifact index, explicit audit. This deliberately replaces the incompatible original two-trait-file ports: meta mode returns one official meta file and no omega file; no trait file or covariance is fabricated. Exit zero alone is insufficient: complete log markers, absence of official caught-error diagnostics, correct mode-specific result files, finite result fields and matrices required. Missing/failed outputs are not converted to success. Observed input/panel hashes are recorded, not a scientific frozen-input approval. This explicit generic route preserves the previously evidenced wrapper without changing the official algorithm, parameters or output files. It is not automatically enabled, not compatible with the legacy three-output mtag/mtag route, and not current production or scientific admission."
+timeout_secs = 3600
+artifact_prefix = "/artifacts/mtag"
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}]
+outputs = [{path="mtag_results.tar",format="mtag_raw_bundle"}, {path="mtag.log",format="mtag_log"}, {path="mtag_artifact_index.tsv",format="mtag_artifact_index"}, {path="mtag_audit.json",format="mtag_audit"}]
+[nodes.params]
+time_limit_hours = {type="number",default=1.0,exclusive_min=0.0,doc="Passed unchanged to official --time_limit; fixed upstream declares but does not read this value in the optimizer. NOT a wall-time enforcement mechanism."}
+tol = {type="number",default=0.000001,exclusive_min=0.0,doc="Unchanged official relative tolerance"}
+force = {type="flag",optional=true,doc="Explicit official low-chi-square override; never automatically enabled"}
+no_overlap = {type="flag",optional=true,doc="Official no-overlap assumption, not inferred from inputs"}
+perfect_gencov = {type="flag",optional=true,doc="Official perfect genetic covariance"}
+equal_h2 = {type="flag",optional=true,requires=["perfect_gencov"],doc="Official equal heritability; produces one META result, not two trait files"}
+std_betas = {type="flag",optional=true,doc="Official standardized effects"}
+numerical_omega = {type="flag",optional=true,doc="Official numerical Omega option, no fallback"}
+[nodes.command]
+interpreter = "python"
+script_file = "scripts/mtag.py"
+[nodes.command.env]
+MTAG_TIME_LIMIT_HOURS = "{{ time_limit_hours }}"
+MTAG_TOL = "{{ tol }}"
+MTAG_FORCE = "{{ force }}"
+MTAG_NO_OVERLAP = "{{ no_overlap }}"
+MTAG_PERFECT_GENCOV = "{{ perfect_gencov }}"
+MTAG_EQUAL_H2 = "{{ equal_h2 }}"
+MTAG_STD_BETAS = "{{ std_betas }}"
+MTAG_NUMERICAL_OMEGA = "{{ numerical_omega }}"
+OMP_NUM_THREADS = "1"
+OPENBLAS_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+PYTHONDONTWRITEBYTECODE = "1"
+[nodes.resources]
+cpus = 2.0
+memory = "8Gi"
+network = "isolated"
+pull_policy = "never"

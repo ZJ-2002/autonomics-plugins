@@ -1,0 +1,30 @@
+{
+  "schema": "MTAG_GENERIC_EXPLICIT_ROUTE_SOURCE_REUSE_V1",
+  "family": "mtag-official",
+  "kind": "mtag_official",
+  "canonical_address": "mtag-official/mtag_official",
+  "previous_family": "cachexia-mtag",
+  "previous_kind": "mtag",
+  "previous_source": "research-adapters/cachexia-mtag",
+  "previous_manifest_sha256": "b4bf094d7ba984fb552990366c3664d31c3a3afdfdce081fe3ea3dd9532edabb",
+  "unchanged_entry_sha256": "ebe8c9a89b94a20987b2386d7732e8af3be513afd0ad8b83ce50bdd69b7a8014",
+  "manifest_semantics_except_explicit_rename_and_provenance_docs_sha256": "ca5b0df8978df4bb5661a217960d917da86ba702da92df73dd98512934e68d8f",
+  "semantic_exclusions": ["plugin_name", "image.upstream", "nodes[0].kind", "nodes[0].doc"],
+  "image": "ghcr.io/zj-2002/mtag@sha256:d89f1e607804ec66a26f12151e6f6fcc495a1f67a077d9ac900085a9b77cb7e8",
+  "existing_method_scope": "Unchanged MTAG1.0.8 upstream9e17f3c, fixed Python2.7 and package/source identity; two traits, EUR LD panel, 48 valid flag combinations. Not all traits, ancestries or official APIs.",
+  "retained_reference_recovery": {"session":"e5e77251cd0e4f55a30624b1f251e3a4","seal":"799a1d78b04facadf345dfbf86e7e00edc95322e08a6e3395984b788f856d09b"},
+  "retained_actual_SDK_execution": {
+    "session": "67ae074ae95146b08112f5a45cb10452",
+    "seal": "2d512fd46cfc3f52f1c594ac5ebff36c159af1f16141c4a75498996153a52548",
+    "member": "permanent/mtag-current-sdk/verification.json",
+    "bytes": 22203,
+    "sha256": "a55f2fcb53e10797b4c2089c926fd2ff942195b0c8ff2003ee73544bcb3abbd6"
+  },
+  "new_method_computations_required_for_explicit_rename": false,
+  "new_address_factory_registration_or_current_production_execution_already_proven": false,
+  "minimum_followup": "Catalog/source publication and one new-address factory registration/routing check; retain existing numerical evidence and current scope",
+  "legacy_three_output_address_compatible": false,
+  "old_three_port_and_frozen_project_entries_modified": false,
+  "scientific_release_granted": false,
+  "g0_granted": false
+}
