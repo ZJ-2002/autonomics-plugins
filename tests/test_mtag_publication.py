@@ -3,7 +3,6 @@ import hashlib
 import io
 import json
 import os
-import runpy
 import shutil
 import tarfile
 import tempfile
@@ -12,7 +11,9 @@ import unittest
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PROGRAM = os.path.join(ROOT, 'research-adapters', 'cachexia-mtag', 'scripts', 'mtag.py')
-NAMESPACE = runpy.run_path(PROGRAM)
+NAMESPACE = {'__name__': 'mtag_publication_controls', '__file__': PROGRAM}
+with open(PROGRAM, 'rb') as source_handle:
+    exec(compile(source_handle.read(), PROGRAM, 'exec'), NAMESPACE)
 
 
 @contextlib.contextmanager
