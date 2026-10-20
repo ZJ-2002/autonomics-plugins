@@ -2,7 +2,7 @@ schema_version = 1
 plugin_name = "cachexia-hashutil"
 
 [image]
-reference = "localhost/autonomics/biotools-py@sha256:ba0ad02ae1a92495fa8d498c5083471fcca38bff6b389a0bc9c3081b10eeef48"
+reference = "ghcr.io/zj-2002/biotools-py@sha256:7ad6aeafa87672699d28b61b6bed12fc81fcdbfc43222a0abf17e2d56fb806f5"
 tag = "local-content-pinned-python-3.11.17-blake3-1.0.10"
 upstream = "Python hashlib sha256 and BLAKE3 Python binding"
 license = "MIT"
