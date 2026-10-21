@@ -1,0 +1,61 @@
+{
+  "schema": "DESEQ2_CANONICAL_SOURCE_RESTORATION_V1",
+  "pass_scoped_source_restoration": true,
+  "observations": [
+    {
+      "family": "bulk-rnaseq",
+      "source_kind": "IDENTITY_RECORDED_SEALED_EXTERNAL_SNAPSHOT_NOT_ORDINARY_MUTABLE_WORKTREE",
+      "original_source_commit": "9dab2d70e410d05125da52631fac0f9bcc489645",
+      "snapshot_files_verified": 22,
+      "qualified_runtime_files_reused": [
+        "limma_voom_runner.R",
+        "manifest.toml",
+        "wgcna_runner.R"
+      ],
+      "canonical_snapshot_mismatches": [],
+      "restored_file_sha256": {}
+    },
+    {
+      "family": "deseq2",
+      "source_kind": "IDENTITY_RECORDED_SEALED_EXTERNAL_SNAPSHOT_NOT_ORDINARY_MUTABLE_WORKTREE",
+      "original_source_commit": "f501695efd4517f48bf0298277ea303be5a11636",
+      "snapshot_files_verified": 25,
+      "qualified_runtime_files_reused": [
+        "dds_diagnostics.R",
+        "deseq2_runner.R",
+        "manifest.toml"
+      ],
+      "canonical_snapshot_mismatches": [],
+      "restored_file_sha256": {
+        "README.md": "6b3ecfc3607984f0f81b9f290aeb128996db92947dd8df4f40608b045092e256",
+        "dds_diagnostics.R": "25b8eb17660f655853147388bcfd97e9777a2e133af3e010f684894406d77811",
+        "deseq2_runner.R": "b74c79d0c696a3b42d89437d068509cad9edb7cba904d5929d6b6b6f2c8e5a15",
+        "manifest.toml": "00787f36aba142b551ae1db07e9d7ee629bea7faf3c91a167a3a15825f059930",
+        "tests/method_evidence_convergence.R": "6b80555f940c760e47fe348d656184e88e9e7f4eb9d0654248873ce553cec9d9",
+        "tests/method_evidence_fixture.R": "62faaa3d0315276a344d7b2a94a22daaf46c52dfda721ea43f64adf79a95dc2a",
+        "tests/method_evidence_reference.R": "838d60ec392c6b1f2f902e6077993d87b8b203cd7748b835158c1e5cfd954244",
+        "tests/test_deseq2_boundaries.py": "9cbff747ae619f3b849e74f7b563c578dff6360203f07f8b10e614c2064bc762",
+        "tests/test_method_evidence.py": "c053d531ff19e018a94dbc58a7fab7a012ad98c4d837f62c5f30b6093b45e397"
+      }
+    }
+  ],
+  "restored_files": 9,
+  "actual_regression_tests_passed": 3,
+  "regression_test_sha256": "5c541eab82299f0a5515e6f4a18c9c7885f18c8706a7486c9464dcbe755d130f",
+  "restored_python_tests_parsed_without_execution": 2,
+  "existing_publication_guards_preserved": true,
+  "production_configuration_changed": false,
+  "restored_files_already_present_in_published_revision": "5e432fa7392d7ab18da9b1eb9121fc2b952c2e4a",
+  "prior_source_binding_failure_session": "7596ce6680274ca7abcaa5a23e64d527",
+  "production_restart_performed": false,
+  "new_statistical_fits": 0,
+  "new_software_admissions": 0,
+  "scientific_release_granted": false,
+  "g0_granted": false,
+  "session": "ea9c46cbf65a4387b4fa86d1187c48a6",
+  "seal": "c2acb85a85e974305a1813239c69cf1534b5b44cabb8f082e2083af912be0e7c",
+  "member": "permanent/deseq2-canonical-source-restoration/verification.json",
+  "member_sha256": "1f14e7d494b29e2979254ed27d16cead6f93db4f12410246f2a676cd4fa8107b",
+  "worker_exit_status": 0,
+  "already_published_implementation_republished": false
+}
