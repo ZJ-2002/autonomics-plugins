@@ -1,0 +1,38 @@
+{
+  "schema": "SHARED_MRLAP_REFERENCE_RESIDENT_DEPLOYMENT_V1",
+  "deployed": true,
+  "revision": "dc9a56a0dc9404bd0d6c5c0e7af645f3439669b9",
+  "families": [
+    "donor-composition-official",
+    "frozen-a-family-adjustment",
+    "frozen-a-harmonisation",
+    "r-stats",
+    "r-stats-lm",
+    "twosamplemr-v432-a"
+  ],
+  "old_pid": 2091366,
+  "new_pid": 2102691,
+  "unchanged_binary_sha256": "5a3131bedb394043045b4f11ae541c183cecf3cc36069e188cc981e9d64aea27",
+  "all_660_node_metadata_preserved": true,
+  "visible_agent_identities_and_idle_states_preserved": 34,
+  "unselected_plugin_configuration_entries_preserved": 97,
+  "qualified_image_profile_and_panels_unchanged": true,
+  "selected_sources_differ_only_by_qualified_image_reference": true,
+  "remaining_retired_reference_families_not_modified": [
+    "twosamplemr-v432-a-x01m01",
+    "twosamplemr-v432-a-x01m02",
+    "twosamplemr-v432-a-x01m07",
+    "twosamplemr-v432-a-x01m10"
+  ],
+  "frozen_study_launchers_modified": false,
+  "statistical_methods_reexecuted": 0,
+  "new_image_downloads": 0,
+  "new_software_admissions": 0,
+  "scientific_release_granted": false,
+  "g0_granted": false,
+  "session": "91b6c36b977a48ad89a4d7ed5469d06d",
+  "seal": "8d90e269bf6801a8313e7d617ff706d14bedc3fdf12edf88f22bc6f09ab65216",
+  "member": "permanent/shared-mrlap-reference-deployment/verification.json",
+  "member_sha256": "0ea94b7109b702ee3909da1dda15b6654bc9bd53883bb14062e143f4ecdad706",
+  "worker_exit_status": 0
+}
