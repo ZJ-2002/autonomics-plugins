@@ -1,0 +1,22 @@
+{
+  "schema": "CONDITIONAL_SOURCE_PAYLOAD_IDENTITY_EVIDENCE_V1",
+  "families": ["cachexia-lcmm", "cachexia-mice", "cachexia-survey"],
+  "session": "a6138597ca8c4919b86d730585f5e0a5",
+  "seal": "a327284b27759736492c7eb6ba1600bcb0acffcbe15ef92cf7f1bd0f58571870",
+  "member": "permanent/conditional-source-payloads/verification.json",
+  "member_sha256": "5c386d8026b631d99442cb36efda0115c05489be77e4312f79af9ece65b68337",
+  "worker_exit_status": 0,
+  "source_archives_matched": 24,
+  "debian_archives_matched": 8,
+  "missing_locked_payloads": 0,
+  "mismatched_locked_payloads": 0,
+  "additional_payloads_pending_content_review": 12,
+  "original_failed_parent_reclassified": false,
+  "fresh_upstream_download_performed": false,
+  "publication_authorized": false,
+  "new_method_executions": 0,
+  "new_images_pushed": false,
+  "new_software_admissions": 0,
+  "scientific_release_granted": false,
+  "g0_granted": false
+}

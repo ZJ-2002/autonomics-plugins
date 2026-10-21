@@ -1,0 +1,144 @@
+{
+  "scope": "Official source archives compiled unmodified, local proof only",
+  "base": "localhost/cachexia-survey@sha256:8186f7fc9fa4a75023821b8f0f22634b82c2112916c426a20ee40075c4753243",
+  "order": [
+    "backports",
+    "broom",
+    "pan",
+    "rbibutils",
+    "Rdpack",
+    "nloptr",
+    "reformulas",
+    "lme4",
+    "ucminf",
+    "ordinal",
+    "jomo",
+    "forcats",
+    "haven",
+    "mitml",
+    "mice"
+  ],
+  "archives": [
+    {
+      "package": "backports",
+      "version": "1.5.1",
+      "url": "https://cran.r-project.org/src/contrib/backports_1.5.1.tar.gz",
+      "filename": "backports_1.5.1.tar.gz",
+      "bytes": 30108,
+      "sha256": "b8eeeabe3c27e1486f43e0b18dae57f0e870dd7c6979d3668df76bf0d4735bad"
+    },
+    {
+      "package": "broom",
+      "version": "1.0.13",
+      "url": "https://cran.r-project.org/src/contrib/broom_1.0.13.tar.gz",
+      "filename": "broom_1.0.13.tar.gz",
+      "bytes": 466689,
+      "sha256": "f946601f57b4d90e7d2ea88c55c1516dacb8220cb12a980ba1e0fa1832320f61"
+    },
+    {
+      "package": "pan",
+      "version": "2.0",
+      "url": "https://cran.r-project.org/src/contrib/pan_2.0.tar.gz",
+      "filename": "pan_2.0.tar.gz",
+      "bytes": 1485279,
+      "sha256": "da501a2d4083aef8a8771f96d7de874a7236ee5e94a23ba9bbdc7cb3b1002722"
+    },
+    {
+      "package": "rbibutils",
+      "version": "2.4.1",
+      "url": "https://cran.r-project.org/src/contrib/rbibutils_2.4.1.tar.gz",
+      "filename": "rbibutils_2.4.1.tar.gz",
+      "bytes": 1191704,
+      "sha256": "da313d920a0f35ffdf30a54929ba8904b2b5a0d7f11a519db8674148129c8f32"
+    },
+    {
+      "package": "Rdpack",
+      "version": "2.6.6",
+      "url": "https://cran.r-project.org/src/contrib/Rdpack_2.6.6.tar.gz",
+      "filename": "Rdpack_2.6.6.tar.gz",
+      "bytes": 378731,
+      "sha256": "b4e19d22bd5a2ec79cdb08ba209e79c66ea16dbc2fd2e7db8bca46412651cbdb"
+    },
+    {
+      "package": "nloptr",
+      "version": "2.2.1",
+      "url": "https://cran.r-project.org/src/contrib/nloptr_2.2.1.tar.gz",
+      "filename": "nloptr_2.2.1.tar.gz",
+      "bytes": 2253853,
+      "sha256": "76ba40750b475c8b1ad6a86c9e05f0c1746af16d965235ff9293953920aed7f4"
+    },
+    {
+      "package": "reformulas",
+      "version": "0.4.4",
+      "url": "https://cran.r-project.org/src/contrib/reformulas_0.4.4.tar.gz",
+      "filename": "reformulas_0.4.4.tar.gz",
+      "bytes": 85205,
+      "sha256": "6a76d85eb4e19325aef87510180175f8cd7b5904a7075c89aff073765529e2f7"
+    },
+    {
+      "package": "lme4",
+      "version": "2.0-6",
+      "url": "https://cran.r-project.org/src/contrib/lme4_2.0-6.tar.gz",
+      "filename": "lme4_2.0-6.tar.gz",
+      "bytes": 4266192,
+      "sha256": "3e503bc10626ad62804c80a82237147b1296d93c18d88946554c29075af917f7"
+    },
+    {
+      "package": "ucminf",
+      "version": "1.2.3",
+      "url": "https://cran.r-project.org/src/contrib/ucminf_1.2.3.tar.gz",
+      "filename": "ucminf_1.2.3.tar.gz",
+      "bytes": 17196,
+      "sha256": "4dcfc0e97a9e66f640d8f7a2c22a59e608d04dc49dadbf23aad5fb4e425a9015"
+    },
+    {
+      "package": "ordinal",
+      "version": "2026.7-26",
+      "url": "https://cran.r-project.org/src/contrib/ordinal_2026.7-26.tar.gz",
+      "filename": "ordinal_2026.7-26.tar.gz",
+      "bytes": 765246,
+      "sha256": "8b5210c33fd20a877c92310a56a3a77812ed250f645e3ff9a20cec3ac81fc02f"
+    },
+    {
+      "package": "jomo",
+      "version": "2.7-6",
+      "url": "https://cran.r-project.org/src/contrib/jomo_2.7-6.tar.gz",
+      "filename": "jomo_2.7-6.tar.gz",
+      "bytes": 985641,
+      "sha256": "3ffa2a5521d4969fe77b23cd3ab201afdf8db3f8f708b1276c33083c01d7e2da"
+    },
+    {
+      "package": "forcats",
+      "version": "1.0.1",
+      "url": "https://cran.r-project.org/src/contrib/forcats_1.0.1.tar.gz",
+      "filename": "forcats_1.0.1.tar.gz",
+      "bytes": 294628,
+      "sha256": "1de46b83b7038a293e612775197b7ffe47bd079cd2385aa7c65e98171bbd3605"
+    },
+    {
+      "package": "haven",
+      "version": "2.5.5",
+      "url": "https://cran.r-project.org/src/contrib/haven_2.5.5.tar.gz",
+      "filename": "haven_2.5.5.tar.gz",
+      "bytes": 316909,
+      "sha256": "9482cd9c3760e1838acf687235317fed97fa6bf79219d3216f0ea447d4b1c9a5"
+    },
+    {
+      "package": "mitml",
+      "version": "0.4-5",
+      "url": "https://cran.r-project.org/src/contrib/mitml_0.4-5.tar.gz",
+      "filename": "mitml_0.4-5.tar.gz",
+      "bytes": 223835,
+      "sha256": "056aec823187cc3793640d8a5e74d74093bae74260a975ceb098a83a52e2eeeb"
+    },
+    {
+      "package": "mice",
+      "version": "3.19.0",
+      "url": "https://cran.r-project.org/src/contrib/mice_3.19.0.tar.gz",
+      "filename": "mice_3.19.0.tar.gz",
+      "bytes": 623237,
+      "sha256": "b87e57d1834043f41afe9e30bba572e4c7227d5bb1973eb477297f298919d221"
+    }
+  ],
+  "G0_granted": false
+}

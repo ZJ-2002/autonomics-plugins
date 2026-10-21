@@ -1,0 +1,16 @@
+{
+  "scope": "Local isolated proof image; not production installation",
+  "base": "localhost/mrlap-official@sha256:e6e10cddfa1cba8046ee6fbc1492b94cbd70d66b097f5f415845d56f9f925434",
+  "output": "localhost/cachexia-survey@sha256:8186f7fc9fa4a75023821b8f0f22634b82c2112916c426a20ee40075c4753243",
+  "archives": [
+    {"url": "https://cran.r-project.org/src/contrib/survey_4.5.tar.gz", "sha256": "8a2ab01759f9acf6000274255edf00e342dfbf320a39fb76d42594e4d262b519"},
+    {"url": "https://cran.r-project.org/src/contrib/minqa_1.2.8.tar.gz", "sha256": "5941e4b9b01978fc6d9fe24e6ca60cca66883fe9fa6ff3cbfa32aa1ac9db5467"},
+    {"url": "https://cran.r-project.org/src/contrib/RcppArmadillo_15.6.0-1.tar.gz", "sha256": "6efa1bb020a5a0b791ce87234649d309a7144961221526846230b3ef6c0b12e3"},
+    {"url": "https://cran.r-project.org/src/contrib/DBI_1.3.0.tar.gz", "sha256": "13def8e90cbe41205a0dfcf585a6a7ea79ce10d45969789e82613c7ce3d5fb18"},
+    {"url": "https://cran.r-project.org/src/contrib/mitools_2.7.tar.gz", "sha256": "805584eae67e1e9c5af8a707d5d7c8f75a4453cbc0206cf9eaad0b3cf8596deb"}
+  ],
+  "sources_modified": false,
+  "initial_incorrect_RcppArmadillo_filename": "15.6.0.1 is packageVersion normalization; canonical source filename is 15.6.0-1. Both incorrect current and archive URLs returned 404 before correction.",
+  "initial_reference_host_install": "Failed on /tmp disk quota; preserved log. Fresh library-v2 install succeeded with TMPDIR on workspace filesystem.",
+  "G0_granted": false
+}
