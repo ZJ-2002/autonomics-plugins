@@ -124,16 +124,61 @@ def _identity(content):
             'git_blob': hashlib.sha1(b'blob ' + str(len(content)).encode() + b'\0' + content).hexdigest()}
 
 
+P0_IMPORT_COMMIT = '073fa0b888828a661a73fa87ee562adbbe571c32'
+P0_IMPORT_REPOSITORY = 'https://github.com/ZJ-2002/autonomics'
+P0_IMPORT_FAMILIES = frozenset(('b-bulk-inputs-contract', 'b-donor-contract', 'b-donor-method',
+    'b-state-contract', 'b-state-method', 'pseudobulk-contract', 'singscore-contract',
+    'c-network-contract', 'c-network-source-contract', 'c-safety-contract', 'b-bulk-limma-contract'))
+
+
+def _additional_original_sources(root):
+    path = root / 'provenance/p0-load-source-imports-20261012.json'
+    if not path.exists():
+        return []
+    index = json.loads(contained_file(root, 'provenance/p0-load-source-imports-20261012.json').read_bytes())
+    if (type(index.get('schema_version')) is not int or index['schema_version'] != 1
+            or index.get('source_commit') != P0_IMPORT_COMMIT
+            or index.get('source_repository') != P0_IMPORT_REPOSITORY
+            or index.get('scope') != 'ADDITIONAL_EXPLICIT_OPT_IN_SOURCE_TRANSPORT_NOT_DEFAULT_PROFILE_OR_METHOD_CERTIFICATION'
+            or any(index.get(k) is not False for k in
+                   ('auto_enable', 'scientific_certified', 'original_source_index_rewritten'))):
+        raise ValueError('Exact preserved additional import index required')
+    rows = index.get('research_adapters')
+    if (type(rows) is not list or len(rows) != len(P0_IMPORT_FAMILIES)
+            or {row.get('directory') for row in rows} !=
+               {'research-adapters/' + name for name in P0_IMPORT_FAMILIES}):
+        raise ValueError('Exact eleven original additional import families required')
+    sources = []
+    for row in rows:
+        directory = str(safe_relative(row['directory']))
+        lock = json.loads(contained_file(root, directory + '/component-source.json').read_bytes())
+        if (row.get('source_commit') != P0_IMPORT_COMMIT or lock.get('source_commit') != P0_IMPORT_COMMIT
+                or lock.get('source_repository') != P0_IMPORT_REPOSITORY
+                or lock.get('source_family') != 'study_plugins/' + directory.split('/')[1]
+                or type(row.get('files')) is not dict or not row['files']
+                or row['files'] != lock.get('imported_files')
+                or row.get('source_inventory_only') is not True
+                or any(row.get(k) is not False for k in ('auto_enable', 'scientific_certified'))
+                or lock.get('status') != 'ENGINEERING_CANDIDATE'
+                or any(lock.get(k) is not False for k in ('auto_enable', 'scientific_authorization',
+                    'method_acceptance_verified', 'loaded_worker_registration_verified'))):
+            raise ValueError('Preserved additional index/component-source identity differs')
+        sources.append({'directory': directory, 'repository': P0_IMPORT_REPOSITORY,
+            'revision': P0_IMPORT_COMMIT,
+            'files': [{'path': str(safe_relative(name)), **record} for name, record in row['files'].items()]})
+    return sources
+
+
 def _original_sources(root):
     index = json.loads((root / 'provenance/source-index.json').read_text())
     sources = index['plugins'] + index['research_adapters']
     shared = root / 'provenance/shared-image-sources.json'
     if shared.is_file():
         sources += [json.loads(shared.read_text())]
-    return sources
+    return sources + _additional_original_sources(root)
 
 
-def verify_import_detailed(root):
+def _verified_import_data(root):
     """Preserve import history and independently verify explicitly evolved Git bytes.
 
     An evolved source requires the original identity and actual immutable Git
@@ -224,6 +269,30 @@ def verify_import_detailed(root):
             'recorded_source_evolution_files_verified': evolved,
             'git_object_verification_required_for_evolution': True,
             'scientific_method_certified': False, 'auto_enable': False, 'G0': False}
+    return originals, evolutions, report
+
+
+def read_verified_import(root, relative):
+    """Read only an actual original import, after the shared full Git replay.
+
+    No caller-provided verified flag, identity map or callback is accepted.
+    """
+    root = Path(root)
+    path = str(safe_relative(relative))
+    originals, evolutions, _ = _verified_import_data(root)
+    if path not in originals:
+        raise ValueError('Not a preserved original import path')
+    expected = evolutions.get(path, originals[path][1])
+    raw = contained_file(root, path).read_bytes()
+    if any(_identity(raw)[k] != expected[k] for k in ('sha256', 'bytes')) or (
+            'git_blob' in expected and _identity(raw)['git_blob'] != expected['git_blob']):
+        raise ValueError('Verified import changed before consumption')
+    return raw
+
+
+def verify_import_detailed(root):
+    root = Path(root)
+    _, _, report = _verified_import_data(root)
     # Also measure the complete current inventory (including new peer-added
     # source files), while keeping original-import/evolution counts distinct.
     if (root/'catalog/release-lock.json').is_file():

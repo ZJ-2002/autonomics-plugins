@@ -975,6 +975,96 @@
         "bytes": 2130,
         "git_blob": "0ec5b7991512e6e0bd1d8d9db97375cb4a2b2eb9"
       }
+    },
+    {
+      "path": "research-adapters/b-donor-contract/scripts/donor.R",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/autonomics",
+        "revision": "073fa0b888828a661a73fa87ee562adbbe571c32",
+        "sha256": "18108cdfe4838b0f56d1b4856455ca0196818ac5466c1d1917dbfa48ed0a8834",
+        "bytes": 20895,
+        "git_blob": "4dded0765a77097a8071e1735342947ceeeb75ad"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "1e8bd37bc6a4260c7534f5dbf964e3f6ac9d355a",
+        "path": "research-adapters/b-donor-contract/scripts/donor.R",
+        "sha256": "ac3b4380f4dbc8760659a7e1397c079c78531636547a6e4b1fa7dc10f71b9029",
+        "bytes": 21769,
+        "git_blob": "1bfdbe4d1b3ee8013f736d4fc11e7cfd6b8778b4"
+      }
+    },
+    {
+      "path": "research-adapters/b-donor-contract/scripts/run-design.R",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/autonomics",
+        "revision": "073fa0b888828a661a73fa87ee562adbbe571c32",
+        "sha256": "e9c54195b0e762d6dc73be09d2930a44eb757dcb33a97d9f720edcae79dd1ae4",
+        "bytes": 23964,
+        "git_blob": "c92871e6528241dfca3430721d889ebddbfa8dde"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "1e8bd37bc6a4260c7534f5dbf964e3f6ac9d355a",
+        "path": "research-adapters/b-donor-contract/scripts/run-design.R",
+        "sha256": "fee55ac6fcd9f09d37f6e978bbfb3014e1ddfd0edd5bf63fb77d4b7be5fa1e19",
+        "bytes": 24860,
+        "git_blob": "18870d5950d2162a75938e54fbd477ce4b740f6a"
+      }
+    },
+    {
+      "path": "research-adapters/b-donor-contract/scripts/run-deseq2.R",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/autonomics",
+        "revision": "073fa0b888828a661a73fa87ee562adbbe571c32",
+        "sha256": "60a8466bdec09d9081fd7adf371b2eb0e19c21dbca6f175fa7f4f507250e8688",
+        "bytes": 23993,
+        "git_blob": "72cb37543c18b3650fabbf06bbac1433b48a0d57"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "1e8bd37bc6a4260c7534f5dbf964e3f6ac9d355a",
+        "path": "research-adapters/b-donor-contract/scripts/run-deseq2.R",
+        "sha256": "ebb95f6166d30cc00d4eb383af5014bb624debb1bf3d1dfc4783b54dc56e0294",
+        "bytes": 24889,
+        "git_blob": "2ff7c44d53acdb4fb4e3967d5f0f0c0e97b1d6cc"
+      }
+    },
+    {
+      "path": "research-adapters/b-donor-method/scripts/run-design.R",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/autonomics",
+        "revision": "073fa0b888828a661a73fa87ee562adbbe571c32",
+        "sha256": "e9c54195b0e762d6dc73be09d2930a44eb757dcb33a97d9f720edcae79dd1ae4",
+        "bytes": 23964,
+        "git_blob": "c92871e6528241dfca3430721d889ebddbfa8dde"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "1e8bd37bc6a4260c7534f5dbf964e3f6ac9d355a",
+        "path": "research-adapters/b-donor-method/scripts/run-design.R",
+        "sha256": "fee55ac6fcd9f09d37f6e978bbfb3014e1ddfd0edd5bf63fb77d4b7be5fa1e19",
+        "bytes": 24860,
+        "git_blob": "18870d5950d2162a75938e54fbd477ce4b740f6a"
+      }
+    },
+    {
+      "path": "research-adapters/b-donor-method/scripts/run-deseq2.R",
+      "original": {
+        "repository": "https://github.com/ZJ-2002/autonomics",
+        "revision": "073fa0b888828a661a73fa87ee562adbbe571c32",
+        "sha256": "60a8466bdec09d9081fd7adf371b2eb0e19c21dbca6f175fa7f4f507250e8688",
+        "bytes": 23993,
+        "git_blob": "72cb37543c18b3650fabbf06bbac1433b48a0d57"
+      },
+      "current": {
+        "repository": "https://github.com/ZJ-2002/autonomics-plugins.git",
+        "revision": "1e8bd37bc6a4260c7534f5dbf964e3f6ac9d355a",
+        "path": "research-adapters/b-donor-method/scripts/run-deseq2.R",
+        "sha256": "ebb95f6166d30cc00d4eb383af5014bb624debb1bf3d1dfc4783b54dc56e0294",
+        "bytes": 24889,
+        "git_blob": "2ff7c44d53acdb4fb4e3967d5f0f0c0e97b1d6cc"
+      }
     }
   ]
 }

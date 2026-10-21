@@ -4,7 +4,7 @@ import hashlib
 import json
 from pathlib import Path
 import tomllib
-from tools.catalog import ROOT, contained_file, inventory
+from tools.catalog import ROOT, contained_file, inventory, read_verified_import
 
 SOURCE_COMMIT='073fa0b888828a661a73fa87ee562adbbe571c32'
 FAMILIES=('b-bulk-inputs-contract','b-donor-contract','b-donor-method','b-state-contract','b-state-method',
@@ -39,8 +39,14 @@ def check_family(directory,*,normalized=False):
     require(lock['scientific_authorization'] is False and lock['method_acceptance_verified'] is False
         and lock['loaded_worker_registration_verified'] is False and lock['auto_enable'] is False,'source transport promoted to admission')
     for name,ref in lock['imported_files'].items():
-        raw=regular(directory,name);require(identity(raw)=={k:ref[k] for k in ['sha256','bytes']},'imported source bytes differ')
-        require(hashlib.sha1(b'blob '+str(len(raw)).encode()+b'\0'+raw).hexdigest()==ref['git_blob'],'imported Git blob identity differs')
+        raw=regular(directory,name)
+        if (identity(raw)!={k:ref[k] for k in ['sha256','bytes']} or
+                hashlib.sha1(b'blob '+str(len(raw)).encode()+b'\0'+raw).hexdigest()!=ref['git_blob']):
+            # Only the fixed repository layout can consume actual verified Git
+            # evolution. Standalone original-byte fixtures retain the old path.
+            require(directory.parent.name=='research-adapters','evolved source requires actual repository layout')
+            verified=read_verified_import(directory.parent.parent,'research-adapters/'+directory.name+'/'+name)
+            require(raw==verified,'imported source changed after Git evolution replay')
     if normalized:
         require(manifest['image']['reference']==IMAGE and lock['image_reference']==IMAGE,'exact6932 image differs')
         require({path:ref['sha256'] for path,ref in lock['image_sources'].items()}==IMAGE_SHA,'all8 frozen image source hashes required')
