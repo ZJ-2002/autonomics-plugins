@@ -1,0 +1,65 @@
+{
+  "scope": "Unmodified official source archives, dependency version requirements additionally enforced by R CMD INSTALL/load, local proof only",
+  "base": "localhost/cachexia-mice@sha256:0a7b397b9fb5fca8128381525ab9482098445a2f29e309135464a8cd45fc0f57",
+  "order": [
+    "mvtnorm",
+    "spacefillr",
+    "marqLevAlg",
+    "lcmm"
+  ],
+  "archives": [
+    {
+      "package": "mvtnorm",
+      "version": "1.4-2",
+      "url": "https://cran.r-project.org/src/contrib/mvtnorm_1.4-2.tar.gz",
+      "filename": "mvtnorm_1.4-2.tar.gz",
+      "bytes": 1036395,
+      "sha256": "466302a08c9306d11384d85bf677893e4794541bde2991409be54e1f7b304b6e",
+      "declared_dependencies": {
+        "Depends": "R(>= 3.5.0)",
+        "Imports": "stats, utils",
+        "LinkingTo": ""
+      }
+    },
+    {
+      "package": "spacefillr",
+      "version": "0.4.0",
+      "url": "https://cran.r-project.org/src/contrib/spacefillr_0.4.0.tar.gz",
+      "filename": "spacefillr_0.4.0.tar.gz",
+      "bytes": 3287801,
+      "sha256": "5d8ba53dd5ef32d11c42b5ea4e956f0ab5799e6000cf38e36307225a5fe268b6",
+      "declared_dependencies": {
+        "Depends": "",
+        "Imports": "Rcpp (>= 1.0.0)",
+        "LinkingTo": "Rcpp"
+      }
+    },
+    {
+      "package": "marqLevAlg",
+      "version": "2.0.8",
+      "url": "https://cran.r-project.org/src/contrib/marqLevAlg_2.0.8.tar.gz",
+      "filename": "marqLevAlg_2.0.8.tar.gz",
+      "bytes": 235148,
+      "sha256": "d634b6d6b03e7fc4aab80bb61c211b955202da0e010543c3309923f2e4c85f9c",
+      "declared_dependencies": {
+        "Depends": "R (>= 3.5.0)",
+        "Imports": "doParallel, foreach",
+        "LinkingTo": ""
+      }
+    },
+    {
+      "package": "lcmm",
+      "version": "2.2.2",
+      "url": "https://cran.r-project.org/src/contrib/lcmm_2.2.2.tar.gz",
+      "filename": "lcmm_2.2.2.tar.gz",
+      "bytes": 737761,
+      "sha256": "43b5b85958864775ac129a193004195d04046bbb1d2bdca7835fc1c536820a86",
+      "declared_dependencies": {
+        "Depends": "R (>= 3.5.0)",
+        "Imports": "nlme, survival (>= 2.37-2), parallel, mvtnorm, spacefillr, marqLevAlg (> 2.0), doParallel, numDeriv",
+        "LinkingTo": ""
+      }
+    }
+  ],
+  "G0_granted": false
+}
