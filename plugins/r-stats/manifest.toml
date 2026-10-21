@@ -11,7 +11,7 @@ license = "GPL-2.0-or-later"
 [[nodes]]
 kind = "t_test"
 desc = "Official R t.test, complete pairs, Welch/pooled and directional confidence intervals."
-doc = "Data TSV with lexical row_id and x/y or explicit group labels plus a fully explicit key/value method/hash contract. One/wide/paired/groups modes. Full htest RDS, all vector estimates/parameters and typed infinity bounds preserved. Not donor qualification or research release."
+doc = "Data TSV with lexical row_id and x/y or explicit group labels plus a fully explicit key/value method/hash contract. One/wide/paired/groups modes. missing_policy=official preserves official R missing handling. Optional strict_complete_pairs is only for paired t-tests and requires explicit comma-separated expected_row_ids in exact input order; missing pairs/rows are blocked before the official call. This is a declared intake policy, not a change to R t.test. Full htest RDS, all vector estimates/parameters and typed infinity bounds preserved. Not donor qualification, family assembly or research release."
 timeout_secs = 300
 artifact_prefix = "/artifacts/r_stats_t_test"
 [nodes.resources]

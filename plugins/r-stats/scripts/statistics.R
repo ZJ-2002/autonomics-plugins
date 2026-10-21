@@ -61,16 +61,27 @@ run_statistics <- function() {
     wilcox = c("mode", "mu", "alternative", "exact", "correct", "conf_int", "conf_level", "digits_rank", "tol_root"),
     prop = c("p", "alternative", "correct", "conf_level", "require_integer_counts"),
     adjust = c("method", "n_total", "alpha"), stop("Unknown statistics operation"))
+  missing_policy <- required("missing_policy")
+  if (missing_policy == "strict_complete_pairs") {
+    if (operation != "t" || required("mode") != "paired") stop("Strict complete-pair policy requires a paired t-test")
+    method_keys <- c(method_keys, "expected_row_ids")
+  }
   if (operation %in% c("t", "var", "wilcox") && required("mode") == "groups") method_keys <- c(method_keys, "group1", "group2")
   if (length(setdiff(names(contract), c(common, method_keys)))) stop("Unknown or irrelevant frozen method key")
   invisible(lapply(c(common, method_keys), required))
-  if (required("operation") != operation || required("scope") != "TECHNICAL_ONLY_NOT_G0" || required("missing_policy") != "official") stop("Operation, scope or missing policy mismatch")
+  if (required("operation") != operation || required("scope") != "TECHNICAL_ONLY_NOT_G0" || !missing_policy %in% c("official", "strict_complete_pairs")) stop("Operation, scope or missing policy mismatch")
   check_id(required("test_id"))
   if (required("input_sha256") != checksum(port("INPUT", 0))) stop("Input SHA256 mismatch")
   data <- lexical_table(port("INPUT", 0))
   max_rows <- if (operation == "adjust") 25000L else 10000L
   if (!"row_id" %in% names(data) || nrow(data) < 1L || nrow(data) > max_rows) stop("Data needs explicit row identities within the operation row limit")
   check_id(data$row_id)
+  if (missing_policy == "strict_complete_pairs") {
+    expected_rows <- strsplit(required("expected_row_ids"), ",", fixed = TRUE)[[1]]
+    if (!identical(paste(expected_rows, collapse = ","), required("expected_row_ids"))) stop("Expected pair identities must use canonical comma-separated syntax")
+    check_id(expected_rows)
+    if (!identical(data$row_id, expected_rows)) stop("Paired row identities differ from the explicit frozen contract")
+  }
   args <- list()
   first_values <- second_values <- NULL
   if (operation %in% c("t", "cor", "var", "wilcox")) {
@@ -87,6 +98,7 @@ run_statistics <- function() {
       first_values <- first_values[data$group == labels[1]]
       second_values <- numeric_vector(data$x[data$group == labels[2]])
     } else if (mode %in% c("wide", "paired")) second_values <- numeric_vector(data$y)
+    if (missing_policy == "strict_complete_pairs" && (anyNA(first_values) || anyNA(second_values))) stop("Incomplete frozen pair; no official test executed")
     args <- list(x = first_values)
     if (!is.null(second_values)) args$y <- second_values
     if (operation %in% c("t", "wilcox")) args$paired <- mode == "paired"

@@ -9,6 +9,29 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 
 
+def original_policy_source(source):
+    extensions = [
+        ('  missing_policy <- required("missing_policy")\n'
+         '  if (missing_policy == "strict_complete_pairs") {\n'
+         '    if (operation != "t" || required("mode") != "paired") stop("Strict complete-pair policy requires a paired t-test")\n'
+         '    method_keys <- c(method_keys, "expected_row_ids")\n'
+         '  }\n', ''),
+        ('|| !missing_policy %in% c("official", "strict_complete_pairs"))', '|| required("missing_policy") != "official")'),
+        ('  if (missing_policy == "strict_complete_pairs") {\n'
+         '    expected_rows <- strsplit(required("expected_row_ids"), ",", fixed = TRUE)[[1]]\n'
+         '    if (!identical(paste(expected_rows, collapse = ","), required("expected_row_ids"))) stop("Expected pair identities must use canonical comma-separated syntax")\n'
+         '    check_id(expected_rows)\n'
+         '    if (!identical(data$row_id, expected_rows)) stop("Paired row identities differ from the explicit frozen contract")\n'
+         '  }\n', ''),
+        ('    if (missing_policy == "strict_complete_pairs" && (anyNA(first_values) || anyNA(second_values))) stop("Incomplete frozen pair; no official test executed")\n', ''),
+    ]
+    for addition, original in extensions:
+        if source.count(addition) != 1:
+            raise AssertionError('Declared complete-pair-only source delta changed')
+        source = source.replace(addition, original)
+    return source
+
+
 class CurrentRStatisticsCandidateTests(unittest.TestCase):
     def test_six_canonical_operations_use_the_existing_fixed_r_image(self):
         manifest = tomllib.loads((ROOT / 'plugins/r-stats/manifest.toml').read_text())
@@ -29,7 +52,7 @@ class CurrentRStatisticsCandidateTests(unittest.TestCase):
             self.assertEqual(node['resources']['pull_policy'], 'never')
 
     def test_only_version_and_adjustment_row_limit_change_the_frozen_wrapper(self):
-        current = (ROOT / 'plugins/r-stats/scripts/statistics.R').read_text()
+        current = original_policy_source((ROOT / 'plugins/r-stats/scripts/statistics.R').read_text())
         legacy = (ROOT / 'research-adapters/cachexia-r-stats/scripts/statistics.R').read_text()
         expected = legacy.replace('"4.5.1"', '"4.6.1"').replace(
             '  if (!"row_id" %in% names(data) || nrow(data) < 1L || nrow(data) > 10000L) stop("Data needs 1..10000 explicit row identities")',
@@ -44,6 +67,17 @@ class CurrentRStatisticsCandidateTests(unittest.TestCase):
         self.assertIn('Frozen exact=true would fall back; blocked', source)
         self.assertIn('Existing or symlink output path forbidden; no overwrite', source)
 
+    def test_complete_pair_extension_does_not_replace_the_original_official_profile(self):
+        source = (ROOT / 'plugins/r-stats/scripts/statistics.R').read_text()
+        original = original_policy_source(source)
+        self.assertEqual(hashlib.sha256(original.encode()).hexdigest(), 'aeaf7ea6073029eb4c3450303c332bf15e2f8077b704f6fd958ce6e1ba5acec5')
+        manifest = tomllib.loads((ROOT / 'plugins/r-stats/manifest.toml').read_text())
+        node = next(node for node in manifest['nodes'] if node['kind'] == 't_test')
+        self.assertIn('missing_policy=official', node['doc'])
+        self.assertIn('strict_complete_pairs', node['doc'])
+        self.assertIn('expected_row_ids', node['doc'])
+        self.assertIn('not a change to R t.test', node['doc'])
+
     def test_candidate_r_entry_parses_in_the_existing_local_runtime(self):
         source = ROOT / 'plugins/r-stats/scripts/statistics.R'
         result = subprocess.run(['Rscript', '--vanilla', '-e', 'invisible(parse(commandArgs(TRUE)[1]));cat("PARSE_OK")', str(source)], capture_output=True, timeout=30)
@@ -55,9 +89,15 @@ class CurrentRStatisticsCandidateTests(unittest.TestCase):
         for name, key in [('scripts/statistics.R', 'method_source_sha256'), ('manifest.toml', 'manifest_sha256')]:
             payload = (ROOT / 'plugins/r-stats' / name).read_bytes()
             if name == 'manifest.toml':
+                current_manifest = tomllib.loads(payload.decode())
+                current_doc = next(node['doc'] for node in current_manifest['nodes'] if node['kind'] == 't_test')
+                previous_doc = 'Data TSV with lexical row_id and x/y or explicit group labels plus a fully explicit key/value method/hash contract. One/wide/paired/groups modes. Full htest RDS, all vector estimates/parameters and typed infinity bounds preserved. Not donor qualification or research release.'
+                payload = payload.replace(current_doc.encode(), previous_doc.encode())
                 self.assertEqual(payload.count(b'network = "isolated"\nread_only_rootfs = true\npull_policy = "never"\n'), 6)
                 payload = payload.replace(b'network = "isolated"\nread_only_rootfs = true\npull_policy = "never"\n', b'')
                 payload = payload.replace(b'status = "published"', b'status = "validating"')
+            else:
+                payload = original_policy_source(payload.decode()).encode()
             self.assertEqual(hashlib.sha256(payload).hexdigest(), evidence[key])
         self.assertEqual(evidence['positive_full_reference_comparisons'] + evidence['specific_refusals'], evidence['current_cases'])
         self.assertEqual(evidence['current_cases'], 168)

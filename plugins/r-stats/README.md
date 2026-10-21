@@ -33,9 +33,9 @@ be smaller than the input row count. Missing values follow official R semantics;
 this is not a frozen-study NA-to-one adapter, donor qualification, or family
 selection service. Callers must preserve the original raw statuses separately.
 
-The wrapper retains all earlier explicit method branches, parameter validation,
-and no-overwrite controls; changes are the pinned R version and adjustment row
-limit. Version requalification uses independently recomputed official 4.6.1
+The original 4.6.1 profile retains the earlier explicit method branches,
+parameter validation and no-overwrite controls; its changes were the pinned R
+version and adjustment row limit. Version requalification uses independently recomputed official 4.6.1
 results from the retained synthetic arguments, not copied 4.5.1 answers.
 Large-family BH/BY/Holm cases and the new row-limit refusal are additional tests.
 The host comparison has 168 executed cases: 127 complete official-reference
@@ -59,3 +59,34 @@ execution/deployment proof. The source release is now `published` after these
 bounded host/container/SDK checks; installation and resident loading must be
 recorded separately. Publication does not migrate a frozen R 4.5.1 study profile
 or certify all unknown inputs, R overloads or scientific uses.
+
+## Explicit complete-pair intake policy (candidate extension)
+
+`missing_policy=official` keeps the published behavior, including R's paired
+removal of missing observations. It is not silently tightened for existing jobs.
+The optional `strict_complete_pairs` policy is only valid for `t_test` in `paired`
+mode. It also requires `expected_row_ids`, a canonical comma-separated list of
+unique lexical IDs in the exact externally frozen pair order. Missing rows,
+changed identities/order or an absent x/y value block the call before `t.test`;
+no smaller complete-case sample or alternative test is substituted.
+
+For valid complete inputs the numerical call remains unmodified official
+`stats::t.test`. This policy is an explicit adapter precondition, not an official
+R parameter or a claim of whole-domain equivalence. The original 168-case and
+SDK evidence covers the original policy, not this new extension; the latter needs
+its own before/after contract proof and deployment record before use.
+
+The first contract-only actual-image proof now has ten candidate cases: three
+successful complete `htest` objects identical to direct official calls, and seven
+specific refusals. The original official-policy complete/missing controls remain
+unchanged; eight baseline cases demonstrate absence of the newly requested
+option, not eight defects in official R. One owned fixed-image container executed
+both ten-case phases. See `evidence/r-stats-strict-pairs-20261021.json`. No new
+full scheduler DAG, resident reload or scientific release is claimed here.
+
+This addresses an intake requirement of paired B-SPEC contrasts without selecting
+donors, signatures, directions, a software lock or a scientific qualification.
+It does not fill the v4.3.2 template's missing pair IDs or runnable contrast lock.
+A refused contrast must still be represented by the separate complete-family
+workflow with raw P missing and the declared adjustment placeholder; this node
+does not assemble a family or award G0.

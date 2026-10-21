@@ -1,0 +1,39 @@
+{
+  "schema": "R_STATS_EXPLICIT_COMPLETE_PAIR_CONTRACT_CANDIDATE_V1",
+  "status": "ACTUAL_FIXED_IMAGE_CONTRACT_TESTED_NOT_DEPLOYED",
+  "base_source_commit": "d27814469edd3651ff94b100ba9159c630f0d298",
+  "original_official_policy_source_sha256": "aeaf7ea6073029eb4c3450303c332bf15e2f8077b704f6fd958ce6e1ba5acec5",
+  "sources": {
+    "plugins/r-stats/manifest.toml": "4f939a87463c0c35edb767a654e0256dcc6a397377b8420df552e70b0aaebcae",
+    "plugins/r-stats/scripts/statistics.R": "b9b8259ed0d4cc91c9227c955893c018687ec5bb4dca7ed4c7e86e11cde85684",
+    "tests/test_r_stats_current_r.py": "97299956d91e35328aa2bbd21568fb06265add85fdbff911c2aa1ce144db8dac",
+    "tools/prove_r_stats_strict_pairs.py": "a4307b922fe8c05d39b360026433f76aaa88c07c313d77fa6a89b6edd1a81245"
+  },
+  "proof": {
+    "session": "018cae74e5924304982b881b64a4d006",
+    "manifest_sha256": "89b2715e3163603ec2421d810b6757c73580911511e30b1663210df96a69ebb1",
+    "member": "permanent/r-stats-strict-pair-contract/verification.json",
+    "actual_containers": 1,
+    "actual_entrypoint_cases": 20,
+    "candidate_cases_passed": 10,
+    "candidate_complete_author_htest_objects_identical": 3,
+    "candidate_specific_refusals": 7,
+    "old_profile_controls": 2,
+    "baseline_new_option_absence_cases": 8
+  },
+  "official_R_version": "4.6.1",
+  "official_stats_version": "4.6.1",
+  "image": "ghcr.io/zj-2002/mrlap-official@sha256:78f195b862a3b7c5f8d96a96576cfb2c66b08f9bd31a739da59a017726cd063d",
+  "optional_intake_policy": "strict_complete_pairs",
+  "required_additional_contract_field": "expected_row_ids",
+  "official_default_policy_unchanged": true,
+  "official_t_test_implementation_modified": false,
+  "original_168_case_suite_reexecuted": false,
+  "new_full_scheduler_DAGs": 0,
+  "resident_deployed": false,
+  "new_software_admissions": 0,
+  "B_SPEC_contrast_or_sample_or_software_lock_filled": false,
+  "complete_family_workflow_not_proven_by_this_extension": true,
+  "scientific_release_granted": false,
+  "g0_granted": false
+}
