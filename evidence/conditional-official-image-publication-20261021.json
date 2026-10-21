@@ -1,0 +1,62 @@
+{
+  "schema": "CONDITIONAL_OFFICIAL_REGISTRY_PUBLICATION_V1",
+  "images": [
+    {
+      "family": "survey",
+      "official_version": "4.5",
+      "local_reference": "localhost/cachexia-survey@sha256:8186f7fc9fa4a75023821b8f0f22634b82c2112916c426a20ee40075c4753243",
+      "requested_tag": "ghcr.io/zj-2002/survey-official:4.5-r4.6.1-20261021-v1",
+      "immutable_reference": "ghcr.io/zj-2002/survey-official@sha256:6f3e6f417912b7fb2c2b344ceaa11ff6031cde7848740caf6450c4366b5fbc61",
+      "config_sha256": "a83c1fd019b14e4bedc2f113d372f4ae97fd38fe08cab1a2a82c84281426e59b",
+      "remote_identity_verified": true,
+      "exact_uncompressed_layers_verified": true,
+      "new_push_performed": true,
+      "anonymous_manifest_read_verified": false,
+      "fresh_full_image_pull_performed": false,
+      "production_binding_changed": false
+    },
+    {
+      "family": "mice",
+      "official_version": "3.19.0",
+      "local_reference": "localhost/cachexia-mice@sha256:0a7b397b9fb5fca8128381525ab9482098445a2f29e309135464a8cd45fc0f57",
+      "requested_tag": "ghcr.io/zj-2002/mice-official:3.19.0-r4.6.1-20261021-v1",
+      "immutable_reference": "ghcr.io/zj-2002/mice-official@sha256:ff4c166b89842d9bfbcf8d0f8227d05057a3ae57a668d374374a60db1e425516",
+      "config_sha256": "556d36b4a6b72828c268df82f1a23c61280a2ae365b64f50958dd13b684d8234",
+      "remote_identity_verified": true,
+      "exact_uncompressed_layers_verified": true,
+      "new_push_performed": true,
+      "anonymous_manifest_read_verified": false,
+      "fresh_full_image_pull_performed": false,
+      "production_binding_changed": false
+    },
+    {
+      "family": "lcmm",
+      "official_version": "2.2.2",
+      "local_reference": "localhost/cachexia-lcmm@sha256:602bbf79fa81124edc1d78f366a71e2f8e55f1c768377810104eb81bb03ac97a",
+      "requested_tag": "ghcr.io/zj-2002/lcmm-official:2.2.2-r4.6.1-20261021-v1",
+      "immutable_reference": "ghcr.io/zj-2002/lcmm-official@sha256:dd7f8a68d27a1002d5f6b004ca2ad24fc92cc7db43773500963363f92f8828d5",
+      "config_sha256": "ef26c21806ef2bddd36601c47a24a8f0ed2423ffe56174779ae7ad3aa450a822",
+      "remote_identity_verified": true,
+      "exact_uncompressed_layers_verified": true,
+      "new_push_performed": true,
+      "anonymous_manifest_read_verified": false,
+      "fresh_full_image_pull_performed": false,
+      "production_binding_changed": false
+    }
+  ],
+  "uploaded_images_verified": 3,
+  "all_anonymous_read_verified": false,
+  "private_logs_published_as_source_evidence": false,
+  "credentials_recorded_or_in_arguments": false,
+  "account_permissions_changed": false,
+  "new_method_executions": 0,
+  "new_software_admissions": 0,
+  "scientific_release_granted": false,
+  "g0_granted": false,
+  "session": "008b664124134f888725e978347a492b",
+  "seal": "d4427c66f2bc2b18220e5a5594340e9708980a8c0b47ab022fb6cb324c6da8c5",
+  "member": "permanent/conditional-official-image-publication/verification.json",
+  "member_sha256": "f30fdf4173147826a2289740526add7eb817cd01a5e5654d12f116def0cf630f",
+  "worker_exit_status": 0,
+  "status": "AUTHENTICATED_REGISTRY_IDENTITY_VERIFIED_ANONYMOUS_ACCESS_PENDING"
+}

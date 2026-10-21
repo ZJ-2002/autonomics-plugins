@@ -1,0 +1,19 @@
+{
+  "schema": "CONDITIONAL_BUILD_CONTEXT_REVIEW_EVIDENCE_V1",
+  "session": "f9a173977ea3458e9141fa597c00a15e",
+  "seal": "45a11d2917d8413d86114f1b724612b63045d4ec91b2f31396a8e2654cb808a7",
+  "member": "permanent/conditional-build-log-review/verification.json",
+  "member_sha256": "9b442a32845bb5d3b1d2bd6d8c75eb7bed81f5e75661d15f5cb87b2f28585c21",
+  "worker_exit_status": 0,
+  "reviewed_files": 12,
+  "reviewed_bytes": 9880,
+  "checksum_files": 3,
+  "apt_logs": 9,
+  "image_original_identity_equal": true,
+  "known_content_rules_passed": true,
+  "raw_logs_published_as_source_evidence": false,
+  "complete_secret_absence_certified": false,
+  "new_method_executions": 0,
+  "new_software_admissions": 0,
+  "g0_granted": false
+}
