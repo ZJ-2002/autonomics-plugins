@@ -2,7 +2,7 @@ schema_version = 1
 plugin_name = "r-stats-lm"
 
 [image]
-reference = "ghcr.io/zj-2002/mrlap-official@sha256:78f195b862a3b7c5f8d96a96576cfb2c66b08f9bd31a739da59a017726cd063d"
+reference = "ghcr.io/zj-2002/mrlap-official@sha256:e6e10cddfa1cba8046ee6fbc1492b94cbd70d66b097f5f415845d56f9f925434"
 tag = "R-4.6.1-stats-official"
 upstream = "Measured R Core stats 4.6.1 with jsonlite/digest in the existing MRlap image; MRlap and other estimators are not used"
 license = "GPL-2.0-or-later"
