@@ -2,7 +2,7 @@ schema_version = 1
 plugin_name = "mrlap"
 
 [image]
-reference = "ghcr.io/zj-2002/mrlap-official@sha256:78f195b862a3b7c5f8d96a96576cfb2c66b08f9bd31a739da59a017726cd063d"
+reference = "ghcr.io/zj-2002/mrlap-official@sha256:e6e10cddfa1cba8046ee6fbc1492b94cbd70d66b097f5f415845d56f9f925434"
 tag = "0.0.3.3"
 upstream = "official R MRlap 0.0.3.3 @ n-mounier/MRlap commit 660f026864f8bfbbad5a8206bdff7d58f5d5d05b (RemoteSha recorded in the seed1 acceptance), GenomicSEM 0.0.5, TwoSampleMR 0.7.11 — an environment recorded independently from the twosamplemr family's 0.7.9 image; the two must never be cross-validated"
 license = "GPL-3"
