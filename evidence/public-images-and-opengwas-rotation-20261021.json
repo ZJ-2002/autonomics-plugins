@@ -1,0 +1,33 @@
+{
+  "schema": "PUBLIC_IMAGES_AND_OPENGWAS_ROTATION_EVIDENCE_V1",
+  "anonymous_image_verification": {
+    "session": "ee6bc33bb6844935beed135f127d29b4",
+    "seal": "bd765c89937f7331d5343ff9953360b2210074f079901131f37fd7b0caa217b2",
+    "member": "permanent/updated-external-access/verification.json",
+    "member_sha256": "2bdf72020f2e27c577cd544ad6027f1cc730a201e350081bc899877389c466b7",
+    "worker_exit_status": 0,
+    "public_immutable_manifests_verified": ["survey", "mice", "lcmm"],
+    "image_layers_downloaded": 0
+  },
+  "resident_credential_rotation": {
+    "session": "17a951f3268249fea9ac1ebc7ff88b4e",
+    "seal": "2a8a6c36523d1e315b46d870ab285c3db7cbdcd5afe51bfab072410dc5d67e02",
+    "member": "permanent/opengwas-credential-resident-reload/verification.json",
+    "member_sha256": "aa12ee2f7052d9186e17d6ba473d729ee41ac45d03762de7beb28691b9fd2147",
+    "worker_exit_status": 0,
+    "old_pid": 2102691,
+    "new_pid": 2157722,
+    "OPENGWAS_TOKEN_and_OPENGWAS_JWT_loaded_from_private_file": true,
+    "resident_token_user_authentication_HTTP_status": 200,
+    "all_660_node_metadata_preserved": true,
+    "visible_agent_ids_names_and_idle_states_preserved": 34,
+    "binary_and_plugin_configuration_unchanged": true
+  },
+  "credential_values_or_hashes_saved": false,
+  "user_profile_response_saved": false,
+  "new_gwas_data_queries": 0,
+  "new_method_executions": 0,
+  "new_software_admissions": 0,
+  "scientific_release_granted": false,
+  "g0_granted": false
+}
