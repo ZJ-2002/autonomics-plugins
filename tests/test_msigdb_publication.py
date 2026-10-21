@@ -49,6 +49,28 @@ class MSigDBPublicationTests(unittest.TestCase):
             except Exception:
                 return 99
 
+    def test_all_declared_input_roles_are_accepted_without_changing_scope(self):
+        for mode in ('parse', 'fetch'):
+            for role in ('OFFICIAL_RESOURCE_TECHNICAL_ONLY', 'LEGACY_SEEN', 'SYNTHETIC_TECHNICAL_INPUT'):
+                with self.subTest(mode=mode, role=role):
+                    self.request.update(mode=mode, input_role=role)
+                    self.contract.write_text(json.dumps(self.request))
+                    accepted = self.module.read_contract(self.contract, mode)
+                    self.assertEqual(accepted, self.request)
+                    self.assertEqual(accepted['scope'], 'TECHNICAL_RESOURCE_ONLY_NOT_G0')
+
+    def test_unapproved_role_or_scientific_scope_is_not_accepted(self):
+        for mode in ('parse', 'fetch'):
+            for role, scope in (
+                ('FORMAL_RESEARCH', 'TECHNICAL_RESOURCE_ONLY_NOT_G0'),
+                ('LEGACY_SEEN', 'G0_PASS'),
+            ):
+                with self.subTest(mode=mode, role=role, scope=scope):
+                    self.request.update(mode=mode, input_role=role, scope=scope)
+                    self.contract.write_text(json.dumps(self.request))
+                    with self.assertRaises(ValueError):
+                        self.module.read_contract(self.contract, mode)
+
     def inject(self, action):
         original = self.module.parse_gmt
 
