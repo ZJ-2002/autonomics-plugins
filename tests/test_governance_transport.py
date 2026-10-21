@@ -7,6 +7,7 @@ import shutil
 import tempfile
 import tomllib
 import unittest
+from tools.catalog import verify_import_detailed
 from tools.check_governance_transport import ROOT, FAMILIES, NORMALIZED, IMAGE, IMAGE_SHA, check, check_family
 
 class GovernanceTransportTests(unittest.TestCase):
@@ -27,14 +28,14 @@ class GovernanceTransportTests(unittest.TestCase):
             (['twosamplemr-v432-a'] if with_a else []))
         self.assertFalse(report['auto_enable']);self.assertFalse(report['loaded_worker_registration_verified'])
         self.assertFalse(report['native_loader_construct_verified'])
-    def test_all10_original_manifests_scripts_readmes_have_exact_git_blob_identity(self):
-        index=json.loads((ROOT/'provenance/p0-load-source-imports-20261012.json').read_bytes())
+    def test_original_index_is_preserved_and_current_sources_require_git_evolution(self):
+        path=ROOT/'provenance/p0-load-source-imports-20261012.json';before=path.read_bytes();index=json.loads(before)
         self.assertFalse(index['original_source_index_rewritten'])
-        for entry in index['research_adapters']:
-            for filename,ref in entry['files'].items():
-                raw=(ROOT/entry['directory']/filename).read_bytes()
-                self.assertEqual(hashlib.sha256(raw).hexdigest(),ref['sha256']);self.assertEqual(len(raw),ref['bytes'])
-                self.assertEqual(hashlib.sha1(b'blob '+str(len(raw)).encode()+b'\0'+raw).hexdigest(),ref['git_blob'])
+        report=verify_import_detailed(ROOT)
+        self.assertGreaterEqual(report['imported_files_verified'],sum(len(row['files']) for row in index['research_adapters']))
+        self.assertTrue(report['git_object_verification_required_for_evolution'])
+        self.assertFalse(report['scientific_method_certified']);self.assertFalse(report['auto_enable'])
+        self.assertEqual(path.read_bytes(),before)
     def test_normalized_fixed_ports_vanilla_copy_and_all8_installed_source_shas(self):
         self.assertTrue(check_family(self.family,normalized=True)['normalized_eight_source_hashes_checked'])
         manifest=tomllib.loads((self.family/'manifest.toml').read_text());self.assertEqual(manifest['image']['reference'],IMAGE)
