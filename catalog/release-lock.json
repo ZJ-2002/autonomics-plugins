@@ -15745,121 +15745,121 @@
       "auto_enable": false
     },
     {
+      "auto_enable": false,
       "directory": "research-adapters/b-donor-contract",
-      "plugin_name": "b-donor-contract",
+      "files": [
+        {
+          "bytes": 6737,
+          "executable": false,
+          "path": "README.md",
+          "sha256": "45978e1259800b0e63f4577e63a9e8a0557c84cd5ac1d5f8fd7eadb01e8516b7"
+        },
+        {
+          "bytes": 692,
+          "executable": false,
+          "path": "TRANSPORT.md",
+          "sha256": "95352b5248659b3e08ef8fbb3e2bd6110696e376a779779048cd63fd124a03aa"
+        },
+        {
+          "bytes": 2380,
+          "executable": false,
+          "path": "component-source.json",
+          "sha256": "2b6e019c6d25568d9d9c3252ceb26e60e72e5e3de96251efde8c7be1b9f0f889"
+        },
+        {
+          "bytes": 2023,
+          "executable": false,
+          "path": "manifest.toml",
+          "sha256": "7968974f84fa5548be7861780090e10e5dac03ab7435181342a68537f5fe3abc"
+        },
+        {
+          "bytes": 21769,
+          "executable": false,
+          "path": "scripts/donor.R",
+          "sha256": "ac3b4380f4dbc8760659a7e1397c079c78531636547a6e4b1fa7dc10f71b9029"
+        },
+        {
+          "bytes": 24889,
+          "executable": false,
+          "path": "scripts/run-deseq2.R",
+          "sha256": "ebb95f6166d30cc00d4eb383af5014bb624debb1bf3d1dfc4783b54dc56e0294"
+        },
+        {
+          "bytes": 24860,
+          "executable": false,
+          "path": "scripts/run-design.R",
+          "sha256": "fee55ac6fcd9f09d37f6e978bbfb3014e1ddfd0edd5bf63fb77d4b7be5fa1e19"
+        },
+        {
+          "bytes": 86330,
+          "executable": false,
+          "path": "scripts/run-inputs.py",
+          "sha256": "ef4d0e4dbb4dd47b304d81867105ec3f12476d8e60af925732003e2247ac4764"
+        }
+      ],
+      "image_reference": "localhost/autonomics/python-guard@sha256:d7d40ff1494750f26ded735e2551efb86d970355b805868b92ec9107b7ca7c68",
       "kinds": [
         "b_donor_frozen_inputs"
       ],
-      "image_reference": "localhost/autonomics/python-guard@sha256:d7d40ff1494750f26ded735e2551efb86d970355b805868b92ec9107b7ca7c68",
-      "files": [
-        {
-          "path": "README.md",
-          "sha256": "45978e1259800b0e63f4577e63a9e8a0557c84cd5ac1d5f8fd7eadb01e8516b7",
-          "bytes": 6737,
-          "executable": false
-        },
-        {
-          "path": "TRANSPORT.md",
-          "sha256": "95352b5248659b3e08ef8fbb3e2bd6110696e376a779779048cd63fd124a03aa",
-          "bytes": 692,
-          "executable": false
-        },
-        {
-          "path": "component-source.json",
-          "sha256": "2b6e019c6d25568d9d9c3252ceb26e60e72e5e3de96251efde8c7be1b9f0f889",
-          "bytes": 2380,
-          "executable": false
-        },
-        {
-          "path": "manifest.toml",
-          "sha256": "7968974f84fa5548be7861780090e10e5dac03ab7435181342a68537f5fe3abc",
-          "bytes": 2023,
-          "executable": false
-        },
-        {
-          "path": "scripts/donor.R",
-          "sha256": "18108cdfe4838b0f56d1b4856455ca0196818ac5466c1d1917dbfa48ed0a8834",
-          "bytes": 20895,
-          "executable": false
-        },
-        {
-          "path": "scripts/run-deseq2.R",
-          "sha256": "60a8466bdec09d9081fd7adf371b2eb0e19c21dbca6f175fa7f4f507250e8688",
-          "bytes": 23993,
-          "executable": false
-        },
-        {
-          "path": "scripts/run-design.R",
-          "sha256": "e9c54195b0e762d6dc73be09d2930a44eb757dcb33a97d9f720edcae79dd1ae4",
-          "bytes": 23964,
-          "executable": false
-        },
-        {
-          "path": "scripts/run-inputs.py",
-          "sha256": "ef4d0e4dbb4dd47b304d81867105ec3f12476d8e60af925732003e2247ac4764",
-          "bytes": 86330,
-          "executable": false
-        }
-      ],
-      "source_inventory_only": true,
+      "plugin_name": "b-donor-contract",
       "scientific_certified": false,
-      "auto_enable": false
+      "source_inventory_only": true
     },
     {
+      "auto_enable": false,
       "directory": "research-adapters/b-donor-method",
-      "plugin_name": "b-donor-method",
+      "files": [
+        {
+          "bytes": 3710,
+          "executable": false,
+          "path": "README.md",
+          "sha256": "7cabfd05dcfbf77fa11342d0f0e45b6e2d1acc4f99f76bb75adad277e6943f02"
+        },
+        {
+          "bytes": 692,
+          "executable": false,
+          "path": "TRANSPORT.md",
+          "sha256": "95352b5248659b3e08ef8fbb3e2bd6110696e376a779779048cd63fd124a03aa"
+        },
+        {
+          "bytes": 2079,
+          "executable": false,
+          "path": "component-source.json",
+          "sha256": "75039a326e95bc094536ba07d3859f42851821c735098dead3219d497c558959"
+        },
+        {
+          "bytes": 3331,
+          "executable": false,
+          "path": "manifest.toml",
+          "sha256": "9a9f8ba601304a4152feffb43c5695465c655bad7f28f62c70b67c2ea13a3273"
+        },
+        {
+          "bytes": 206,
+          "executable": false,
+          "path": "scripts/Rscript-vanilla.sh",
+          "sha256": "638cf5d6b93c1bf93069ff02d9c57e78f71fc29bce98a6d867a7370a9110309b"
+        },
+        {
+          "bytes": 24889,
+          "executable": false,
+          "path": "scripts/run-deseq2.R",
+          "sha256": "ebb95f6166d30cc00d4eb383af5014bb624debb1bf3d1dfc4783b54dc56e0294"
+        },
+        {
+          "bytes": 24860,
+          "executable": false,
+          "path": "scripts/run-design.R",
+          "sha256": "fee55ac6fcd9f09d37f6e978bbfb3014e1ddfd0edd5bf63fb77d4b7be5fa1e19"
+        }
+      ],
+      "image_reference": "localhost/autonomics/b-donor-official-candidate@sha256:67cbe8da4412c6fc1c842a4ef3b4b10b412f497b7d57b429ff74f3416826b06d",
       "kinds": [
         "b_donor_frozen_design",
         "b_donor_frozen_deseq2"
       ],
-      "image_reference": "localhost/autonomics/b-donor-official-candidate@sha256:67cbe8da4412c6fc1c842a4ef3b4b10b412f497b7d57b429ff74f3416826b06d",
-      "files": [
-        {
-          "path": "README.md",
-          "sha256": "7cabfd05dcfbf77fa11342d0f0e45b6e2d1acc4f99f76bb75adad277e6943f02",
-          "bytes": 3710,
-          "executable": false
-        },
-        {
-          "path": "TRANSPORT.md",
-          "sha256": "95352b5248659b3e08ef8fbb3e2bd6110696e376a779779048cd63fd124a03aa",
-          "bytes": 692,
-          "executable": false
-        },
-        {
-          "path": "component-source.json",
-          "sha256": "75039a326e95bc094536ba07d3859f42851821c735098dead3219d497c558959",
-          "bytes": 2079,
-          "executable": false
-        },
-        {
-          "path": "manifest.toml",
-          "sha256": "9a9f8ba601304a4152feffb43c5695465c655bad7f28f62c70b67c2ea13a3273",
-          "bytes": 3331,
-          "executable": false
-        },
-        {
-          "path": "scripts/Rscript-vanilla.sh",
-          "sha256": "638cf5d6b93c1bf93069ff02d9c57e78f71fc29bce98a6d867a7370a9110309b",
-          "bytes": 206,
-          "executable": false
-        },
-        {
-          "path": "scripts/run-deseq2.R",
-          "sha256": "60a8466bdec09d9081fd7adf371b2eb0e19c21dbca6f175fa7f4f507250e8688",
-          "bytes": 23993,
-          "executable": false
-        },
-        {
-          "path": "scripts/run-design.R",
-          "sha256": "e9c54195b0e762d6dc73be09d2930a44eb757dcb33a97d9f720edcae79dd1ae4",
-          "bytes": 23964,
-          "executable": false
-        }
-      ],
-      "source_inventory_only": true,
+      "plugin_name": "b-donor-method",
       "scientific_certified": false,
-      "auto_enable": false
+      "source_inventory_only": true
     },
     {
       "directory": "research-adapters/b-state-contract",

@@ -157,7 +157,7 @@
     "tests.test_source_evolution.SourceEvolutionTests.test_original_import_is_preserved_and_new_source_is_independently_verified",
     "tests.test_r_output_publication.ROutputPublicationTests.test_deseq2_actual_publication_component_preserves_foreign_outputs",
     "tests.test_r_output_publication.ROutputPublicationTests.test_limma_actual_publication_component_preserves_foreign_outputs",
-    "tests.test_governance_transport.GovernanceTransportTests.test_all10_original_manifests_scripts_readmes_have_exact_git_blob_identity",
+    "tests.test_governance_transport.GovernanceTransportTests.test_original_index_is_preserved_and_current_sources_require_git_evolution",
     "tests.test_governance_transport.GovernanceTransportTests.test_changed_measured_source_or_removed_hash_cannot_be_repaired_or_accepted",
     "tests.test_governance_transport.GovernanceTransportTests.test_exact11_optin_families18_unique_kinds_canonical_scope_unchanged",
     "tests.test_governance_transport.GovernanceTransportTests.test_historical_full_syn_caps_or_rds_format_cannot_replace_micro_manifest",
@@ -229,6 +229,15 @@
     "tests.test_opentargets_direct_acquisition.DirectAcquisitionTests.test_truncated_overlong_and_nonparquet_bodies_never_publish",
     "tests.test_literature_blank_fields.LiteratureBlankProofTests.test_real_success_and_failure_summaries_remain_distinct",
     "tests.test_literature_blank_fields.LiteratureBlankProofTests.test_missing_duplicate_zero_and_ignored_summaries_are_not_passes",
-    "tests.test_literature_blank_fields.LiteratureBlankProofTests.test_contradictory_result_labels_are_rejected"
+    "tests.test_literature_blank_fields.LiteratureBlankProofTests.test_contradictory_result_labels_are_rejected",
+    "tests.test_b_donor_canonical_source.DonorCanonicalSource.test_all_four_loaded_wrappers_embed_actual_candidate",
+    "tests.test_b_donor_canonical_source.DonorCanonicalSource.test_duplicate_or_incomplete_embedded_source_rejected",
+    "tests.test_p0_source_evolution.P0Evolution.test_component_original_mismatch_and_index_promotion_reject",
+    "tests.test_p0_source_evolution.P0Evolution.test_governance_rejects_missing_ledger_and_unrecorded_drift",
+    "tests.test_p0_source_evolution.P0Evolution.test_no_git_and_unknown_requested_path_fail_closed",
+    "tests.test_p0_source_evolution.P0Evolution.test_p0_real_commit_and_governance_consumer_preserve_originals",
+    "tests.test_p0_source_evolution.P0Evolution.test_unknown_additional_family_cannot_be_enrolled",
+    "tests.test_p0_source_evolution.P0Evolution.test_unmodified_p0_stays_original_and_duplicate_base_import_rejects",
+    "tests.test_p0_source_evolution.P0Evolution.test_wrong_original_current_commit_blob_and_path_reject"
   ]
 }
