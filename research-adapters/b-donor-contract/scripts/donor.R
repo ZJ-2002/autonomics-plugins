@@ -186,6 +186,20 @@ b_wald_quality <- function(r,dds) {
   reason[good]<-"";list(estimable=good,reasons=reason,beta_converged=converged)
 }
 
+# Canonical order is a fixed implementation rule, not a model-parameter slot.
+# Keep x, selected_columns and source-order QA/design matrices unchanged.
+b_canonical_fit_order <- function(x,design) {
+  chosen<-x$chosen;ids<-as.character(design$data$observation_id)
+  b_check(length(chosen)>0L && !anyNA(chosen) && !anyDuplicated(chosen) &&
+    all(chosen %in% seq_len(nrow(x$samples))) && length(ids)==length(chosen) &&
+    all(vapply(ids,b_id,logical(1))) && !anyDuplicated(ids) &&
+    identical(ids,as.character(x$samples$observation_id[chosen])),
+    "complete unique source-bound observation IDs required for canonical fit")
+  fit_order<-order(ids,method="radix")
+  b_check(identical(sort(fit_order),seq_along(chosen)),"canonical fit order must be a full source-axis bijection")
+  fit_order
+}
+
 b_deseq <- function(x,design) {
   genes<-x$genes;result<-data.frame(analysis_id=genes$analysis_id,estimand_id=genes$estimand_id,
     gene_id=genes$gene_id,contrast_id=genes$contrast_id,family_id=genes$family_id,
@@ -196,9 +210,11 @@ b_deseq <- function(x,design) {
   warning_messages<-character();dds<-NULL
   if(!identical(design$status,"NOT_ESTIMABLE")) {
     p<-x$config$method_parameters
-    counts<-as.matrix(x$counts[,x$chosen,drop=FALSE]);storage.mode(counts)<-"integer"
-    rownames(counts)<-genes$gene_id;colnames(counts)<-design$data$observation_id
-    data<-design$data;rownames(data)<-colnames(counts)
+    fit_order<-b_canonical_fit_order(x,design)
+    counts<-as.matrix(x$counts[,x$chosen[fit_order],drop=FALSE]);storage.mode(counts)<-"integer"
+    data<-design$data[fit_order,,drop=FALSE]
+    rownames(counts)<-genes$gene_id;colnames(counts)<-data$observation_id
+    rownames(data)<-colnames(counts)
     withCallingHandlers({
       dds<-DESeq2::DESeqDataSetFromMatrix(countData=counts,colData=data,design=design$formula)
       dds<-DESeq2::DESeq(dds,test="Wald",fitType=p$fit_type,sfType=p$size_factor_type,betaPrior=FALSE,
