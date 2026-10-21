@@ -81,8 +81,9 @@ successful complete `htest` objects identical to direct official calls, and seve
 specific refusals. The original official-policy complete/missing controls remain
 unchanged; eight baseline cases demonstrate absence of the newly requested
 option, not eight defects in official R. One owned fixed-image container executed
-both ten-case phases. See `evidence/r-stats-strict-pairs-20261021.json`. No new
-full scheduler DAG, resident reload or scientific release is claimed here.
+both ten-case phases. See `evidence/r-stats-strict-pairs-20261021.json`. That
+component proof alone includes no scheduler DAG, resident reload or scientific
+release; the later isolated SDK evidence is recorded separately below.
 
 This addresses an intake requirement of paired B-SPEC contrasts without selecting
 donors, signatures, directions, a software lock or a scientific qualification.
@@ -90,3 +91,16 @@ It does not fill the v4.3.2 template's missing pair IDs or runnable contrast loc
 A refused contrast must still be represented by the separate complete-family
 workflow with raw P missing and the declared adjustment placeholder; this node
 does not assemble a family or award G0.
+
+The explicit complete-pair policy also has two sealed isolated SDK DAGs: a
+complete input reaches typed physical materialization, while an incomplete pair
+fails the producer and skips five downstream nodes. All five returned FileRef
+paths, formats and sizes match the retained products; the full RDS matches the
+existing component object. No original 168-case suite or independent oracle was
+repeated. See `evidence/r-stats-strict-pair-sdk-20261021.json` and the read-only
+`tools/review_r_stats_strict_pair_sdk.py` reviewer.
+
+This reused a qualified SDK built from `4256643c`, not the resident engine.
+Embedded output FileRef content hashes were null; separate sealed artifact and
+audit SHA256 checks are not a cache-reuse certificate. No production reload,
+full-family qualification, frozen donor selection or G0 is implied.

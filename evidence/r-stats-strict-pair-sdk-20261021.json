@@ -1,0 +1,52 @@
+{
+  "schema": "R_STATS_STRICT_PAIR_SDK_PUBLIC_CARD_V1",
+  "status": "COMPONENT_AND_RETAINED_SDK_VERIFIED_NOT_RESIDENT_DEPLOYED",
+  "manifest_sha256": "4f939a87463c0c35edb767a654e0256dcc6a397377b8420df552e70b0aaebcae",
+  "method_source_sha256": "b9b8259ed0d4cc91c9227c955893c018687ec5bb4dca7ed4c7e86e11cde85684",
+  "executed_driver": "tools/prove_r_stats_strict_pair_dag.py",
+  "executed_driver_sha256": "ee0126de327e17517ca15091036396ddac38f667b7e399b3d123468f2316e040",
+  "proof": {
+    "session": "a5331c3f98cc4ec5bde8d2247b756658",
+    "manifest_sha256": "3774cc80a553be70c470968cd689103606ffe3e27463273748b873f6752e7f9f",
+    "member": "permanent/r-stats-strict-pair-sdk/verification.json",
+    "state": "CLEANED",
+    "worker_exit_status": 0,
+    "positive_DAGs": 1,
+    "refusal_DAGs": 1,
+    "nodes_per_DAG": 8,
+    "edges_per_DAG": 7,
+    "actual_method_containers": 2
+  },
+  "successful_path": {
+    "complete_primary_statistics_and_parameters_identical_to_component": true,
+    "complete_RDS_object_identical_to_component": true,
+    "typed_physical_materialization_and_exact_test_id_binding_checked": true,
+    "five_FileRef_paths_formats_and_sizes_reviewed_against_sealed_products": true,
+    "input_contract_and_three_analytic_output_audit_SHA256_values_checked": true,
+    "FileRef_embedded_content_hashes_present": false,
+    "sealed_artifact_SHA256_is_not_claimed_as_FileRef_or_cache_proof": true
+  },
+  "failure_path": {
+    "missing_frozen_pair_refused_before_official_test": true,
+    "analysis_failed_and_five_downstream_nodes_skipped": true,
+    "no_analytic_products_or_materialized_terminal": true,
+    "failure_audit_and_log_retained": true
+  },
+  "retained_SDK": {
+    "source_revision": "4256643c55ae6fb50e8c867069330ed6ac2b4bc0",
+    "build_session": "54d4987610d14ce7882735c715368c8e",
+    "build_seal": "d3b0c3bf7d4fc256ea1592d59a1ffd822e4b0657ab80a4769ecbd9847fd3da0f",
+    "current_resident_equivalence_assumed": false,
+    "new_Cargo_builds_for_this_SDK_proof": 0
+  },
+  "review_command": "python3 -B tools/review_r_stats_strict_pair_sdk.py --session a5331c3f98cc4ec5bde8d2247b756658 --seal 3774cc80a553be70c470968cd689103606ffe3e27463273748b873f6752e7f9f",
+  "prior_168_case_suite_repeated": false,
+  "new_independent_author_oracle_runs": 0,
+  "real_study_data_fits": 0,
+  "two_owned_containers_observed_absent": true,
+  "production_installed": false,
+  "whole_B_SPEC_or_complete_family_certified": false,
+  "new_software_admissions": 0,
+  "scientific_release_granted": false,
+  "g0_granted": false
+}
