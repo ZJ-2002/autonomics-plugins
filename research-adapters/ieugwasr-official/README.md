@@ -48,9 +48,10 @@ Offline technical DAG tests must use a separate hash-bound fixture manifest
 with `isolated` networking and only HTTP transport interception. Such tests do
 not prove authenticated live API availability.
 
-The existing manifest/runtime surface has ordinary environment values, not an
-audited secret-reference resolver for this family. **Live credential admission
-is pending.** JWT values must not be placed in request JSON, DAG parameters,
+The original manifest contains ordinary environment values only. The shared
+loader/runtime source now has an audited, identity-bound private environment
+channel, with the installation candidate documented below. **Production live
+credential admission is pending.** JWT values must not be placed in request JSON, DAG parameters,
 public environment templates, command arguments or scientific evidence. The
 manifest does not claim that inheriting the host's key automatically transfers
 it safely into a container.
@@ -65,3 +66,15 @@ or live-service certification is not claimed.
 Legacy REST defaults and parameter names must not be silently translated or
 reused. In particular proxies, PheWAS thresholds/batches, top-hit window and
 server-clumping controls require explicit author-method migration review.
+
+## Safe deployment candidate (2026-10-23)
+
+The shared source now implements an identity-bound private environment channel;
+its exact engine/consumer builds and the original authenticated metadata proof
+are retained. The current older resident and absent owner policy still leave
+production credential admission pending. See
+[the deployment candidate](deployment/DEPLOYMENT_CANDIDATE.md) for the two-kind
+owner-policy template, explicit legacy replacement bindings, exact artifact
+identities, rollback prerequisites and minimal post-approval acceptance. These
+candidate files contain credential names only and do not install or activate
+anything. The original manifest and dispatcher are unchanged.

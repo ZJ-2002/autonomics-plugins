@@ -1,0 +1,124 @@
+{
+  "schema": "IEUGWASR_EXPLICIT_BINDING_CANDIDATE_V1",
+  "state": "PENDING_OPERATOR_DEPLOYMENT_AND_PER_FUNCTION_MIGRATION_REVIEW",
+  "original_fixed120_selection_modified": false,
+  "bindings": [
+    {
+      "function_id": "FUNC_source_opengwas_associations",
+      "original_address": "core/source_opengwas_associations",
+      "candidate_address": "ieugwasr-official/official_ieugwasr_call",
+      "operation": "associations",
+      "input_files": [
+        "explicit_author_request.json"
+      ],
+      "output_files": [
+        "complete_result.RDS",
+        "typed_dataframe.json",
+        "technical_audit.json",
+        "ieugwasr.log"
+      ],
+      "automatic_legacy_parameter_translation": false
+    },
+    {
+      "function_id": "FUNC_source_opengwas_phewas",
+      "original_address": "core/source_opengwas_phewas",
+      "candidate_address": "ieugwasr-official/official_ieugwasr_call",
+      "operation": "phewas",
+      "input_files": [
+        "explicit_author_request.json"
+      ],
+      "output_files": [
+        "complete_result.RDS",
+        "typed_dataframe.json",
+        "technical_audit.json",
+        "ieugwasr.log"
+      ],
+      "automatic_legacy_parameter_translation": false
+    },
+    {
+      "function_id": "FUNC_source_opengwas_tophits",
+      "original_address": "core/source_opengwas_tophits",
+      "candidate_address": "ieugwasr-official/official_ieugwasr_call",
+      "operation": "tophits",
+      "input_files": [
+        "explicit_author_request.json"
+      ],
+      "output_files": [
+        "complete_result.RDS",
+        "typed_dataframe.json",
+        "technical_audit.json",
+        "ieugwasr.log"
+      ],
+      "automatic_legacy_parameter_translation": false
+    },
+    {
+      "function_id": "FUNC_source_opengwas_variants_chrpos",
+      "original_address": "core/source_opengwas_variants_chrpos",
+      "candidate_address": "ieugwasr-official/official_ieugwasr_call",
+      "operation": "variants_chrpos",
+      "input_files": [
+        "explicit_author_request.json"
+      ],
+      "output_files": [
+        "complete_result.RDS",
+        "typed_dataframe.json",
+        "technical_audit.json",
+        "ieugwasr.log"
+      ],
+      "automatic_legacy_parameter_translation": false
+    },
+    {
+      "function_id": "FUNC_source_opengwas_variants_rsid",
+      "original_address": "core/source_opengwas_variants_rsid",
+      "candidate_address": "ieugwasr-official/official_ieugwasr_call",
+      "operation": "variants_rsid",
+      "input_files": [
+        "explicit_author_request.json"
+      ],
+      "output_files": [
+        "complete_result.RDS",
+        "typed_dataframe.json",
+        "technical_audit.json",
+        "ieugwasr.log"
+      ],
+      "automatic_legacy_parameter_translation": false
+    },
+    {
+      "function_id": "FUNC_source_opengwas_ld_clump",
+      "original_address": "core/source_opengwas_ld_clump",
+      "candidate_address": "ieugwasr-official/official_ieugwasr_call_with_dataset",
+      "operation": "ld_clump_api",
+      "input_files": [
+        "explicit_author_request.json",
+        "original_dataframe.RDS"
+      ],
+      "output_files": [
+        "complete_result.RDS",
+        "typed_dataframe.json",
+        "technical_audit.json",
+        "ieugwasr.log"
+      ],
+      "automatic_legacy_parameter_translation": false
+    },
+    {
+      "function_id": "FUNC_source_opengwas_gwasinfo",
+      "original_address": "core/source_opengwas_gwasinfo",
+      "candidate_address": "ieugwasr-official/official_ieugwasr_call",
+      "operation": "gwasinfo",
+      "input_files": [
+        "explicit_author_request.json"
+      ],
+      "output_files": [
+        "complete_result.RDS",
+        "typed_dataframe.json",
+        "technical_audit.json",
+        "ieugwasr.log"
+      ],
+      "automatic_legacy_parameter_translation": false
+    }
+  ],
+  "unsupported_original_address": "core/source_opengwas_gwasinfo_search",
+  "unsupported_reason": "No corresponding author function; no replacement approved",
+  "scientific_release_granted": false,
+  "g0_granted": false
+}

@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "grants": [
+    {
+      "plugin": "ieugwasr-official",
+      "kind": "official_ieugwasr_call",
+      "manifest_sha256": "sha256:7611d0a7ea4efd229c75ec1f114d9871b9420509e1eb62aaa52f4063a634094e",
+      "script_sha256": "sha256:b2d1c715a182b9d5630b42598e29649bf82f024cb568b00b1e3d01cc77a9dafe",
+      "image_reference": "ghcr.io/zj-2002/ieugwasr-official@sha256:c8631fb88461135ea1b570f0e08a5bfb04366ef2bc835e874d30c7326fdc2395",
+      "names": [
+        "OPENGWAS_JWT"
+      ]
+    },
+    {
+      "plugin": "ieugwasr-official",
+      "kind": "official_ieugwasr_call_with_dataset",
+      "manifest_sha256": "sha256:7611d0a7ea4efd229c75ec1f114d9871b9420509e1eb62aaa52f4063a634094e",
+      "script_sha256": "sha256:b2d1c715a182b9d5630b42598e29649bf82f024cb568b00b1e3d01cc77a9dafe",
+      "image_reference": "ghcr.io/zj-2002/ieugwasr-official@sha256:c8631fb88461135ea1b570f0e08a5bfb04366ef2bc835e874d30c7326fdc2395",
+      "names": [
+        "OPENGWAS_JWT"
+      ]
+    }
+  ]
+}

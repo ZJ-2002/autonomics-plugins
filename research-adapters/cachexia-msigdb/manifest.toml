@@ -21,6 +21,10 @@ interpreter = "python3"
 script_file = "scripts/gmt.py"
 [nodes.command.env]
 CACHEXIA_GMT_MODE = "fetch"
+# Node-local official-domain transport; do not apply image-wide proxy policy to
+# the shared biotools-py runtime. Both spellings override inherited exceptions.
+no_proxy = "data.broadinstitute.org"
+NO_PROXY = "data.broadinstitute.org"
 [nodes.resources]
 cpus = 1.0
 memory = "512m"
