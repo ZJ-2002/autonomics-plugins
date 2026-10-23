@@ -1,0 +1,29 @@
+{
+  "archives": [
+    {
+      "package": "scipy",
+      "version": "1.18.1",
+      "filename": "scipy-1.18.1-cp314-cp314-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl",
+      "url": "https://files.pythonhosted.org/packages/6b/89/2a844506d49651e9aa1af6ef95b6bd8031cb1d5a4375edec6155037e04cf/scipy-1.18.1-cp314-cp314-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl",
+      "pypi_metadata": "https://pypi.org/pypi/scipy/1.18.1/json",
+      "sha256": "ac0333bdf38309aa3dcbe7e3fa7ea29e7a2c37c6ea306a757b700ded8e4596ad"
+    },
+    {
+      "package": "numpy",
+      "version": "2.5.3",
+      "filename": "numpy-2.5.3-cp314-cp314-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl",
+      "url": "https://files.pythonhosted.org/packages/45/8f/9beacf79ca7c650688ad0baa80931adb988fe6e6e5d5903c23cc3dbd70eb/numpy-2.5.3-cp314-cp314-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl",
+      "pypi_metadata": "https://pypi.org/pypi/numpy/2.5.3/json",
+      "sha256": "b0521d0f4aebb6e06189451025fa17a913287b13c03d5fe05c017333b654ea5b"
+    },
+    {
+      "package": "pyarrow",
+      "version": "25.0.1",
+      "filename": "pyarrow-25.0.1-cp314-cp314-manylinux_2_28_x86_64.whl",
+      "url": "https://files.pythonhosted.org/packages/8d/61/1c5d1229fa21da4cff5365e41e57177aaac57c563c727f35419b8513d1c1/pyarrow-25.0.1-cp314-cp314-manylinux_2_28_x86_64.whl",
+      "pypi_metadata": "https://pypi.org/pypi/pyarrow/25.0.1/json",
+      "sha256": "9171748cdf796972d85a4b60157c279913e242992e350c90c7450182a9838b2a"
+    }
+  ],
+  "host_packages_changed": false
+}
