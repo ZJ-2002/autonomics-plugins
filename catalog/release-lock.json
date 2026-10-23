@@ -17162,15 +17162,27 @@
       "image_reference": "ghcr.io/zj-2002/biotools-py@sha256:7ad6aeafa87672699d28b61b6bed12fc81fcdbfc43222a0abf17e2d56fb806f5",
       "files": [
         {
+          "path": "NETWORK_CANDIDATE_20261023.md",
+          "sha256": "c2a7ca5712ae44ef999ee1764f4d99aa502daade8ff9669c4b2f7f80c9a451fb",
+          "bytes": 5996,
+          "executable": false
+        },
+        {
           "path": "README.md",
-          "sha256": "e6bb177efdb5f641179e45e1a2ebb47381f818d60ec5d401a8c171240956adb0",
-          "bytes": 2741,
+          "sha256": "617c6dc9035131ad3fc108edd9cf7e3de50715e6dd5df7fee629381355333e88",
+          "bytes": 3140,
           "executable": false
         },
         {
           "path": "manifest.toml",
-          "sha256": "8758d87c86c488ebb22100c47686a59dff21155414ac72b0eea0d8e44f12d503",
-          "bytes": 2909,
+          "sha256": "23a72a892a40aaf802242bf24e818c407409281b311394e7a1020d7efcbb55a8",
+          "bytes": 3143,
+          "executable": false
+        },
+        {
+          "path": "prove_network_candidate.py",
+          "sha256": "d845c1ec22e48487cb5f9ff1a263d51bb011f06de3a0d5e6bfee9610a714c558",
+          "bytes": 9323,
           "executable": false
         },
         {
@@ -17322,7 +17334,7 @@
       "kinds": [
         "cachexia_permutation_official"
       ],
-      "image_reference": "localhost/cachexia-permutation@sha256:5b87558f07b40777be22a204723f3dbbadf0e2905b852473dd4922419c37a079",
+      "image_reference": "ghcr.io/zj-2002/permutation-official@sha256:58d2e4d969549713bf8c85c22f3d672305fac39e6ded19fe9f9cbe92f713b7a7",
       "files": [
         {
           "path": "Dockerfile",
@@ -17332,8 +17344,14 @@
         },
         {
           "path": "manifest.toml",
-          "sha256": "47ecf4ef550a3ac6c096f51c2b75e118ee03b171e483e7f02d2787a6ee552dfb",
-          "bytes": 1867,
+          "sha256": "c6aff3afdcbe27de26dc2f38a8a3e97553aed862ca0f39086736577c5c773598",
+          "bytes": 1873,
+          "executable": false
+        },
+        {
+          "path": "recovered-original-build/source-plan.json",
+          "sha256": "09de971864354cc6fdc4c236596550b918d9358ac4641b65373067632eadbaf9",
+          "bytes": 1532,
           "executable": false
         },
         {
@@ -17488,7 +17506,7 @@
         "cachexia_evalue_official",
         "cachexia_combine_pvalues_official"
       ],
-      "image_reference": "localhost/cachexia-sensitivity@sha256:598f27c5f379e51614631e8f8d92eb99b6e3e5fe33c0be1e30a081cdc2bb6bc4",
+      "image_reference": "ghcr.io/zj-2002/sensitivity-official@sha256:09ff878b31f5709e60a287958e666025c0daa0ba31124d707dbff38e11dc2cbd",
       "files": [
         {
           "path": "README.md",
@@ -17498,8 +17516,26 @@
         },
         {
           "path": "manifest.toml",
-          "sha256": "bb85e60767b29fa9e897cacac0960d3db317755006095e4d491f2fcf11798c9c",
-          "bytes": 2973,
+          "sha256": "05b94997d201e8c598aa1aef445ebb814eec10cd721bf164681bcd2585709730",
+          "bytes": 2979,
+          "executable": false
+        },
+        {
+          "path": "recovered-original-build/Dockerfile",
+          "sha256": "e44fcda107eefaaa1e05c535102c0d41c8338b19c44e1afa30cbf4d7d81dff33",
+          "bytes": 2334,
+          "executable": false
+        },
+        {
+          "path": "recovered-original-build/PROVENANCE.md",
+          "sha256": "3038964625c020ec885966d72a01a5627e16ece1a5d10f41356c85ffa4e9efcc",
+          "bytes": 2137,
+          "executable": false
+        },
+        {
+          "path": "recovered-original-build/source-plan.json",
+          "sha256": "f057ee371d21e4703b003426422adb509b53a60a60db8238af9398e05acb1fc7",
+          "bytes": 11355,
           "executable": false
         },
         {
