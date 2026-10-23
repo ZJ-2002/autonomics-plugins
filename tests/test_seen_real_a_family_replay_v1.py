@@ -157,6 +157,45 @@ class SeenRealReplayTests(unittest.TestCase):
         self.assertIn('new.env(parent = asNamespace("stats"))', script)
         self.assertNotIn('p_primary <-', script)
 
+    def bounded_history(self, upper='2026-01-01'):
+        history_path = self.root / 'RESULT_EXPOSURE_LOG.tsv'
+        payload = ('analysis_id\tfirst_result_viewed_at\tstatus\tallowed_identity\r\n' + ''.join(
+            'E' + str(index) + '\tON_OR_BEFORE_' + upper + '_EXACT_FIRST_VIEW_UNKNOWN\tLEGACY_PIPELINE_ANALYZED\tLEGACY_EXPLORATORY_TECHNICAL_REANALYSIS\r\n'
+            for index in range(3))).encode()
+        history_path.write_bytes(payload)
+        self.request['seen_history'] = [dict(source_id='seen-three', sha256=self.request['sources'][0]['sha256'],
+            declaration='ALREADY_SEEN_NOT_INDEPENDENT', precision='ON_OR_BEFORE_DATE', upper_bound_date=upper,
+            exact_first_view_known=False, history_file=dict(path=str(history_path), sha256=family.checksum(payload)),
+            analysis_ids=['E0', 'E1', 'E2'])]
+
+    def test_unknown_first_view_preserves_upper_bound_and_original_rows(self):
+        self.bounded_history()
+        unused, unused_vectors, receipt = self.run_request()
+        history = receipt['sources'][0]['history']
+        self.assertFalse(history['exact_first_view_known'])
+        self.assertNotIn('seen_at', history)
+        self.assertEqual(history['upper_bound_basis'], 'ANALYSIS_ID_HISTORY_NOT_RESULT_BYTE_FIRST_VIEW')
+        self.assertEqual(len(history['original_history_rows']), 3)
+        first = history['original_history_rows'][0]
+        self.assertTrue(first['raw_row_utf8'].endswith('\r\n'))
+        self.assertEqual(first['raw_row_sha256'], family.checksum(first['raw_row_utf8'].encode()))
+        self.assertEqual(first['original_row']['first_result_viewed_at'], 'ON_OR_BEFORE_2026-01-01_EXACT_FIRST_VIEW_UNKNOWN')
+
+    def test_future_upper_bound_rejected(self):
+        self.bounded_history('9999-01-01')
+        with self.assertRaisesRegex(ValueError, 'cannot be in the future'):
+            self.run_request()
+
+    def test_mixed_time_precision_or_wrong_history_mapping_rejected(self):
+        self.bounded_history()
+        self.request['seen_history'][0]['seen_at'] = '2026-01-01T00:00:00+00:00'
+        with self.assertRaisesRegex(ValueError, 'XOR'):
+            self.run_request()
+        del self.request['seen_history'][0]['seen_at']
+        self.request['seen_history'][0]['analysis_ids'] = ['E0', 'E1']
+        with self.assertRaisesRegex(ValueError, 'exactly match selected'):
+            self.run_request()
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -1,9 +1,11 @@
 """Hash-bound already-seen A-family replay, never a primary-result publisher."""
 
 import argparse
-from datetime import datetime, timezone
+import csv
+from datetime import date, datetime, timezone
 import importlib.util
 import json
+import io
 import os
 from pathlib import Path
 
@@ -35,14 +37,53 @@ def source_tables(request):
             and len(histories) == len(sources), 'One to three explicit seen source identities required')
     by_id, history_by_id = {}, {}
     for history in histories:
-        require(isinstance(history, dict) and set(history) == {'source_id', 'sha256', 'seen_at', 'declaration'}
-                and history['declaration'] == 'ALREADY_SEEN_NOT_INDEPENDENT', 'Explicit prior-view history required')
+        common = {'source_id', 'sha256', 'declaration'}
+        exact = common | {'seen_at'}
+        bounded = common | {'precision', 'upper_bound_date', 'exact_first_view_known', 'history_file', 'analysis_ids'}
+        require(isinstance(history, dict) and set(history) in (exact, bounded)
+                and history['declaration'] == 'ALREADY_SEEN_NOT_INDEPENDENT', 'Explicit XOR exact-time or bounded-date prior-view history required')
         identifier = text(history['source_id'])
         require(identifier not in history_by_id, 'Duplicate view history identity')
-        viewed = datetime.fromisoformat(history['seen_at'])
-        require(viewed.tzinfo is not None and viewed <= datetime.now(timezone.utc),
-            'Prior-view timestamp must have an explicit timezone and cannot be in the future')
-        history_by_id[identifier] = history
+        evidence = dict(history)
+        if set(history) == exact:
+            viewed = datetime.fromisoformat(history['seen_at'])
+            require(viewed.tzinfo is not None and viewed <= datetime.now(timezone.utc),
+                'Prior-view timestamp must have an explicit timezone and cannot be in the future')
+        else:
+            require(history['precision'] == 'ON_OR_BEFORE_DATE' and history['exact_first_view_known'] is False,
+                'Unknown exact first-view time must retain explicit upper-bound precision')
+            upper = date.fromisoformat(history['upper_bound_date'])
+            require(upper.isoformat() == history['upper_bound_date'] and upper <= datetime.now(timezone.utc).date(),
+                'Prior-view upper-bound date cannot be in the future')
+            binding = history['history_file']
+            require(isinstance(binding, dict) and set(binding) == {'path', 'sha256'}, 'Exact original history file identity required')
+            history_bytes = family.read(family.ordinary(binding['path']), max_bytes=4 * 1024 * 1024)
+            require(family.checksum(history_bytes) == binding['sha256'], 'Original history file bytes changed')
+            identifiers = history['analysis_ids']
+            require(isinstance(identifiers, list) and identifiers and len(set(identifiers)) == len(identifiers)
+                    and all(isinstance(value, str) for value in identifiers), 'Explicit unique history-to-analysis identity mapping required')
+            reader = csv.DictReader(io.StringIO(history_bytes.decode(), newline=''), delimiter='\t', strict=True)
+            raw_lines = history_bytes.decode().splitlines(keepends=True)
+            require(reader.fieldnames is not None and len(reader.fieldnames) == len(set(reader.fieldnames)), 'Unique history column identities required')
+            previous = reader.line_num
+            originals = []
+            for row in reader:
+                raw_row = ''.join(raw_lines[previous:reader.line_num])
+                previous = reader.line_num
+                if row.get('analysis_id') not in identifiers:
+                    continue
+                require(None not in row and all(value is not None for value in row.values())
+                        and row.get('first_result_viewed_at') == 'ON_OR_BEFORE_' + upper.isoformat() + '_EXACT_FIRST_VIEW_UNKNOWN'
+                        and row.get('status') == 'LEGACY_PIPELINE_ANALYZED'
+                        and row.get('allowed_identity') == 'LEGACY_EXPLORATORY_TECHNICAL_REANALYSIS',
+                        'Original history row must explicitly support legacy upper-bound replay identity')
+                originals.append(dict(analysis_id=row['analysis_id'], original_row=row,
+                    raw_row_utf8=raw_row, raw_row_sha256=family.checksum(raw_row.encode())))
+            require(len(originals) == len(identifiers) and {row['analysis_id'] for row in originals} == set(identifiers),
+                'Every requested history analysis must have exactly one original row')
+            evidence['original_history_rows'] = originals
+            evidence['upper_bound_basis'] = 'ANALYSIS_ID_HISTORY_NOT_RESULT_BYTE_FIRST_VIEW'
+        history_by_id[identifier] = evidence
     records = []
     for source in sources:
         require(isinstance(source, dict) and set(source) == {'source_id', 'path', 'sha256'}, 'Exact seen source fields required')
@@ -54,7 +95,7 @@ def source_tables(request):
         require(family.checksum(payload) == source['sha256'], 'Already-seen result source bytes changed')
         by_id[identifier] = family.table(payload)
         records.append(dict(source_id=identifier, bytes=len(payload), sha256=source['sha256'],
-            seen_at=history_by_id[identifier]['seen_at'], declaration='ALREADY_SEEN_NOT_INDEPENDENT'))
+            history=history_by_id[identifier], declaration='ALREADY_SEEN_NOT_INDEPENDENT'))
     require(set(by_id) == set(history_by_id), 'Every prior-view identity must name an input source')
     return by_id, records
 
@@ -99,6 +140,10 @@ def assemble(frozen_paths, request_path):
         value, estimator = replay_value(record, sources)
         by_id[identifier] = dict(status=record['status'], value=value, estimator=estimator, source_id=record['source_id'])
     require({row['source_id'] for row in supplied} == set(sources), 'Unused or omitted result source identity')
+    for provenance_row in provenance:
+        declared = provenance_row['history'].get('analysis_ids')
+        require(declared is None or set(declared) == {row['analysis_id'] for row in supplied
+            if row['source_id'] == provenance_row['source_id']}, 'History analysis identities must exactly match selected source edges')
     rows = []
 
     def append(identifier, family_id, kind, status, value, estimator, source_id):
