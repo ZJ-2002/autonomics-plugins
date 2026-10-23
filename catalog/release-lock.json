@@ -17555,12 +17555,18 @@
       "kinds": [
         "cachexia_sensitivity_values_to_parquet"
       ],
-      "image_reference": "localhost/autonomics/single-cell-preprocessor@sha256:5069c3ffaac0b11dfe950c1cd026f4195317be47b529b730572d9e670ad0f59b",
+      "image_reference": "ghcr.io/zj-2002/single-cell-preprocessor@sha256:e2f9fcd5ccf9e97b0f0129466df5abb21ae47ed32f123f6953b79fd83d915e20",
       "files": [
         {
+          "path": "README.md",
+          "sha256": "9e2624e92ea35042d58449b8b9b5f33098486213207ba8e01c963075ab27eb5c",
+          "bytes": 3167,
+          "executable": false
+        },
+        {
           "path": "manifest.toml",
-          "sha256": "6211dd45936f71f8a85fb7708bb32ecabd8f9778b3bcdb5f48a81a3ad7fbb538",
-          "bytes": 1383,
+          "sha256": "6b7201a174322dad4cb0270ade0f1ede10efc0bc47a8f4efc21d39b131d1f675",
+          "bytes": 1378,
           "executable": false
         },
         {
