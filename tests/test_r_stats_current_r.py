@@ -37,7 +37,7 @@ class CurrentRStatisticsCandidateTests(unittest.TestCase):
         manifest = tomllib.loads((ROOT / 'plugins/r-stats/manifest.toml').read_text())
         self.assertEqual(manifest['plugin_name'], 'r-stats')
         self.assertEqual(manifest['status'], 'published')
-        self.assertEqual(manifest['image']['reference'], 'ghcr.io/zj-2002/mrlap-official@sha256:78f195b862a3b7c5f8d96a96576cfb2c66b08f9bd31a739da59a017726cd063d')
+        self.assertEqual(manifest['image']['reference'], 'ghcr.io/zj-2002/mrlap-official@sha256:e6e10cddfa1cba8046ee6fbc1492b94cbd70d66b097f5f415845d56f9f925434')
         expected = dict(t_test='t', cor_test='cor', var_test='var', wilcox_test='wilcox', prop_test='prop', p_adjust='adjust')
         self.assertEqual({node['kind'] for node in manifest['nodes']}, set(expected))
         for node in manifest['nodes']:
@@ -90,6 +90,11 @@ class CurrentRStatisticsCandidateTests(unittest.TestCase):
             payload = (ROOT / 'plugins/r-stats' / name).read_bytes()
             if name == 'manifest.toml':
                 current_manifest = tomllib.loads(payload.decode())
+                current_image = 'ghcr.io/zj-2002/mrlap-official@sha256:e6e10cddfa1cba8046ee6fbc1492b94cbd70d66b097f5f415845d56f9f925434'
+                original_image = 'ghcr.io/zj-2002/mrlap-official@sha256:78f195b862a3b7c5f8d96a96576cfb2c66b08f9bd31a739da59a017726cd063d'
+                self.assertEqual(current_manifest['image']['reference'], current_image)
+                self.assertEqual(payload.count(current_image.encode()), 1)
+                payload = payload.replace(current_image.encode(), original_image.encode(), 1)
                 current_doc = next(node['doc'] for node in current_manifest['nodes'] if node['kind'] == 't_test')
                 previous_doc = 'Data TSV with lexical row_id and x/y or explicit group labels plus a fully explicit key/value method/hash contract. One/wide/paired/groups modes. Full htest RDS, all vector estimates/parameters and typed infinity bounds preserved. Not donor qualification or research release.'
                 payload = payload.replace(current_doc.encode(), previous_doc.encode())

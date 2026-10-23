@@ -1183,6 +1183,9 @@
     "tests.test_r_stats_current_r.CurrentRStatisticsCandidateTests.test_candidate_r_entry_parses_in_the_existing_local_runtime",
     "tests.test_r_stats_current_r.CurrentRStatisticsCandidateTests.test_host_evidence_does_not_grant_container_dag_or_deployment",
     "tests.test_r_stats_current_r.CurrentRStatisticsCandidateTests.test_only_version_and_adjustment_row_limit_change_the_frozen_wrapper",
-    "tests.test_r_stats_current_r.CurrentRStatisticsCandidateTests.test_six_canonical_operations_use_the_existing_fixed_r_image"
+    "tests.test_r_stats_current_r.CurrentRStatisticsCandidateTests.test_six_canonical_operations_use_the_existing_fixed_r_image",
+    "tests.test_r_stats_current_r.CurrentRStatisticsCandidateTests.test_complete_pair_extension_does_not_replace_the_original_official_profile",
+    "tests.test_msigdb_network.MSigDBNetworkTests.test_policy_is_online_node_local",
+    "tests.test_msigdb_network.MSigDBNetworkTests.test_requests_effective_proxy_matrix_and_parent_unchanged"
   ]
 }
