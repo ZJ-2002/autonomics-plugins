@@ -1,0 +1,31 @@
+{
+  "schema": "CONDITIONAL_TYPED_PUBLIC_IMAGE_EVIDENCE_V1",
+  "families": ["cachexia-lcmm-typed-values", "cachexia-mice-typed-values", "cachexia-survey-typed-values"],
+  "image": "ghcr.io/zj-2002/single-cell-preprocessor@sha256:e2f9fcd5ccf9e97b0f0129466df5abb21ae47ed32f123f6953b79fd83d915e20",
+  "config_sha256": "3144c037c6da31b27ea8d240e4bf013c45258099f44242193946d209ab24dc7b",
+  "pyarrow_version": "25.0.1",
+  "runtime_proof": {
+    "session": "f8316e79f2c74e0eaf2a7b637e9d61c5",
+    "manifest_sha256": "f72951bbd7369224f911c4f287622a7fb19e94744dc13041612ececaa4e2d06d",
+    "member": "permanent/conditional-typed-public-image/verification.json",
+    "member_sha256": "2c2f43c5306cd97124a986cdf187d82aa93dfc157e1d1d555134cf2bd605534b",
+    "worker_exit_status": 0,
+    "actual_container_runs": 5,
+    "complete_result_cases": 18,
+    "malformed_contract_refusals": 15,
+    "engineering_edge_controls": 26
+  },
+  "binding_proof": {
+    "session": "06d9c67ae3d34dcb84aaccc9180ab07a",
+    "manifest_sha256": "ed5ce55d601c5af91024f5f2ecabd8dd9b789af15434274e4ff9041a5f4068ab",
+    "member": "permanent/typed-registry-binding/verification.json",
+    "worker_exit_status": 0,
+    "binding_regression_tests": 6
+  },
+  "scope": "Existing synthetic official-R result payloads converted through unchanged typed scripts; full fields, numeric values, explicit missingness and output contracts checked. This is not a new statistical-method comparison.",
+  "image_content_equivalence_claimed": false,
+  "new_statistical_fits": 0,
+  "deployed": false,
+  "scientific_release_granted": false,
+  "g0_granted": false
+}

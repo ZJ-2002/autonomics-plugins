@@ -64,5 +64,37 @@ class ConditionalRegistryBindingTests(unittest.TestCase):
                     self.assertIn(marker, combined)
 
 
+class ConditionalTypedRegistryBindingTests(unittest.TestCase):
+    reference = 'ghcr.io/zj-2002/single-cell-preprocessor@sha256:e2f9fcd5ccf9e97b0f0129466df5abb21ae47ed32f123f6953b79fd83d915e20'
+
+    def test_only_typed_image_reference_bytes_change(self):
+        for family in REFERENCES:
+            with self.subTest(family=family):
+                relative_path = f'research-adapters/cachexia-{family}-typed-values/manifest.toml'
+                original = frozen_bytes(relative_path)
+                old_reference = tomllib.loads(original.decode())['image']['reference'].encode()
+                self.assertEqual(original.count(old_reference), 1)
+                self.assertEqual((ROOT / relative_path).read_bytes(), original.replace(old_reference, self.reference.encode(), 1))
+
+    def test_complete_typed_contract_is_preserved(self):
+        for family in REFERENCES:
+            with self.subTest(family=family):
+                relative_path = f'research-adapters/cachexia-{family}-typed-values/manifest.toml'
+                original = tomllib.loads(frozen_bytes(relative_path).decode())
+                original['image']['reference'] = self.reference
+                self.assertEqual(tomllib.loads((ROOT / relative_path).read_text()), original)
+
+    def test_typed_entrypoints_are_byte_identical(self):
+        for family in REFERENCES:
+            with self.subTest(family=family):
+                adapter = Path('research-adapters') / f'cachexia-{family}-typed-values'
+                manifest = tomllib.loads(frozen_bytes(adapter / 'manifest.toml').decode())
+                scripts = {node['command']['script_file'] for node in manifest['nodes']}
+                self.assertTrue(scripts)
+                for script in scripts:
+                    relative_path = adapter / script
+                    self.assertEqual((ROOT / relative_path).read_bytes(), frozen_bytes(relative_path))
+
+
 if __name__ == '__main__':
     unittest.main()

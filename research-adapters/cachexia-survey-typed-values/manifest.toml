@@ -1,7 +1,7 @@
 schema_version = 1
 plugin_name = "cachexia-survey-typed-values"
 [image]
-reference = "localhost/autonomics/single-cell-preprocessor@sha256:5069c3ffaac0b11dfe950c1cd026f4195317be47b529b730572d9e670ad0f59b"
+reference = "ghcr.io/zj-2002/single-cell-preprocessor@sha256:e2f9fcd5ccf9e97b0f0129466df5abb21ae47ed32f123f6953b79fd83d915e20"
 tag = "pyarrow-25.0.1-survey-typed-boundary"
 upstream = "Official PyArrow 25.0.1 explicit-schema serialization; no survey statistics"
 license = "Apache-2.0"
