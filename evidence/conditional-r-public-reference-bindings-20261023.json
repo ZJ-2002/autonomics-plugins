@@ -1,0 +1,19 @@
+{
+  "schema": "CONDITIONAL_R_PUBLIC_REFERENCE_BINDINGS_V1",
+  "session": "283f98e6a1e248bd8d4efccd151ef789",
+  "seal": "e4847bc29eb8394d264b292661edfd7789c011e00600c9a16dabdfbe5951d7fb",
+  "member": "permanent/conditional-r-registry-bindings/verification.json",
+  "member_sha256": "92da51b597523cf746a2031dd9391c71466e3bfc8db3147f7f5e8dffa342b431",
+  "worker_exit_status": 0,
+  "actual_regression_tests": 3,
+  "families": ["cachexia-lcmm", "cachexia-mice", "cachexia-survey"],
+  "change_scope": "Exact published public image reference only; all other manifest bytes and entrypoint scripts unchanged",
+  "new_public_references_cached_at_observation": 0,
+  "new_public_references_enrolled_at_observation": 0,
+  "new_public_references_required": 3,
+  "deployment_proven": false,
+  "new_statistical_fits": 0,
+  "synthetic_only_input_guards_removed": false,
+  "scientific_release_granted": false,
+  "g0_granted": false
+}

@@ -1,7 +1,7 @@
 schema_version = 1
 plugin_name = "cachexia-lcmm"
 [image]
-reference = "localhost/cachexia-lcmm@sha256:602bbf79fa81124edc1d78f366a71e2f8e55f1c768377810104eb81bb03ac97a"
+reference = "ghcr.io/zj-2002/lcmm-official@sha256:dd7f8a68d27a1002d5f6b004ca2ad24fc92cc7db43773500963363f92f8828d5"
 tag = "lcmm-2.2.2-R-4.6.1-local-proof"
 upstream = "Unmodified official CRAN lcmm 2.2.2 / marqLevAlg 2.0.8 source"
 license = "GPL-2.0-or-later"

@@ -2,7 +2,7 @@ schema_version = 1
 plugin_name = "cachexia-survey"
 
 [image]
-reference = "localhost/cachexia-survey@sha256:8186f7fc9fa4a75023821b8f0f22634b82c2112916c426a20ee40075c4753243"
+reference = "ghcr.io/zj-2002/survey-official@sha256:6f3e6f417912b7fb2c2b344ceaa11ff6031cde7848740caf6450c4366b5fbc61"
 tag = "survey-4.5-R-4.6.1-local-proof"
 upstream = "CRAN survey 4.5; frozen official source archive compiled without patches"
 license = "GPL-2.0-or-later"

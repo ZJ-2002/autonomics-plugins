@@ -2,7 +2,7 @@ schema_version = 1
 plugin_name = "cachexia-mice"
 
 [image]
-reference = "localhost/cachexia-mice@sha256:0a7b397b9fb5fca8128381525ab9482098445a2f29e309135464a8cd45fc0f57"
+reference = "ghcr.io/zj-2002/mice-official@sha256:ff4c166b89842d9bfbcf8d0f8227d05057a3ae57a668d374374a60db1e425516"
 tag = "mice-3.19.0-R-4.6.1-local-proof"
 upstream = "Official CRAN mice3.19.0 source archive compiled unmodified"
 license = "GPL-2.0-or-later"
