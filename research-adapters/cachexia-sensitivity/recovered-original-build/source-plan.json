@@ -1,0 +1,334 @@
+{
+  "base": "localhost/cachexia-lcmm@sha256:602bbf79fa81124edc1d78f366a71e2f8e55f1c768377810104eb81bb03ac97a",
+  "targets": {
+    "EValue": "4.1.4",
+    "metap": "1.14"
+  },
+  "order": [
+    "mathjaxr",
+    "metadat",
+    "metafor",
+    "MetaUtility",
+    "EValue",
+    "SparseM",
+    "MatrixModels",
+    "quantreg",
+    "sn",
+    "TFisher",
+    "DEoptimR",
+    "robustbase",
+    "qqconf",
+    "plotrix",
+    "BiocGenerics",
+    "Biobase",
+    "multtest",
+    "TH.data",
+    "zoo",
+    "sandwich",
+    "multcomp",
+    "mutoss",
+    "metap"
+  ],
+  "archives": [
+    {
+      "package": "mathjaxr",
+      "version": "2.0-0",
+      "url": "https://cran.r-project.org/src/contrib/mathjaxr_2.0-0.tar.gz",
+      "filename": "mathjaxr_2.0-0.tar.gz",
+      "bytes": 3114027,
+      "sha256": "5edf7c410d02bf45747ac8ce5f11760190992c8b691e14260093068efb855dc3",
+      "declared_dependencies": {
+        "Depends": "",
+        "Imports": "",
+        "LinkingTo": ""
+      }
+    },
+    {
+      "package": "metadat",
+      "version": "1.6-0",
+      "url": "https://cran.r-project.org/src/contrib/metadat_1.6-0.tar.gz",
+      "filename": "metadat_1.6-0.tar.gz",
+      "bytes": 1187474,
+      "sha256": "f5f2bb245d2241ed876e17b038c856732684f1884993546721b097b554c6e305",
+      "declared_dependencies": {
+        "Depends": "R (>= 4.0.0)",
+        "Imports": "utils, tools, mathjaxr",
+        "LinkingTo": ""
+      }
+    },
+    {
+      "package": "metafor",
+      "version": "5.2-1",
+      "url": "https://cran.r-project.org/src/contrib/metafor_5.2-1.tar.gz",
+      "filename": "metafor_5.2-1.tar.gz",
+      "bytes": 5037964,
+      "sha256": "25c421cf52279294b11ab3166adfeb327dd22034a03a46487f081a19a163339b",
+      "declared_dependencies": {
+        "Depends": "R (>= 4.0.0), methods, Matrix, metadat, numDeriv",
+        "Imports": "stats, utils, graphics, grDevices, nlme, mathjaxr, pbapply, digest",
+        "LinkingTo": ""
+      }
+    },
+    {
+      "package": "MetaUtility",
+      "version": "2.1.2",
+      "url": "https://cran.r-project.org/src/contrib/MetaUtility_2.1.2.tar.gz",
+      "filename": "MetaUtility_2.1.2.tar.gz",
+      "bytes": 53488,
+      "sha256": "e38c21588c239aa8926e64d916aa0f3b04108c2992f0e801095e4c7920b9ad5d",
+      "declared_dependencies": {
+        "Depends": "",
+        "Imports": "metafor, metadat, stats, stringr, purrr, dplyr, tidyr, rlang",
+        "LinkingTo": ""
+      }
+    },
+    {
+      "package": "EValue",
+      "version": "4.1.4",
+      "url": "https://cran.r-project.org/src/contrib/EValue_4.1.4.tar.gz",
+      "filename": "EValue_4.1.4.tar.gz",
+      "bytes": 1711384,
+      "sha256": "4b93a82c591b9ee8c2a19a31a9d8bfecaecb4644111e27ec5acb7bceaa5b1773",
+      "declared_dependencies": {
+        "Depends": "",
+        "Imports": "stats, graphics, ggplot2 (>= 2.2.1), metafor, methods, boot, MetaUtility, dplyr",
+        "LinkingTo": ""
+      }
+    },
+    {
+      "package": "SparseM",
+      "version": "1.84-2",
+      "url": "https://cran.r-project.org/src/contrib/SparseM_1.84-2.tar.gz",
+      "filename": "SparseM_1.84-2.tar.gz",
+      "bytes": 553080,
+      "sha256": "2580fdbb8679e76c92b9f0c5bd9bb503c4cb6a750ef6ae96595441690ce98665",
+      "declared_dependencies": {
+        "Depends": "R (>= 2.15), methods",
+        "Imports": "graphics, stats, utils",
+        "LinkingTo": ""
+      }
+    },
+    {
+      "package": "MatrixModels",
+      "version": "0.5-4",
+      "url": "https://cran.r-project.org/src/contrib/MatrixModels_0.5-4.tar.gz",
+      "filename": "MatrixModels_0.5-4.tar.gz",
+      "bytes": 24607,
+      "sha256": "f57af9e0a35a3fea77790e46846482c6c7de0d0ea1996a995a5924f2d41cf33c",
+      "declared_dependencies": {
+        "Depends": "R (>= 3.6.0)",
+        "Imports": "stats, methods, Matrix (>= 1.6-0), Matrix(< 1.8-0)",
+        "LinkingTo": ""
+      }
+    },
+    {
+      "package": "quantreg",
+      "version": "6.1",
+      "url": "https://cran.r-project.org/src/contrib/quantreg_6.1.tar.gz",
+      "filename": "quantreg_6.1.tar.gz",
+      "bytes": 925163,
+      "sha256": "f42292c5ab25a15f39295b93391deafef192fe09eefde563399a64eba7e0169a",
+      "declared_dependencies": {
+        "Depends": "R (>= 3.5), stats, SparseM",
+        "Imports": "methods, graphics, Matrix, MatrixModels, survival, MASS",
+        "LinkingTo": ""
+      }
+    },
+    {
+      "package": "sn",
+      "version": "2.1.3",
+      "url": "https://cran.r-project.org/src/contrib/sn_2.1.3.tar.gz",
+      "filename": "sn_2.1.3.tar.gz",
+      "bytes": 825546,
+      "sha256": "144df1ad03d28acd06f1231dd6efa9638db930402818a380b5b0f08eee816218",
+      "declared_dependencies": {
+        "Depends": "R (>= 3.0.0), methods, stats4",
+        "Imports": "mnormt (>= 2.0.0), numDeriv, utils, quantreg",
+        "LinkingTo": ""
+      }
+    },
+    {
+      "package": "TFisher",
+      "version": "0.2.1",
+      "url": "https://cran.r-project.org/src/contrib/TFisher_0.2.1.tar.gz",
+      "filename": "TFisher_0.2.1.tar.gz",
+      "bytes": 11525,
+      "sha256": "48f3bf75b62d59561d39097862c9d2861afae5130ec8dcc1f6334fa1607a8584",
+      "declared_dependencies": {
+        "Depends": "",
+        "Imports": "stats, sn, mvtnorm, Matrix",
+        "LinkingTo": ""
+      }
+    },
+    {
+      "package": "DEoptimR",
+      "version": "1.2-2",
+      "url": "https://cran.r-project.org/src/contrib/DEoptimR_1.2-2.tar.gz",
+      "filename": "DEoptimR_1.2-2.tar.gz",
+      "bytes": 24326,
+      "sha256": "d121f283396a90bbdfd7ebcaeb34b6153d36475a1bfbf91d9415c7353fb251de",
+      "declared_dependencies": {
+        "Depends": "",
+        "Imports": "stats, methods",
+        "LinkingTo": ""
+      }
+    },
+    {
+      "package": "robustbase",
+      "version": "0.99-7",
+      "url": "https://cran.r-project.org/src/contrib/robustbase_0.99-7.tar.gz",
+      "filename": "robustbase_0.99-7.tar.gz",
+      "bytes": 2324260,
+      "sha256": "9f5d19d1bcace8c9edc3c96fa5b9a7fdff7566528d0b68422ca6a92e7c588cfd",
+      "declared_dependencies": {
+        "Depends": "R (>= 3.5.0)",
+        "Imports": "stats, graphics, utils, methods, DEoptimR",
+        "LinkingTo": ""
+      }
+    },
+    {
+      "package": "qqconf",
+      "version": "1.3.2",
+      "url": "https://cran.r-project.org/src/contrib/qqconf_1.3.2.tar.gz",
+      "filename": "qqconf_1.3.2.tar.gz",
+      "bytes": 524333,
+      "sha256": "9405d627adf9447a003e14dac43701ea3e03ee73244038aa4a6e3dd324dd8ea3",
+      "declared_dependencies": {
+        "Depends": "R (>= 4.0.0)",
+        "Imports": "MASS (>= 7.3-50), robustbase (>= 0.93-4), Rcpp",
+        "LinkingTo": "Rcpp"
+      }
+    },
+    {
+      "package": "plotrix",
+      "version": "3.8-14",
+      "url": "https://cran.r-project.org/src/contrib/plotrix_3.8-14.tar.gz",
+      "filename": "plotrix_3.8-14.tar.gz",
+      "bytes": 320289,
+      "sha256": "880bb3c2912962cbc3a5998510f4c450ea697a37b2935b5d8ae08495527d7272",
+      "declared_dependencies": {
+        "Depends": "R (>= 3.5.0)",
+        "Imports": "grDevices, graphics, stats, utils",
+        "LinkingTo": ""
+      }
+    },
+    {
+      "package": "BiocGenerics",
+      "version": "0.58.1",
+      "url": "https://bioconductor.statistik.tu-dortmund.de/packages/3.23/bioc/src/contrib/BiocGenerics_0.58.1.tar.gz",
+      "filename": "BiocGenerics_0.58.1.tar.gz",
+      "bytes": 57572,
+      "sha256": "6911559f0b2b5a07081cd21b6738aa4c6048509b23425cc3ebafc0b4cb011a98",
+      "declared_dependencies": {
+        "Depends": "R (>= 4.0.0), methods, utils, graphics, stats, generics",
+        "Imports": "methods, utils, graphics, stats",
+        "LinkingTo": ""
+      }
+    },
+    {
+      "package": "Biobase",
+      "version": "2.72.0",
+      "url": "https://bioconductor.statistik.tu-dortmund.de/packages/3.23/bioc/src/contrib/Biobase_2.72.0.tar.gz",
+      "filename": "Biobase_2.72.0.tar.gz",
+      "bytes": 1977228,
+      "sha256": "d04af4c5850352f96a966285ea771b15777d2f009f7b86fa4b702de13f31bbdd",
+      "declared_dependencies": {
+        "Depends": "R (>= 2.10), BiocGenerics (>= 0.27.1), utils",
+        "Imports": "methods",
+        "LinkingTo": ""
+      }
+    },
+    {
+      "package": "multtest",
+      "version": "2.68.0",
+      "url": "https://bioconductor.statistik.tu-dortmund.de/packages/3.23/bioc/src/contrib/multtest_2.68.0.tar.gz",
+      "filename": "multtest_2.68.0.tar.gz",
+      "bytes": 1294523,
+      "sha256": "eeba5414411e26b010f8cead730c44dc3ef4ed203629d3acb42a4baa19ce3fd2",
+      "declared_dependencies": {
+        "Depends": "R (>= 2.10), methods, BiocGenerics, Biobase",
+        "Imports": "survival, MASS, stats4",
+        "LinkingTo": ""
+      }
+    },
+    {
+      "package": "TH.data",
+      "version": "1.1-5",
+      "url": "https://cran.r-project.org/src/contrib/TH.data_1.1-5.tar.gz",
+      "filename": "TH.data_1.1-5.tar.gz",
+      "bytes": 8579955,
+      "sha256": "c4dc350a34c674e6c96ee74c100a071a37a2fe924026f0ca1eed0958138e2660",
+      "declared_dependencies": {
+        "Depends": "R (>= 3.5.0), survival, MASS",
+        "Imports": "",
+        "LinkingTo": ""
+      }
+    },
+    {
+      "package": "zoo",
+      "version": "1.9-1",
+      "url": "https://cran.r-project.org/src/contrib/zoo_1.9-1.tar.gz",
+      "filename": "zoo_1.9-1.tar.gz",
+      "bytes": 691004,
+      "sha256": "a2d998726a9b528efd20af449099e4b2df53887a0d10f48ac9ba63992b3a053a",
+      "declared_dependencies": {
+        "Depends": "R (>= 3.1.0), stats",
+        "Imports": "utils, graphics, grDevices, lattice (>= 0.20-27)",
+        "LinkingTo": ""
+      }
+    },
+    {
+      "package": "sandwich",
+      "version": "3.1-3",
+      "url": "https://cran.r-project.org/src/contrib/sandwich_3.1-3.tar.gz",
+      "filename": "sandwich_3.1-3.tar.gz",
+      "bytes": 1423483,
+      "sha256": "960006cf4fcbada936b43acd04ddd8c0d1255570f41dda046ce778873f546134",
+      "declared_dependencies": {
+        "Depends": "R (>= 3.0.0)",
+        "Imports": "stats, utils, zoo",
+        "LinkingTo": ""
+      }
+    },
+    {
+      "package": "multcomp",
+      "version": "1.4-32",
+      "url": "https://cran.r-project.org/src/contrib/multcomp_1.4-32.tar.gz",
+      "filename": "multcomp_1.4-32.tar.gz",
+      "bytes": 717336,
+      "sha256": "8dd9ac037a04266c4c327d6d5dc16f3b7949a61f6cfd01c116778c8af26bcb17",
+      "declared_dependencies": {
+        "Depends": "stats, graphics, mvtnorm (>= 1.0-10), survival (>= 2.39-4), TH.data (>= 1.0-2)",
+        "Imports": "sandwich (>= 2.3-0), codetools",
+        "LinkingTo": ""
+      }
+    },
+    {
+      "package": "mutoss",
+      "version": "0.1-14",
+      "url": "https://cran.r-project.org/src/contrib/mutoss_0.1-14.tar.gz",
+      "filename": "mutoss_0.1-14.tar.gz",
+      "bytes": 1070950,
+      "sha256": "1f4ef7bb19b5c7056be4acd759f2776b6cbfdff3da5ce51ffae15f61cda35cbf",
+      "declared_dependencies": {
+        "Depends": "R (>= 2.10.0), mvtnorm",
+        "Imports": "plotrix, multtest (>= 2.2.0), multcomp (>= 1.1-0), methods",
+        "LinkingTo": ""
+      }
+    },
+    {
+      "package": "metap",
+      "version": "1.14",
+      "url": "https://cran.r-project.org/src/contrib/metap_1.14.tar.gz",
+      "filename": "metap_1.14.tar.gz",
+      "bytes": 945892,
+      "sha256": "965b65911bd58db9640789459d8fc0d539a57b0de12fe757503aca4113ac12f0",
+      "declared_dependencies": {
+        "Depends": "R (>= 3.5.0)",
+        "Imports": "lattice,Rdpack (>= 0.7),TFisher,mathjaxr (>= 2.0-0),qqconf,mutoss",
+        "LinkingTo": ""
+      }
+    }
+  ],
+  "g0_granted": false
+}
