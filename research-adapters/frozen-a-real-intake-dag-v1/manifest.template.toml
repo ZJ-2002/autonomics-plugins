@@ -1,0 +1,30 @@
+# prepare.py renders one fixed File port per exact request dependency.
+# This template has no inputs and must not be installed directly.
+schema_version = 1
+plugin_name = "frozen-a-real-intake-dag-v1"
+[image]
+reference = "docker.io/library/python@sha256:7bf6c3111fe094f8ee1a1cbcdc63c4cfb345b0e3df42d5aa9a90b3b4b022ab6d"
+tag = "3.14.7-real-intake-transport-candidate"
+upstream = "Unchanged hash-locked V1 intake and frozen helpers; transport only"
+license = "MIT"
+[[nodes]]
+kind = "frozen_a_real_intake_assemble_v1"
+desc = "Materializes an exact File closure before unchanged real-intake V1 assembly."
+doc = "Generated fixed ports: closure; nine frozen files; original request; two O2 decision files; four pinned implementation files; sorted unique source/history/RDS files. All files are copied and SHA checked. Original identities and rewritten request identities remain distinct. Technical transport cannot grant finite primary, independent replication, G0 or scientific permission."
+timeout_secs = 120
+stage_in_mode = "copy"
+[nodes.ports]
+inputs = [] # GENERATED_EXACT_FILE_INPUTS
+outputs = [{path="real-family.tsv",format="tsv"}, {path="real-vectors.tsv",format="tsv"}, {path="real-assembly.json",format="json"}, {path="file-transport.json",format="json"}]
+[nodes.command]
+interpreter = "python3"
+script_file = "bridge.py"
+[nodes.command.env]
+PYTHONDONTWRITEBYTECODE = "1"
+[nodes.resources]
+cpus = 1.0
+memory = "1Gi"
+network = "isolated"
+read_only_rootfs = true
+pull_policy = "never"
+pids_limit = 64

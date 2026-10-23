@@ -1,0 +1,82 @@
+{
+  "schema": "A_REAL_INTAKE_DAG_SOURCE_LOCK_V1",
+  "baseline_main_head": "85dece348a0e39ac2f60e09ced2cba9d42696fcd",
+  "baseline_plugin_head": "d8c06ac1c45ec042a6413f1388c6d826b0dabd33",
+  "implementation_files": {
+    "frozen-a-family-assembly/scripts/family.py": {
+      "sha256": "338a864e0cfa9c4ab4df181728f28b1a08c6a841cbea906946dc3de90c40a43a",
+      "bytes": 26620
+    },
+    "frozen-a-family-assembly/replay/seen_real_v1.py": {
+      "sha256": "ddd4ed485bc5723bc7ebaae116c115be5c72a482a8a9ea4acdb11e4b8281025d",
+      "bytes": 13937
+    },
+    "frozen-a-family-assembly/real-intake-v1/intake.py": {
+      "sha256": "35264b2df3320fe34f68c8ad8b858cc1e9abcd7bea3af808fa978551fa150486",
+      "bytes": 15642
+    },
+    "frozen-a-family-adjustment/real-intake-v1/adjust_real.R": {
+      "sha256": "bc9f4c4fdb0bd07615a1afa4c89ee2a33814254f064f3f4148b17b7aea30f79a",
+      "bytes": 6349
+    }
+  },
+  "frozen_sources": [
+    {
+      "path": "01_REGISTRIES/GENETIC_EDGE_UNIVERSE.tsv",
+      "bytes": 58452,
+      "sha256": "1952fd61e3404364b6bef12334e9743e97f418f80f16ffabd93b4b244473afb4"
+    },
+    {
+      "path": "01_REGISTRIES/GENETIC_PATH_UNIVERSE.tsv",
+      "bytes": 56329,
+      "sha256": "bdb85f7ab874d2f2d913c75a2eeb60e56bc0b6049472eeb7f45c764b6eaaa1f2"
+    },
+    {
+      "path": "01_REGISTRIES/G0_LOCKED_HYPOTHESIS_UNIVERSE.tsv",
+      "bytes": 11740332,
+      "sha256": "b8d7116aea0640f3677b72eb653b097c7ff2a7d4e7815819d9927b61790b782a"
+    },
+    {
+      "path": "01_REGISTRIES/PRIMARY_P_DECISION_REGISTER.tsv",
+      "bytes": 21306,
+      "sha256": "92a49ae782060a6eb51fcc2d2bde65629f599714facbcb0ebefa53ea155f9f6a"
+    },
+    {
+      "path": "01_REGISTRIES/FAMILY_LOCK_REGISTER.tsv",
+      "bytes": 1907,
+      "sha256": "d7d1a89589fba8f8d115c0eefc9cfd4d270f2216181c70f9c528c4c1da9209c3"
+    },
+    {
+      "path": "01_REGISTRIES/MULTIPLICITY_REGISTER.tsv",
+      "bytes": 6325,
+      "sha256": "b66a8b849068a695d65d90decad99229d8a10fe49213d4445d0dfe356f47fee6"
+    },
+    {
+      "path": "02_EXECUTION/EXECUTION_RULES_v4.3.2.json",
+      "bytes": 13853,
+      "sha256": "1ff187d5672c0448db193db4acb17ee78012ed2588f94bac580075b1cef2245b"
+    },
+    {
+      "path": "02_EXECUTION/execution_utils.py",
+      "bytes": 5243,
+      "sha256": "2dd34cf6887e829334c2b3ba49f58be5c81b503333dc9183474208ebab49f08d"
+    },
+    {
+      "path": "02_EXECUTION/g0_v432_methods.R",
+      "bytes": 20329,
+      "sha256": "f7e334db38e331acc30cd0117ca9f2b82831523d1c07ce742382eacbd3aff1cd"
+    }
+  ],
+  "decision_files": [
+    {
+      "path": "03_AUDIT/G0_v4.3.2_2026-10-11/A_MINIMUM_INPUT_CARD.json",
+      "bytes": 2218,
+      "sha256": "60c08dd8305b150a2a8251f008d17d4a88be8348089ffaf4b79d02a80be9617b"
+    },
+    {
+      "path": "03_AUDIT/G0_v4.3.2_2026-10-11/A_HARMONIZATION_QUALIFICATION.json",
+      "bytes": 507,
+      "sha256": "b0ec0e08840d3c77ea636a37b5b893af6051fcea7692c13de70b4c110b5960e7"
+    }
+  ]
+}
