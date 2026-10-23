@@ -1,7 +1,7 @@
 schema_version = 1
 plugin_name = "cachexia-sensitivity"
 [image]
-reference = "localhost/cachexia-sensitivity@sha256:598f27c5f379e51614631e8f8d92eb99b6e3e5fe33c0be1e30a081cdc2bb6bc4"
+reference = "ghcr.io/zj-2002/sensitivity-official@sha256:09ff878b31f5709e60a287958e666025c0daa0ba31124d707dbff38e11dc2cbd"
 tag = "EValue-4.1.4-metap-1.14-R-4.6.1-official-local-proof"
 upstream = "Unmodified official CRAN EValue 4.1.4 and metap 1.14; complete frozen dependencies including Bioconductor 3.23"
 license = "GPL-2.0-or-later"

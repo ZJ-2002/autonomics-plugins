@@ -1,0 +1,75 @@
+{
+  "schema": "IMAGE_PORTABILITY_MINIMAL_REFERENCE_CANDIDATE_V1",
+  "scope": "CANDIDATE_ONLY_NO_INSTALLATION_OR_SCIENTIFIC_EXECUTION",
+  "plugin_baseline_head": "d8c06ac1c45ec042a6413f1388c6d826b0dabd33",
+  "engine_baseline_head": "85dece348a0e39ac2f60e09ced2cba9d42696fcd",
+  "integration_fixed_revision": "PENDING_MAIN_SESSION_PUBLICATION",
+  "anonymous_access": "PENDING_LAST_SEALED_CHECK_FAILED_NOT_RECHECKED",
+  "migrations": [
+    {
+      "manifest": "research-adapters/cachexia-sensitivity/manifest.toml",
+      "patch": "cachexia-sensitivity.patch",
+      "source_manifest_sha256": "bb85e60767b29fa9e897cacac0960d3db317755006095e4d491f2fcf11798c9c",
+      "candidate_manifest_sha256": "05b94997d201e8c598aa1aef445ebb814eec10cd721bf164681bcd2585709730",
+      "source_reference": "localhost/cachexia-sensitivity@sha256:598f27c5f379e51614631e8f8d92eb99b6e3e5fe33c0be1e30a081cdc2bb6bc4",
+      "target_reference": "ghcr.io/zj-2002/sensitivity-official@sha256:09ff878b31f5709e60a287958e666025c0daa0ba31124d707dbff38e11dc2cbd",
+      "node_kinds": [
+        "cachexia_evalue_official",
+        "cachexia_combine_pvalues_official"
+      ],
+      "scripts_sha256": {
+        "research-adapters/cachexia-sensitivity/scripts/sensitivity.R": "12becb67fb8438a13c574b96443fc0329b7afc782183b5a8e64e92fbac8335fb"
+      },
+      "publication_session": "12640e645fb140ec99f3104213213b3b",
+      "publication_manifest_seal": "73211a1190c85644bc564c9264c50ffa3f5cdf67fea16cf88025ed102731d294",
+      "publication_verification_relative": "permanent/sensitivity-official-image-publication/verification.json",
+      "publication_verification_sha256": "19c15f73dc762efed3ee4dadef17d4457911959180578aa1a9518ff1a3b541a0",
+      "config_sha256": "f83c51b5ab9f8238a9cede4bbed420ad96e9f5953ed5fb4958c67c1800d9c733",
+      "ordered_rootfs_sha256": "55319adbb7af5159bea24b4872886f150f0c2045165519ea93d1a4248c52e302",
+      "anonymous_manifest_read_verified": false
+    },
+    {
+      "manifest": "research-adapters/cachexia-permutation/manifest.toml",
+      "patch": "cachexia-permutation.patch",
+      "source_manifest_sha256": "47ecf4ef550a3ac6c096f51c2b75e118ee03b171e483e7f02d2787a6ee552dfb",
+      "candidate_manifest_sha256": "c6aff3afdcbe27de26dc2f38a8a3e97553aed862ca0f39086736577c5c773598",
+      "source_reference": "localhost/cachexia-permutation@sha256:5b87558f07b40777be22a204723f3dbbadf0e2905b852473dd4922419c37a079",
+      "target_reference": "ghcr.io/zj-2002/permutation-official@sha256:58d2e4d969549713bf8c85c22f3d672305fac39e6ded19fe9f9cbe92f713b7a7",
+      "node_kinds": [
+        "cachexia_permutation_official"
+      ],
+      "scripts_sha256": {
+        "research-adapters/cachexia-permutation/scripts/permutation.py": "4ed7b28998948510f8f9c3d5491afb023282f8cb15f59297f9907484d3f083d8"
+      },
+      "publication_session": "61ab89f3ba47406cb6dc6b4ba3be7d8f",
+      "publication_manifest_seal": "b23e99f1f4af173966267011a4e5580a9c07390adaa1c6a8dc0c722ee7cd0485",
+      "publication_verification_relative": "permanent/permutation-official-image-publication/verification.json",
+      "publication_verification_sha256": "d2bd100a8d280d86ae8efc98c48ae33850290ea887e8878d8c0c903bad67fa58",
+      "config_sha256": "b9c57823830502db874e5f9353e34b6530c7ce5ef195c3805cef760c61ee3d18",
+      "ordered_rootfs_sha256": "b9e17dbd036aedee39b2593601c3bbc07d7d1e6fbe517330cc30ba09dada2d60",
+      "anonymous_manifest_read_verified": false
+    }
+  ],
+  "unchanged_companions": [
+    {
+      "manifest": "research-adapters/cachexia-sensitivity-typed-values/manifest.toml",
+      "manifest_sha256": "6211dd45936f71f8a85fb7708bb32ecabd8f9778b3bcdb5f48a81a3ad7fbb538",
+      "image_reference": "localhost/autonomics/single-cell-preprocessor@sha256:5069c3ffaac0b11dfe950c1cd026f4195317be47b529b730572d9e670ad0f59b",
+      "node_kinds": [
+        "cachexia_sensitivity_values_to_parquet"
+      ],
+      "scripts_sha256": {
+        "research-adapters/cachexia-sensitivity-typed-values/scripts/typed_values.py": "7572cf2bf2839d147f3b7d60f4e0bc81adff3dc0fca8d08787f4320f20176b2c"
+      },
+      "reason": "Independent PyArrow companion image; no matching sensitivity/permutation transport evidence."
+    }
+  ],
+  "implementation_source_sha256": {
+    "crates/container-plugin/src/factory.rs": "9c686c9462be44e73a0f21cb666d7e72b7ad1c2313c88f5daec2c3fc8b75f7bf",
+    "crates/container-plugin/src/loader.rs": "33fc3a64bf3fed4279fec31d8608057005075d2e68cf85c550e8b4e114dee941",
+    "crates/dag-core/src/fingerprint.rs": "7ce82d7a6efb4df8001f3d19eca6d9592cb3e78530b536015a022f7f1a957a91",
+    "crates/data-engine/src/runtime.rs": "503b1cece94e4c0d7736091a7241a8ad93a3d01212cc0238fa6db54da3f18703",
+    "crates/data-engine-tools/src/list_node_factories_tool.rs": "1dd6e27dbfc7e0b663d9e31d11aedfc612acf8a9ef65b2cc40a5e0e01feb0619",
+    "crates/container-plugin/examples/research_manifest_registry_probe.rs": "b41a93419307ebe66ca8a9228e8079c5b65c5098c8ea32614b4b59a23b559360"
+  }
+}

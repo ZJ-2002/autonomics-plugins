@@ -1,0 +1,11 @@
+--- a/research-adapters/cachexia-permutation/manifest.toml
++++ b/research-adapters/cachexia-permutation/manifest.toml
+@@ -1,7 +1,7 @@
+ schema_version = 1
+ plugin_name = "cachexia-permutation"
+ [image]
+-reference = "localhost/cachexia-permutation@sha256:5b87558f07b40777be22a204723f3dbbadf0e2905b852473dd4922419c37a079"
++reference = "ghcr.io/zj-2002/permutation-official@sha256:58d2e4d969549713bf8c85c22f3d672305fac39e6ded19fe9f9cbe92f713b7a7"
+ tag = "scipy-1.18.1-numpy-2.5.3-pyarrow-25.0.1-official-proof"
+ upstream = "Unmodified official PyPI wheels, all three scipy.stats.permutation_test null types; frozen explicit scalar statistics"
+ license = "BSD-3-Clause"
