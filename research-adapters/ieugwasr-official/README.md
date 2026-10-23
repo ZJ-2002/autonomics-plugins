@@ -24,11 +24,18 @@ no dependency environment is copied into this family.
 
 ## Scope and availability
 
-The private registry image has authenticated manifest/config verification and
-actual offline image/port proofs. Its clean-host anonymous pull is unavailable.
-This candidate is not installed in production and has not received scientific
-release. The immutable source lock remains the pre-build input and is not
-rewritten to imply deployment.
+The manifest's `private` wording records the earlier registry state, not a
+current visibility guarantee. An anonymous observation recorded at
+`2026-10-23T11:44:23.999039Z` fetched the exact image manifest
+`ghcr.io/zj-2002/ieugwasr-official@sha256:c8631fb88461135ea1b570f0e08a5bfb04366ef2bc835e874d30c7326fdc2395`
+and its configuration with HTTP 200. The raw manifest hash and configuration
+hash `38114ac009e0d023c262aa1b67eb459127810a345507b95cbc96ba515e9f5a2e`
+matched their immutable descriptors. The small technical observation record has
+SHA256 `1dba8cedfde5116ec136af9505abe9505cba77ddeb7932e45185073d4414c138`.
+No user credentials were supplied; only an anonymous registry token was used.
+No image layers were downloaded. This does not prove a clean host can retrieve
+all layers, current production binding or scientific release. The manifest,
+dispatcher and pre-build source lock remain unchanged.
 
 Both kinds explicitly pin `R_LIBS` and `R_LIBS_USER` to the isolated author
 library. The inherited runtime's normal R startup otherwise puts the retained
