@@ -658,7 +658,7 @@
       "kinds": [
         "donor_composition_official"
       ],
-      "image_reference": "ghcr.io/zj-2002/mrlap-official@sha256:78f195b862a3b7c5f8d96a96576cfb2c66b08f9bd31a739da59a017726cd063d",
+      "image_reference": "ghcr.io/zj-2002/mrlap-official@sha256:e6e10cddfa1cba8046ee6fbc1492b94cbd70d66b097f5f415845d56f9f925434",
       "files": [
         {
           "path": "README.md",
@@ -668,7 +668,7 @@
         },
         {
           "path": "manifest.toml",
-          "sha256": "63cfeda1728c84f757fe75d0fea7a42f80cb0517496b9edd04674ba2c9f878db",
+          "sha256": "78f0d6cea1dc610038647d59d6c48a1a0cc956a16256e983919c4a2fc3e273fa",
           "bytes": 2859,
           "executable": false
         },
@@ -736,7 +736,7 @@
         },
         {
           "path": "source-lock.json",
-          "sha256": "5ceeae9e810a891327b01b4cdcd6fe0c4c0744a1c18fb9e03289b049d7de5fd5",
+          "sha256": "194ef869b6f12f68ba7c371a4f52313c0e61252f3d46f6f39ea39827b2735292",
           "bytes": 4076,
           "executable": false
         }
@@ -7590,7 +7590,7 @@
       "kinds": [
         "mrlap_official"
       ],
-      "image_reference": "ghcr.io/zj-2002/mrlap-official@sha256:78f195b862a3b7c5f8d96a96576cfb2c66b08f9bd31a739da59a017726cd063d",
+      "image_reference": "ghcr.io/zj-2002/mrlap-official@sha256:e6e10cddfa1cba8046ee6fbc1492b94cbd70d66b097f5f415845d56f9f925434",
       "files": [
         {
           "path": "Dockerfile",
@@ -7606,7 +7606,7 @@
         },
         {
           "path": "manifest.toml",
-          "sha256": "8dcc2b973b844150f660b9fcd9209b564d4642f118ed716fc219cc4a072c81c6",
+          "sha256": "124af84ebae7424c547a62a08d02fa390c303bd8e1de0255efe7f9c9d01988c5",
           "bytes": 3868,
           "executable": false
         },
@@ -14596,24 +14596,24 @@
         "prop_test",
         "p_adjust"
       ],
-      "image_reference": "ghcr.io/zj-2002/mrlap-official@sha256:78f195b862a3b7c5f8d96a96576cfb2c66b08f9bd31a739da59a017726cd063d",
+      "image_reference": "ghcr.io/zj-2002/mrlap-official@sha256:e6e10cddfa1cba8046ee6fbc1492b94cbd70d66b097f5f415845d56f9f925434",
       "files": [
         {
           "path": "README.md",
-          "sha256": "02593adbd2a382f4e00e3b931c58c7e9e3da1ba7a139ceee7c2b68936903bd17",
-          "bytes": 4064,
+          "sha256": "811f01e8cb684fdb9fecd1792131e21abf066cb4b8e2a6988bb5df0403961c95",
+          "bytes": 6972,
           "executable": false
         },
         {
           "path": "manifest.toml",
-          "sha256": "43fc5827ea5d1bd02efd22b08826da00ef7b2795985fb13ed4d34dd2e49c69c6",
-          "bytes": 6770,
+          "sha256": "ccf72584fee00588b076d1b13ff26c43ca7fc8cdbcdb0ee9b029516e6f4e8f18",
+          "bytes": 7102,
           "executable": false
         },
         {
           "path": "scripts/statistics.R",
-          "sha256": "aeaf7ea6073029eb4c3450303c332bf15e2f8077b704f6fd958ce6e1ba5acec5",
-          "bytes": 13446,
+          "sha256": "b9b8259ed0d4cc91c9227c955893c018687ec5bb4dca7ed4c7e86e11cde85684",
+          "bytes": 14347,
           "executable": false
         }
       ],
@@ -14627,7 +14627,7 @@
       "kinds": [
         "r_stats_lm"
       ],
-      "image_reference": "ghcr.io/zj-2002/mrlap-official@sha256:78f195b862a3b7c5f8d96a96576cfb2c66b08f9bd31a739da59a017726cd063d",
+      "image_reference": "ghcr.io/zj-2002/mrlap-official@sha256:e6e10cddfa1cba8046ee6fbc1492b94cbd70d66b097f5f415845d56f9f925434",
       "files": [
         {
           "path": "README.md",
@@ -14637,7 +14637,7 @@
         },
         {
           "path": "manifest.toml",
-          "sha256": "7d91d00f9d966075caf1bf2ccae908fb1fe30783edf7cc3b43dcf5c44ccba755",
+          "sha256": "970b61af183949be0e28cc4e11910ba6b31d89dcdc5a4eacdda4bad44e282248",
           "bytes": 2242,
           "executable": false
         },
@@ -15494,7 +15494,7 @@
       "kinds": [
         "twosamplemr_v432_a_exploratory"
       ],
-      "image_reference": "ghcr.io/zj-2002/mrlap-official@sha256:78f195b862a3b7c5f8d96a96576cfb2c66b08f9bd31a739da59a017726cd063d",
+      "image_reference": "ghcr.io/zj-2002/mrlap-official@sha256:e6e10cddfa1cba8046ee6fbc1492b94cbd70d66b097f5f415845d56f9f925434",
       "files": [
         {
           "path": "README.md",
@@ -15510,7 +15510,7 @@
         },
         {
           "path": "manifest.toml",
-          "sha256": "661e12b231f7b38540d5cba2fca8a31ee3d5d0831305998f00fa0e898d980324",
+          "sha256": "9755f9debbf7c90638fd84b273942aa2a8a8e988416dd93573ad8d8a378a4b8b",
           "bytes": 2509,
           "executable": false
         },
@@ -16721,18 +16721,18 @@
       "kinds": [
         "cachexia_file_hashes"
       ],
-      "image_reference": "localhost/autonomics/biotools-py@sha256:ba0ad02ae1a92495fa8d498c5083471fcca38bff6b389a0bc9c3081b10eeef48",
+      "image_reference": "ghcr.io/zj-2002/biotools-py@sha256:7ad6aeafa87672699d28b61b6bed12fc81fcdbfc43222a0abf17e2d56fb806f5",
       "files": [
         {
           "path": "README.md",
-          "sha256": "53a1b19c263cc90c4b81cccb2f38f7df089287fd0bc019124d7e7cef00e1fad0",
-          "bytes": 1468,
+          "sha256": "2c67bbf222603d17466bef3670fddff8ca792bbbf53a510690ac58cc1f61465e",
+          "bytes": 2664,
           "executable": false
         },
         {
           "path": "manifest.toml",
-          "sha256": "dbee8b0200e8dd3be153b325689e2eb5cb0aa47647d5eb15f0c8ab52eb10567a",
-          "bytes": 1417,
+          "sha256": "244680bdbc072da1b34d17ea4fcc04ecfc50f2e3509e819bdc78e2d304f91dde",
+          "bytes": 1412,
           "executable": false
         },
         {
@@ -16811,8 +16811,14 @@
         "cachexia_hlme_compare",
         "cachexia_lcmm_bind_contract"
       ],
-      "image_reference": "localhost/cachexia-lcmm@sha256:602bbf79fa81124edc1d78f366a71e2f8e55f1c768377810104eb81bb03ac97a",
+      "image_reference": "ghcr.io/zj-2002/lcmm-official@sha256:dd7f8a68d27a1002d5f6b004ca2ad24fc92cc7db43773500963363f92f8828d5",
       "files": [
+        {
+          "path": "Dockerfile",
+          "sha256": "f25450ff152eb820116ec63ead161bdb265b091bc19f725322063e0462746e4d",
+          "bytes": 678,
+          "executable": false
+        },
         {
           "path": "README.md",
           "sha256": "ef8d00e620fff356b51a1c51b83dc3bb712e6241d1301470f60d047685ab335d",
@@ -16821,14 +16827,20 @@
         },
         {
           "path": "manifest.toml",
-          "sha256": "e2c79728840e6b010bfe50625f82ca1e98e6584a527309acab819b14033ce963",
-          "bytes": 4599,
+          "sha256": "f0f65466543377ff485c553c26a53650ad35718c3a59d99b4b532e260dbdc069",
+          "bytes": 4605,
           "executable": false
         },
         {
           "path": "scripts/lcmm.R",
           "sha256": "92bedf32d5c48070df0354b0ee08c0d0f64e0fcb7cf44d7abd0da2945a0d43d8",
           "bytes": 23536,
+          "executable": false
+        },
+        {
+          "path": "source-plan.json",
+          "sha256": "5963bc270fe7ea42e1ee1f24a980889e63847241b92a23bcdca0dd9cd2c14b37",
+          "bytes": 2187,
           "executable": false
         }
       ],
@@ -16842,12 +16854,12 @@
       "kinds": [
         "cachexia_lcmm_values_to_parquet"
       ],
-      "image_reference": "localhost/autonomics/single-cell-preprocessor@sha256:5069c3ffaac0b11dfe950c1cd026f4195317be47b529b730572d9e670ad0f59b",
+      "image_reference": "ghcr.io/zj-2002/single-cell-preprocessor@sha256:e2f9fcd5ccf9e97b0f0129466df5abb21ae47ed32f123f6953b79fd83d915e20",
       "files": [
         {
           "path": "manifest.toml",
-          "sha256": "92c55a4c198a6e93ff96cb386c08f22172a2caa8e8bccf1309b152b81d6c6b84",
-          "bytes": 1354,
+          "sha256": "3f90183b96b13d9f18000ae42e71a87c22e115fa76ed8294d3bc47e559bfe62c",
+          "bytes": 1349,
           "executable": false
         },
         {
@@ -17022,7 +17034,7 @@
         "cachexia_mice_impute_pmm",
         "cachexia_mice_impute_logreg"
       ],
-      "image_reference": "localhost/cachexia-mice@sha256:0a7b397b9fb5fca8128381525ab9482098445a2f29e309135464a8cd45fc0f57",
+      "image_reference": "ghcr.io/zj-2002/mice-official@sha256:ff4c166b89842d9bfbcf8d0f8227d05057a3ae57a668d374374a60db1e425516",
       "files": [
         {
           "path": "Dockerfile",
@@ -17038,8 +17050,14 @@
         },
         {
           "path": "manifest.toml",
-          "sha256": "eec37a826352f6501d8c53b60a0ff80a2027e01995798b156d4fd0f7a51d3780",
-          "bytes": 5826,
+          "sha256": "800c76164539b4d4b73ffc1a9dcda85f517709030476e063175a5f1465e434d2",
+          "bytes": 5832,
+          "executable": false
+        },
+        {
+          "path": "runtime-debs.SHA256SUMS",
+          "sha256": "b81998f806069e011dd589b3d02e3675f67abdc3157c54541df3959b7d9be05f",
+          "bytes": 828,
           "executable": false
         },
         {
@@ -17053,6 +17071,12 @@
           "sha256": "33d36247e60b0229965e1d2d559f91961888b7f959a82154a4996fbf4c10309e",
           "bytes": 26581,
           "executable": false
+        },
+        {
+          "path": "source-plan.json",
+          "sha256": "bba54da13dc82bab7e0f2402419596cdc75ff51b3ae6703383fb7232ff1ad011",
+          "bytes": 4794,
+          "executable": false
         }
       ],
       "source_inventory_only": true,
@@ -17065,7 +17089,7 @@
       "kinds": [
         "cachexia_mice_values_to_parquet"
       ],
-      "image_reference": "localhost/autonomics/single-cell-preprocessor@sha256:5069c3ffaac0b11dfe950c1cd026f4195317be47b529b730572d9e670ad0f59b",
+      "image_reference": "ghcr.io/zj-2002/single-cell-preprocessor@sha256:e2f9fcd5ccf9e97b0f0129466df5abb21ae47ed32f123f6953b79fd83d915e20",
       "files": [
         {
           "path": "README.md",
@@ -17075,8 +17099,8 @@
         },
         {
           "path": "manifest.toml",
-          "sha256": "5cf91dcfff2ff4f9bbd0749d881f5dccb9a17c13040952987c07affb4d10c0e6",
-          "bytes": 1184,
+          "sha256": "63a57ac503ac19043835ed66d3939f908e623861e6d67e62a185dcad3613f515",
+          "bytes": 1179,
           "executable": false
         },
         {
@@ -17096,7 +17120,7 @@
       "kinds": [
         "cachexia_mrlap_official"
       ],
-      "image_reference": "ghcr.io/zj-2002/mrlap-official@sha256:78f195b862a3b7c5f8d96a96576cfb2c66b08f9bd31a739da59a017726cd063d",
+      "image_reference": "ghcr.io/zj-2002/mrlap-official@sha256:e6e10cddfa1cba8046ee6fbc1492b94cbd70d66b097f5f415845d56f9f925434",
       "files": [
         {
           "path": "README.md",
@@ -17106,7 +17130,7 @@
         },
         {
           "path": "manifest.toml",
-          "sha256": "e7890bdd076b1f1b3f3cc5ead851fe351bf0aa76378539e99678aeb109b105aa",
+          "sha256": "a65b538e2ff8246ef58d063d38300685e6b6a62aede0452ab514ec5e503c9089",
           "bytes": 1734,
           "executable": false
         },
@@ -17704,7 +17728,7 @@
         "cachexia_calibrate",
         "cachexia_trim_weights"
       ],
-      "image_reference": "localhost/cachexia-survey@sha256:8186f7fc9fa4a75023821b8f0f22634b82c2112916c426a20ee40075c4753243",
+      "image_reference": "ghcr.io/zj-2002/survey-official@sha256:6f3e6f417912b7fb2c2b344ceaa11ff6031cde7848740caf6450c4366b5fbc61",
       "files": [
         {
           "path": "Dockerfile",
@@ -17720,8 +17744,8 @@
         },
         {
           "path": "manifest.toml",
-          "sha256": "dfd462f2393c5d8ac06a07f14e8443851bdcde5220c382fc073d3cc1a210c903",
-          "bytes": 11209,
+          "sha256": "427bf8ec4d49496027ad888985ff8093032f2e5acc21a94cffe5c7eeb2949d9a",
+          "bytes": 11215,
           "executable": false
         },
         {
@@ -17735,6 +17759,12 @@
           "sha256": "f7d6c2bee9abf84474aaf4b3a78e35769d2bb58867c3f1b9508c9b70761c7716",
           "bytes": 27475,
           "executable": false
+        },
+        {
+          "path": "source-provenance.json",
+          "sha256": "44057ba7ec4cda587de819c1e0b88fc81aefd0f9c3d8916e9e0bdf66fe9b5db7",
+          "bytes": 1491,
+          "executable": false
         }
       ],
       "source_inventory_only": true,
@@ -17747,7 +17777,7 @@
       "kinds": [
         "cachexia_survey_values_to_parquet"
       ],
-      "image_reference": "localhost/autonomics/single-cell-preprocessor@sha256:5069c3ffaac0b11dfe950c1cd026f4195317be47b529b730572d9e670ad0f59b",
+      "image_reference": "ghcr.io/zj-2002/single-cell-preprocessor@sha256:e2f9fcd5ccf9e97b0f0129466df5abb21ae47ed32f123f6953b79fd83d915e20",
       "files": [
         {
           "path": "README.md",
@@ -17757,8 +17787,8 @@
         },
         {
           "path": "manifest.toml",
-          "sha256": "9b2402c96ad8c27b147d371c8f500c9412a2c8fd74b70e9f6ce74fff4b210f9a",
-          "bytes": 1270,
+          "sha256": "f48c9524ff0f5fb6dcd35b77cc241d88919d871a337c8bdc9ccc1c7ccb0aea15",
+          "bytes": 1265,
           "executable": false
         },
         {
@@ -18051,7 +18081,7 @@
       "kinds": [
         "frozen_a_family_adjust"
       ],
-      "image_reference": "ghcr.io/zj-2002/mrlap-official@sha256:78f195b862a3b7c5f8d96a96576cfb2c66b08f9bd31a739da59a017726cd063d",
+      "image_reference": "ghcr.io/zj-2002/mrlap-official@sha256:e6e10cddfa1cba8046ee6fbc1492b94cbd70d66b097f5f415845d56f9f925434",
       "files": [
         {
           "path": "README.md",
@@ -18061,8 +18091,14 @@
         },
         {
           "path": "manifest.toml",
-          "sha256": "55ce64e5a2cc16ba43962fef7c3039c8df9e83a2670934f1a8b7ff2f383541da",
+          "sha256": "f4ae1b06022c9bf64330a8dff449bf9244afc87037d78ad27686c4826a81be6c",
           "bytes": 1636,
+          "executable": false
+        },
+        {
+          "path": "real-intake-v1/adjust_real.R",
+          "sha256": "bc9f4c4fdb0bd07615a1afa4c89ee2a33814254f064f3f4148b17b7aea30f79a",
+          "bytes": 6349,
           "executable": false
         },
         {
@@ -18104,6 +18140,48 @@
           "executable": false
         },
         {
+          "path": "real-intake-v1/README.md",
+          "sha256": "ec80f641d28bf43362447fb6674d4f530fd0c4f2ef27bb09c1e792d23007904c",
+          "bytes": 10910,
+          "executable": false
+        },
+        {
+          "path": "real-intake-v1/intake.py",
+          "sha256": "35264b2df3320fe34f68c8ad8b858cc1e9abcd7bea3af808fa978551fa150486",
+          "bytes": 15642,
+          "executable": false
+        },
+        {
+          "path": "real-intake-v1/test_intake.py",
+          "sha256": "ed566a18fa9e10e16032ed14a097ede3b92ae95b470a22d1a175533e585f40f4",
+          "bytes": 9612,
+          "executable": false
+        },
+        {
+          "path": "real-intake-v1/validate_toy.py",
+          "sha256": "93566e48ea7b574461911e7fe436a538e30d5477ace4d1553a07f991a98ed103",
+          "bytes": 6019,
+          "executable": false
+        },
+        {
+          "path": "replay/README.md",
+          "sha256": "4a688130eb5bc1bf68f6fa3e3a8e59df87e8844f13d8011dd160c774527c4197",
+          "bytes": 5237,
+          "executable": false
+        },
+        {
+          "path": "replay/adjust_seen_v1.R",
+          "sha256": "fdb04e10341a873e71a21f58c3c917bef09da646b07d902b37b69b585cf56309",
+          "bytes": 6056,
+          "executable": false
+        },
+        {
+          "path": "replay/seen_real_v1.py",
+          "sha256": "ddd4ed485bc5723bc7ebaae116c115be5c72a482a8a9ea4acdb11e4b8281025d",
+          "bytes": 13937,
+          "executable": false
+        },
+        {
           "path": "scripts/family.py",
           "sha256": "338a864e0cfa9c4ab4df181728f28b1a08c6a841cbea906946dc3de90c40a43a",
           "bytes": 26620,
@@ -18120,7 +18198,7 @@
       "kinds": [
         "frozen_a_v432_harmonisation"
       ],
-      "image_reference": "ghcr.io/zj-2002/mrlap-official@sha256:78f195b862a3b7c5f8d96a96576cfb2c66b08f9bd31a739da59a017726cd063d",
+      "image_reference": "ghcr.io/zj-2002/mrlap-official@sha256:e6e10cddfa1cba8046ee6fbc1492b94cbd70d66b097f5f415845d56f9f925434",
       "files": [
         {
           "path": "README.md",
@@ -18136,7 +18214,7 @@
         },
         {
           "path": "manifest.toml",
-          "sha256": "07051b9e8351ae30a74ac8b25074e256bfb9d2fb0af53922864d0c16101a01fb",
+          "sha256": "ab9f7f7ba51e698ed2e25f1cc504f4ed2d23877c6655dd8ecb6232631ebfe9fc",
           "bytes": 2108,
           "executable": false
         },
@@ -18230,8 +18308,26 @@
         },
         {
           "path": "README.md",
-          "sha256": "e363d4b69f23f2c91a387f484e9c66730ffa68dbbdcf20ae2055b7dcc9a84bf4",
-          "bytes": 3591,
+          "sha256": "52908ba4e121618a282c15dbcc7747d1d96bc85fe312710d3fee7334dc683f8c",
+          "bytes": 4948,
+          "executable": false
+        },
+        {
+          "path": "deployment/DEPLOYMENT_CANDIDATE.md",
+          "sha256": "c2f983743fe08150ffa2bd56db7c4d6123abed554baf74160c9e67ac225e2b7f",
+          "bytes": 13100,
+          "executable": false
+        },
+        {
+          "path": "deployment/plugin-private-environment.candidate.json",
+          "sha256": "9ad2bab601c638d8b7652c14efd38f65b4db3f365cd67e933ba984e9db97c9fd",
+          "bytes": 989,
+          "executable": false
+        },
+        {
+          "path": "deployment/runtime-bindings.candidate.json",
+          "sha256": "bf0c40adb10312e2e758713d58d4a2cd889877b953255bcf8781d7ed8251666d",
+          "bytes": 4041,
           "executable": false
         },
         {
@@ -18244,6 +18340,12 @@
           "path": "scripts/dispatch.R",
           "sha256": "b2d1c715a182b9d5630b42598e29649bf82f024cb568b00b1e3d01cc77a9dafe",
           "bytes": 11783,
+          "executable": false
+        },
+        {
+          "path": "tests/deployment_candidate_acceptance.py",
+          "sha256": "2fe0f94e8d9ab1d9351e8dcbcf09ee2de2a89a96eb7ef9c00b758262b91727e4",
+          "bytes": 15321,
           "executable": false
         }
       ],
@@ -19036,5 +19138,229 @@
       "executable": false
     }
   ],
-  "G0": false
+  "G0": false,
+  "non_plugin_source_tools": [
+    {
+      "directory": "research-adapters/a-carrier-concordance-v1",
+      "files": [
+        {
+          "path": "README.md",
+          "sha256": "39b7bba26aa5ff8c5fb526dad91dba65ad30374b5c46c7a4e4df792fca3af308",
+          "bytes": 3790,
+          "executable": false
+        },
+        {
+          "path": "concordance.py",
+          "sha256": "bc1f7749dc88528c5b6e8745361b73d0fb66223c8de60c1ec13e76a7ffa02f70",
+          "bytes": 4488,
+          "executable": false
+        },
+        {
+          "path": "decode.R",
+          "sha256": "2da4010d59b82b223f12bf7b135a9f55eddcf8a8ed74c57ea138813a5d98b5cf",
+          "bytes": 1251,
+          "executable": false
+        },
+        {
+          "path": "test_concordance.py",
+          "sha256": "ace5fd14b620ba5961243b9f9d6d67199f3e26664d32baa1bfe9e357d019efa9",
+          "bytes": 4525,
+          "executable": false
+        }
+      ],
+      "scope": "TECHNICAL_TOOLING_NOT_LOADABLE_PLUGIN",
+      "source_inventory_only": true,
+      "scientific_certified": false,
+      "auto_enable": false
+    },
+    {
+      "directory": "research-adapters/b-source-convergence-v1",
+      "files": [
+        {
+          "path": "CONVERGENCE_PLAN.json",
+          "sha256": "fcc2c9c57d97b0df434c9b968222b683daa4b805dbee3b3628f73dbf842fe91f",
+          "bytes": 7083,
+          "executable": false
+        },
+        {
+          "path": "README.md",
+          "sha256": "8e585235d24aee630c6924e23ae0b3fe9a24122ce66eba71a8f438986a1ef05b",
+          "bytes": 4530,
+          "executable": false
+        },
+        {
+          "path": "analyze.py",
+          "sha256": "65ac2ba8ad6b1e52757f642731ec69c38c3e48d64b0e557db6e8b7d1b66d4a18",
+          "bytes": 9245,
+          "executable": false
+        },
+        {
+          "path": "convergence.tsv",
+          "sha256": "0a48e0c53ee6515e9531911730c60fc59a4abf2fcc6a5c1c6dda8505d1b10a1d",
+          "bytes": 25572,
+          "executable": false
+        }
+      ],
+      "scope": "TECHNICAL_TOOLING_NOT_LOADABLE_PLUGIN",
+      "source_inventory_only": true,
+      "scientific_certified": false,
+      "auto_enable": false
+    },
+    {
+      "directory": "research-adapters/fixed120-postdeployment-v1",
+      "files": [
+        {
+          "path": "README.md",
+          "sha256": "3ef7e31f39444ba83b87dcb81f3884bd37e47083e7618879f1f4f9fc24600140",
+          "bytes": 4148,
+          "executable": false
+        },
+        {
+          "path": "merge.py",
+          "sha256": "e4ee291c6f16fbf4768bb35dc7170113b1971d15a9ab4d0d62a0b07cac64a39c",
+          "bytes": 15201,
+          "executable": false
+        }
+      ],
+      "scope": "TECHNICAL_TOOLING_NOT_LOADABLE_PLUGIN",
+      "source_inventory_only": true,
+      "scientific_certified": false,
+      "auto_enable": false
+    },
+    {
+      "directory": "research-adapters/frozen-a-native-dag-proof-v1",
+      "files": [
+        {
+          "path": "README.md",
+          "sha256": "d0262e927df162583c0caf6d809b3756713db6eea9f9df4bd23f0c3adeefa8d1",
+          "bytes": 8961,
+          "executable": false
+        },
+        {
+          "path": "evidence-index.json",
+          "sha256": "24ae89b0985fa37d95b110339184d191252aa4665c6651cc660c2be12ba7364b",
+          "bytes": 6215,
+          "executable": false
+        },
+        {
+          "path": "prove_native.py",
+          "sha256": "6c87e1f28e6b72aaf1ffbded7db58e63e56c7d5cf2f878743f3b6133dddb7ef2",
+          "bytes": 23116,
+          "executable": false
+        }
+      ],
+      "scope": "TECHNICAL_TOOLING_NOT_LOADABLE_PLUGIN",
+      "source_inventory_only": true,
+      "scientific_certified": false,
+      "auto_enable": false
+    },
+    {
+      "directory": "research-adapters/frozen-a-real-intake-dag-v1",
+      "files": [
+        {
+          "path": "README.md",
+          "sha256": "c55a33fbdd69b5ee4a01eed841dfbe8d5701469c76be08749605f85555a4ebea",
+          "bytes": 12058,
+          "executable": false
+        },
+        {
+          "path": "manifest.template.toml",
+          "sha256": "af1ec7cc959ad5ee544e546c3f7f74ffffb3f6c979f2bdc196966e329ae309fb",
+          "bytes": 1503,
+          "executable": false
+        },
+        {
+          "path": "official-manifest.toml",
+          "sha256": "cb31abd78e4fbc9e5c014622842b150783d3e648009c132b92d10db8e3e40daa",
+          "bytes": 1363,
+          "executable": false
+        },
+        {
+          "path": "prepare.py",
+          "sha256": "39546a2cff609f0f001206c85e690f71b8badd70fe5283aaf287efe95714f1ad",
+          "bytes": 4026,
+          "executable": false
+        },
+        {
+          "path": "scripts/adjust.sh",
+          "sha256": "7db30a1df05965cb79fe94fcfac272c93a3230f56f435e8c800ca27adeb4a120",
+          "bytes": 934,
+          "executable": false
+        },
+        {
+          "path": "scripts/bridge.py",
+          "sha256": "3e2e27fac2f7a3d1262927d0060e47d25879d472b0bac1d383c0bb6b5a2cac91",
+          "bytes": 10826,
+          "executable": false
+        },
+        {
+          "path": "source-lock.json",
+          "sha256": "1d81133d3ba63e1a156e977c9f1c9cccfa6f25bda59b4559bc4c06ba78b393b3",
+          "bytes": 2913,
+          "executable": false
+        },
+        {
+          "path": "test_wiring.py",
+          "sha256": "5d14fd1beb64a5c63dae7dc881bf9c9de90b3026608b23b0a31ff5f199cc66ac",
+          "bytes": 10842,
+          "executable": false
+        },
+        {
+          "path": "validate_wiring.py",
+          "sha256": "22d87131e2d3ce5bbe5bdaf0cc4eb87d0bee241e06bf7b9e7490761d873b0e5b",
+          "bytes": 5094,
+          "executable": false
+        }
+      ],
+      "scope": "TECHNICAL_TOOLING_NOT_LOADABLE_PLUGIN",
+      "source_inventory_only": true,
+      "scientific_certified": false,
+      "auto_enable": false
+    },
+    {
+      "directory": "research-adapters/image-portability-deployment-v1",
+      "files": [
+        {
+          "path": "EVIDENCE.md",
+          "sha256": "55ac0ce886f9c85ca8fb6666fa375f09cf8dd57b07e962cca5c635308508ded8",
+          "bytes": 4488,
+          "executable": false
+        },
+        {
+          "path": "README.md",
+          "sha256": "61ecc54772d618783c33a0576c97eab540af76ecaa6568578a6e7e5cdcb53cb7",
+          "bytes": 7575,
+          "executable": false
+        },
+        {
+          "path": "cachexia-permutation.patch",
+          "sha256": "614da62f4a6d86f2dd6995bacff52998acf6f84e5c3bf03353fde91e139a6713",
+          "bytes": 665,
+          "executable": false
+        },
+        {
+          "path": "cachexia-sensitivity.patch",
+          "sha256": "612a36153b4f4130372507a38f4e65d7f50d2bcbde3160d040d869e89117f790",
+          "bytes": 660,
+          "executable": false
+        },
+        {
+          "path": "migration-plan.json",
+          "sha256": "9403e7e755924a530bdd772cb095b848d293cd0bce7c810544a064b6152bf6c8",
+          "bytes": 4948,
+          "executable": false
+        },
+        {
+          "path": "validate_candidate.py",
+          "sha256": "d2230a3615a61bd2955a5d676e714bd998e9de50991be47ec0c6e9b8d010acd4",
+          "bytes": 10973,
+          "executable": false
+        }
+      ],
+      "scope": "TECHNICAL_TOOLING_NOT_LOADABLE_PLUGIN",
+      "source_inventory_only": true,
+      "scientific_certified": false,
+      "auto_enable": false
+    }
+  ]
 }

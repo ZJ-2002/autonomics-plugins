@@ -78,12 +78,16 @@ def family_record(directory, namespace):
 
 
 def inventory(root):
+    from tools.catalog_tooling import non_plugin_directories
+    tooling = non_plugin_directories(root, file_records)
     records = []
     owners = {}
     for namespace in ['plugins', 'research-adapters']:
         for directory in sorted((root / namespace).iterdir()):
             if directory.is_symlink() or not directory.is_dir():
                 raise ValueError('Unexpected file in family root: ' + str(directory))
+            if namespace + '/' + directory.name in tooling:
+                continue
             record = family_record(directory, namespace)
             if namespace == 'plugins':
                 for kind in record['kinds']:
@@ -97,7 +101,8 @@ def inventory(root):
                 canonical_families=sum(entry['directory'].startswith('plugins/') for entry in records),
                 canonical_kinds=len(owners), families=records,
                 shared_image_source_files=file_records(root / 'shared-image-sources')
-                if (root / 'shared-image-sources').is_dir() else [], G0=False)
+                if (root / 'shared-image-sources').is_dir() else [], G0=False,
+                non_plugin_source_tools=list(tooling.values()))
 
 
 def check_lock(root):

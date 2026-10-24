@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "directories": [
+    "research-adapters/a-carrier-concordance-v1",
+    "research-adapters/b-source-convergence-v1",
+    "research-adapters/fixed120-postdeployment-v1",
+    "research-adapters/frozen-a-native-dag-proof-v1",
+    "research-adapters/frozen-a-real-intake-dag-v1",
+    "research-adapters/image-portability-deployment-v1"
+  ]
+}
