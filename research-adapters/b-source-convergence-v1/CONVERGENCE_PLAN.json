@@ -1,0 +1,160 @@
+{
+  "schema": "B_SOURCE_CONVERGENCE_PLAN_V1",
+  "comparison_parent": "233b5c4eabe31a121420bcd5c738edf9cfb48b5c",
+  "published_gate_repaired_at": "4379823f629c7377e4cd7c5c8f2ce9901f3a0661",
+  "module_counts": {
+    "IDENTICAL": 106,
+    "LOCAL_ONLY": 8,
+    "PUBLISHED_ONLY": 4,
+    "DIFFERENT": 6
+  },
+  "forward_review_required": [
+    {
+      "path": "tests/test_b_donor_canonical_source.py",
+      "state": "LOCAL_ONLY",
+      "local_sha256": "92ac3db696e0fb58aa54d71e995adf4a08975837611b2798a21135f416d52ca6",
+      "published_sha256": null,
+      "local_matches_prior_41_execution_source": false,
+      "decision": "UNPUBLISHED_LOCAL_FEATURE_REVIEW_BEFORE_PUBLICATION"
+    },
+    {
+      "path": "tests/test_biorxiv_response_contract.py",
+      "state": "LOCAL_ONLY",
+      "local_sha256": "bf1f80e14b4f1728a439f535b92ab4c54d75499ea8f5dc7d3ac7939796c623c6",
+      "published_sha256": null,
+      "local_matches_prior_41_execution_source": true,
+      "decision": "UNPUBLISHED_LOCAL_FEATURE_REVIEW_BEFORE_PUBLICATION"
+    },
+    {
+      "path": "tests/test_cachexia_v432_adapter.py",
+      "state": "DIFFERENT",
+      "local_sha256": "dcbb76a7f0b6072263817f2d87a8d83a3d7c2f06b82db2cdd5a1332da3662819",
+      "published_sha256": "e55984298a51b3ab27e970b889a0da1e8ac16debddf49957573c58b84a4ea63d",
+      "local_matches_prior_41_execution_source": false,
+      "decision": "KEEP_BOTH_IDENTITIES_REQUIRE_EXPLICIT_FORWARD_MERGE"
+    },
+    {
+      "path": "tests/test_cachexia_v432_official_correction.py",
+      "state": "PUBLISHED_ONLY",
+      "local_sha256": null,
+      "published_sha256": "c5b8ae426b49cc3fb7fd4196aab36ecf4338b6c97512710a0e2e3faf97f7e790",
+      "local_matches_prior_41_execution_source": false,
+      "decision": "PRESERVE_PUBLIC_MODULE_DO_NOT_DELETE_FROM_RELEASE"
+    },
+    {
+      "path": "tests/test_crossref_response_contract.py",
+      "state": "LOCAL_ONLY",
+      "local_sha256": "f2e4a1f0d000fdd35d413dfff26c78022fb6704910bad6f903bb7b95efa1359a",
+      "published_sha256": null,
+      "local_matches_prior_41_execution_source": true,
+      "decision": "UNPUBLISHED_LOCAL_FEATURE_REVIEW_BEFORE_PUBLICATION"
+    },
+    {
+      "path": "tests/test_governance_transport.py",
+      "state": "DIFFERENT",
+      "local_sha256": "a2c4fb105cec0099c444f511e629b91bd23efa782aba34555a59cfbfd7ec3668",
+      "published_sha256": "cf778d213f53b8ff5133d7a3b1bcec29f3175d5130de5d9757620fd1a67cb908",
+      "local_matches_prior_41_execution_source": false,
+      "decision": "KEEP_BOTH_IDENTITIES_REQUIRE_EXPLICIT_FORWARD_MERGE"
+    },
+    {
+      "path": "tests/test_h5ad_subset_publication.py",
+      "state": "DIFFERENT",
+      "local_sha256": "4d0a059703963d10da3e50d588b4b4bd6dd3ae09136964e6cd1d497182c60f08",
+      "published_sha256": "4bc3be41a7da4ec05ad41310c699252311b7439ede8ea333bc426bca98c2eddb",
+      "local_matches_prior_41_execution_source": false,
+      "decision": "KEEP_BOTH_IDENTITIES_REQUIRE_EXPLICIT_FORWARD_MERGE"
+    },
+    {
+      "path": "tests/test_mtag_official_source_reuse.py",
+      "state": "PUBLISHED_ONLY",
+      "local_sha256": null,
+      "published_sha256": "fea6e8929b3f695fb59ce487b329120a2d8e5b12372abe47596c36c77fbce162",
+      "local_matches_prior_41_execution_source": false,
+      "decision": "PRESERVE_PUBLIC_MODULE_DO_NOT_DELETE_FROM_RELEASE"
+    },
+    {
+      "path": "tests/test_opentargets_direct_continuation.py",
+      "state": "LOCAL_ONLY",
+      "local_sha256": "3032b48656edb919cc534ef5cf52f8a74a804eb64d273eda3a6f97765d9abc96",
+      "published_sha256": null,
+      "local_matches_prior_41_execution_source": true,
+      "decision": "UNPUBLISHED_LOCAL_FEATURE_REVIEW_BEFORE_PUBLICATION"
+    },
+    {
+      "path": "tests/test_opentargets_direct_files.py",
+      "state": "LOCAL_ONLY",
+      "local_sha256": "720b98e741609d753f3e90ec72bc2e5e42a8925cb81a0c76989315426a6c0ffc",
+      "published_sha256": null,
+      "local_matches_prior_41_execution_source": true,
+      "decision": "UNPUBLISHED_LOCAL_FEATURE_REVIEW_BEFORE_PUBLICATION"
+    },
+    {
+      "path": "tests/test_opentargets_field_sources.py",
+      "state": "LOCAL_ONLY",
+      "local_sha256": "e6e9329ae0143bd95d2aa74d971de075012dbebf600d9061d40b8a9577149d6b",
+      "published_sha256": null,
+      "local_matches_prior_41_execution_source": true,
+      "decision": "UNPUBLISHED_LOCAL_FEATURE_REVIEW_BEFORE_PUBLICATION"
+    },
+    {
+      "path": "tests/test_opentargets_partitioned_reference.py",
+      "state": "LOCAL_ONLY",
+      "local_sha256": "a3e39e013ff4f1eaf1b4963bd9d86f2034628a410fa2c687eb2f1fcf73ffc770",
+      "published_sha256": null,
+      "local_matches_prior_41_execution_source": true,
+      "decision": "UNPUBLISHED_LOCAL_FEATURE_REVIEW_BEFORE_PUBLICATION"
+    },
+    {
+      "path": "tests/test_p0_source_evolution.py",
+      "state": "LOCAL_ONLY",
+      "local_sha256": "ce86b08ff615091291f248fb2ad68105adb7d2436f0e2fff575b34259ad3fec1",
+      "published_sha256": null,
+      "local_matches_prior_41_execution_source": false,
+      "decision": "UNPUBLISHED_LOCAL_FEATURE_REVIEW_BEFORE_PUBLICATION"
+    },
+    {
+      "path": "tests/test_r_publication_ownership.py",
+      "state": "DIFFERENT",
+      "local_sha256": "176ea42f67da3b84d2005a4453310ebc23168d9a14169f9ddb94ad25b9e1d99a",
+      "published_sha256": "139feb274f936bdb3712ec1787c298de02386ff36efa181626f644292cca7893",
+      "local_matches_prior_41_execution_source": false,
+      "decision": "KEEP_BOTH_IDENTITIES_REQUIRE_EXPLICIT_FORWARD_MERGE"
+    },
+    {
+      "path": "tests/test_r_publication_runtime.py",
+      "state": "DIFFERENT",
+      "local_sha256": "997a43119f610dafb99cbcea24e5c45b78ca54823f2892faa4a6dc81980715c0",
+      "published_sha256": "8aad03371427ca00dd7baf6f8d0e0082395294382859115618e0b2beac4ec1e8",
+      "local_matches_prior_41_execution_source": false,
+      "decision": "KEEP_BOTH_IDENTITIES_REQUIRE_EXPLICIT_FORWARD_MERGE"
+    },
+    {
+      "path": "tests/test_rnaseq_qc_contract.py",
+      "state": "PUBLISHED_ONLY",
+      "local_sha256": null,
+      "published_sha256": "339d740b1988fc4fea6055da3ebe9bad512b342eef22466c92ae763d9e829b13",
+      "local_matches_prior_41_execution_source": false,
+      "decision": "PRESERVE_PUBLIC_MODULE_DO_NOT_DELETE_FROM_RELEASE"
+    },
+    {
+      "path": "tests/test_score_genes_publication.py",
+      "state": "DIFFERENT",
+      "local_sha256": "9d5b579c9345a58057c52add87a4a4615a4d248aa5e84573c2be8c6b6517fae3",
+      "published_sha256": "eeb6a850419e90274aebaef0c9c53156160221536715a06f29f1663f1c9bff3c",
+      "local_matches_prior_41_execution_source": false,
+      "decision": "KEEP_BOTH_IDENTITIES_REQUIRE_EXPLICIT_FORWARD_MERGE"
+    },
+    {
+      "path": "tests/test_synthetic_rule_net.py",
+      "state": "PUBLISHED_ONLY",
+      "local_sha256": null,
+      "published_sha256": "54300e8f3fa7eb7b550eb3c4ff694b208ad3eb095c905ae7f9903100c24123b2",
+      "local_matches_prior_41_execution_source": false,
+      "decision": "PRESERVE_PUBLIC_MODULE_DO_NOT_DELETE_FROM_RELEASE"
+    }
+  ],
+  "local_draft_released": false,
+  "old_restore_162_patch_applied": false,
+  "new_scientific_authority": false
+}
