@@ -60,3 +60,42 @@ Use the CLI inside the managed validation lifecycle. Supply `--tsv`, `--rds`,
 `--request` and a fresh `--output` receipt path. It writes no updated input,
 estimate, frozen decision or approval. Production installation and integration
 into a future explicitly versioned intake are not claimed by this candidate.
+# Later lossless derived-carrier export
+
+`export_precise.py` and `export_precise.R` add a separate
+`A_PRECISE_MR_CARRIER_EXPORT_V1` contract. This is not a change to `verify()` or
+the original serialization-only receipt. The old TSV is still not claimed
+binary64-exact. The exporter first requires the complete original RDS object
+schema, versions, exploratory role, missing primary and exact original TSV
+serialization. It exports six numeric columns with 17 significant digits and
+independently reloads every value in R, comparing all IEEE binary64 bytes with
+the original RDS via `writeBin`. Character axes/order and missing-primary cells
+are also checked. No rounding tolerance or method/P-value selection is used.
+
+The result is a **new derived carrier**, not a recovered historical TSV, an
+independent scientific result or a primary-eligibility receipt. Other object
+schemas, MRlap objects, finite primary results and new methods are not supported.
+The function returns payload/receipt; its CLI writes only to a new canonical
+output directory. Failures never overwrite the source or an existing output.
+
+Six new toy regression tests pass, including nontrivial precision/tiny P values,
+wrong identities, altered TSV with a matching supplied hash, incomplete/duplicate
+selectors, invalid roles/primary promotion and symlink refusal. One already-seen
+X01-to-M06 RDS/TSV pair is converted: all three methods and **18 numeric cells**
+roundtrip bit-exactly. Twelve cells parsed from the old reporting TSV differ
+from the corresponding RDS values; this is ordinary reporting serialization
+precision loss, not proof that the original MR computation was wrong. Original
+files remain unchanged. No MR, fit, hypothesis test or DAG is executed.
+
+Final managed session `8e224edc8e0b477cb584fb560dd9c08c`, manifest seal
+`046e3200a5a3f851655ab672bffc64bf49e2a7e3b4d3cdd0de1b61620c563827`.
+Member `permanent/a-precise-carrier-export/verification.json`, SHA256
+`028521ffb1581e27a4211c111bf5a363a704bc20faca1b345772c8c449ee9f1b`.
+It retains tested sources, six actual test logs, request, complete new carrier,
+readback receipt and original input identities. Worker/launcher exit 0, CLEANED.
+README is a post-proof locator. Private scientific carriers are not published.
+
+The existing V1 intake still binds opaque RDS and is not silently upgraded by
+this separate tool. Its source-ID/status normalization and an explicit intake
+connection remain separate work. Two other historical full-precision carriers
+remain NOT_LOCATED; finite-primary qualification, production and G0 are unchanged.
