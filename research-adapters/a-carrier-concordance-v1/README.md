@@ -95,7 +95,52 @@ It retains tested sources, six actual test logs, request, complete new carrier,
 readback receipt and original input identities. Worker/launcher exit 0, CLEANED.
 README is a post-proof locator. Private scientific carriers are not published.
 
-The existing V1 intake still binds opaque RDS and is not silently upgraded by
-this separate tool. Its source-ID/status normalization and an explicit intake
-connection remain separate work. Two other historical full-precision carriers
+The existing V1 intake itself still binds opaque RDS and is not silently
+upgraded by this separate tool. Source-ID/status normalization and an explicit
+intake connection were pending at the export-only increment; the later bounded
+connection is recorded next. Two other historical full-precision carriers
 remain NOT_LOCATED; finite-primary qualification, production and G0 are unchanged.
+
+## Later X01/M06 technical intake connection
+
+`prepare_intake.py` provides an explicit, separate known-seen O2 derivation,
+not a general result-to-analysis mapper. `prepare()` verifies all nine frozen
+sources, the exact two decision files and four unchanged V1 implementations.
+Only A_X01_M06 is supported; both accessions come from the hash-locked input
+card. The predefined IVW selector and original analysis-level bounded-date
+view history are required. There is no choice based on P or significance.
+
+It runs the lossless conversion, preserves all original lexical fields, and
+appends the explicit analysis ID and technical `ESTIMATED` state. This state
+means that a bound complete official result object supplied an estimate, not
+primary eligibility. Its new request uses the existing V1 schema without
+loosening any rule. A separate derivation receipt records the original RDS/TSV,
+view history, exact frozen mappings, new byte identities and actual creation
+time. The historical date bounds the analysis identity, not creation or first
+viewing of these newly derived bytes. No old history file is edited.
+
+Four new mapping tests pass. The unchanged V1 intake and official R chain then
+actually consume this one already-seen real result, producing 564 family rows,
+840 vector/adjustment rows and all six complete RDS vectors. Host session
+`f5c2be348df84007a81bdd837e27b299`, seal
+`c995974c38d90444617b639fffde60f9f4c7bb74a676caf380ba44c07de8b433`;
+`permanent/a-precise-actual-intake/verification.json`, SHA256
+`bceea1d5a982528a3caea24ec1a10a78ea62facffce493678da527d7e5fad883`.
+
+The same derived input then runs through the original explicit-File bridge,
+fixed Python/R images and exact compiled SDK 864b3a75: **22 nodes, 24 edges,
+seven captured output Files**. Complete family/vector/adjusted TSVs match the
+host chain; a separate isolated R reader opens every vector in the new RDS and
+checks all 840 ordered values. Session `48d345ca1154409f9e19a2c2c2cc6700`, seal
+`4d9d2767bf74f1c19d319d6a92bdf6d6dc490706de436629eae47e8960094563`;
+`permanent/a-precise-native-intake/verification.json`, SHA256
+`83379c863fa8613b41a6b2056a8b1e26291371785538dabbbd11d773f0e8b5ee`.
+Both workers/launchers exit 0, CLEANED. The already-proved missing-File negative
+case is reused, not rerun. Host normalization precedes this DAG; it is not
+misrepresented as an additional native node or a production gateway submission.
+
+No MR fit runs. Primary P remains missing and the adjustment placeholder remains
+1, with 275 pending decisions and one locked O2 row. These placeholders are not
+scientific negative results. Production registration/activation, finite-primary
+admission and the two missing historical carriers remain unresolved. This is
+technical input/SDK transport evidence, not full A or G0 scientific acceptance.
