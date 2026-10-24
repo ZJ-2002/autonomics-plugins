@@ -736,7 +736,7 @@
         },
         {
           "path": "source-lock.json",
-          "sha256": "9c6d2ce181c7fddc682699ade88820f1f4687d983b7834ca7fc7654a20fda50f",
+          "sha256": "8d5bc7a35529a4971738e3e7ecc1eb8cf27d53ab3051fe0822cbab8ede190417",
           "bytes": 4076,
           "executable": false
         }
@@ -18284,6 +18284,80 @@
           "path": "scripts/gate.py",
           "sha256": "6c921c4ed2cfece1bc56031a0a40b83c1c1efbdd643d6e32f370ee851da42537",
           "bytes": 18545,
+          "executable": false
+        }
+      ],
+      "source_inventory_only": true,
+      "scientific_certified": false,
+      "auto_enable": false
+    },
+    {
+      "directory": "research-adapters/frozen-a-real-intake-bundle-v1",
+      "plugin_name": "frozen-a-real-intake-bundle-v1",
+      "kinds": [
+        "frozen_a_real_bundle_assemble_v1"
+      ],
+      "image_reference": "docker.io/library/python@sha256:7bf6c3111fe094f8ee1a1cbcdc63c4cfb345b0e3df42d5aa9a90b3b4b022ab6d",
+      "files": [
+        {
+          "path": "README.md",
+          "sha256": "48987c038e08daea8aadd8c23a54f3d2938809a382ce6652d84179a71bbd7480",
+          "bytes": 4576,
+          "executable": false
+        },
+        {
+          "path": "bundle.py",
+          "sha256": "b4fd8f1a6cac0357a7f400088b627711e12934d507d18918d53d7a4eb46518e6",
+          "bytes": 14757,
+          "executable": false
+        },
+        {
+          "path": "manifest.toml",
+          "sha256": "36d9c2c7bbbcdcd483e16dca4e24cd940be199a28c4302f08eb5e5d929c3fddc",
+          "bytes": 4444,
+          "executable": false
+        },
+        {
+          "path": "source-lock.json",
+          "sha256": "1d81133d3ba63e1a156e977c9f1c9cccfa6f25bda59b4559bc4c06ba78b393b3",
+          "bytes": 2913,
+          "executable": false
+        },
+        {
+          "path": "tests/test_bundle.py",
+          "sha256": "584701ebe9365ff482a77219dc5053425dc7924b723a4ea94059a5495418d064",
+          "bytes": 7291,
+          "executable": false
+        }
+      ],
+      "source_inventory_only": true,
+      "scientific_certified": false,
+      "auto_enable": false
+    },
+    {
+      "directory": "research-adapters/frozen-a-real-intake-official-v1",
+      "plugin_name": "frozen-a-real-intake-official-v1",
+      "kinds": [
+        "frozen_a_real_intake_adjust_v1"
+      ],
+      "image_reference": "ghcr.io/zj-2002/mrlap-official@sha256:e6e10cddfa1cba8046ee6fbc1492b94cbd70d66b097f5f415845d56f9f925434",
+      "files": [
+        {
+          "path": "README.md",
+          "sha256": "737b2e95707d41af86ea64d3dd4f4317d7153a1815cde0a5e1a03ff83c96980d",
+          "bytes": 1376,
+          "executable": false
+        },
+        {
+          "path": "adjust.sh",
+          "sha256": "1a23d29133b98327b61a2827502bdcdc3b10f5f04a8ce6be48e369cea0de843f",
+          "bytes": 858,
+          "executable": false
+        },
+        {
+          "path": "manifest.toml",
+          "sha256": "cb31abd78e4fbc9e5c014622842b150783d3e648009c132b92d10db8e3e40daa",
+          "bytes": 1363,
           "executable": false
         }
       ],

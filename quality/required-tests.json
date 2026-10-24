@@ -1279,6 +1279,18 @@
     "tests.test_xenium_publication.XeniumPublicationTests.test_partial_publication_preserves_foreign_replacement",
     "tests.test_xenium_publication.XeniumPublicationTests.test_partial_publication_rolls_back_only_owned_outputs",
     "tests.test_xenium_publication.XeniumPublicationTests.test_preexisting_dangling_outputs_are_preserved",
-    "tests.test_xenium_publication.XeniumPublicationTests.test_success_has_all_ports_and_no_stage"
+    "tests.test_xenium_publication.XeniumPublicationTests.test_success_has_all_ports_and_no_stage",
+    "tests.test_a_bundle_transport.BundleTransportTests.test_compressed_member_rejected",
+    "tests.test_a_bundle_transport.BundleTransportTests.test_deterministic_archive_and_exact_roundtrip",
+    "tests.test_a_bundle_transport.BundleTransportTests.test_duplicate_member_rejected",
+    "tests.test_a_bundle_transport.BundleTransportTests.test_extra_member_rejected",
+    "tests.test_a_bundle_transport.BundleTransportTests.test_forged_role_rejected",
+    "tests.test_a_bundle_transport.BundleTransportTests.test_more_than_239_dependencies",
+    "tests.test_a_bundle_transport.BundleTransportTests.test_no_overwrite_and_shared_digest_conflict",
+    "tests.test_a_bundle_transport.BundleTransportTests.test_source_cardinality_rejected",
+    "tests.test_a_bundle_transport.BundleTransportTests.test_symlink_member_rejected",
+    "tests.test_a_bundle_transport.BundleTransportTests.test_symlink_source_rejected",
+    "tests.test_a_bundle_transport.BundleTransportTests.test_unsafe_member_rejected",
+    "tests.test_a_bundle_transport.BundleTransportTests.test_wrong_member_bytes_rejected"
   ]
 }

@@ -1,0 +1,26 @@
+schema_version = 1
+plugin_name = "frozen-a-real-intake-official-v1"
+[image]
+reference = "ghcr.io/zj-2002/mrlap-official@sha256:e6e10cddfa1cba8046ee6fbc1492b94cbd70d66b097f5f415845d56f9f925434"
+tag = "R-4.6.1-stats-real-intake-candidate"
+upstream = "Unchanged adjust_real.R File executing frozen adjust_full via official stats 4.6.1"
+license = "GPL-2.0-or-later"
+[[nodes]]
+kind = "frozen_a_real_intake_adjust_v1"
+desc = "Connects explicit vector, receipt, frozen methods and pinned R program Files."
+doc = "Four Files in order: vectors, assembly receipt, frozen g0 methods, exact sealed adjust_real.R. The pinned official R/stats 4.6.1 stage preserves six vectors/840 values and emits TSV/RDS/receipt. Shell stops before publishing output ports on any R error. No changes to old publisher or receipt acceptance."
+timeout_secs = 300
+stage_in_mode = "copy"
+[nodes.ports]
+inputs = [{type="file",label="vectors"}, {type="file",label="assembly-receipt"}, {type="file",label="frozen-R-methods"}, {type="file",label="sealed-adjust-real-R"}]
+outputs = [{path="real-adjusted.tsv",format="tsv"}, {path="real-adjustment.RDS",format="r_rds"}, {path="real-adjustment.json",format="json"}]
+[nodes.command]
+interpreter = "sh"
+script_file = "adjust.sh"
+[nodes.resources]
+cpus = 1.0
+memory = "1Gi"
+network = "isolated"
+read_only_rootfs = true
+pull_policy = "never"
+pids_limit = 64
