@@ -7,10 +7,6 @@ import os
 from pathlib import Path
 import sys
 
-import pyarrow as arrow
-import pyarrow.parquet as parquet
-
-
 FIELDS = ["test_id", "row_id", "field", "value", "value_kind"]
 
 
@@ -28,7 +24,24 @@ def unique_object(items):
     return dict(items)
 
 
+def validate_provenance(upstream, request, version):
+    require(version in {"1", "2"}, "Explicit technical contract version required")
+    require(upstream["status"] == "TECHNICAL_PASS_NOT_SCIENTIFIC" and upstream["G0_granted"] is False and upstream["resident_deployment_granted"] is False, "Successful non-scientific upstream audit required")
+    role = "TRAJECTORY_TECHNICAL_NOT_LANDMARK_OR_BIOLOGICAL_SUBTYPE" if version == "2" else "SYNTHETIC_TRAJECTORY_TECHNICAL_NOT_LANDMARK_PREDICTION"
+    require(type(request["schema_version"]) is int and request["schema_version"] == int(version), "Upstream contract version mismatch")
+    allowed = {"SYNTHETIC_TECHNICAL_INPUT", "EMPIRICAL_TECHNICAL_INPUT"} if version == "2" else {"SYNTHETIC_TECHNICAL_INPUT"}
+    require(request["scope"] == "TECHNICAL_ONLY_NOT_G0" and request["scientific_qualification"] == "NOT_GRANTED" and request["analysis_role"] == role and request["input_role"] in allowed, "Technical upstream scope and input role required")
+    if version == "1":
+        return {}
+    provenance = {"schema_version": 2, "scope": "TECHNICAL_ONLY_NOT_G0", "scientific_qualification": "NOT_GRANTED", "analysis_role": role, "input_role": request["input_role"]}
+    require(type(upstream.get("schema_version")) is int and all(upstream.get(key) == value for key, value in provenance.items()), "Upstream audit provenance differs; empirical data cannot be relabeled")
+    return provenance
+
+
 def main():
+    import pyarrow as arrow
+    import pyarrow.parquet as parquet
+
     outputs = [Path(os.environ["AUTONOMICS_OUTPUT" + str(index)]) for index in range(4)]
     require(len(set(filename.resolve() for filename in outputs)) == 4 and not any(filename.exists() for filename in outputs), "Distinct fresh declared typed ports required")
     audit = {"status": "RUNNING", "G0_granted": False, "resident_deployment_granted": False}
@@ -44,8 +57,8 @@ def main():
         require(source.stat().st_size <= 64*1024**2 and evidence.stat().st_size <= 2*1024**2, "Input byte budget exceeded")
         upstream = json.loads(evidence.read_text(), object_pairs_hook=unique_object)
         request = json.loads(upstream["request_json"], object_pairs_hook=unique_object)
-        require(upstream["status"] == "TECHNICAL_PASS_NOT_SCIENTIFIC" and upstream["G0_granted"] is False and upstream["resident_deployment_granted"] is False, "Successful non-scientific upstream audit required")
-        require(request["scope"] == "TECHNICAL_ONLY_NOT_G0" and request["scientific_qualification"] == "NOT_GRANTED" and request["analysis_role"] == "SYNTHETIC_TRAJECTORY_TECHNICAL_NOT_LANDMARK_PREDICTION", "Technical upstream scope required")
+        provenance = validate_provenance(upstream, request, os.environ.get("AUTONOMICS_TECHNICAL_CONTRACT_VERSION", "1"))
+        audit.update(provenance)
         require(sha256(source) == upstream["output0_sha256"], "Upstream source hash mismatch")
         reader = csv.DictReader(io.StringIO(source.read_text()), delimiter="\t")
         require(reader.fieldnames == FIELDS, "Exact LCMM summary columns required")
@@ -69,11 +82,13 @@ def main():
             for field in FIELDS:
                 parsed[field].append(value if field == "value" else row[field])
         schema = arrow.schema([arrow.field(field, arrow.float64() if field == "value" else arrow.string(), nullable=field == "value") for field in FIELDS] + [arrow.field("source_position", arrow.uint32(), nullable=False)])
+        if provenance:
+            schema = schema.with_metadata({key: str(value) for key, value in provenance.items()})
         parsed["source_position"] = list(range(len(rows)))
         table = arrow.Table.from_pydict(parsed, schema=schema)
         parquet.write_table(table, outputs[0], compression="zstd")
         require(parquet.read_table(outputs[0]).equals(table, check_metadata=True), "Parquet readback differs")
-        outputs[3].write_text(json.dumps({"schema": str(schema), "rows": len(rows), "nullable_numeric_value": True, "string_columns": [field for field in FIELDS if field != "value"], "source_position_uint32": True, "source_position_must_remain_in_materialized_tables": True, "physical_file_row_order_not_guaranteed": True}, indent=2) + "\n")
+        outputs[3].write_text(json.dumps({"schema": str(schema), "rows": len(rows), "nullable_numeric_value": True, "string_columns": [field for field in FIELDS if field != "value"], "source_position_uint32": True, "source_position_must_remain_in_materialized_tables": True, "physical_file_row_order_not_guaranteed": True, **provenance}, indent=2) + "\n")
         audit.update(status="TECHNICAL_TYPED_VALUES_PASS_NOT_SCIENTIFIC", input0_sha256=sha256(source), input1_sha256=sha256(evidence), output0_sha256=sha256(outputs[0]), rows=len(rows))
         save()
         outputs[2].write_text("PASS explicit types and readback; not G0\n")

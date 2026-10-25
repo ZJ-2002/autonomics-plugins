@@ -1,5 +1,37 @@
 options(digits = 17)
 require_value <- function(value, message) if (!isTRUE(value)) stop(message, call. = FALSE)
+technical_contract_version <- function() {
+  version <- Sys.getenv("AUTONOMICS_TECHNICAL_CONTRACT_VERSION", unset = "1")
+  require_value(version %in% c("1", "2"), "Unknown installed technical contract version")
+  as.integer(version)
+}
+validate_technical_identity <- function(request) {
+  version <- technical_contract_version()
+  allowed <- if (version == 1L) "SYNTHETIC_TECHNICAL_INPUT" else c("SYNTHETIC_TECHNICAL_INPUT", "EMPIRICAL_TECHNICAL_INPUT")
+  require_value(identical(request$schema_version, version) &&
+    identical(request$scope, "TECHNICAL_ONLY_NOT_G0") && identical(request$scientific_qualification, "NOT_GRANTED") &&
+    identical(request$analysis_role, "SURVEY_TECHNICAL_BACKGROUND_ASSOCIATION_NOT_CANCER_MECHANISM") &&
+    is.character(request$input_role) && length(request$input_role) == 1L && !is.na(request$input_role) &&
+    request$input_role %in% allowed, "Installed version, truthful input role and non-scientific scope required")
+  invisible(version)
+}
+validate_state_contract <- function(bundle, request) {
+  version <- technical_contract_version()
+  require_value(identical(bundle$schema_version, version) && identical(bundle$scope, "TECHNICAL_ONLY_NOT_G0") &&
+    identical(bundle$analysis_role, request$analysis_role), "Upstream technical contract version or scope differs")
+  if (version == 2L) {
+    keys <- c("schema_version", "scope", "analysis_role", "original_row_ids", "design_options", "design", "result", "lineage", "input_role", "scientific_qualification")
+    require_value(is.list(bundle) && !anyDuplicated(names(bundle)) && setequal(names(bundle), keys) &&
+      identical(bundle$input_role, request$input_role) && identical(bundle$scientific_qualification, "NOT_GRANTED") &&
+      is.list(bundle$lineage) && length(bundle$lineage) > 0L, "Complete role-bound v2 design state required")
+    for (entry in bundle$lineage) {
+      require_value(is.list(entry) && is.list(entry$request), "Original role-bound request lineage required")
+      validate_technical_identity(entry$request)
+      require_value(identical(entry$request$input_role, bundle$input_role), "Input role laundering across design lineage forbidden")
+    }
+  }
+  invisible(TRUE)
+}
 checksum <- function(filename) {
   value <- system2("sha256sum", shQuote(filename), stdout = TRUE, stderr = TRUE)
   require_value(is.null(attr(value, "status")) && length(value) == 1L && grepl("^[0-9a-f]{64} ", value), "Input SHA unavailable")
@@ -66,13 +98,14 @@ status <- tryCatch({
   request <- jsonlite::fromJSON(template, simplifyVector = FALSE)
   unique_keys(request)
   keys <- c("schema_version", "mode", "scope", "input_role", "scientific_qualification", "analysis_role", "test_id", "input0_sha256", "expected_row_ids", "max_input_bytes", "max_rows", "params")
-  require_value(is.list(request) && setequal(names(request), keys) && is.integer(request$schema_version) && identical(request$schema_version, 1L), "Exact bind template schema required")
+  require_value(is.list(request) && setequal(names(request), keys), "Exact bind template schema required")
+  validate_technical_identity(request)
   require_value(request$mode %in% c("mean", "var", "quantile", "glm", "ttest", "post", "rake", "calibrate", "trim") && request$input0_sha256 == "UPSTREAM_CONTENT_HASH", "Only explicit unresolved upstream hash may be bound")
-  require_value(request$scope == "TECHNICAL_ONLY_NOT_G0" && request$scientific_qualification == "NOT_GRANTED" && request$input_role == "SYNTHETIC_TECHNICAL_INPUT" && request$analysis_role == "SURVEY_TECHNICAL_BACKGROUND_ASSOCIATION_NOT_CANCER_MECHANISM", "No research/design changes permitted")
   require_value(is.numeric(request$max_rows) && !is.logical(request$max_rows) && length(request$max_rows) == 1L && is.finite(request$max_rows) && request$max_rows == floor(request$max_rows) && request$max_rows >= 2 && request$max_rows <= 10000, "Frozen row budget required")
   require_value(is.numeric(request$max_input_bytes) && !is.logical(request$max_input_bytes) && length(request$max_input_bytes) == 1L && is.finite(request$max_input_bytes) && request$max_input_bytes == floor(request$max_input_bytes) && request$max_input_bytes >= 1 && request$max_input_bytes <= 16 * 1024^2 && file.info(input)$size <= request$max_input_bytes, "Frozen byte budget required")
   bundle <- readRDS(input)
-  require_value(inherits(bundle$design, "survey.design2") && bundle$scope == "TECHNICAL_ONLY_NOT_G0" && bundle$analysis_role == request$analysis_role && identical(bundle$schema_version, 1L), "Qualified upstream technical survey state required")
+  validate_state_contract(bundle, request)
+  require_value(inherits(bundle$design, "survey.design2"), "Qualified upstream technical survey state required")
   rows <- unlist(request$expected_row_ids, use.names = FALSE)
   require_value(is.list(request$expected_row_ids) && is.null(names(request$expected_row_ids)) && is.character(rows) && !anyNA(rows) && !anyDuplicated(rows) && length(rows) <= request$max_rows && identical(rows, bundle$original_row_ids), "Frozen exact upstream row universe differs")
   resolved <- request
@@ -89,6 +122,11 @@ status <- tryCatch({
   audit$input0_sha256 <- resolved$input0_sha256
   audit$resolved_sha256 <- checksum(outputs[1])
   audit$only_source_sha256_changed <- TRUE
+  if (technical_contract_version() == 2L) {
+    audit$schema_version <- request$schema_version
+    audit$input_role <- request$input_role
+    audit$scientific_qualification <- request$scientific_qualification
+  }
   save_audit()
   cat("PASS hash-only binding\n", file = outputs[3], append = TRUE)
   0L

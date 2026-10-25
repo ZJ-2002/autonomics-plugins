@@ -2,6 +2,7 @@ import hashlib
 from pathlib import Path
 import tomllib
 import unittest
+from tests.conditional_v2_baseline import assert_current_source, assert_manifest_extension, published_bytes
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -14,13 +15,12 @@ class LcmmPublicationBindingTests(unittest.TestCase):
         self.source = (FAMILY / 'scripts/lcmm.R').read_text()
 
     def test_existing_manifest_and_image_remain_unchanged(self):
-        self.assertEqual(hashlib.sha256((FAMILY / 'manifest.toml').read_bytes()).hexdigest(),
-                         'f0f65466543377ff485c553c26a53650ad35718c3a59d99b4b532e260dbdc069')
+        assert_manifest_extension(self, 'cachexia-lcmm', 4)
         self.assertEqual(self.manifest['image']['reference'],
                          'ghcr.io/zj-2002/lcmm-official@sha256:dd7f8a68d27a1002d5f6b004ca2ad24fc92cc7db43773500963363f92f8828d5')
 
     def test_four_modes_preserve_declared_ports_and_offline_limits(self):
-        modes = {node['command']['env']['CACHEXIA_LCMM_MODE']: node for node in self.manifest['nodes']}
+        modes = {node['command']['env']['CACHEXIA_LCMM_MODE']: node for node in self.manifest['nodes'][:4]}
         self.assertEqual(set(modes), {'fit', 'predict', 'compare', 'bind'})
         for mode, node in modes.items():
             self.assertEqual(len(node['ports']['inputs']), 3)
@@ -42,9 +42,8 @@ class LcmmPublicationBindingTests(unittest.TestCase):
             self.assertIn(token, self.source)
 
     def test_verified_wrapper_identity_is_explicit(self):
-        self.assertEqual(hashlib.sha256((FAMILY / 'scripts/lcmm.R').read_bytes()).hexdigest(),
-                         '6a8b110fcaeebe5a64ab378f807777547907f222099783b5b62aa8c4e3db62f9')
-        current = (FAMILY / 'scripts/lcmm.R').read_bytes()
+        assert_current_source(self, 'research-adapters/cachexia-lcmm/scripts/lcmm.R')
+        current = published_bytes('research-adapters/cachexia-lcmm/scripts/lcmm.R')
         audit_repair = b'request_json = jsonlite::toJSON(request, auto_unbox = TRUE, digits = 17, null = "null")'
         self.assertEqual(current.count(audit_repair), 1)
         binder_only = current.replace(audit_repair, audit_repair.replace(b'digits = 17', b'digits = NA'), 1)

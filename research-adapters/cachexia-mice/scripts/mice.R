@@ -9,6 +9,30 @@ METHOD_KEYS <- list(
   logreg = c("schema", "target", "predictors", "ry", "wy", "seed", "rng_kind", "allow_overimputation")
 )
 require_value <- function(value, message) if (!isTRUE(value)) stop(message, call. = FALSE)
+technical_contract_profile <- function(request) {
+  version <- Sys.getenv("AUTONOMICS_TECHNICAL_CONTRACT_VERSION", unset = "1")
+  require_value(version %in% c("1", "2"), "Unsupported technical contract version")
+  schema <- if (version == "1") 1L else 2L
+  role <- if (schema == 1L) "SYNTHETIC_MISSINGNESS_TECHNICAL_NOT_LONGITUDINAL_QUALIFICATION" else "MISSINGNESS_TECHNICAL_NOT_LONGITUDINAL_QUALIFICATION"
+  allowed <- if (schema == 1L) "SYNTHETIC_TECHNICAL_INPUT" else c("SYNTHETIC_TECHNICAL_INPUT", "EMPIRICAL_TECHNICAL_INPUT")
+  require_value(identical(request$schema_version, schema) && identical(request$scope, "TECHNICAL_ONLY_NOT_G0") && identical(request$scientific_qualification, "NOT_GRANTED") && identical(request$analysis_role, role), "No scientific/longitudinal eligibility or G0 granted; technical version must match")
+  require_value(is.character(request$input_role) && length(request$input_role) == 1L && !is.na(request$input_role) && request$input_role %in% allowed, "Explicit versioned source role required")
+  list(schema_version = schema, input_role = request$input_role, analysis_role = role)
+}
+technical_parent_role <- function(bundle, request) {
+  profile <- technical_contract_profile(request)
+  if (profile$schema_version == 2L) {
+    require_value(is.list(bundle$request) && is.list(bundle$technical_lineage), "Versioned parent source-role lineage required")
+    parent <- technical_contract_profile(bundle$request)
+    require_value(identical(bundle$schema_version, 2L) && identical(bundle$scope, request$scope) && identical(bundle$analysis_role, profile$analysis_role) && identical(bundle$input_role, profile$input_role) && identical(parent, profile), "Parent schema/source role cannot cross versions or be relabeled")
+    require_value(identical(bundle$technical_lineage$schema_version, 2L) && identical(bundle$technical_lineage$input_role, profile$input_role) && identical(bundle$technical_lineage$analysis_role, profile$analysis_role) && identical(bundle$technical_lineage$request_input_sha256, bundle$request$input0_sha256) && identical(bundle$technical_lineage$scientific_qualification_granted, FALSE), "Parent technical lineage differs")
+    if (!is.null(bundle$parent)) {
+      require_value(identical(bundle$technical_lineage$parent_input_role, bundle$parent$input_role), "Nested parent role lineage differs")
+      technical_parent_role(bundle$parent, request)
+    } else require_value(is.null(bundle$technical_lineage$parent_input_role), "Unexpected parent role without parent state")
+  }
+  invisible(profile)
+}
 exact_keys <- function(value, keys) require_value(is.list(value) && !is.null(names(value)) && !anyDuplicated(names(value)) && setequal(names(value), keys), "Exact frozen keys required")
 unique_json <- function(value) {
   if (is.list(value)) {
@@ -250,8 +274,9 @@ run_mice <- function(outputs, audit) {
   request <- jsonlite::fromJSON(contract, simplifyVector = FALSE)
   unique_json(request); exact_keys(request, ROOT_KEYS)
   mode <- Sys.getenv("CACHEXIA_MICE_MODE")
-  require_value(is.integer(request$schema_version) && identical(request$schema_version, 1L) && request$mode == mode && mode %in% names(METHOD_KEYS), "Exact method/schema required")
-  require_value(request$scope == "TECHNICAL_ONLY_NOT_G0" && request$input_role == "SYNTHETIC_TECHNICAL_INPUT" && request$scientific_qualification == "NOT_GRANTED" && request$analysis_role == ROLE, "No scientific/longitudinal eligibility or G0 granted")
+  profile <- technical_contract_profile(request)
+  ROLE <- profile$analysis_role
+  require_value(request$mode == mode && mode %in% names(METHOD_KEYS), "Exact method/schema required")
   text_value(request$test_id)
   rows <- strings(request$expected_row_ids)
   columns <- strings(request$expected_columns)
@@ -261,7 +286,8 @@ run_mice <- function(outputs, audit) {
   computed <- withCallingHandlers({
     if (mode == "complete") {
       bundle <- readRDS(input)
-      require_value(identical(bundle$schema_version, 1L) && bundle$scope == request$scope && bundle$analysis_role == ROLE && identical(bundle$original_row_ids, rows) && identical(bundle$expected_columns, columns) && bundle$status_sha256 == request$input2_sha256 && mice::is.mids(bundle$result), "Complete official technical mids state required; long table is not mids")
+      technical_parent_role(bundle, request)
+      require_value(identical(bundle$schema_version, profile$schema_version) && bundle$scope == request$scope && bundle$analysis_role == ROLE && identical(bundle$original_row_ids, rows) && identical(bundle$expected_columns, columns) && bundle$status_sha256 == request$input2_sha256 && mice::is.mids(bundle$result), "Complete official technical mids state required; long table is not mids")
       data <- bundle$original_data
       status <- receipt(status_file, data, request)
       result <- complete_params(request$params, bundle$result)
@@ -279,9 +305,13 @@ run_mice <- function(outputs, audit) {
   require_value(!any(grepl("converg|failed|rank.deficien|logged events|not achieved|algorithm did not", warnings, ignore.case = TRUE)), "Official imputation failed/changed model; no force/fallback")
   values <- computed$computed$values
   require_value(nrow(values) > 0L && nrow(values) <= 1000000L && !any(values$value_kind %in% c("POS_INF", "NEG_INF", "NAN")), "Empty/oversized/nonfinite official imputation output")
-  bundle <- list(schema_version = 1L, scope = request$scope, analysis_role = ROLE, original_row_ids = rows, expected_columns = columns, original_data = computed$data,
+  bundle <- list(schema_version = profile$schema_version, scope = request$scope, analysis_role = ROLE, original_row_ids = rows, expected_columns = columns, original_data = computed$data,
     missingness_receipt = computed$status$table, status_sha256 = request$input2_sha256, requested = computed$computed$requested, result = computed$computed$result,
     request = request, rng_state = if (mode == "complete") computed$parent$rng_state else if (exists(".Random.seed", .GlobalEnv)) get(".Random.seed", .GlobalEnv) else NULL, parent = computed$parent)
+  if (profile$schema_version == 2L) {
+    bundle$input_role <- profile$input_role
+    bundle$technical_lineage <- list(schema_version = 2L, input_role = profile$input_role, analysis_role = ROLE, request_input_sha256 = request$input0_sha256, parent_input_role = if (is.null(computed$parent)) NULL else computed$parent$input_role, scientific_qualification_granted = FALSE)
+  }
   saveRDS(bundle, outputs[2], version = 3, compress = "gzip")
   write.table(values, outputs[1], sep = "\t", quote = TRUE, row.names = FALSE, na = "NA")
   ledger <- computed$status$table
@@ -292,6 +322,13 @@ run_mice <- function(outputs, audit) {
   diagnostics$value_kind <- vapply(diagnostics$value, value_kind, "")
   write.table(diagnostics, outputs[6], sep = "\t", quote = TRUE, row.names = FALSE, na = "NA")
   audit$request_json <- rawToChar(readBin(contract, "raw", n = file.info(contract)$size))
+  if (profile$schema_version == 2L) {
+    audit$schema_version <- 2L
+    audit$input_role <- profile$input_role
+    audit$analysis_role <- ROLE
+    audit$technical_lineage <- bundle$technical_lineage
+    audit$MCAR_MAR_MNAR_assumption_established <- FALSE
+  }
   audit$contract_sha256 <- checksum(contract)
   audit$warnings <- warnings
   audit$output0_sha256 <- checksum(outputs[1])

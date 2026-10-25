@@ -116,3 +116,123 @@ memory = "2Gi"
 network = "isolated"
 pull_policy = "never"
 
+
+[[nodes]]
+kind = "cachexia_mice_bind_contract_v2"
+desc = "Bind only an upstream complete technical mids RDS SHA256 into an otherwise byte-frozen extraction contract."
+doc = "Versioned v2 technical interface: explicit SYNTHETIC_TECHNICAL_INPUT or EMPIRICAL_TECHNICAL_INPUT and schema2; no MAR/MNAR/stationarity/death/longitudinal eligibility or G0. Complete masks, source hashes, original axes and role lineage required. V1 state and role relabeling refused. Official method parameters and protected-cell behavior unchanged."
+timeout_secs = 600
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}]
+outputs = [{path="resolved_contract.json",format="json"}, {path="bind_audit.json",format="json"}, {path="bind.log",format="text"}]
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/bind_contract.R"
+[nodes.command.env]
+AUTONOMICS_TECHNICAL_CONTRACT_VERSION = "2"
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"
+
+
+[[nodes]]
+kind = "cachexia_mice_v2"
+desc = "Official mice3.19.0 explicitly frozen chained-equations imputation; full mids, traces, RNG and original identities."
+doc = "Versioned v2 technical interface: explicit SYNTHETIC_TECHNICAL_INPUT or EMPIRICAL_TECHNICAL_INPUT and schema2; no MAR/MNAR/stationarity/death/longitudinal eligibility or G0. Complete masks, source hashes, original axes and role lineage required. V1 state and role relabeling refused. Official method parameters and protected-cell behavior unchanged."
+timeout_secs = 600
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}, {type="file"}]
+outputs = [{path="values.tsv",format="tsv"}, {path="state.rds",format="rds"}, {path="audit.json",format="json"}, {path="mice.log",format="text"}, {path="missingness_ledger.tsv",format="tsv"}, {path="diagnostics.tsv",format="tsv"}]
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/mice.R"
+[nodes.command.env]
+AUTONOMICS_TECHNICAL_CONTRACT_VERSION = "2"
+CACHEXIA_MICE_MODE = "mice"
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"
+
+
+[[nodes]]
+kind = "cachexia_mice_complete_v2"
+desc = "Official complete.mids extraction with explicit action/include/mild/order; full official result retained."
+doc = "Versioned v2 technical interface: explicit SYNTHETIC_TECHNICAL_INPUT or EMPIRICAL_TECHNICAL_INPUT and schema2; no MAR/MNAR/stationarity/death/longitudinal eligibility or G0. Complete masks, source hashes, original axes and role lineage required. V1 state and role relabeling refused. Official method parameters and protected-cell behavior unchanged."
+timeout_secs = 600
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}, {type="file"}]
+outputs = [{path="values.tsv",format="tsv"}, {path="state.rds",format="rds"}, {path="audit.json",format="json"}, {path="mice.log",format="text"}, {path="missingness_ledger.tsv",format="tsv"}, {path="diagnostics.tsv",format="tsv"}]
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/mice.R"
+[nodes.command.env]
+AUTONOMICS_TECHNICAL_CONTRACT_VERSION = "2"
+CACHEXIA_MICE_MODE = "complete"
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"
+
+
+[[nodes]]
+kind = "cachexia_mice_impute_pmm_v2"
+desc = "Official predictive mean matching with frozen observed/imputation masks, matching, donor and RNG settings."
+doc = "Versioned v2 technical interface: explicit SYNTHETIC_TECHNICAL_INPUT or EMPIRICAL_TECHNICAL_INPUT and schema2; no MAR/MNAR/stationarity/death/longitudinal eligibility or G0. Complete masks, source hashes, original axes and role lineage required. V1 state and role relabeling refused. Official method parameters and protected-cell behavior unchanged."
+timeout_secs = 600
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}, {type="file"}]
+outputs = [{path="values.tsv",format="tsv"}, {path="state.rds",format="rds"}, {path="audit.json",format="json"}, {path="mice.log",format="text"}, {path="missingness_ledger.tsv",format="tsv"}, {path="diagnostics.tsv",format="tsv"}]
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/mice.R"
+[nodes.command.env]
+AUTONOMICS_TECHNICAL_CONTRACT_VERSION = "2"
+CACHEXIA_MICE_MODE = "pmm"
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"
+
+
+[[nodes]]
+kind = "cachexia_mice_impute_logreg_v2"
+desc = "Official binary logistic imputation with frozen masks, factor/numeric semantics and RNG."
+doc = "Versioned v2 technical interface: explicit SYNTHETIC_TECHNICAL_INPUT or EMPIRICAL_TECHNICAL_INPUT and schema2; no MAR/MNAR/stationarity/death/longitudinal eligibility or G0. Complete masks, source hashes, original axes and role lineage required. V1 state and role relabeling refused. Official method parameters and protected-cell behavior unchanged."
+timeout_secs = 600
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}, {type="file"}]
+outputs = [{path="values.tsv",format="tsv"}, {path="state.rds",format="rds"}, {path="audit.json",format="json"}, {path="mice.log",format="text"}, {path="missingness_ledger.tsv",format="tsv"}, {path="diagnostics.tsv",format="tsv"}]
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/mice.R"
+[nodes.command.env]
+AUTONOMICS_TECHNICAL_CONTRACT_VERSION = "2"
+CACHEXIA_MICE_MODE = "logreg"
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"
+
+

@@ -1,0 +1,118 @@
+schema_version = 1
+plugin_name = "cachexia-mice"
+
+[image]
+reference = "ghcr.io/zj-2002/mice-official@sha256:ff4c166b89842d9bfbcf8d0f8227d05057a3ae57a668d374374a60db1e425516"
+tag = "mice-3.19.0-R-4.6.1-local-proof"
+upstream = "Official CRAN mice3.19.0 source archive compiled unmodified"
+license = "GPL-2.0-or-later"
+
+[[nodes]]
+kind = "cachexia_mice_bind_contract"
+desc = "Bind only an upstream complete technical mids RDS SHA256 into an otherwise byte-frozen extraction contract."
+doc = "Synthetic technical inputs only, no MAR/MNAR/stationarity/death/longitudinal eligibility or G0. Exact frozen parameters, complete row/missingness axes and source hashes. Death and structural cells are never ordinary imputations; no inferred method, parallel RNG, model alteration or unqualified pooling. Full declared outputs, no overwrite or silent partial failure."
+timeout_secs = 600
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}]
+outputs = [{path="resolved_contract.json",format="json"}, {path="bind_audit.json",format="json"}, {path="bind.log",format="text"}]
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/bind_contract.R"
+[nodes.command.env]
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"
+
+[[nodes]]
+kind = "cachexia_mice"
+desc = "Official mice3.19.0 explicitly frozen chained-equations imputation; full mids, traces, RNG and original identities."
+doc = "Synthetic technical inputs only, no MAR/MNAR/stationarity/death/longitudinal eligibility or G0. Exact frozen parameters, complete row/missingness axes and source hashes. Death and structural cells are never ordinary imputations; no inferred method, parallel RNG, model alteration or unqualified pooling. Full declared outputs, no overwrite or silent partial failure."
+timeout_secs = 600
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}, {type="file"}]
+outputs = [{path="values.tsv",format="tsv"}, {path="state.rds",format="rds"}, {path="audit.json",format="json"}, {path="mice.log",format="text"}, {path="missingness_ledger.tsv",format="tsv"}, {path="diagnostics.tsv",format="tsv"}]
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/mice.R"
+[nodes.command.env]
+CACHEXIA_MICE_MODE = "mice"
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"
+
+[[nodes]]
+kind = "cachexia_mice_complete"
+desc = "Official complete.mids extraction with explicit action/include/mild/order; full official result retained."
+doc = "Synthetic technical inputs only, no MAR/MNAR/stationarity/death/longitudinal eligibility or G0. Exact frozen parameters, complete row/missingness axes and source hashes. Death and structural cells are never ordinary imputations; no inferred method, parallel RNG, model alteration or unqualified pooling. Full declared outputs, no overwrite or silent partial failure."
+timeout_secs = 600
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}, {type="file"}]
+outputs = [{path="values.tsv",format="tsv"}, {path="state.rds",format="rds"}, {path="audit.json",format="json"}, {path="mice.log",format="text"}, {path="missingness_ledger.tsv",format="tsv"}, {path="diagnostics.tsv",format="tsv"}]
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/mice.R"
+[nodes.command.env]
+CACHEXIA_MICE_MODE = "complete"
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"
+
+[[nodes]]
+kind = "cachexia_mice_impute_pmm"
+desc = "Official predictive mean matching with frozen observed/imputation masks, matching, donor and RNG settings."
+doc = "Synthetic technical inputs only, no MAR/MNAR/stationarity/death/longitudinal eligibility or G0. Exact frozen parameters, complete row/missingness axes and source hashes. Death and structural cells are never ordinary imputations; no inferred method, parallel RNG, model alteration or unqualified pooling. Full declared outputs, no overwrite or silent partial failure."
+timeout_secs = 600
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}, {type="file"}]
+outputs = [{path="values.tsv",format="tsv"}, {path="state.rds",format="rds"}, {path="audit.json",format="json"}, {path="mice.log",format="text"}, {path="missingness_ledger.tsv",format="tsv"}, {path="diagnostics.tsv",format="tsv"}]
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/mice.R"
+[nodes.command.env]
+CACHEXIA_MICE_MODE = "pmm"
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"
+
+[[nodes]]
+kind = "cachexia_mice_impute_logreg"
+desc = "Official binary logistic imputation with frozen masks, factor/numeric semantics and RNG."
+doc = "Synthetic technical inputs only, no MAR/MNAR/stationarity/death/longitudinal eligibility or G0. Exact frozen parameters, complete row/missingness axes and source hashes. Death and structural cells are never ordinary imputations; no inferred method, parallel RNG, model alteration or unqualified pooling. Full declared outputs, no overwrite or silent partial failure."
+timeout_secs = 600
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}, {type="file"}]
+outputs = [{path="values.tsv",format="tsv"}, {path="state.rds",format="rds"}, {path="audit.json",format="json"}, {path="mice.log",format="text"}, {path="missingness_ledger.tsv",format="tsv"}, {path="diagnostics.tsv",format="tsv"}]
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/mice.R"
+[nodes.command.env]
+CACHEXIA_MICE_MODE = "logreg"
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"
+

@@ -93,3 +93,95 @@ cpus = 1.0
 memory = "2Gi"
 network = "isolated"
 pull_policy = "never"
+
+[[nodes]]
+kind = "cachexia_hlme_v2"
+desc = "Official complete-observation hlme with explicit synthetic or empirical technical provenance."
+doc = "Version2 three-File technical contract, not research permission. Exact ordered rows, input identities and complete-observation receipt; original author parameters and full RDS preserved. Empirical input is never relabeled synthetic. No missingness handling, class-selection, landmark, subtype or G0 permission."
+timeout_secs = 600
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}, {type="file"}]
+outputs = [{path="summary.tsv",format="tsv"}, {path="state.rds",format="rds"}, {path="audit.json",format="json"}, {path="lcmm.log",format="text"}, {path="row_ledger.tsv",format="tsv"}, {path="subject_map.tsv",format="tsv"}]
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/lcmm.R"
+[nodes.command.env]
+CACHEXIA_LCMM_MODE = "fit"
+AUTONOMICS_TECHNICAL_CONTRACT_VERSION = "2"
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"
+
+[[nodes]]
+kind = "cachexia_hlme_predict_v2"
+desc = "Official class-conditional predictY with versioned technical input provenance."
+doc = "Version2 fit RDS/contract/newdata Files retain original rows and all author outputs. Parent fit and downstream request must have the same data role and version. Not forecasting or landmark authorization; empirical data provenance remains explicit."
+timeout_secs = 600
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}, {type="file"}]
+outputs = [{path="summary.tsv",format="tsv"}, {path="state.rds",format="rds"}, {path="audit.json",format="json"}, {path="lcmm.log",format="text"}, {path="row_ledger.tsv",format="tsv"}, {path="subject_map.tsv",format="tsv"}]
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/lcmm.R"
+[nodes.command.env]
+CACHEXIA_LCMM_MODE = "predict"
+AUTONOMICS_TECHNICAL_CONTRACT_VERSION = "2"
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"
+
+[[nodes]]
+kind = "cachexia_hlme_compare_v2"
+desc = "Official summarytable with same-version, same-input-role model provenance."
+doc = "Version2 first fit RDS/contract/second fit RDS preserve complete author objects and fixed comparison universe. Both parents must retain the same empirical or synthetic technical role. No automatic class selection, subtype claim, research qualification or G0."
+timeout_secs = 600
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}, {type="file"}]
+outputs = [{path="summary.tsv",format="tsv"}, {path="state.rds",format="rds"}, {path="audit.json",format="json"}, {path="lcmm.log",format="text"}, {path="row_ledger.tsv",format="tsv"}, {path="subject_map.tsv",format="tsv"}]
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/lcmm.R"
+[nodes.command.env]
+CACHEXIA_LCMM_MODE = "compare"
+AUTONOMICS_TECHNICAL_CONTRACT_VERSION = "2"
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"
+
+[[nodes]]
+kind = "cachexia_lcmm_bind_contract_v2"
+desc = "Bind only source hashes in an explicit version2 technical LCMM contract."
+doc = "Three Files and JSON/audit/log outputs. Synthetic and empirical technical roles remain unchanged; only the two upstream SHA placeholders are resolved. No research qualification or authorization is issued. Version1 contracts are rejected."
+timeout_secs = 300
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}, {type="file"}]
+outputs = [{path="resolved_contract.json",format="json"}, {path="bind_audit.json",format="json"}, {path="bind.log",format="text"}]
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/lcmm.R"
+[nodes.command.env]
+CACHEXIA_LCMM_MODE = "bind"
+AUTONOMICS_TECHNICAL_CONTRACT_VERSION = "2"
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"

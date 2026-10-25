@@ -2,6 +2,7 @@ import hashlib
 from pathlib import Path
 import tomllib
 import unittest
+from tests.conditional_v2_baseline import assert_current_source, assert_manifest_extension
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -11,18 +12,17 @@ TYPED = ROOT / 'research-adapters/cachexia-mice-typed-values'
 
 class MicePublicationBindingTests(unittest.TestCase):
     def test_both_manifests_and_images_remain_unchanged(self):
-        for folder, expected in ((FAMILY, 'eec37a826352f6501d8c53b60a0ff80a2027e01995798b156d4fd0f7a51d3780'),
-                                 (TYPED, '5cf91dcfff2ff4f9bbd0749d881f5dccb9a17c13040952987c07affb4d10c0e6')):
-            self.assertEqual(hashlib.sha256((folder / 'manifest.toml').read_bytes()).hexdigest(), expected)
+        assert_manifest_extension(self, 'cachexia-mice', 5)
+        assert_manifest_extension(self, 'cachexia-mice-typed-values', 1)
         manifest = tomllib.loads((FAMILY / 'manifest.toml').read_text())
         self.assertEqual(manifest['image']['reference'],
-            'localhost/cachexia-mice@sha256:0a7b397b9fb5fca8128381525ab9482098445a2f29e309135464a8cd45fc0f57')
+                         'ghcr.io/zj-2002/mice-official@sha256:ff4c166b89842d9bfbcf8d0f8227d05057a3ae57a668d374374a60db1e425516')
 
     def test_all_declared_ports_remain_explicit(self):
         manifest = tomllib.loads((FAMILY / 'manifest.toml').read_text())
-        self.assertEqual(len(manifest['nodes']), 5)
+        self.assertEqual(len(manifest['nodes']), 10)
         for node in manifest['nodes']:
-            binder = node['kind'] == 'cachexia_mice_bind_contract'
+            binder = node['kind'] in {'cachexia_mice_bind_contract', 'cachexia_mice_bind_contract_v2'}
             self.assertEqual(len(node['ports']['inputs']), 2 if binder else 3)
             self.assertEqual(len(node['ports']['outputs']), 3 if binder else 6)
         typed = tomllib.loads((TYPED / 'manifest.toml').read_text())['nodes'][0]
@@ -30,11 +30,10 @@ class MicePublicationBindingTests(unittest.TestCase):
         self.assertEqual(len(typed['ports']['outputs']), 4)
 
     def test_three_verified_source_identities_are_explicit(self):
-        for filename, expected in (
-            (FAMILY / 'scripts/mice.R', '33d36247e60b0229965e1d2d559f91961888b7f959a82154a4996fbf4c10309e'),
-            (FAMILY / 'scripts/bind_contract.R', '77c1fd5bc3025d3e6c7c70dcbdf5945493194e6e6fefa261a737bba3f7adc14a'),
-            (TYPED / 'scripts/typed_values.py', 'c503512f82c82ef7cf28950e0b64cbaf3e7ccf85f445ff0d11cf23a21b9189f8')):
-            self.assertEqual(hashlib.sha256(filename.read_bytes()).hexdigest(), expected)
+        for filename in ('research-adapters/cachexia-mice/scripts/mice.R',
+                         'research-adapters/cachexia-mice/scripts/bind_contract.R',
+                         'research-adapters/cachexia-mice-typed-values/scripts/typed_values.py'):
+            assert_current_source(self, filename)
 
     def test_r_entries_share_explicit_owned_publication(self):
         for name in ('mice.R', 'bind_contract.R'):
@@ -51,7 +50,7 @@ class MicePublicationBindingTests(unittest.TestCase):
             self.assertIn(token, typed)
         binding = (FAMILY / 'scripts/bind_contract.R').read_text()
         self.assertIn('bind_json_hash(original_bytes, resolved$input0_sha256)', binding)
-        self.assertIn('No research/design changes permitted', binding)
+        self.assertIn('No scientific/longitudinal eligibility or G0 granted', binding)
 
 
 if __name__ == '__main__':

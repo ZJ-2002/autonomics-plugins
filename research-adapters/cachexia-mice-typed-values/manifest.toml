@@ -21,3 +21,22 @@ cpus = 1.0
 memory = "2Gi"
 network = "isolated"
 pull_policy = "never"
+
+[[nodes]]
+kind = "cachexia_mice_values_to_parquet_v2"
+desc = "Content-verified versioned v2 MICE TSV/audit to explicit typed Parquet with original source role."
+doc = "Schema2 technical interface with explicit SYNTHETIC_TECHNICAL_INPUT or EMPIRICAL_TECHNICAL_INPUT. Upstream audit, request, lineage and source role must match; no role relabeling or v1 state substitution. Preserves original identities and numeric conversion, no scientific eligibility, missingness assumption, longitudinal qualification or G0."
+timeout_secs = 600
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}]
+outputs = [{path="values.parquet",format="parquet"}, {path="typed_audit.json",format="json"}, {path="typed.log",format="text"}, {path="schema.json",format="json"}]
+[nodes.command]
+interpreter = "python"
+script_file = "scripts/typed_values.py"
+[nodes.command.env]
+AUTONOMICS_TECHNICAL_CONTRACT_VERSION = "2"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"

@@ -44,7 +44,9 @@ main <- function() {
   do.call(Sys.setenv, as.list(setNames(file.path(stage, basename(destinations)), port_names)))
   exit_status <- 0L
 options(digits = 17, width = 200, contrasts = c("contr.treatment", "contr.poly"))
-ROLE <- "SYNTHETIC_TRAJECTORY_TECHNICAL_NOT_LANDMARK_PREDICTION"
+CONTRACT_VERSION <- Sys.getenv("AUTONOMICS_TECHNICAL_CONTRACT_VERSION", unset = "1")
+ROLE <- if (identical(CONTRACT_VERSION, "2")) "TRAJECTORY_TECHNICAL_NOT_LANDMARK_OR_BIOLOGICAL_SUBTYPE" else "SYNTHETIC_TRAJECTORY_TECHNICAL_NOT_LANDMARK_PREDICTION"
+ACCEPTED_REQUEST <- NULL
 require_value <- function(value, message) if (!isTRUE(value)) stop(message, call. = FALSE)
 exact <- function(value, keys) require_value(is.list(value) && !is.null(names(value)) && !anyDuplicated(names(value)) && setequal(names(value), keys), "Exact object keys required")
 unique_json <- function(value) {
@@ -115,16 +117,46 @@ formula_terms <- function(value, data, outcome = NULL, empty = FALSE) {
 }
 validate_request <- function(request, mode) {
   exact(request, c("schema_version", "mode", "scope", "input_role", "scientific_qualification", "analysis_role", "test_id", "input0_sha256", "input2_sha256", "expected_row_ids", "max_input_bytes", "max_rows", "params"))
-  require_value(identical(request$schema_version, 1L) && identical(request$mode, mode), "Version/mode contract mismatch")
-  require_value(identical(request$scope, "TECHNICAL_ONLY_NOT_G0") && identical(request$input_role, "SYNTHETIC_TECHNICAL_INPUT") && identical(request$scientific_qualification, "NOT_GRANTED") && identical(request$analysis_role, ROLE), "Scientific qualification not granted by this technical route")
+  require_value(CONTRACT_VERSION %in% c("1", "2") && identical(request$schema_version, if (identical(CONTRACT_VERSION, "2")) 2L else 1L) && identical(request$mode, mode), "Version/mode contract mismatch")
+  allowed_roles <- if (identical(CONTRACT_VERSION, "2")) c("SYNTHETIC_TECHNICAL_INPUT", "EMPIRICAL_TECHNICAL_INPUT") else "SYNTHETIC_TECHNICAL_INPUT"
+  require_value(identical(request$scope, "TECHNICAL_ONLY_NOT_G0") && is.character(request$input_role) && length(request$input_role) == 1L && request$input_role %in% allowed_roles && identical(request$scientific_qualification, "NOT_GRANTED") && identical(request$analysis_role, ROLE), "Scientific qualification not granted by this technical route")
   text(request$test_id); strings(request$expected_row_ids)
   number(request$max_input_bytes, 1, 16*1024^2, TRUE); number(request$max_rows, 2, 1000, TRUE)
 }
-validate_bundle <- function(bundle) {
+technical_provenance <- function(value, request) {
+  if (identical(CONTRACT_VERSION, "2")) {
+    value$schema_version <- 2L
+    value$input_role <- request$input_role
+    value$analysis_role <- ROLE
+    value$scope <- "TECHNICAL_ONLY_NOT_G0"
+    value$scientific_qualification <- "NOT_GRANTED"
+  }
+  value
+}
+lineage_entry <- function(mode, request) {
+  technical_provenance(list(mode = mode, input0_sha256 = request$input0_sha256, input2_sha256 = request$input2_sha256), request)
+}
+validate_bundle <- function(bundle, request = NULL) {
   require_value(is.list(bundle) && identical(bundle$scope, "TECHNICAL_ONLY_NOT_G0") && identical(bundle$analysis_role, ROLE) && inherits(bundle$fit, "hlme") && bundle$fit$conv == 1L && identical(bundle$mode, "fit"), "Complete converged official hlme fit bundle required")
+  if (identical(CONTRACT_VERSION, "2")) {
+    require_value(!is.null(request) && identical(bundle$schema_version, 2L) && identical(bundle$scientific_qualification, "NOT_GRANTED") && identical(bundle$input_role, request$input_role) && identical(bundle$request$schema_version, 2L) && identical(bundle$request$input_role, bundle$input_role) && identical(bundle$request$analysis_role, ROLE) && identical(bundle$request$scope, "TECHNICAL_ONLY_NOT_G0") && identical(bundle$request$scientific_qualification, "NOT_GRANTED"), "Versioned fit provenance/input role mismatch; empirical inputs cannot be relabeled")
+    valid_lineage <- function(value) {
+      if (!is.list(value) || !length(value)) return(FALSE)
+      if (!is.null(value$mode)) return(identical(value$schema_version, 2L) && identical(value$input_role, request$input_role) && identical(value$analysis_role, ROLE) && identical(value$scope, "TECHNICAL_ONLY_NOT_G0") && identical(value$scientific_qualification, "NOT_GRANTED"))
+      all(vapply(value, valid_lineage, logical(1)))
+    }
+    require_value(valid_lineage(bundle$lineage), "Versioned lineage provenance mismatch")
+  } else require_value(is.null(bundle$schema_version) || identical(bundle$schema_version, 1L), "Version2 state cannot enter a version1 route")
   require_value(is.character(bundle$source_sha256) && grepl("^[0-9a-f]{64}$", bundle$source_sha256) && identical(bundle$row_ids, bundle$data$row_id), "Fit source/row identity missing")
   require_value(all(is.finite(bundle$fit$best)) && all(is.finite(bundle$fit$V)), "Nonfinite fit estimate/covariance")
   bundle
+}
+validate_receipt <- function(receipt, request, row_ids) {
+  receipt_keys <- c("schema_version", "analysis_role", "source_sha256", "row_ids", "eligibility")
+  if (identical(CONTRACT_VERSION, "2")) receipt_keys <- c(receipt_keys, "input_role", "scope", "scientific_qualification")
+  exact(receipt, receipt_keys)
+  require_value(identical(receipt$schema_version, request$schema_version) && identical(receipt$analysis_role, ROLE) && identical(receipt$source_sha256, request$input0_sha256) && identical(strings(receipt$row_ids), row_ids) && identical(receipt$eligibility, if (identical(CONTRACT_VERSION, "2")) "COMPLETE_OBSERVATIONS_NOT_RESEARCH_PERMISSION" else "SYNTHETIC_COMPLETE_OBSERVATIONS_NOT_RESEARCH_PERMISSION"), "Frozen complete-observation technical receipt required")
+  if (identical(CONTRACT_VERSION, "2")) require_value(identical(receipt$input_role, request$input_role) && identical(receipt$scope, "TECHNICAL_ONLY_NOT_G0") && identical(receipt$scientific_qualification, "NOT_GRANTED"), "Complete-observation receipt cannot relabel data or grant research permission")
 }
 fit_model <- function(request, input, context) {
   params <- request$params
@@ -156,41 +188,40 @@ fit_model <- function(request, input, context) {
   if (length(classmb)) args$classmb <- formula_terms(params$classmb, data)
   if (params$correlation != "NONE") args$cor <- call(params$correlation, as.name(time))
   if (ng > 1L) {
-    parent <- validate_bundle(readRDS(context))
+    parent <- validate_bundle(readRDS(context), request)
     require_value(parent$fit$ng == 1L && identical(parent$source_sha256, request$input0_sha256) && identical(parent$data, data) && identical(parent$subject_map, map), "Initial fit must use exactly the same frozen data and subject bijection")
     require_value(identical(parent$request$params$fixed, params$fixed) && identical(parent$request$params$random, params$random) && identical(parent$request$params$idiag, params$idiag) && identical(parent$request$params$correlation, params$correlation), "Incompatible single-class initializer")
     args$B <- parent$fit
   } else {
     receipt <- read_json(context)
-    exact(receipt, c("schema_version", "analysis_role", "source_sha256", "row_ids", "eligibility"))
-    require_value(identical(receipt$schema_version, 1L) && identical(receipt$analysis_role, ROLE) && identical(receipt$source_sha256, request$input0_sha256) && identical(strings(receipt$row_ids), data$row_id) && identical(receipt$eligibility, "SYNTHETIC_COMPLETE_OBSERVATIONS_NOT_RESEARCH_PERMISSION"), "Frozen complete-observation technical receipt required")
+    validate_receipt(receipt, request, data$row_id)
   }
   RNGkind("Mersenne-Twister", "Inversion", "Rejection"); set.seed(params$seed)
   fit <- do.call(lcmm::hlme, args)
   if (fit$conv != 1L) {
-    saveRDS(list(fit = fit, request = request, data = data, subject_map = map, status = "NONCONVERGED_NOT_ANALYTIC", rng_state = .Random.seed), file.path(dirname(Sys.getenv("AUTONOMICS_OUTPUT2")), "failed_fit.rds"), version = 3)
+    saveRDS(technical_provenance(list(fit = fit, request = request, data = data, subject_map = map, status = "NONCONVERGED_NOT_ANALYTIC", rng_state = .Random.seed), request), file.path(dirname(Sys.getenv("AUTONOMICS_OUTPUT2")), "failed_fit.rds"), version = 3)
     stop("Official optimizer did not satisfy all convergence criteria; no fallback or analytic output", call. = FALSE)
   }
   require_value(all(is.finite(fit$best)) && all(is.finite(fit$V)) && fit$ns == nrow(map), "Fit estimates/covariance/subject universe invalid")
-  list(mode = "fit", scope = "TECHNICAL_ONLY_NOT_G0", analysis_role = ROLE, fit = fit, data = data, row_ids = data$row_id,
+  technical_provenance(list(mode = "fit", scope = "TECHNICAL_ONLY_NOT_G0", analysis_role = ROLE, fit = fit, data = data, row_ids = data$row_id,
     subject_map = map, source_sha256 = request$input0_sha256, schema = params$schema, request = request, rng_state = .Random.seed,
-    result = NULL, lineage = list(list(mode = "fit", input0_sha256 = request$input0_sha256, input2_sha256 = request$input2_sha256)))
+    result = NULL, lineage = list(lineage_entry("fit", request))), request)
 }
 predict_model <- function(request, input, context) {
   params <- request$params
   exact(params, c("schema", "time", "draws", "prediction_role", "expected_fit_source_sha256"))
   require_value(identical(params$prediction_role, "CLASS_CONDITIONAL_TECHNICAL_NOT_FORECAST"), "No landmark/future prediction qualification")
   boolean(params$draws)
-  parent <- validate_bundle(readRDS(input))
+  parent <- validate_bundle(readRDS(input), request)
   require_value(identical(parent$source_sha256, params$expected_fit_source_sha256), "Wrong frozen fit source")
   data <- read_data(context, params$schema, strings(request$expected_row_ids))
   require_value(nrow(data) <= request$max_rows, "Frozen row budget exceeded before prediction")
   require_value(identical(text(params$time), parent$request$params$time) && params$time %in% names(data) && is.numeric(data[[params$time]]), "Prediction time axis differs")
   result <- lcmm::predictY(parent$fit, newdata = data, var.time = params$time, draws = params$draws, na.action = 2L)
   require_value(nrow(result$pred) == nrow(data) && all(is.finite(result$pred)), "Prediction output rows/nonfinite estimates differ")
-  list(mode = "predict", scope = "TECHNICAL_ONLY_NOT_G0", analysis_role = ROLE, fit = parent$fit, result = result, data = data, row_ids = data$row_id,
+  technical_provenance(list(mode = "predict", scope = "TECHNICAL_ONLY_NOT_G0", analysis_role = ROLE, fit = parent$fit, result = result, data = data, row_ids = data$row_id,
     subject_map = parent$subject_map, source_sha256 = parent$source_sha256, schema = params$schema, request = request, rng_state = parent$rng_state,
-    lineage = c(parent$lineage, list(list(mode = "predict", input0_sha256 = request$input0_sha256, input2_sha256 = request$input2_sha256))))
+    lineage = c(parent$lineage, list(lineage_entry("predict", request)))), request)
 }
 compare_models <- function(request, input, context) {
   params <- request$params
@@ -198,16 +229,16 @@ compare_models <- function(request, input, context) {
   require_value(identical(params$selection_role, "DESCRIPTIVE_CRITERIA_NOT_CLASS_SELECTION_OR_BIOLOGICAL_SUBTYPE"), "Class selection/scientific claims not allowed")
   ids <- strings(params$model_ids)
   require_value(length(ids) == 2L, "Two uniquely identified complete fits required")
-  first <- validate_bundle(readRDS(input)); second <- validate_bundle(readRDS(context))
+  first <- validate_bundle(readRDS(input), request); second <- validate_bundle(readRDS(context), request)
   require_value(identical(first$source_sha256, params$expected_fit_source_sha256) && identical(first$source_sha256, second$source_sha256) && identical(first$data, second$data) && identical(first$row_ids, second$row_ids) && identical(first$subject_map, second$subject_map) && identical(first$row_ids, strings(request$expected_row_ids)), "Models must use the identical frozen observation universe, not merely equal sample counts")
   which <- strings(params$which)
   require_value(all(which %in% c("G", "loglik", "conv", "npm", "AIC", "BIC", "SABIC", "entropy", "ICL1", "ICL2", "%class")), "Unknown official summarytable field")
   fits <- setNames(list(first$fit, second$fit), ids)
   result <- do.call(lcmm::summarytable, c(unname(fits), list(which = which, display = FALSE)))
   require_value(nrow(result) == 2L, "Model family must remain complete")
-  list(mode = "compare", scope = "TECHNICAL_ONLY_NOT_G0", analysis_role = ROLE, fits = fits, fit = first$fit, result = result,
+  technical_provenance(list(mode = "compare", scope = "TECHNICAL_ONLY_NOT_G0", analysis_role = ROLE, fits = fits, fit = first$fit, result = result,
     data = first$data, row_ids = first$row_ids, subject_map = first$subject_map, source_sha256 = first$source_sha256,
-    schema = first$schema, request = request, result_model_ids = ids[order(c(first$fit$ng, second$fit$ng))], rng_state = NULL, lineage = list(first$lineage, second$lineage, list(mode = "compare", input0_sha256 = request$input0_sha256, input2_sha256 = request$input2_sha256)))
+    schema = first$schema, request = request, result_model_ids = ids[order(c(first$fit$ng, second$fit$ng))], rng_state = NULL, lineage = list(first$lineage, second$lineage, lineage_entry("compare", request))), request)
 }
 numeric_summary <- function(bundle) {
   records <- list()
@@ -242,6 +273,7 @@ run <- function() {
   require_value(all(file.info(paths)$size <= 16*1024^2), "Input hard byte budget exceeded")
   request <- read_json(paths[2L])
   validate_request(request, if (mode == "bind") text(request$mode) else mode)
+  ACCEPTED_REQUEST <<- request
   require_value(all(file.info(paths)$size <= request$max_input_bytes), "Frozen input byte budget exceeded")
   if (mode == "bind") {
     changed <- character()
@@ -251,7 +283,7 @@ run <- function() {
       request[[key]] <- checksum(paths[index+1L]); changed <- c(changed, key)
     }
     jsonlite::write_json(request, Sys.getenv("AUTONOMICS_OUTPUT0"), auto_unbox = TRUE, pretty = TRUE, digits = 17, null = "null")
-    jsonlite::write_json(list(status = "TECHNICAL_BIND_PASS_NOT_SCIENTIFIC", only_source_sha256_changed = TRUE, changed_fields = changed, output0_sha256 = checksum(Sys.getenv("AUTONOMICS_OUTPUT0")), G0_granted = FALSE, resident_deployment_granted = FALSE), Sys.getenv("AUTONOMICS_OUTPUT1"), auto_unbox = TRUE, pretty = TRUE)
+    jsonlite::write_json(technical_provenance(list(status = "TECHNICAL_BIND_PASS_NOT_SCIENTIFIC", only_source_sha256_changed = TRUE, changed_fields = changed, output0_sha256 = checksum(Sys.getenv("AUTONOMICS_OUTPUT0")), G0_granted = FALSE, resident_deployment_granted = FALSE), request), Sys.getenv("AUTONOMICS_OUTPUT1"), auto_unbox = TRUE, pretty = TRUE)
     cat("PASS hash-only frozen LCMM binding; no scientific permission\n", file = Sys.getenv("AUTONOMICS_OUTPUT2"))
     return(invisible(NULL))
   }
@@ -261,12 +293,12 @@ run <- function() {
   summary <- numeric_summary(bundle)
   write.table(summary, Sys.getenv("AUTONOMICS_OUTPUT0"), sep = "\t", row.names = FALSE, quote = TRUE, na = "NA")
   saveRDS(bundle, Sys.getenv("AUTONOMICS_OUTPUT1"), version = 3)
-  write.table(data.frame(row_id = bundle$row_ids, status = "SYNTHETIC_COMPLETE_TECHNICAL_NOT_ELIGIBILITY"), Sys.getenv("AUTONOMICS_OUTPUT4"), sep = "\t", row.names = FALSE, quote = TRUE)
+  write.table(data.frame(row_id = bundle$row_ids, status = if (identical(CONTRACT_VERSION, "2")) "COMPLETE_OBSERVATIONS_NOT_RESEARCH_PERMISSION" else "SYNTHETIC_COMPLETE_TECHNICAL_NOT_ELIGIBILITY"), Sys.getenv("AUTONOMICS_OUTPUT4"), sep = "\t", row.names = FALSE, quote = TRUE)
   write.table(bundle$subject_map, Sys.getenv("AUTONOMICS_OUTPUT5"), sep = "\t", row.names = FALSE, quote = TRUE)
   audit <- list(status = "TECHNICAL_PASS_NOT_SCIENTIFIC", mode = mode, request_json = jsonlite::toJSON(request, auto_unbox = TRUE, digits = 17, null = "null"),
     output0_sha256 = checksum(Sys.getenv("AUTONOMICS_OUTPUT0")), output1_sha256 = checksum(Sys.getenv("AUTONOMICS_OUTPUT1")), rows = nrow(summary), G0_granted = FALSE,
     resident_deployment_granted = FALSE, real_time_landmark_missingness_class_selection_or_biological_subtype_proven = FALSE)
-  jsonlite::write_json(audit, Sys.getenv("AUTONOMICS_OUTPUT2"), auto_unbox = TRUE, pretty = TRUE, digits = NA)
+  jsonlite::write_json(technical_provenance(audit, request), Sys.getenv("AUTONOMICS_OUTPUT2"), auto_unbox = TRUE, pretty = TRUE, digits = NA)
   cat("PASS complete official lcmm object retained; technical only, not G0\n", file = Sys.getenv("AUTONOMICS_OUTPUT3"))
 }
 tryCatch(run(), error = function(error) {
@@ -278,7 +310,9 @@ tryCatch(run(), error = function(error) {
   }
   audit <- Sys.getenv(paste0("AUTONOMICS_OUTPUT", if (binder) 1L else 2L))
   log <- Sys.getenv(paste0("AUTONOMICS_OUTPUT", if (binder) 2L else 3L))
-  if (nzchar(audit)) jsonlite::write_json(list(status = "BLOCKED", mode = mode, message = conditionMessage(error), G0_granted = FALSE, resident_deployment_granted = FALSE), audit, auto_unbox = TRUE, pretty = TRUE)
+  failure <- list(status = "BLOCKED", mode = mode, message = conditionMessage(error), G0_granted = FALSE, resident_deployment_granted = FALSE)
+  if (!is.null(ACCEPTED_REQUEST)) failure <- technical_provenance(failure, ACCEPTED_REQUEST)
+  if (nzchar(audit)) jsonlite::write_json(failure, audit, auto_unbox = TRUE, pretty = TRUE)
   if (nzchar(log)) cat(paste("BLOCKED", conditionMessage(error), "\n"), file = log)
   message(conditionMessage(error))
   exit_status <<- 1L

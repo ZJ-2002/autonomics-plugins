@@ -30,7 +30,8 @@ stopifnot(second$mode=="fit",inherits(second$fit,"hlme"),second$fit$conv==1L,
   identical(unlist(second$request$expected_row_ids,use.names=FALSE),unlist(first$expected_row_ids,use.names=FALSE)))
 request <- second$request
 request$input0_sha256 <- request$input2_sha256 <- "UPSTREAM_CONTENT_HASH"
-write_json(request,file.path(root,"fit2.json"),auto_unbox=TRUE,pretty=TRUE,digits=NA,null="null")
+write_json(request,file.path(root,"fit2.json"),auto_unbox=TRUE,pretty=TRUE,digits=17,null="null")
+stopifnot(identical(fromJSON(file.path(root,"fit2.json"),simplifyVector=FALSE),request))
 write_json(list(extracted_from_complete_frozen_fit=TRUE,parameters_changed=FALSE,
   ng=request$params$ng,source_sha256=second$source_sha256),file.path(root,"template-extraction.json"),auto_unbox=TRUE)
 '''
@@ -54,6 +55,19 @@ def sha(filename):
 
 def save(filename, value):
     filename.write_text(json.dumps(value, indent=2) + '\n')
+
+
+def legacy_modes(manifest):
+    definitions = {}
+    for row in manifest['nodes']:
+        environment = row['command']['env']
+        if environment.get('AUTONOMICS_TECHNICAL_CONTRACT_VERSION', '1') != '1':
+            continue
+        mode = environment['CACHEXIA_LCMM_MODE']
+        require(mode not in definitions, 'Duplicate V1 mode is ambiguous')
+        definitions[mode] = row
+    require(set(definitions) == {'fit', 'predict', 'compare', 'bind'}, 'Complete V1 mode family required')
+    return definitions
 
 
 def main():
@@ -99,7 +113,7 @@ def main():
             shutil.copyfile(original, directory / name)
             sources[family + '/' + name] = sha(original)
         manifests.append(tomllib.loads((directory / 'manifest.toml').read_text()))
-    require(sources['cachexia-lcmm/scripts/lcmm.R'] == '6a8b110fcaeebe5a64ab378f807777547907f222099783b5b62aa8c4e3db62f9',
+    require(sources['cachexia-lcmm/scripts/lcmm.R'] == '23039cbcca5734dd110fa7e01ce6412146a9923447ac3d6d912df40f82bc804a',
             'Only the reviewed binder and request-audit precision repairs are permitted; no method changes')
     profile = json.loads((Path.home() / '.autonomics/qualified-image-store.json').read_text())
     images = [manifest['image']['reference'] for manifest in manifests]
@@ -163,7 +177,7 @@ os.execv(ADAPTER,PREFIX+arguments)
             nodes = [dict(id=name, kind='file_reference', spec=dict(path='vfs:///' + filename, format=Path(filename).suffix[1:], hash_content=True))
                      for name, filename in [('data', 'data.tsv'), ('receipt', 'receipt.json'), ('fit1config', 'fit1.json'),
                          ('fit2config', 'fit2.json'), ('predconfig', 'predict.json'), ('compareconfig', 'compare.json'), ('newdata', 'newdata.tsv')]]
-            definitions = {row['command']['env']['CACHEXIA_LCMM_MODE']: row for row in manifests[0]['nodes']}
+            definitions = legacy_modes(manifests[0])
             for name, mode in [('fit1', 'fit'), ('bindfit2', 'bind'), ('fit2', 'fit'), ('bindpred', 'bind'),
                                ('predict', 'predict'), ('bindcompare', 'bind'), ('compare', 'compare')]:
                 nodes.append(dict(id=name, kind=definitions[mode]['kind'], spec={}))

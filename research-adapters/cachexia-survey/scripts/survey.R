@@ -15,6 +15,51 @@ METHOD_KEYS <- list(
 )
 
 require_value <- function(value, message) if (!isTRUE(value)) stop(message, call. = FALSE)
+technical_contract_version <- function() {
+  version <- Sys.getenv("AUTONOMICS_TECHNICAL_CONTRACT_VERSION", unset = "1")
+  require_value(version %in% c("1", "2"), "Unknown installed technical contract version")
+  as.integer(version)
+}
+validate_technical_identity <- function(request) {
+  version <- technical_contract_version()
+  allowed <- if (version == 1L) "SYNTHETIC_TECHNICAL_INPUT" else c("SYNTHETIC_TECHNICAL_INPUT", "EMPIRICAL_TECHNICAL_INPUT")
+  require_value(identical(request$schema_version, version) &&
+    identical(request$scope, "TECHNICAL_ONLY_NOT_G0") && identical(request$scientific_qualification, "NOT_GRANTED") &&
+    identical(request$analysis_role, "SURVEY_TECHNICAL_BACKGROUND_ASSOCIATION_NOT_CANCER_MECHANISM") &&
+    is.character(request$input_role) && length(request$input_role) == 1L && !is.na(request$input_role) &&
+    request$input_role %in% allowed, "Installed version, truthful input role and non-scientific scope required")
+  invisible(version)
+}
+validate_state_contract <- function(bundle, request) {
+  version <- technical_contract_version()
+  require_value(identical(bundle$schema_version, version) && identical(bundle$scope, "TECHNICAL_ONLY_NOT_G0") &&
+    identical(bundle$analysis_role, request$analysis_role), "Upstream technical contract version or scope differs")
+  if (version == 2L) {
+    keys <- c("schema_version", "scope", "analysis_role", "original_row_ids", "design_options", "design", "result", "lineage", "input_role", "scientific_qualification")
+    require_value(is.list(bundle) && !anyDuplicated(names(bundle)) && setequal(names(bundle), keys) &&
+      identical(bundle$input_role, request$input_role) && identical(bundle$scientific_qualification, "NOT_GRANTED") &&
+      is.list(bundle$lineage) && length(bundle$lineage) > 0L, "Complete role-bound v2 design state required")
+    for (entry in bundle$lineage) {
+      require_value(is.list(entry) && is.list(entry$request), "Original role-bound request lineage required")
+      validate_technical_identity(entry$request)
+      require_value(identical(entry$request$input_role, bundle$input_role), "Input role laundering across design lineage forbidden")
+    }
+  }
+  invisible(TRUE)
+}
+declare_state_contract <- function(bundle, request) {
+  bundle$schema_version <- technical_contract_version()
+  if (bundle$schema_version == 2L) {
+    bundle$input_role <- request$input_role
+    bundle$scientific_qualification <- request$scientific_qualification
+  }
+  bundle
+}
+validate_population_role <- function(value) {
+  expected <- if (technical_contract_version() == 1L) "SYNTHETIC_KNOWN_POPULATION_NOT_STUDY" else "EXPLICIT_POPULATION_TOTALS_NOT_STUDY_QUALIFIED"
+  require_value(identical(value, expected), "Explicit external population totals without study qualification required")
+  invisible(TRUE)
+}
 exact_keys <- function(value, keys) require_value(is.list(value) && !is.null(names(value)) && !anyDuplicated(names(value)) && setequal(names(value), keys), "Exact frozen object keys required")
 unique_json <- function(value) {
   if (is.list(value)) {
@@ -135,8 +180,8 @@ build_design <- function(request, input) {
     design <- design[as.character(data[[column]]) %in% values, ]
   }
   require_value(nrow(design$variables) >= 2L, "Survey domain too small")
-  list(schema_version = 1L, scope = "TECHNICAL_ONLY_NOT_G0", analysis_role = ROLE, original_row_ids = data$row_id,
-    design_options = spec, design = design, result = NULL, lineage = list(list(mode = "design", request = request, parent_sha256 = request$input0_sha256)))
+  declare_state_contract(list(schema_version = 1L, scope = "TECHNICAL_ONLY_NOT_G0", analysis_role = ROLE, original_row_ids = data$row_id,
+    design_options = spec, design = design, result = NULL, lineage = list(list(mode = "design", request = request, parent_sha256 = request$input0_sha256))), request)
 }
 population_frame <- function(records, columns, data) {
   require_value(is.list(records) && is.null(names(records)) && length(records) > 0L, "Explicit population cells required")
@@ -212,12 +257,13 @@ analyse <- function(bundle, request, mode) {
     result <- survey::svyttest(formula, design, na.rm = params$na_rm)
     summary <- unclass(result)
   } else if (mode == "post") {
-    require_value(params$population_role == "SYNTHETIC_KNOWN_POPULATION_NOT_STUDY", "External population scientific qualification not granted")
+    validate_population_role(params$population_role)
     columns <- safe_columns(params$columns, data)
     population <- population_frame(params$population, columns, data)
     design <- survey::postStratify(design, reformulate(columns), population, partial = boolean(params$partial))
   } else if (mode == "rake") {
-    require_value(params$population_role == "SYNTHETIC_KNOWN_POPULATION_NOT_STUDY" && is.list(params$margins) && is.null(names(params$margins)) && length(params$margins) > 0L, "Frozen population margins required")
+    validate_population_role(params$population_role)
+    require_value(is.list(params$margins) && is.null(names(params$margins)) && length(params$margins) > 0L, "Frozen population margins required")
     formulas <- populations <- list()
     for (margin in params$margins) {
       exact_keys(margin, c("columns", "population"))
@@ -229,7 +275,8 @@ analyse <- function(bundle, request, mode) {
     require_value(max(totals) - min(totals) <= 1e-10 * max(totals), "Incompatible population margin totals")
     design <- survey::rake(design, sample.margins = formulas, population.margins = populations, control = list(maxit = integer_value(params$maxit, 1, 10000), epsilon = number(params$epsilon, 1e-12, .01), verbose = FALSE), compress = FALSE)
   } else if (mode == "calibrate") {
-    require_value(params$population_role == "SYNTHETIC_KNOWN_POPULATION_NOT_STUDY" && !boolean(params$force), "Frozen synthetic population; force=FALSE required")
+    validate_population_role(params$population_role)
+    require_value(!boolean(params$force), "force=FALSE required")
     terms <- safe_terms(params$terms, data)
     formula <- reformulate(terms, intercept = boolean(params$intercept))
     matrix <- stats::model.matrix(formula, data)
@@ -284,7 +331,8 @@ run_survey <- function(outputs, audit) {
   request <- jsonlite::fromJSON(contract, simplifyVector = FALSE)
   unique_json(request)
   exact_keys(request, c("schema_version", "mode", "scope", "input_role", "scientific_qualification", "analysis_role", "test_id", "input0_sha256", "expected_row_ids", "max_input_bytes", "max_rows", "params"))
-  require_value(is.integer(request$schema_version) && identical(request$schema_version, 1L) && request$mode == mode && request$scope == "TECHNICAL_ONLY_NOT_G0" && request$scientific_qualification == "NOT_GRANTED" && request$analysis_role == ROLE && request$input_role == "SYNTHETIC_TECHNICAL_INPUT", "Frozen technical-only scope required")
+  validate_technical_identity(request)
+  require_value(request$mode == mode, "Frozen method mode required")
   test_id <- text_value(request$test_id)
   rows <- strings(request$expected_row_ids)
   integer_value(request$max_rows, 2, 10000)
@@ -298,8 +346,9 @@ run_survey <- function(outputs, audit) {
       list(bundle = bundle, summary = list(weights = setNames(stats::weights(bundle$design), bundle$design$variables$row_id), design_df = survey::degf(bundle$design)))
     } else {
       bundle <- readRDS(input)
-      exact_keys(bundle, c("schema_version", "scope", "analysis_role", "original_row_ids", "design_options", "design", "result", "lineage"))
-      require_value(identical(bundle$schema_version, 1L) && bundle$scope == "TECHNICAL_ONLY_NOT_G0" && bundle$analysis_role == ROLE && inherits(bundle$design, "survey.design2") && identical(bundle$original_row_ids, rows), "Frozen official survey state differs; weights-only reconstruction forbidden")
+      if (technical_contract_version() == 1L) exact_keys(bundle, c("schema_version", "scope", "analysis_role", "original_row_ids", "design_options", "design", "result", "lineage"))
+      validate_state_contract(bundle, request)
+      require_value(inherits(bundle$design, "survey.design2") && identical(bundle$original_row_ids, rows), "Frozen official survey state differs; weights-only reconstruction forbidden")
       analyse(bundle, request, mode)
     }
   }, warning = function(notice) { warnings <<- c(warnings, conditionMessage(notice)); invokeRestart("muffleWarning") })
@@ -315,6 +364,14 @@ run_survey <- function(outputs, audit) {
   ledger <- data.frame(row_id = rows, status = ifelse(rows %in% computed$bundle$design$variables$row_id, "IN_DESIGN", "NOT_IN_DOMAIN"))
   write.table(ledger, outputs[5], sep = "\t", row.names = FALSE, quote = TRUE)
   audit$request_json <- rawToChar(readBin(contract, "raw", n = file.info(contract)$size))
+  if (technical_contract_version() == 2L) {
+    audit$schema_version <- request$schema_version
+    audit$input_role <- request$input_role
+    audit$scientific_qualification <- request$scientific_qualification
+    audit$state_schema_version <- computed$bundle$schema_version
+    audit$state_input_role <- computed$bundle$input_role
+    audit$state_scientific_qualification <- computed$bundle$scientific_qualification
+  }
   audit$contract_sha256 <- checksum(contract)
   audit$warnings <- warnings
   audit$output0_sha256 <- checksum(outputs[1])

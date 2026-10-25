@@ -736,7 +736,7 @@
         },
         {
           "path": "source-lock.json",
-          "sha256": "44eacc94cc73f8db3564c2d205e8ce435a3d84028463070b63a4d07c6eccf922",
+          "sha256": "627bbe7b68ff616a2cbb38cdb6ab2c5f479e05df1246f63ac5070951b7b21455",
           "bytes": 4076,
           "executable": false
         }
@@ -16809,7 +16809,11 @@
         "cachexia_hlme",
         "cachexia_hlme_predict",
         "cachexia_hlme_compare",
-        "cachexia_lcmm_bind_contract"
+        "cachexia_lcmm_bind_contract",
+        "cachexia_hlme_v2",
+        "cachexia_hlme_predict_v2",
+        "cachexia_hlme_compare_v2",
+        "cachexia_lcmm_bind_contract_v2"
       ],
       "image_reference": "ghcr.io/zj-2002/lcmm-official@sha256:dd7f8a68d27a1002d5f6b004ca2ad24fc92cc7db43773500963363f92f8828d5",
       "files": [
@@ -16832,15 +16836,21 @@
           "executable": false
         },
         {
+          "path": "TECHNICAL_V2.md",
+          "sha256": "9f86fbd25306c1e125bc0f5aee50b0aa042885d00174247dfa3f7bb67e8ebd79",
+          "bytes": 2976,
+          "executable": false
+        },
+        {
           "path": "manifest.toml",
-          "sha256": "f0f65466543377ff485c553c26a53650ad35718c3a59d99b4b532e260dbdc069",
-          "bytes": 4605,
+          "sha256": "bc4d1528d4786bc15e687136ebb30419b672d8fa036989a9bf2c7875aef591de",
+          "bytes": 8672,
           "executable": false
         },
         {
           "path": "scripts/lcmm.R",
-          "sha256": "6a8b110fcaeebe5a64ab378f807777547907f222099783b5b62aa8c4e3db62f9",
-          "bytes": 23536,
+          "sha256": "23039cbcca5734dd110fa7e01ce6412146a9923447ac3d6d912df40f82bc804a",
+          "bytes": 26726,
           "executable": false
         },
         {
@@ -16854,6 +16864,18 @@
           "sha256": "26f0c5844bcfcb1aa0a44bd48acbbb91d1e1751aae669e15b1b7e1cf0fdf4ca2",
           "bytes": 4180,
           "executable": false
+        },
+        {
+          "path": "tests/technical_v2_guards.R",
+          "sha256": "ae950a0aa393a55d0a7919246f4fd0a40aedce4d2f3be803254371d3041ebab0",
+          "bytes": 5956,
+          "executable": false
+        },
+        {
+          "path": "tests/test_technical_v2.py",
+          "sha256": "a25cac606fce30d604e737a6966fe92803c23f177030f80fd11be840ae21a5f1",
+          "bytes": 4648,
+          "executable": false
         }
       ],
       "source_inventory_only": true,
@@ -16864,20 +16886,21 @@
       "directory": "research-adapters/cachexia-lcmm-typed-values",
       "plugin_name": "cachexia-lcmm-typed-values",
       "kinds": [
-        "cachexia_lcmm_values_to_parquet"
+        "cachexia_lcmm_values_to_parquet",
+        "cachexia_lcmm_values_to_parquet_v2"
       ],
       "image_reference": "ghcr.io/zj-2002/single-cell-preprocessor@sha256:e2f9fcd5ccf9e97b0f0129466df5abb21ae47ed32f123f6953b79fd83d915e20",
       "files": [
         {
           "path": "manifest.toml",
-          "sha256": "3f90183b96b13d9f18000ae42e71a87c22e115fa76ed8294d3bc47e559bfe62c",
-          "bytes": 1349,
+          "sha256": "297e257f377461e5e6fe3b0f7c9205f6b9a2efe94615d3feb7abdd40fbeb3014",
+          "bytes": 2346,
           "executable": false
         },
         {
           "path": "scripts/typed_values.py",
-          "sha256": "978ab903b9a50b1834ecc3ac6f87a824815fc84b915d1eb040ed09118bd8dd8f",
-          "bytes": 5105,
+          "sha256": "322f9ce0ad3e139d43b77413c83d01cc7e1a7891788f3647b4ebd60fc5ca15ca",
+          "bytes": 6385,
           "executable": false
         }
       ],
@@ -17044,7 +17067,12 @@
         "cachexia_mice",
         "cachexia_mice_complete",
         "cachexia_mice_impute_pmm",
-        "cachexia_mice_impute_logreg"
+        "cachexia_mice_impute_logreg",
+        "cachexia_mice_bind_contract_v2",
+        "cachexia_mice_v2",
+        "cachexia_mice_complete_v2",
+        "cachexia_mice_impute_pmm_v2",
+        "cachexia_mice_impute_logreg_v2"
       ],
       "image_reference": "ghcr.io/zj-2002/mice-official@sha256:ff4c166b89842d9bfbcf8d0f8227d05057a3ae57a668d374374a60db1e425516",
       "files": [
@@ -17061,9 +17089,15 @@
           "executable": false
         },
         {
+          "path": "TECHNICAL_V2_INTERFACE.md",
+          "sha256": "f340e4655bdb257efe564545b1b84538d6eb3e9d2cf4a6a21eec0ee6c363e251",
+          "bytes": 3692,
+          "executable": false
+        },
+        {
           "path": "manifest.toml",
-          "sha256": "800c76164539b4d4b73ffc1a9dcda85f517709030476e063175a5f1465e434d2",
-          "bytes": 5832,
+          "sha256": "5cf2039f05b904c572bb7b4479c0920ffdcd4e2a841787d9c77ffa86c2972e61",
+          "bytes": 11503,
           "executable": false
         },
         {
@@ -17074,14 +17108,14 @@
         },
         {
           "path": "scripts/bind_contract.R",
-          "sha256": "77c1fd5bc3025d3e6c7c70dcbdf5945493194e6e6fefa261a737bba3f7adc14a",
-          "bytes": 9789,
+          "sha256": "265995b924c0ae508da00d3e14ef327ab7ac2f0d3fffdc2da6f1cd22e9aee83b",
+          "bytes": 12439,
           "executable": false
         },
         {
           "path": "scripts/mice.R",
-          "sha256": "33d36247e60b0229965e1d2d559f91961888b7f959a82154a4996fbf4c10309e",
-          "bytes": 26581,
+          "sha256": "302b2ce91d3a0c46b7146b5a8aab14b2e0faf7a867ea227b6ed8c44125868217",
+          "bytes": 29601,
           "executable": false
         },
         {
@@ -17099,7 +17133,8 @@
       "directory": "research-adapters/cachexia-mice-typed-values",
       "plugin_name": "cachexia-mice-typed-values",
       "kinds": [
-        "cachexia_mice_values_to_parquet"
+        "cachexia_mice_values_to_parquet",
+        "cachexia_mice_values_to_parquet_v2"
       ],
       "image_reference": "ghcr.io/zj-2002/single-cell-preprocessor@sha256:e2f9fcd5ccf9e97b0f0129466df5abb21ae47ed32f123f6953b79fd83d915e20",
       "files": [
@@ -17110,15 +17145,21 @@
           "executable": false
         },
         {
+          "path": "TECHNICAL_V2_INTERFACE.md",
+          "sha256": "30cc418072c33d27a27f63739351f89d872f49ee0d69ecc53e85657f1e8c2994",
+          "bytes": 1112,
+          "executable": false
+        },
+        {
           "path": "manifest.toml",
-          "sha256": "63a57ac503ac19043835ed66d3939f908e623861e6d67e62a185dcad3613f515",
-          "bytes": 1179,
+          "sha256": "5efd761bad8a174c8f1006b2b17850f3112f15d03487fe0b4b9a9a68870c06de",
+          "bytes": 2159,
           "executable": false
         },
         {
           "path": "scripts/typed_values.py",
-          "sha256": "c503512f82c82ef7cf28950e0b64cbaf3e7ccf85f445ff0d11cf23a21b9189f8",
-          "bytes": 7170,
+          "sha256": "29fd1688d1a1fdc8a8d9a7b08c2652910b1111dfb7b8ca31690fbc40d299ddf6",
+          "bytes": 9363,
           "executable": false
         }
       ],
@@ -17738,7 +17779,18 @@
         "cachexia_post_stratify",
         "cachexia_rake",
         "cachexia_calibrate",
-        "cachexia_trim_weights"
+        "cachexia_trim_weights",
+        "cachexia_survey_bind_contract_v2",
+        "cachexia_survey_design_v2",
+        "cachexia_svymean_v2",
+        "cachexia_svyvar_v2",
+        "cachexia_svyquantile_v2",
+        "cachexia_svyglm_v2",
+        "cachexia_svyttest_v2",
+        "cachexia_post_stratify_v2",
+        "cachexia_rake_v2",
+        "cachexia_calibrate_v2",
+        "cachexia_trim_weights_v2"
       ],
       "image_reference": "ghcr.io/zj-2002/survey-official@sha256:6f3e6f417912b7fb2c2b344ceaa11ff6031cde7848740caf6450c4366b5fbc61",
       "files": [
@@ -17755,27 +17807,39 @@
           "executable": false
         },
         {
+          "path": "TECHNICAL_DATA_CONTRACT_V2.md",
+          "sha256": "aed687b4a33c8d245d7020c8bf2a48a135df72156dc17182c8ee4e46a947a155",
+          "bytes": 4866,
+          "executable": false
+        },
+        {
           "path": "manifest.toml",
-          "sha256": "427bf8ec4d49496027ad888985ff8093032f2e5acc21a94cffe5c7eeb2949d9a",
-          "bytes": 11215,
+          "sha256": "3bb30ca445a75be883073664ef536850a12a2384065e25eb8555a92b5f46afa8",
+          "bytes": 24689,
           "executable": false
         },
         {
           "path": "scripts/bind_contract.R",
-          "sha256": "ee8a4ebd6a0d861a31de3d1d08a62b5c6aa953e1aa625e4dda3854ae2ab5b684",
-          "bytes": 9594,
+          "sha256": "64c83187f184d49f44f7b52409d336054a574cb8cdbe6c551282bd6727e4aa4b",
+          "bytes": 11571,
           "executable": false
         },
         {
           "path": "scripts/survey.R",
-          "sha256": "f7d6c2bee9abf84474aaf4b3a78e35769d2bb58867c3f1b9508c9b70761c7716",
-          "bytes": 27475,
+          "sha256": "441908c41c1f6aabae4316913195e39696adaf2aa0c2e08cffbb2a3f92b577d9",
+          "bytes": 30317,
           "executable": false
         },
         {
           "path": "source-provenance.json",
           "sha256": "44057ba7ec4cda587de819c1e0b88fc81aefd0f9c3d8916e9e0bdf66fe9b5db7",
           "bytes": 1491,
+          "executable": false
+        },
+        {
+          "path": "tests/v2_contract_acceptance.py",
+          "sha256": "94a27fb835c3275ac978d34e50b04f357b1edcccff3771cb4126fc8814c2ee63",
+          "bytes": 3457,
           "executable": false
         }
       ],
@@ -17787,7 +17851,8 @@
       "directory": "research-adapters/cachexia-survey-typed-values",
       "plugin_name": "cachexia-survey-typed-values",
       "kinds": [
-        "cachexia_survey_values_to_parquet"
+        "cachexia_survey_values_to_parquet",
+        "cachexia_survey_values_to_parquet_v2"
       ],
       "image_reference": "ghcr.io/zj-2002/single-cell-preprocessor@sha256:e2f9fcd5ccf9e97b0f0129466df5abb21ae47ed32f123f6953b79fd83d915e20",
       "files": [
@@ -17799,14 +17864,14 @@
         },
         {
           "path": "manifest.toml",
-          "sha256": "f48c9524ff0f5fb6dcd35b77cc241d88919d871a337c8bdc9ccc1c7ccb0aea15",
-          "bytes": 1265,
+          "sha256": "0c08b2aea3675bfe640f97ea96b52f7e92a00955a2dcaad1fec20c14efa2b4b4",
+          "bytes": 2222,
           "executable": false
         },
         {
           "path": "scripts/typed_values.py",
-          "sha256": "ceff7a428fc10ef89bd27142a14e07968fc58cae49065113916d464c30d7e76c",
-          "bytes": 7173,
+          "sha256": "d0ee8f5643e9bc4178ba5fba3235ca3f8a9b005597515e289ef38c5e17647a4e",
+          "bytes": 9578,
           "executable": false
         }
       ],

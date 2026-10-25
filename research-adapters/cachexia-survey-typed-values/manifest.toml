@@ -21,3 +21,22 @@ cpus = 1.0
 memory = "2Gi"
 network = "isolated"
 pull_policy = "never"
+
+[[nodes]]
+kind = "cachexia_survey_values_to_parquet_v2"
+desc = "Preserve role-bound v2 empirical or synthetic survey summaries with explicit Arrow types."
+doc = "Two Files: successful schema2 method-only survey summary TSV and matching role-bound audit. Rejects version or input-role laundering. Four outputs retain the same explicit Arrow schema, source order, missing states and authority-false semantics. No statistics, research qualification or automatic replacement of the v1 route."
+timeout_secs = 600
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}]
+outputs = [{path="values.parquet",format="parquet"}, {path="typed_audit.json",format="json"}, {path="typed.log",format="text"}, {path="schema.json",format="json"}]
+[nodes.command]
+interpreter = "python"
+script_file = "scripts/typed_values.py"
+[nodes.command.env]
+AUTONOMICS_TECHNICAL_CONTRACT_VERSION = "2"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"

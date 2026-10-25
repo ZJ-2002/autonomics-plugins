@@ -1,0 +1,23 @@
+schema_version = 1
+plugin_name = "cachexia-mice-typed-values"
+[image]
+reference = "ghcr.io/zj-2002/single-cell-preprocessor@sha256:e2f9fcd5ccf9e97b0f0129466df5abb21ae47ed32f123f6953b79fd83d915e20"
+tag = "pyarrow-25.0.1-typed-mice-boundary"
+upstream = "PyArrow25.0.1 explicit File-to-Parquet engineering boundary"
+license = "Apache-2.0"
+[[nodes]]
+kind = "cachexia_mice_values_to_parquet"
+desc = "Content-verified upstream MICE TSV/audit to explicit nullable-double and lexical-string Parquet."
+doc = "Two files: upstream values and successful matching audit. Preserves exact original lexical row IDs/factor labels, frozen scopes and imputation coordinates; no inference, hashing fallback, metadata choice, statistical calculation or G0. Four Parquet/audit/log/schema outputs."
+timeout_secs = 600
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}]
+outputs = [{path="values.parquet",format="parquet"}, {path="typed_audit.json",format="json"}, {path="typed.log",format="text"}, {path="schema.json",format="json"}]
+[nodes.command]
+interpreter = "python"
+script_file = "scripts/typed_values.py"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"

@@ -1,5 +1,29 @@
 options(digits = 17)
 require_value <- function(value, message) if (!isTRUE(value)) stop(message, call. = FALSE)
+technical_contract_profile <- function(request) {
+  version <- Sys.getenv("AUTONOMICS_TECHNICAL_CONTRACT_VERSION", unset = "1")
+  require_value(version %in% c("1", "2"), "Unsupported technical contract version")
+  schema <- if (version == "1") 1L else 2L
+  role <- if (schema == 1L) "SYNTHETIC_MISSINGNESS_TECHNICAL_NOT_LONGITUDINAL_QUALIFICATION" else "MISSINGNESS_TECHNICAL_NOT_LONGITUDINAL_QUALIFICATION"
+  allowed <- if (schema == 1L) "SYNTHETIC_TECHNICAL_INPUT" else c("SYNTHETIC_TECHNICAL_INPUT", "EMPIRICAL_TECHNICAL_INPUT")
+  require_value(identical(request$schema_version, schema) && identical(request$scope, "TECHNICAL_ONLY_NOT_G0") && identical(request$scientific_qualification, "NOT_GRANTED") && identical(request$analysis_role, role), "No scientific/longitudinal eligibility or G0 granted; technical version must match")
+  require_value(is.character(request$input_role) && length(request$input_role) == 1L && !is.na(request$input_role) && request$input_role %in% allowed, "Explicit versioned source role required")
+  list(schema_version = schema, input_role = request$input_role, analysis_role = role)
+}
+technical_parent_role <- function(bundle, request) {
+  profile <- technical_contract_profile(request)
+  if (profile$schema_version == 2L) {
+    require_value(is.list(bundle$request) && is.list(bundle$technical_lineage), "Versioned parent source-role lineage required")
+    parent <- technical_contract_profile(bundle$request)
+    require_value(identical(bundle$schema_version, 2L) && identical(bundle$scope, request$scope) && identical(bundle$analysis_role, profile$analysis_role) && identical(bundle$input_role, profile$input_role) && identical(parent, profile), "Parent schema/source role cannot cross versions or be relabeled")
+    require_value(identical(bundle$technical_lineage$schema_version, 2L) && identical(bundle$technical_lineage$input_role, profile$input_role) && identical(bundle$technical_lineage$analysis_role, profile$analysis_role) && identical(bundle$technical_lineage$request_input_sha256, bundle$request$input0_sha256) && identical(bundle$technical_lineage$scientific_qualification_granted, FALSE), "Parent technical lineage differs")
+    if (!is.null(bundle$parent)) {
+      require_value(identical(bundle$technical_lineage$parent_input_role, bundle$parent$input_role), "Nested parent role lineage differs")
+      technical_parent_role(bundle$parent, request)
+    } else require_value(is.null(bundle$technical_lineage$parent_input_role), "Unexpected parent role without parent state")
+  }
+  invisible(profile)
+}
 checksum <- function(filename) {
   value <- system2("sha256sum", shQuote(filename), stdout = TRUE, stderr = TRUE)
   require_value(is.null(attr(value, "status")) && length(value) == 1L && grepl("^[0-9a-f]{64} ", value), "Input SHA unavailable")
@@ -66,13 +90,14 @@ status <- tryCatch({
   request <- jsonlite::fromJSON(template, simplifyVector = FALSE)
   unique_keys(request)
   keys <- c("schema_version", "mode", "scope", "input_role", "scientific_qualification", "analysis_role", "test_id", "input0_sha256", "input2_sha256", "expected_row_ids", "expected_columns", "max_input_bytes", "max_rows", "params")
-  require_value(is.list(request) && setequal(names(request), keys) && is.integer(request$schema_version) && identical(request$schema_version, 1L), "Exact bind template schema required")
+  require_value(is.list(request) && setequal(names(request), keys), "Exact bind template schema required")
+  profile <- technical_contract_profile(request)
   require_value(request$mode == "complete" && request$input0_sha256 == "UPSTREAM_CONTENT_HASH", "Only explicit unresolved upstream hash may be bound")
-  require_value(request$scope == "TECHNICAL_ONLY_NOT_G0" && request$scientific_qualification == "NOT_GRANTED" && request$input_role == "SYNTHETIC_TECHNICAL_INPUT" && request$analysis_role == "SYNTHETIC_MISSINGNESS_TECHNICAL_NOT_LONGITUDINAL_QUALIFICATION", "No research/design changes permitted")
   require_value(is.numeric(request$max_rows) && !is.logical(request$max_rows) && length(request$max_rows) == 1L && is.finite(request$max_rows) && request$max_rows == floor(request$max_rows) && request$max_rows >= 2 && request$max_rows <= 10000, "Frozen row budget required")
   require_value(is.numeric(request$max_input_bytes) && !is.logical(request$max_input_bytes) && length(request$max_input_bytes) == 1L && is.finite(request$max_input_bytes) && request$max_input_bytes == floor(request$max_input_bytes) && request$max_input_bytes >= 1 && request$max_input_bytes <= 16 * 1024^2 && file.info(input)$size <= request$max_input_bytes, "Frozen byte budget required")
   bundle <- readRDS(input)
-  require_value(inherits(bundle$result, "mids") && bundle$scope == "TECHNICAL_ONLY_NOT_G0" && bundle$analysis_role == request$analysis_role && identical(bundle$schema_version, 1L), "Qualified upstream technical mids state required")
+  technical_parent_role(bundle, request)
+  require_value(inherits(bundle$result, "mids") && bundle$scope == "TECHNICAL_ONLY_NOT_G0" && bundle$analysis_role == request$analysis_role && identical(bundle$schema_version, profile$schema_version), "Qualified upstream technical mids state required")
   rows <- unlist(request$expected_row_ids, use.names = FALSE)
   require_value(is.list(request$expected_row_ids) && is.null(names(request$expected_row_ids)) && is.character(rows) && !anyNA(rows) && !anyDuplicated(rows) && length(rows) <= request$max_rows && identical(rows, bundle$original_row_ids), "Frozen exact upstream row universe differs")
   require_value(identical(unlist(request$expected_columns, use.names = FALSE), bundle$expected_columns) && identical(request$input2_sha256, bundle$status_sha256), "Frozen columns/status receipt differ")
@@ -90,6 +115,14 @@ status <- tryCatch({
   audit$input0_sha256 <- resolved$input0_sha256
   audit$resolved_sha256 <- checksum(outputs[1])
   audit$only_source_sha256_changed <- TRUE
+  if (profile$schema_version == 2L) {
+    audit$schema_version <- 2L
+    audit$input_role <- profile$input_role
+    audit$analysis_role <- profile$analysis_role
+    audit$parent_technical_lineage <- bundle$technical_lineage
+    audit$MCAR_MAR_MNAR_assumption_established <- FALSE
+    audit$MICE_stationarity_MAR_MNAR_or_longitudinal_eligibility_proven <- FALSE
+  }
   save_audit()
   cat("PASS hash-only binding\n", file = outputs[3], append = TRUE)
   0L

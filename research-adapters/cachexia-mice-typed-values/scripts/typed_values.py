@@ -29,6 +29,23 @@ def unique_object(items):
     return dict(items)
 
 
+def technical_upstream_profile(request, upstream):
+    version = os.environ.get("AUTONOMICS_TECHNICAL_CONTRACT_VERSION", "1")
+    require(version in ("1", "2"), "Unsupported technical contract version")
+    schema = int(version)
+    role = "SYNTHETIC_MISSINGNESS_TECHNICAL_NOT_LONGITUDINAL_QUALIFICATION" if schema == 1 else "MISSINGNESS_TECHNICAL_NOT_LONGITUDINAL_QUALIFICATION"
+    allowed = ("SYNTHETIC_TECHNICAL_INPUT",) if schema == 1 else ("SYNTHETIC_TECHNICAL_INPUT", "EMPIRICAL_TECHNICAL_INPUT")
+    require(type(request.get("schema_version")) is int and request["schema_version"] == schema and request.get("input_role") in allowed, "Versioned technical request/source role required")
+    require(request.get("scope") == "TECHNICAL_ONLY_NOT_G0" and request.get("scientific_qualification") == "NOT_GRANTED" and request.get("analysis_role") == role, "Frozen technical upstream scope required")
+    if schema == 2:
+        require(type(upstream.get("schema_version")) is int and upstream["schema_version"] == 2 and upstream.get("input_role") == request["input_role"] and upstream.get("analysis_role") == role, "Upstream audit source role/version differs")
+        lineage = upstream.get("technical_lineage")
+        require(isinstance(lineage, dict) and type(lineage.get("schema_version")) is int and lineage["schema_version"] == 2 and lineage.get("input_role") == request["input_role"] and lineage.get("analysis_role") == role, "Upstream technical lineage differs")
+        require(lineage.get("request_input_sha256") == request.get("input0_sha256") and lineage.get("scientific_qualification_granted") is False and lineage.get("parent_input_role") in (None, request["input_role"]), "Upstream technical lineage cannot be relabeled")
+        require(upstream.get("scientific_qualification_granted") is False, "Technical conversion cannot grant scientific qualification")
+    return dict(schema_version=schema, input_role=request["input_role"], analysis_role=role, scientific_qualification="NOT_GRANTED")
+
+
 def write_products(outputs):
     require(len(set(filename.resolve() for filename in outputs)) == 4 and not any(filename.exists() for filename in outputs), "Missing/aliased/overwritten typed ports")
     audit = {"status": "RUNNING", "G0_granted": False, "resident_deployment_granted": False, "statistical_method": "NOT_APPLICABLE_ENGINEERING_TYPED_BOUNDARY"}
@@ -47,7 +64,7 @@ def write_products(outputs):
         request = json.loads(upstream["request_json"], object_pairs_hook=unique_object)
         require(upstream["status"] == "TECHNICAL_PASS_NOT_SCIENTIFIC" and upstream["G0_granted"] is False and upstream["resident_deployment_granted"] is False,
                 "Successful non-scientific upstream receipt required")
-        require(request["scope"] == "TECHNICAL_ONLY_NOT_G0" and request["scientific_qualification"] == "NOT_GRANTED" and request["analysis_role"] == "SYNTHETIC_MISSINGNESS_TECHNICAL_NOT_LONGITUDINAL_QUALIFICATION", "Frozen technical upstream scope required")
+        profile = technical_upstream_profile(request, upstream)
         require(sha256(source) == upstream["output0_sha256"], "Upstream numeric payload identity differs")
         reader = csv.DictReader(io.StringIO(source.read_text()), delimiter="\t")
         require(reader.fieldnames == FIELDS, "Exact seven-column MICE values schema required")
@@ -77,8 +94,13 @@ def write_products(outputs):
         table = arrow.Table.from_pydict(parsed, schema=schema)
         parquet.write_table(table, outputs[0], compression="zstd")
         require(parquet.read_table(outputs[0]).equals(table, check_metadata=True), "Typed Parquet readback differs")
-        outputs[3].write_text(json.dumps({"schema": str(schema), "rows": len(rows), "string_columns": [field for field in FIELDS if field != "value"], "nullable_numeric_value": True}, indent=2)+"\n")
+        schema_record = {"schema": str(schema), "rows": len(rows), "string_columns": [field for field in FIELDS if field != "value"], "nullable_numeric_value": True}
+        if profile["schema_version"] == 2:
+            schema_record.update(profile, technical_lineage=upstream["technical_lineage"], scientific_qualification_granted=False)
+        outputs[3].write_text(json.dumps(schema_record, indent=2)+"\n")
         audit.update(status="TECHNICAL_TYPED_VALUES_PASS_NOT_SCIENTIFIC", input0_sha256=sha256(source), input1_sha256=sha256(evidence), output0_sha256=sha256(outputs[0]), rows=len(rows))
+        if profile["schema_version"] == 2:
+            audit.update(profile, technical_lineage=upstream["technical_lineage"], scientific_qualification_granted=False)
         save()
         with outputs[2].open("a") as stream:
             stream.write("PASS\n")

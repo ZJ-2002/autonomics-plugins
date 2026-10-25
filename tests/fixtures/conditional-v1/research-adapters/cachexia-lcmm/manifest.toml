@@ -1,0 +1,95 @@
+schema_version = 1
+plugin_name = "cachexia-lcmm"
+[image]
+reference = "ghcr.io/zj-2002/lcmm-official@sha256:dd7f8a68d27a1002d5f6b004ca2ad24fc92cc7db43773500963363f92f8828d5"
+tag = "lcmm-2.2.2-R-4.6.1-local-proof"
+upstream = "Unmodified official CRAN lcmm 2.2.2 / marqLevAlg 2.0.8 source"
+license = "GPL-2.0-or-later"
+
+[[nodes]]
+kind = "cachexia_hlme"
+desc = "Complete official hlme fit with explicit convergence, initialization and lexical patient identity."
+doc = "Three files: complete-observation lexical TSV, frozen typed JSON contract, technical eligibility receipt or complete single-class initial fit RDS. Six outputs preserve every official fit field, full covariance and call, RNG, original rows, bijective subject map, audit and failure log. No automatic class choice, missingness handling, forecast permission or G0. Nonconvergence retains diagnostic failed_fit.rds only."
+timeout_secs = 600
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}, {type="file"}]
+outputs = [{path="summary.tsv",format="tsv"}, {path="state.rds",format="rds"}, {path="audit.json",format="json"}, {path="lcmm.log",format="text"}, {path="row_ledger.tsv",format="tsv"}, {path="subject_map.tsv",format="tsv"}]
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/lcmm.R"
+[nodes.command.env]
+CACHEXIA_LCMM_MODE = "fit"
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"
+
+[[nodes]]
+kind = "cachexia_hlme_predict"
+desc = "Official predictY.hlme on complete qualified fit objects, with marginal means and analytical confidence bands."
+doc = "Three files: complete converged parent fit RDS, exact frozen JSON contract and typed lexical newdata TSV. Six summary/full state/audit/log/row-ledger/subject-map outputs. Frozen lcmm 2.2.2 hlme draws=TRUE uses analytical 1.96 SE mean bands, not individual prediction intervals or Monte Carlo draws. Row identities and time axis retained; no actual forecast/landmark qualification."
+timeout_secs = 600
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}, {type="file"}]
+outputs = [{path="summary.tsv",format="tsv"}, {path="state.rds",format="rds"}, {path="audit.json",format="json"}, {path="lcmm.log",format="text"}, {path="row_ledger.tsv",format="tsv"}, {path="subject_map.tsv",format="tsv"}]
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/lcmm.R"
+[nodes.command.env]
+CACHEXIA_LCMM_MODE = "predict"
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"
+
+[[nodes]]
+kind = "cachexia_hlme_compare"
+desc = "Official summarytable of two complete converged fits on identical frozen observations."
+doc = "Three files: first complete fit RDS, frozen JSON model IDs/criteria/source contract, second complete fit RDS. Six outputs retain both full fits and all requested G/loglik/conv/npm/AIC/BIC/SABIC/entropy/ICL1/ICL2/class percentages; no dropped failures, inferred family reduction, automatic class selection or biological subtype claims. Default-OFF scientific gate remains external."
+timeout_secs = 600
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}, {type="file"}]
+outputs = [{path="summary.tsv",format="tsv"}, {path="state.rds",format="rds"}, {path="audit.json",format="json"}, {path="lcmm.log",format="text"}, {path="row_ledger.tsv",format="tsv"}, {path="subject_map.tsv",format="tsv"}]
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/lcmm.R"
+[nodes.command.env]
+CACHEXIA_LCMM_MODE = "compare"
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"
+
+[[nodes]]
+kind = "cachexia_lcmm_bind_contract"
+desc = "Resolve only two upstream file SHA256 placeholders in an otherwise frozen LCMM contract."
+doc = "Three files: upstream input0, frozen JSON template, upstream input2. JSON/audit/log outputs; both hashes must be explicit placeholders. No change to method, IDs, scope, convergence, class number, qualification or budgets."
+timeout_secs = 300
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}, {type="file"}]
+outputs = [{path="resolved_contract.json",format="json"}, {path="bind_audit.json",format="json"}, {path="bind.log",format="text"}]
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/lcmm.R"
+[nodes.command.env]
+CACHEXIA_LCMM_MODE = "bind"
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"

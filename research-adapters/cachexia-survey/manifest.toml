@@ -247,3 +247,255 @@ cpus = 1.0
 memory = "2Gi"
 network = "isolated"
 pull_policy = "never"
+
+[[nodes]]
+kind = "cachexia_survey_bind_contract_v2"
+desc = "V2 method-only real or synthetic input: Bind only an upstream immutable RDS content SHA256 into an otherwise frozen analysis contract."
+doc = "Version 2 technical data contract: accepts explicitly declared SYNTHETIC_TECHNICAL_INPUT or EMPIRICAL_TECHNICAL_INPUT under TECHNICAL_ONLY_NOT_G0 and NOT_GRANTED. Exact input hashes, ordered rows, complete official survey state and role-bound lineage required. No model, sampling design, external population totals or scientific eligibility is inferred. Same fixed official survey 4.5 calls and declared output ports; no automatic migration of v1 or frozen DAG bindings."
+timeout_secs = 300
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}]
+outputs = [{path="resolved_contract.json",format="json"}, {path="bind_audit.json",format="json"}, {path="bind.log",format="text"}]
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/bind_contract.R"
+[nodes.command.env]
+AUTONOMICS_TECHNICAL_CONTRACT_VERSION = "2"
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"
+
+[[nodes]]
+kind = "cachexia_survey_design_v2"
+desc = "V2 method-only real or synthetic input: Build a fully frozen official survey design, including stages, zero weights and domains."
+doc = "Version 2 technical data contract: accepts explicitly declared SYNTHETIC_TECHNICAL_INPUT or EMPIRICAL_TECHNICAL_INPUT under TECHNICAL_ONLY_NOT_G0 and NOT_GRANTED. Exact input hashes, ordered rows, complete official survey state and role-bound lineage required. No model, sampling design, external population totals or scientific eligibility is inferred. Same fixed official survey 4.5 calls and declared output ports; no automatic migration of v1 or frozen DAG bindings."
+timeout_secs = 600
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}]
+outputs = [{path="summary.tsv",format="tsv"}, {path="state.rds",format="rds"}, {path="audit.json",format="json"}, {path="survey.log",format="text"}, {path="row_ledger.tsv",format="tsv"}]
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/survey.R"
+[nodes.command.env]
+AUTONOMICS_TECHNICAL_CONTRACT_VERSION = "2"
+CACHEXIA_SURVEY_MODE = "design"
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"
+
+[[nodes]]
+kind = "cachexia_svymean_v2"
+desc = "V2 method-only real or synthetic input: Official design-based means, complete variance matrix and explicit confidence-interval df."
+doc = "Version 2 technical data contract: accepts explicitly declared SYNTHETIC_TECHNICAL_INPUT or EMPIRICAL_TECHNICAL_INPUT under TECHNICAL_ONLY_NOT_G0 and NOT_GRANTED. Exact input hashes, ordered rows, complete official survey state and role-bound lineage required. No model, sampling design, external population totals or scientific eligibility is inferred. Same fixed official survey 4.5 calls and declared output ports; no automatic migration of v1 or frozen DAG bindings."
+timeout_secs = 600
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}]
+outputs = [{path="summary.tsv",format="tsv"}, {path="state.rds",format="rds"}, {path="audit.json",format="json"}, {path="survey.log",format="text"}, {path="row_ledger.tsv",format="tsv"}]
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/survey.R"
+[nodes.command.env]
+AUTONOMICS_TECHNICAL_CONTRACT_VERSION = "2"
+CACHEXIA_SURVEY_MODE = "mean"
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"
+
+[[nodes]]
+kind = "cachexia_svyvar_v2"
+desc = "V2 method-only real or synthetic input: Official survey variance/covariance estimates with complete uncertainty."
+doc = "Version 2 technical data contract: accepts explicitly declared SYNTHETIC_TECHNICAL_INPUT or EMPIRICAL_TECHNICAL_INPUT under TECHNICAL_ONLY_NOT_G0 and NOT_GRANTED. Exact input hashes, ordered rows, complete official survey state and role-bound lineage required. No model, sampling design, external population totals or scientific eligibility is inferred. Same fixed official survey 4.5 calls and declared output ports; no automatic migration of v1 or frozen DAG bindings."
+timeout_secs = 600
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}]
+outputs = [{path="summary.tsv",format="tsv"}, {path="state.rds",format="rds"}, {path="audit.json",format="json"}, {path="survey.log",format="text"}, {path="row_ledger.tsv",format="tsv"}]
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/survey.R"
+[nodes.command.env]
+AUTONOMICS_TECHNICAL_CONTRACT_VERSION = "2"
+CACHEXIA_SURVEY_MODE = "var"
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"
+
+[[nodes]]
+kind = "cachexia_svyquantile_v2"
+desc = "V2 method-only real or synthetic input: Official survey quantiles with frozen quantile/interval rules."
+doc = "Version 2 technical data contract: accepts explicitly declared SYNTHETIC_TECHNICAL_INPUT or EMPIRICAL_TECHNICAL_INPUT under TECHNICAL_ONLY_NOT_G0 and NOT_GRANTED. Exact input hashes, ordered rows, complete official survey state and role-bound lineage required. No model, sampling design, external population totals or scientific eligibility is inferred. Same fixed official survey 4.5 calls and declared output ports; no automatic migration of v1 or frozen DAG bindings."
+timeout_secs = 600
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}]
+outputs = [{path="summary.tsv",format="tsv"}, {path="state.rds",format="rds"}, {path="audit.json",format="json"}, {path="survey.log",format="text"}, {path="row_ledger.tsv",format="tsv"}]
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/survey.R"
+[nodes.command.env]
+AUTONOMICS_TECHNICAL_CONTRACT_VERSION = "2"
+CACHEXIA_SURVEY_MODE = "quantile"
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"
+
+[[nodes]]
+kind = "cachexia_svyglm_v2"
+desc = "V2 method-only real or synthetic input: Official design-weighted GLM and complete coefficients/variance/intervals."
+doc = "Version 2 technical data contract: accepts explicitly declared SYNTHETIC_TECHNICAL_INPUT or EMPIRICAL_TECHNICAL_INPUT under TECHNICAL_ONLY_NOT_G0 and NOT_GRANTED. Exact input hashes, ordered rows, complete official survey state and role-bound lineage required. No model, sampling design, external population totals or scientific eligibility is inferred. Same fixed official survey 4.5 calls and declared output ports; no automatic migration of v1 or frozen DAG bindings."
+timeout_secs = 600
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}]
+outputs = [{path="summary.tsv",format="tsv"}, {path="state.rds",format="rds"}, {path="audit.json",format="json"}, {path="survey.log",format="text"}, {path="row_ledger.tsv",format="tsv"}]
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/survey.R"
+[nodes.command.env]
+AUTONOMICS_TECHNICAL_CONTRACT_VERSION = "2"
+CACHEXIA_SURVEY_MODE = "glm"
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"
+
+[[nodes]]
+kind = "cachexia_svyttest_v2"
+desc = "V2 method-only real or synthetic input: Official design-based one/two-sample two-sided zero-null t-test."
+doc = "Version 2 technical data contract: accepts explicitly declared SYNTHETIC_TECHNICAL_INPUT or EMPIRICAL_TECHNICAL_INPUT under TECHNICAL_ONLY_NOT_G0 and NOT_GRANTED. Exact input hashes, ordered rows, complete official survey state and role-bound lineage required. No model, sampling design, external population totals or scientific eligibility is inferred. Same fixed official survey 4.5 calls and declared output ports; no automatic migration of v1 or frozen DAG bindings."
+timeout_secs = 600
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}]
+outputs = [{path="summary.tsv",format="tsv"}, {path="state.rds",format="rds"}, {path="audit.json",format="json"}, {path="survey.log",format="text"}, {path="row_ledger.tsv",format="tsv"}]
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/survey.R"
+[nodes.command.env]
+AUTONOMICS_TECHNICAL_CONTRACT_VERSION = "2"
+CACHEXIA_SURVEY_MODE = "ttest"
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"
+
+[[nodes]]
+kind = "cachexia_post_stratify_v2"
+desc = "V2 method-only real or synthetic input: Official postStratify retaining calibration state, not just weights."
+doc = "Version 2 technical data contract: accepts explicitly declared SYNTHETIC_TECHNICAL_INPUT or EMPIRICAL_TECHNICAL_INPUT under TECHNICAL_ONLY_NOT_G0 and NOT_GRANTED. Exact input hashes, ordered rows, complete official survey state and role-bound lineage required. No model, sampling design, external population totals or scientific eligibility is inferred. Same fixed official survey 4.5 calls and declared output ports; no automatic migration of v1 or frozen DAG bindings."
+timeout_secs = 600
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}]
+outputs = [{path="summary.tsv",format="tsv"}, {path="state.rds",format="rds"}, {path="audit.json",format="json"}, {path="survey.log",format="text"}, {path="row_ledger.tsv",format="tsv"}]
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/survey.R"
+[nodes.command.env]
+AUTONOMICS_TECHNICAL_CONTRACT_VERSION = "2"
+CACHEXIA_SURVEY_MODE = "post"
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"
+
+[[nodes]]
+kind = "cachexia_rake_v2"
+desc = "V2 method-only real or synthetic input: Official multi-margin raking retaining the full survey design."
+doc = "Version 2 technical data contract: accepts explicitly declared SYNTHETIC_TECHNICAL_INPUT or EMPIRICAL_TECHNICAL_INPUT under TECHNICAL_ONLY_NOT_G0 and NOT_GRANTED. Exact input hashes, ordered rows, complete official survey state and role-bound lineage required. No model, sampling design, external population totals or scientific eligibility is inferred. Same fixed official survey 4.5 calls and declared output ports; no automatic migration of v1 or frozen DAG bindings."
+timeout_secs = 600
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}]
+outputs = [{path="summary.tsv",format="tsv"}, {path="state.rds",format="rds"}, {path="audit.json",format="json"}, {path="survey.log",format="text"}, {path="row_ledger.tsv",format="tsv"}]
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/survey.R"
+[nodes.command.env]
+AUTONOMICS_TECHNICAL_CONTRACT_VERSION = "2"
+CACHEXIA_SURVEY_MODE = "rake"
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"
+
+[[nodes]]
+kind = "cachexia_calibrate_v2"
+desc = "V2 method-only real or synthetic input: Official named-total GREG calibration preserving variance information."
+doc = "Version 2 technical data contract: accepts explicitly declared SYNTHETIC_TECHNICAL_INPUT or EMPIRICAL_TECHNICAL_INPUT under TECHNICAL_ONLY_NOT_G0 and NOT_GRANTED. Exact input hashes, ordered rows, complete official survey state and role-bound lineage required. No model, sampling design, external population totals or scientific eligibility is inferred. Same fixed official survey 4.5 calls and declared output ports; no automatic migration of v1 or frozen DAG bindings."
+timeout_secs = 600
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}]
+outputs = [{path="summary.tsv",format="tsv"}, {path="state.rds",format="rds"}, {path="audit.json",format="json"}, {path="survey.log",format="text"}, {path="row_ledger.tsv",format="tsv"}]
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/survey.R"
+[nodes.command.env]
+AUTONOMICS_TECHNICAL_CONTRACT_VERSION = "2"
+CACHEXIA_SURVEY_MODE = "calibrate"
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"
+
+[[nodes]]
+kind = "cachexia_trim_weights_v2"
+desc = "V2 method-only real or synthetic input: Official trimWeights with frozen bounds and complete design preservation."
+doc = "Version 2 technical data contract: accepts explicitly declared SYNTHETIC_TECHNICAL_INPUT or EMPIRICAL_TECHNICAL_INPUT under TECHNICAL_ONLY_NOT_G0 and NOT_GRANTED. Exact input hashes, ordered rows, complete official survey state and role-bound lineage required. No model, sampling design, external population totals or scientific eligibility is inferred. Same fixed official survey 4.5 calls and declared output ports; no automatic migration of v1 or frozen DAG bindings."
+timeout_secs = 600
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}]
+outputs = [{path="summary.tsv",format="tsv"}, {path="state.rds",format="rds"}, {path="audit.json",format="json"}, {path="survey.log",format="text"}, {path="row_ledger.tsv",format="tsv"}]
+[nodes.command]
+interpreter = "Rscript"
+script_file = "scripts/survey.R"
+[nodes.command.env]
+AUTONOMICS_TECHNICAL_CONTRACT_VERSION = "2"
+CACHEXIA_SURVEY_MODE = "trim"
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"

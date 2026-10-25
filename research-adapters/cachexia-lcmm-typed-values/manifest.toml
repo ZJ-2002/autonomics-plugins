@@ -21,3 +21,22 @@ cpus = 1.0
 memory = "2Gi"
 network = "isolated"
 pull_policy = "never"
+
+[[nodes]]
+kind = "cachexia_lcmm_values_to_parquet_v2"
+desc = "Version2 explicit LCMM numeric transport retaining empirical or synthetic provenance."
+doc = "Two Files: complete numeric summary and exact version2 upstream audit. Four outputs preserve full field axes, nullable values and source_position. Request and audit must agree on schema2, neutral trajectory role, original input role and non-scientific scope. Provenance remains in Parquet metadata/audit/schema; no research permission or G0. Version1 states are rejected."
+timeout_secs = 600
+[nodes.ports]
+inputs = [{type="file"}, {type="file"}]
+outputs = [{path="values.parquet",format="parquet"}, {path="typed_audit.json",format="json"}, {path="typed.log",format="text"}, {path="schema.json",format="json"}]
+[nodes.command]
+interpreter = "python"
+script_file = "scripts/typed_values.py"
+[nodes.command.env]
+AUTONOMICS_TECHNICAL_CONTRACT_VERSION = "2"
+[nodes.resources]
+cpus = 1.0
+memory = "2Gi"
+network = "isolated"
+pull_policy = "never"
