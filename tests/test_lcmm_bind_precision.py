@@ -77,6 +77,45 @@ class LcmmBindPrecisionTests(unittest.TestCase):
     def test_bind_preserves_non_numeric_types_nested_arrays_and_null(self):
         self.run_binding_block({"label": "1.2345678901234567", "enabled": False, "empty": [], "nullable": None, "nested": [{"integer": 3, "names": ["a", "b"]}]})
 
+    def test_audit_request_json_preserves_numeric_and_structural_semantics(self):
+        self.assertIsNotNone(shutil.which("Rscript"), "Rscript is required; missing execution is not a pass")
+        with tempfile.TemporaryDirectory(prefix="lcmm-audit-precision-") as directory:
+            script = Path(directory) / "check.R"
+            script.write_text(
+                "definitions <- as.list(parse(" + json.dumps(str(PROGRAM)) + ")[[1L]][[3L]][[3L]])[-1L]\n"
+                "environment <- new.env(parent=globalenv())\n"
+                "assignments <- Filter(function(value)is.call(value)&&identical(value[[1L]],as.name('<-'))&&is.symbol(value[[2L]]),definitions)\n"
+                "checksum <- Filter(function(value)identical(value[[2L]],as.name('checksum')),assignments)\n"
+                "run <- Filter(function(value)identical(value[[2L]],as.name('run')),assignments)\n"
+                "require_value <- Filter(function(value)identical(value[[2L]],as.name('require_value')),assignments)\n"
+                "stopifnot(length(checksum)==1L,length(run)==1L)\n"
+                "stopifnot(length(require_value)==1L);eval(require_value[[1L]],environment)\n"
+                "eval(checksum[[1L]],environment)\n"
+                "body <- as.list(run[[1L]][[3L]][[3L]])[-1L]\n"
+                "audit <- Filter(function(value)is.call(value)&&identical(value[[1L]],as.name('<-'))&&identical(value[[2L]],as.name('audit')),body)\n"
+                "writer <- Filter(function(value)is.call(value)&&identical(value[[1L]],quote(jsonlite::write_json))&&identical(value[[2L]],as.name('audit')),body)\n"
+                "stopifnot(length(audit)==1L,length(writer)==1L)\n"
+                "setwd(" + json.dumps(directory) + ")\n"
+                "environment$request <- list(params=list(values=list(1+.Machine$double.eps,.Machine$double.xmax,.Machine$double.xmin,5e-324),nullable=NULL,empty=list(),nested=list(list(flag=TRUE,label='1.0000000000000002'))))\n"
+                "environment$mode <- 'predict'\n"
+                "environment$summary <- data.frame(value=1)\n"
+                "environment$bundle <- list(data=data.frame(row_id='toy'))\n"
+                "writeLines('toy-summary','summary.tsv')\n"
+                "original <- list(request=environment$request,signed_zero=-0)\n"
+                "saveRDS(original,'state.rds')\n"
+                "Sys.setenv(AUTONOMICS_OUTPUT0='summary.tsv',AUTONOMICS_OUTPUT1='state.rds',AUTONOMICS_OUTPUT2='audit.json')\n"
+                "eval(audit[[1L]],environment);eval(writer[[1L]],environment)\n"
+                "outer <- jsonlite::read_json('audit.json',simplifyVector=FALSE)\n"
+                "restored <- jsonlite::fromJSON(outer$request_json,simplifyVector=FALSE)\n"
+                "stopifnot(identical(restored,environment$request))\n"
+                "stopifnot(identical(readRDS('state.rds'),original),identical(writeBin(readRDS('state.rds')$signed_zero,raw(),size=8),writeBin(-0,raw(),size=8)))\n"
+                "stopifnot(identical(outer$output0_sha256,environment$checksum('summary.tsv')),identical(outer$output1_sha256,environment$checksum('state.rds')))\n",
+                encoding="utf-8",
+            )
+            environment = {name: os.environ[name] for name in ("PATH", "HOME", "LANG", "LC_ALL", "TMPDIR", "R_LIBS", "R_LIBS_USER", "R_LIBS_SITE") if name in os.environ}
+            result = subprocess.run(["Rscript", "--vanilla", str(script)], env=environment, capture_output=True, text=True, timeout=30)
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
 
 if __name__ == "__main__":
     unittest.main()

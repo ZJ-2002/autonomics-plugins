@@ -43,11 +43,16 @@ class LcmmPublicationBindingTests(unittest.TestCase):
 
     def test_verified_wrapper_identity_is_explicit(self):
         self.assertEqual(hashlib.sha256((FAMILY / 'scripts/lcmm.R').read_bytes()).hexdigest(),
-                         '15e7a0516716420198fa80652777696040d422d0437c45dfaa9dd6d51ba2e1e0')
+                         '6a8b110fcaeebe5a64ab378f807777547907f222099783b5b62aa8c4e3db62f9')
         current = (FAMILY / 'scripts/lcmm.R').read_bytes()
+        audit_repair = b'request_json = jsonlite::toJSON(request, auto_unbox = TRUE, digits = 17, null = "null")'
+        self.assertEqual(current.count(audit_repair), 1)
+        binder_only = current.replace(audit_repair, audit_repair.replace(b'digits = 17', b'digits = NA'), 1)
+        self.assertEqual(hashlib.sha256(binder_only).hexdigest(),
+                         '15e7a0516716420198fa80652777696040d422d0437c45dfaa9dd6d51ba2e1e0')
         repaired = b'jsonlite::write_json(request, Sys.getenv("AUTONOMICS_OUTPUT0"), auto_unbox = TRUE, pretty = TRUE, digits = 17, null = "null")'
-        self.assertEqual(current.count(repaired), 1)
-        original = current.replace(repaired, repaired.replace(b'digits = 17', b'digits = NA'), 1)
+        self.assertEqual(binder_only.count(repaired), 1)
+        original = binder_only.replace(repaired, repaired.replace(b'digits = 17', b'digits = NA'), 1)
         self.assertEqual(hashlib.sha256(original).hexdigest(),
                          '92bedf32d5c48070df0354b0ee08c0d0f64e0fcb7cf44d7abd0da2945a0d43d8')
 

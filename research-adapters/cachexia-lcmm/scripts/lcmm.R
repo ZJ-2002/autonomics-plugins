@@ -263,7 +263,7 @@ run <- function() {
   saveRDS(bundle, Sys.getenv("AUTONOMICS_OUTPUT1"), version = 3)
   write.table(data.frame(row_id = bundle$row_ids, status = "SYNTHETIC_COMPLETE_TECHNICAL_NOT_ELIGIBILITY"), Sys.getenv("AUTONOMICS_OUTPUT4"), sep = "\t", row.names = FALSE, quote = TRUE)
   write.table(bundle$subject_map, Sys.getenv("AUTONOMICS_OUTPUT5"), sep = "\t", row.names = FALSE, quote = TRUE)
-  audit <- list(status = "TECHNICAL_PASS_NOT_SCIENTIFIC", mode = mode, request_json = jsonlite::toJSON(request, auto_unbox = TRUE, digits = NA, null = "null"),
+  audit <- list(status = "TECHNICAL_PASS_NOT_SCIENTIFIC", mode = mode, request_json = jsonlite::toJSON(request, auto_unbox = TRUE, digits = 17, null = "null"),
     output0_sha256 = checksum(Sys.getenv("AUTONOMICS_OUTPUT0")), output1_sha256 = checksum(Sys.getenv("AUTONOMICS_OUTPUT1")), rows = nrow(summary), G0_granted = FALSE,
     resident_deployment_granted = FALSE, real_time_landmark_missingness_class_selection_or_biological_subtype_proven = FALSE)
   jsonlite::write_json(audit, Sys.getenv("AUTONOMICS_OUTPUT2"), auto_unbox = TRUE, pretty = TRUE, digits = NA)

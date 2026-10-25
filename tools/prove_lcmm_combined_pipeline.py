@@ -99,8 +99,8 @@ def main():
             shutil.copyfile(original, directory / name)
             sources[family + '/' + name] = sha(original)
         manifests.append(tomllib.loads((directory / 'manifest.toml').read_text()))
-    require(sources['cachexia-lcmm/scripts/lcmm.R'] == '15e7a0516716420198fa80652777696040d422d0437c45dfaa9dd6d51ba2e1e0',
-            'Only the reviewed hash-only binder precision repair is permitted; no method changes')
+    require(sources['cachexia-lcmm/scripts/lcmm.R'] == '6a8b110fcaeebe5a64ab378f807777547907f222099783b5b62aa8c4e3db62f9',
+            'Only the reviewed binder and request-audit precision repairs are permitted; no method changes')
     profile = json.loads((Path.home() / '.autonomics/qualified-image-store.json').read_text())
     images = [manifest['image']['reference'] for manifest in manifests]
     require(all(image in profile['images'] for image in images), 'Both exact qualified images required')

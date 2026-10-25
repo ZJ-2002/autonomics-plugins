@@ -736,7 +736,7 @@
         },
         {
           "path": "source-lock.json",
-          "sha256": "aba3b047df9b225b3399eb18be7ff52d493e76ddaf607d816ae73b5601d1de70",
+          "sha256": "44eacc94cc73f8db3564c2d205e8ce435a3d84028463070b63a4d07c6eccf922",
           "bytes": 4076,
           "executable": false
         }
@@ -16815,8 +16815,8 @@
       "files": [
         {
           "path": "BIND_PRECISION_REPAIR_20261025.md",
-          "sha256": "1195be9a15eebbde62d94c16581db5449ce4c081c9fb8712f2e1a2ca4a538fe7",
-          "bytes": 3297,
+          "sha256": "f954ca79ccb240f308bf0a2feeb1d97a5f8c21d9e6c5efe5a835e859919b7d72",
+          "bytes": 5334,
           "executable": false
         },
         {
@@ -16839,7 +16839,7 @@
         },
         {
           "path": "scripts/lcmm.R",
-          "sha256": "15e7a0516716420198fa80652777696040d422d0437c45dfaa9dd6d51ba2e1e0",
+          "sha256": "6a8b110fcaeebe5a64ab378f807777547907f222099783b5b62aa8c4e3db62f9",
           "bytes": 23536,
           "executable": false
         },
@@ -16847,6 +16847,12 @@
           "path": "source-plan.json",
           "sha256": "5963bc270fe7ea42e1ee1f24a980889e63847241b92a23bcdca0dd9cd2c14b37",
           "bytes": 2187,
+          "executable": false
+        },
+        {
+          "path": "tests/bind_precision_acceptance.py",
+          "sha256": "26f0c5844bcfcb1aa0a44bd48acbbb91d1e1751aae669e15b1b7e1cf0fdf4ca2",
+          "bytes": 4180,
           "executable": false
         }
       ],

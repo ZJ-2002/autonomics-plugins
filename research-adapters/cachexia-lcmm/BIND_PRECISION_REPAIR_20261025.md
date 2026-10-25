@@ -6,12 +6,12 @@ values. Local reproduction demonstrated `1.0000000000000002` becoming `1` and
 the maximum finite binary64 value becoming a decimal that reads as infinity.
 This violates the binder contract independently of any scientific model fit.
 
-The only production-code change is the bind-mode resolved-contract writer:
+The first repair changes only the bind-mode resolved-contract writer:
 `digits=NA` becomes `digits=17`. Neither `hlme`, `predictY`, `summarytable`,
 method parameters, package dependencies, authorization, nor audit-only JSON
 writers are changed. The original script SHA256 is
 `92bedf32d5c48070df0354b0ee08c0d0f64e0fcb7cf44d7abd0da2945a0d43d8`;
-the repaired script SHA256 is
+the binder-only repaired script SHA256 is
 `15e7a0516716420198fa80652777696040d422d0437c45dfaa9dd6d51ba2e1e0`.
 
 `tests/test_lcmm_bind_precision.py` has three self-cleaning toy cases. It parses
@@ -49,7 +49,39 @@ CRAN `source-plan.json` locks source archives, not this wrapper, so it needs no
 archive-hash change. Shared quality inventories, source catalogues, deployment
 pins and resident activation are left to the integrating owner.
 
-`tests/bind_precision_acceptance.py` in this adapter is a prepared managed-proof
-driver. It rechecks the exact old source reproduction, the three fixed cases,
-five adjacent guards and source identities. Its existence alone does not imply
-that this managed proof has executed or obtained a session seal.
+The earlier `tests/bind_precision_acceptance.py` prepared a managed proof of the
+three binder cases and five adjacent guards. The subsequent version below adds
+the request-audit case; it does not rewrite any prior session evidence.
+
+## Subsequent request-audit precision repair
+
+The non-bind technical audit still serialized its embedded `request_json` with
+`jsonlite::toJSON(..., digits=NA)`. Although the complete RDS remained intact,
+the recorded method-request copy could round the same precise input values.
+One additional toy case extracts and evaluates the actual audit-list assignment
+and the actual outer audit writer from the R AST. It writes and rereads both
+JSON layers, checking adjacent binary64, maximum finite, minimum normal and
+subnormal values, nested arrays, null, strings and logical values. It also checks
+the referenced output hashes and the full RDS, including signed zero. No lcmm
+fit, predict or compare function executes.
+
+That case fails against the exact binder-only source above, then passes after
+changing only the embedded request serializer's `digits=NA` to `digits=17`.
+The outer audit writer is unchanged. The current script SHA256 is
+`6a8b110fcaeebe5a64ab378f807777547907f222099783b5b62aa8c4e3db62f9`.
+The identity guard checks reversal of the audit repair back to `15e7a051...`,
+then reversal of the binder repair back to `92bedf32...`; no historical
+artifact is edited. The current managed driver covers four precision cases and
+five adjacent guards, with a separately recorded one-case failure reproduction
+against the binder-only source. An initial local test-scaffold run omitted a
+helper and failed before the target assertion; it is not counted as the
+serialization-defect reproduction or as a passing test.
+
+Managed session `20696b49d33c4fcf8d61fdc8093d4151` completed with worker and
+launcher exits zero and CLEANED state. Its manifest seal is
+`e9ffe97da664a51109901cd763f6c837f53b4c37cc61d4f7cfead9d7e4cc230a`;
+member `permanent/lcmm-bind-and-audit-precision/verification.json` has SHA256
+`ce2df06628cde59917f0564f80f6c2b6f9bdff20567439c6038c4d47802f90fe`.
+That member records the four fixed cases, five passing guards, exact source
+identities, and the one-case reconstructed old-source failure. This is not a
+full container or resident-DAG proof and grants no scientific qualification.

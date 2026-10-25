@@ -1308,6 +1308,7 @@
     "tests.test_lcmm_bind_precision.LcmmBindPrecisionTests.test_bind_preserves_non_numeric_types_nested_arrays_and_null",
     "tests.test_sensitivity_input_ledger_precision.SensitivityInputLedgerPrecisionTests.test_finite_input_numeric_values_roundtrip",
     "tests.test_sensitivity_input_ledger_precision.SensitivityInputLedgerPrecisionTests.test_non_numeric_parameters_and_written_ledger_are_preserved",
-    "tests.test_sensitivity_input_ledger_precision.SensitivityInputLedgerPrecisionTests.test_rds_remains_signed_zero_authority"
+    "tests.test_sensitivity_input_ledger_precision.SensitivityInputLedgerPrecisionTests.test_rds_remains_signed_zero_authority",
+    "tests.test_lcmm_bind_precision.LcmmBindPrecisionTests.test_audit_request_json_preserves_numeric_and_structural_semantics"
   ]
 }
