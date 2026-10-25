@@ -15,9 +15,9 @@ class LcmmPublicationBindingTests(unittest.TestCase):
 
     def test_existing_manifest_and_image_remain_unchanged(self):
         self.assertEqual(hashlib.sha256((FAMILY / 'manifest.toml').read_bytes()).hexdigest(),
-                         'e2c79728840e6b010bfe50625f82ca1e98e6584a527309acab819b14033ce963')
+                         'f0f65466543377ff485c553c26a53650ad35718c3a59d99b4b532e260dbdc069')
         self.assertEqual(self.manifest['image']['reference'],
-                         'localhost/cachexia-lcmm@sha256:602bbf79fa81124edc1d78f366a71e2f8e55f1c768377810104eb81bb03ac97a')
+                         'ghcr.io/zj-2002/lcmm-official@sha256:dd7f8a68d27a1002d5f6b004ca2ad24fc92cc7db43773500963363f92f8828d5')
 
     def test_four_modes_preserve_declared_ports_and_offline_limits(self):
         modes = {node['command']['env']['CACHEXIA_LCMM_MODE']: node for node in self.manifest['nodes']}
@@ -43,6 +43,12 @@ class LcmmPublicationBindingTests(unittest.TestCase):
 
     def test_verified_wrapper_identity_is_explicit(self):
         self.assertEqual(hashlib.sha256((FAMILY / 'scripts/lcmm.R').read_bytes()).hexdigest(),
+                         '15e7a0516716420198fa80652777696040d422d0437c45dfaa9dd6d51ba2e1e0')
+        current = (FAMILY / 'scripts/lcmm.R').read_bytes()
+        repaired = b'jsonlite::write_json(request, Sys.getenv("AUTONOMICS_OUTPUT0"), auto_unbox = TRUE, pretty = TRUE, digits = 17, null = "null")'
+        self.assertEqual(current.count(repaired), 1)
+        original = current.replace(repaired, repaired.replace(b'digits = 17', b'digits = NA'), 1)
+        self.assertEqual(hashlib.sha256(original).hexdigest(),
                          '92bedf32d5c48070df0354b0ee08c0d0f64e0fcb7cf44d7abd0da2945a0d43d8')
 
 

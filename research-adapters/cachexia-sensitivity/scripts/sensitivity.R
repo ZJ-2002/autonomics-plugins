@@ -115,7 +115,7 @@ main <- function() {
         } else require_true(is.null(effect$sd) && is.null(effect$delta), "Standardized MD cannot be silently rescaled")
       }
       ledger <- data.frame(input_id = effect$effect_id, parameter = names(effect),
-                           source_value = vapply(effect, function(value) as.character(jsonlite::toJSON(value, auto_unbox = TRUE, null = "null", digits = NA)), character(1)), stringsAsFactors = FALSE)
+                           source_value = vapply(effect, function(value) as.character(jsonlite::toJSON(value, auto_unbox = TRUE, null = "null", digits = 17)), character(1)), stringsAsFactors = FALSE)
       rownames(ledger) <- NULL
       state <- list(request = request, input = effect, arguments = arguments, input_ledger = ledger, official_result = NULL)
       called_function <- paste0("evalues.", effect$measure)

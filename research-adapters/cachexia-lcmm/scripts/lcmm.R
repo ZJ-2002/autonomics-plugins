@@ -250,7 +250,7 @@ run <- function() {
       require_value(identical(request[[key]], "UPSTREAM_CONTENT_HASH"), "Binder only resolves explicit upstream placeholders, never literal hashes")
       request[[key]] <- checksum(paths[index+1L]); changed <- c(changed, key)
     }
-    jsonlite::write_json(request, Sys.getenv("AUTONOMICS_OUTPUT0"), auto_unbox = TRUE, pretty = TRUE, digits = NA, null = "null")
+    jsonlite::write_json(request, Sys.getenv("AUTONOMICS_OUTPUT0"), auto_unbox = TRUE, pretty = TRUE, digits = 17, null = "null")
     jsonlite::write_json(list(status = "TECHNICAL_BIND_PASS_NOT_SCIENTIFIC", only_source_sha256_changed = TRUE, changed_fields = changed, output0_sha256 = checksum(Sys.getenv("AUTONOMICS_OUTPUT0")), G0_granted = FALSE, resident_deployment_granted = FALSE), Sys.getenv("AUTONOMICS_OUTPUT1"), auto_unbox = TRUE, pretty = TRUE)
     cat("PASS hash-only frozen LCMM binding; no scientific permission\n", file = Sys.getenv("AUTONOMICS_OUTPUT2"))
     return(invisible(NULL))

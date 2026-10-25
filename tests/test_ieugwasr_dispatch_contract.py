@@ -20,8 +20,12 @@ class IeugwasrDispatchContractTests(unittest.TestCase):
         original = ORIGINAL.read_bytes()
         dispatch = (ADAPTER / "scripts/dispatch.R").read_bytes()
         self.assertEqual(hashlib.sha256(original).hexdigest(), ORIGINAL_SHA)
-        self.assertTrue(dispatch.endswith(original))
-        return dispatch[:-len(original)]
+        before = b'jsonlite::write_json(projection, outputs[[2L]], auto_unbox = TRUE, null = "null", pretty = TRUE, digits = NA)'
+        after = before.replace(b"digits = NA", b"digits = 17")
+        self.assertEqual(original.count(before), 1)
+        expected = original.replace(before, after, 1)
+        self.assertTrue(dispatch.endswith(expected))
+        return dispatch[:-len(expected)]
 
     def refused(self, policy, count, operation, expected, dataset=None):
         if not shutil.which("Rscript"):

@@ -3,14 +3,14 @@ plugin_name = "ieugwasr-official"
 
 [image]
 reference = "ghcr.io/zj-2002/ieugwasr-official@sha256:c8631fb88461135ea1b570f0e08a5bfb04366ef2bc835e874d30c7326fdc2395"
-tag = "1.2.0-20261019-v1-private"
+tag = "1.2.0-20261019-v1"
 upstream = "MRCIEU/ieugwasr 1.2.0 at 0c5b4cc6bc5e675afe222262950c8bb488f8d2f3; direct author functions, not legacy REST aliases"
 license = "MIT"
 
 [[nodes]]
 kind = "official_ieugwasr_call"
 desc = "Direct official ieugwasr request-only call; operation is explicit in request JSON."
-doc = "One JSON file with operation and author arguments. Allowed operations: associations, phewas, tophits, variants_rsid, variants_chrpos, gwasinfo. Produces complete author RDS plus strict typed JSON projection, technical audit and log. Not legacy REST-equivalent. Image is private; clean-host pull and secure live API credential injection are not admitted. Do not pass JWT through request parameters or public command env. Offline transport fixtures are tested separately and do not prove authenticated live API availability or scientific release."
+doc = "One JSON file with operation and author arguments. Allowed operations: associations, phewas, tophits, variants_rsid, variants_chrpos, gwasinfo. Produces complete author RDS plus typed JSON projection with 17-digit finite doubles, technical audit and log. RDS remains authoritative for signed zero and full R object semantics. Not legacy REST-equivalent. The image is public; credentials require the exact implementation-bound private environment grant. Never pass JWT through request parameters or public command env. Metadata transport and offline author fixtures do not prove every authenticated live operation or scientific eligibility."
 timeout_secs = 900
 stage_in_mode = "copy"
 artifact_prefix = "/artifacts/official_ieugwasr_call"
@@ -42,7 +42,7 @@ pids_limit = 64
 [[nodes]]
 kind = "official_ieugwasr_call_with_dataset"
 desc = "Direct official ieugwasr ld_clump_api call with original data.frame RDS."
-doc = "Exactly two files: explicit ld_clump_api JSON request and a non-NULL data.frame RDS containing rsid and pval. Other operations and NULL dummy RDS are refused. All author clump parameters are explicit; complete original columns and row names are retained by the author function. Four outputs match the request-only call. Image is private and secure live API credential injection remains pending. No legacy node substitution, independent validation, scientific eligibility or G0 is implied."
+doc = "Exactly two files: explicit ld_clump_api JSON request and a non-NULL data.frame RDS containing rsid and pval. Other operations and NULL dummy RDS are refused. All author clump parameters are explicit; original columns and row names are retained by the author function. Four outputs match the request-only call, including 17-digit finite-double JSON projection; RDS remains authoritative for signed zero. The public image uses only an exact implementation-bound private environment grant. Registration and metadata transport do not establish this operation's live API availability, ancestry-panel suitability, scientific eligibility or G0."
 timeout_secs = 900
 stage_in_mode = "copy"
 artifact_prefix = "/artifacts/official_ieugwasr_call_with_dataset"

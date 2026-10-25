@@ -161,7 +161,7 @@ write_official_products <- function(request, dataset, outputs, resolver = resolv
   result <- invoke_official(request, dataset, resolver)
   projection <- typed_projection(result)
   saveRDS(result, outputs[[1L]], version = 3L)
-  jsonlite::write_json(projection, outputs[[2L]], auto_unbox = TRUE, null = "null", pretty = TRUE, digits = NA)
+  jsonlite::write_json(projection, outputs[[2L]], auto_unbox = TRUE, null = "null", pretty = TRUE, digits = 17)
   audit <- list(schema = "IEUGWASR_DIRECT_OFFICIAL_CALL_V1", operation = request$operation,
                 author_implementation = "ieugwasr", declared_package_version = "1.2.0",
                 authoritative_output = "complete_result.RDS", projection = "typed_dataframe.json",

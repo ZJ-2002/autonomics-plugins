@@ -1291,6 +1291,23 @@
     "tests.test_a_bundle_transport.BundleTransportTests.test_symlink_member_rejected",
     "tests.test_a_bundle_transport.BundleTransportTests.test_symlink_source_rejected",
     "tests.test_a_bundle_transport.BundleTransportTests.test_unsafe_member_rejected",
-    "tests.test_a_bundle_transport.BundleTransportTests.test_wrong_member_bytes_rejected"
+    "tests.test_a_bundle_transport.BundleTransportTests.test_wrong_member_bytes_rejected",
+    "tests.test_a_bundle_scale_boundaries.BundleScaleBoundaryTests.test_aggregate_byte_limit_equal_and_one_byte_over",
+    "tests.test_a_bundle_scale_boundaries.BundleScaleBoundaryTests.test_aggregate_unpack_budget_rejected_before_materialization",
+    "tests.test_a_bundle_scale_boundaries.BundleScaleBoundaryTests.test_analysis_failure_does_not_create_normal_outputs",
+    "tests.test_a_bundle_scale_boundaries.BundleScaleBoundaryTests.test_archive_byte_limit_equal_and_one_byte_over",
+    "tests.test_a_bundle_scale_boundaries.BundleScaleBoundaryTests.test_each_member_role_has_enforced_hash_before_materialization",
+    "tests.test_a_bundle_scale_boundaries.BundleScaleBoundaryTests.test_exact_six_distinct_new_outputs_are_required",
+    "tests.test_a_bundle_scale_boundaries.BundleScaleBoundaryTests.test_full_828_dependency_transport_and_every_materialized_hash",
+    "tests.test_a_bundle_scale_boundaries.BundleScaleBoundaryTests.test_invalid_bundle_does_not_create_normal_outputs",
+    "tests.test_ieugwasr_projection_precision.IeugwasrProjectionPrecisionTests.test_adjacent_and_arbitrary_finite_doubles_roundtrip",
+    "tests.test_ieugwasr_projection_precision.IeugwasrProjectionPrecisionTests.test_finite_range_extremes_do_not_round_to_infinity",
+    "tests.test_ieugwasr_projection_precision.IeugwasrProjectionPrecisionTests.test_special_states_remain_explicit_and_rds_preserves_signed_zero",
+    "tests.test_lcmm_bind_precision.LcmmBindPrecisionTests.test_bind_preserves_adjacent_and_precise_nested_parameters",
+    "tests.test_lcmm_bind_precision.LcmmBindPrecisionTests.test_bind_preserves_finite_extremes_without_overflow",
+    "tests.test_lcmm_bind_precision.LcmmBindPrecisionTests.test_bind_preserves_non_numeric_types_nested_arrays_and_null",
+    "tests.test_sensitivity_input_ledger_precision.SensitivityInputLedgerPrecisionTests.test_finite_input_numeric_values_roundtrip",
+    "tests.test_sensitivity_input_ledger_precision.SensitivityInputLedgerPrecisionTests.test_non_numeric_parameters_and_written_ledger_are_preserved",
+    "tests.test_sensitivity_input_ledger_precision.SensitivityInputLedgerPrecisionTests.test_rds_remains_signed_zero_authority"
   ]
 }

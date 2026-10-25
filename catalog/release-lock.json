@@ -736,7 +736,7 @@
         },
         {
           "path": "source-lock.json",
-          "sha256": "8d5bc7a35529a4971738e3e7ecc1eb8cf27d53ab3051fe0822cbab8ede190417",
+          "sha256": "aba3b047df9b225b3399eb18be7ff52d493e76ddaf607d816ae73b5601d1de70",
           "bytes": 4076,
           "executable": false
         }
@@ -16814,6 +16814,12 @@
       "image_reference": "ghcr.io/zj-2002/lcmm-official@sha256:dd7f8a68d27a1002d5f6b004ca2ad24fc92cc7db43773500963363f92f8828d5",
       "files": [
         {
+          "path": "BIND_PRECISION_REPAIR_20261025.md",
+          "sha256": "1195be9a15eebbde62d94c16581db5449ce4c081c9fb8712f2e1a2ca4a538fe7",
+          "bytes": 3297,
+          "executable": false
+        },
+        {
           "path": "Dockerfile",
           "sha256": "f25450ff152eb820116ec63ead161bdb265b091bc19f725322063e0462746e4d",
           "bytes": 678,
@@ -16833,7 +16839,7 @@
         },
         {
           "path": "scripts/lcmm.R",
-          "sha256": "92bedf32d5c48070df0354b0ee08c0d0f64e0fcb7cf44d7abd0da2945a0d43d8",
+          "sha256": "15e7a0516716420198fa80652777696040d422d0437c45dfaa9dd6d51ba2e1e0",
           "bytes": 23536,
           "executable": false
         },
@@ -17564,7 +17570,7 @@
         },
         {
           "path": "scripts/sensitivity.R",
-          "sha256": "12becb67fb8438a13c574b96443fc0329b7afc782183b5a8e64e92fbac8335fb",
+          "sha256": "7e8fa479100967f513d862301d6798f0fc04d7d12520c7dbd032cdc77bc9f5d7",
           "bytes": 15909,
           "executable": false
         }
@@ -18328,6 +18334,12 @@
           "sha256": "584701ebe9365ff482a77219dc5053425dc7924b723a4ea94059a5495418d064",
           "bytes": 7291,
           "executable": false
+        },
+        {
+          "path": "tests/test_scale_boundaries.py",
+          "sha256": "17ad3a6b53853fccfd742fa105c4c9c1f212c6e2c4c7f1645018cae3c335a1c5",
+          "bytes": 7331,
+          "executable": false
         }
       ],
       "source_inventory_only": true,
@@ -18381,6 +18393,12 @@
           "executable": false
         },
         {
+          "path": "PROJECTION_PRECISION_REPAIR_20261025.md",
+          "sha256": "06f53a651a030ea18bcc1aa481e6400718c7b5f90676badafaa306306f3d87f2",
+          "bytes": 4095,
+          "executable": false
+        },
+        {
           "path": "README.md",
           "sha256": "52908ba4e121618a282c15dbcc7747d1d96bc85fe312710d3fee7334dc683f8c",
           "bytes": 4948,
@@ -18406,13 +18424,13 @@
         },
         {
           "path": "manifest.toml",
-          "sha256": "7611d0a7ea4efd229c75ec1f114d9871b9420509e1eb62aaa52f4063a634094e",
-          "bytes": 3368,
+          "sha256": "a8100779d344fb506801ab7dfa2afea2b07c2a9d8a3aaf93c2cdffdb3acae80a",
+          "bytes": 3605,
           "executable": false
         },
         {
           "path": "scripts/dispatch.R",
-          "sha256": "b2d1c715a182b9d5630b42598e29649bf82f024cb568b00b1e3d01cc77a9dafe",
+          "sha256": "06941831dbdb1b9ebd91f71605593c38c5255beaf241ead3fb85a05202096d44",
           "bytes": 11783,
           "executable": false
         },
