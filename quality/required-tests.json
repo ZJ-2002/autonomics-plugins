@@ -1345,6 +1345,8 @@
     "tests.test_survey_v2_typed_values.SurveyV2TypedValuesTests.test_v2_both_roles_preserve_fields_null_and_numeric_values",
     "tests.test_survey_v2_typed_values.SurveyV2TypedValuesTests.test_v2_provenance_keeps_complete_state_identity_without_new_columns",
     "tests.test_survey_v2_typed_values.SurveyV2TypedValuesTests.test_v2_rejects_contract_relabel_without_hash_and_scientific_grant",
-    "tests.test_survey_v2_typed_values.SurveyV2TypedValuesTests.test_v2_rejects_top_level_or_state_role_laundering"
+    "tests.test_survey_v2_typed_values.SurveyV2TypedValuesTests.test_v2_rejects_top_level_or_state_role_laundering",
+    "tests.test_frozen_project_verifier.FrozenProjectVerifierTests.test_btrfs_device_changes_preserve_identity_but_filesystem_and_subvolume_changes_refuse",
+    "tests.test_frozen_project_verifier.FrozenProjectVerifierTests.test_legacy_registration_is_not_upgraded_and_identity_failures_are_not_defaults"
   ]
 }

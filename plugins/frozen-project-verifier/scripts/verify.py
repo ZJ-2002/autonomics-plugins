@@ -8,6 +8,8 @@ if __name__ == '__main__' and not (sys.flags.isolated and sys.flags.no_site and 
     os.execv(sys.executable, [sys.executable, '-I', '-S', '-B', __file__])
 
 import hashlib
+import errno
+import fcntl
 import importlib.abc
 import importlib.machinery
 import importlib.util
@@ -15,9 +17,11 @@ import json
 from pathlib import Path
 import re
 import stat
+import struct
 import time
+import uuid
 
-SCHEMA = 'FROZEN_READONLY_PROJECT_REGISTRATION_V1'
+SCHEMA = 'FROZEN_READONLY_PROJECT_REGISTRATION_V2'
 SCOPE = 'READONLY_CURRENT_PROJECT_BYTES_AND_REGISTRY_STRUCTURE_ONLY'
 PROJECT_URI = '/research/current'
 MANIFEST = '03_AUDIT/G0_RUNTIME_MANIFEST.json'
@@ -61,8 +65,37 @@ def exact_path(path):
 
 
 def identity(path):
-    s = path.stat()
-    return dict(device=s.st_dev, inode=s.st_ino, uid=s.st_uid, mode=stat.S_IMODE(s.st_mode))
+    # Btrfs anonymous st_dev numbers change across mounts/boots. Capture the
+    # actual filesystem and subvolume from the open directory, not a pathname
+    # declaration or an inferred upgrade of a legacy registration. The ioctl
+    # layouts match linux/btrfs.h and the engine's research_validation_identity.
+    fd = os.open(path, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW | os.O_CLOEXEC)
+    try:
+        s = os.fstat(fd)
+        fs = bytearray(1024)
+        try:
+            fcntl.ioctl(fd, 0x8400941f, fs, True)
+        except OSError as error:
+            if error.errno not in {errno.ENOTTY, errno.EOPNOTSUPP, errno.EINVAL}:
+                raise
+            boot = Path('/proc/sys/kernel/random/boot_id').read_text().strip()
+            require(re.fullmatch('[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}', boot), 'KERNEL_BOOT_ID_REQUIRED')
+            filesystem = dict(kind='BOOT_LOCAL_DEVICE_V1', device=s.st_dev, boot_id=boot)
+        else:
+            sub = bytearray(504)
+            fcntl.ioctl(fd, 0x81f8943c, sub, True)
+            fs_uuid = bytes(fs[16:32]);sub_uuid = bytes(sub[296:312])
+            tree = struct.unpack_from('=Q', sub)[0]
+            require(any(fs_uuid) and tree >= 5 and (tree == 5 or any(sub_uuid)), 'BTRFS_STABLE_ID_REQUIRED')
+            filesystem = dict(kind='BTRFS_UUID_SUBVOLUME_V1', filesystem_uuid=str(uuid.UUID(bytes=fs_uuid)),
+                subvolume_uuid=str(uuid.UUID(bytes=sub_uuid)), tree_id=tree)
+        named = os.stat(path, follow_symlinks=False)
+        require((s.st_dev,s.st_ino,s.st_uid,s.st_gid,s.st_mode,s.st_mtime_ns,s.st_ctime_ns) ==
+                (named.st_dev,named.st_ino,named.st_uid,named.st_gid,named.st_mode,named.st_mtime_ns,named.st_ctime_ns),
+                'ROOT_CHANGED_DURING_IDENTITY_READ')
+        return dict(filesystem=filesystem, inode=s.st_ino, uid=s.st_uid, mode=stat.S_IMODE(s.st_mode))
+    finally:
+        os.close(fd)
 
 
 def read_pinned(path, pin, limit):

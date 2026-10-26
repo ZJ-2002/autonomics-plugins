@@ -10,6 +10,8 @@ import sys
 import tempfile
 import tomllib
 import unittest
+from unittest import mock
+from types import SimpleNamespace
 
 from tools import build_frozen_project_verifier_dag as graph
 
@@ -90,6 +92,41 @@ class FrozenProjectVerifierTests(unittest.TestCase):
         self.assertEqual(root,self.root);self.assertEqual(value,self.registration)
         self.assertEqual(len([n for n in value['pins'] if n.endswith('.py')]),3)
         self.assertFalse(value['scientific_authorization']);self.assertFalse(value['G0'])
+    def test_btrfs_device_changes_preserve_identity_but_filesystem_and_subvolume_changes_refuse(self):
+        original_fstat,original_stat=os.fstat,os.stat
+        state=dict(device=56,filesystem=b'A'*16,subvolume=b'B'*16,tree=257)
+        def changed(s):
+            values={n:getattr(s,n) for n in dir(s) if n.startswith('st_')}
+            values['st_dev']=state['device'];return SimpleNamespace(**values)
+        def ioctl(fd,request,buffer,mutate):
+            self.assertTrue(mutate)
+            if request==0x8400941f:buffer[16:32]=state['filesystem']
+            elif request==0x81f8943c:
+                import struct
+                struct.pack_into('=Q',buffer,0,state['tree']);buffer[296:312]=state['subvolume']
+            else:self.fail('unexpected filesystem query')
+        with mock.patch.object(verifier.fcntl,'ioctl',side_effect=ioctl), \
+             mock.patch.object(verifier.os,'fstat',side_effect=lambda fd:changed(original_fstat(fd))), \
+             mock.patch.object(verifier.os,'stat',side_effect=lambda *a,**kw:changed(original_stat(*a,**kw))):
+            initial=verifier.identity(self.root)
+            self.registration['root_identity']=initial
+            self.binding.write_bytes(verifier.canonical(self.registration))
+            sha=hashlib.sha256(self.binding.read_bytes()).hexdigest()
+            state['device']=31
+            self.assertEqual(verifier.identity(self.root),initial)
+            verifier.registered_root(self.anchor,self.registered,sha,self.pins)
+            for key,value in [('filesystem',b'C'*16),('subvolume',b'D'*16),('tree',258)]:
+                old=state[key];state[key]=value
+                with self.assertRaises(ValueError):verifier.registered_root(self.anchor,self.registered,sha,self.pins)
+                state[key]=old
+    def test_legacy_registration_is_not_upgraded_and_identity_failures_are_not_defaults(self):
+        old=copy.deepcopy(self.registration);old['schema']='FROZEN_READONLY_PROJECT_REGISTRATION_V1'
+        self.binding.write_bytes(verifier.canonical(old));sha=hashlib.sha256(self.binding.read_bytes()).hexdigest()
+        with self.assertRaises(ValueError):verifier.registered_root(self.anchor,self.registered,sha,self.pins)
+        with mock.patch.object(verifier.fcntl,'ioctl',side_effect=PermissionError('not permitted')):
+            with self.assertRaises(PermissionError):verifier.identity(self.root)
+        with mock.patch.object(verifier.fcntl,'ioctl',return_value=0):
+            with self.assertRaises(ValueError):verifier.identity(self.root)
     def test_copies_cannot_claim_whole_directory_bind(self):
         copied=self.directory/'copied';copied.write_bytes((self.root/verifier.ANCHOR).read_bytes())
         with self.assertRaises(ValueError):verifier.registered_root(copied,self.registered,self.sha,self.pins)

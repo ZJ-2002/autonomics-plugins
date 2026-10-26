@@ -19,7 +19,7 @@ mountinfo for the read-only ROOT and control directory, including descendant
 mounts. Registration lives in a dedicated directory containing only its JSON;
 never place it beside credentials, payloads or inside the frozen baseline.
 
-The operator registers canonical ROOT/device/inode/owner/mode, the actual
+The operator registers canonical ROOT/filesystem/inode/owner/mode, the actual
 manifest identity/size, and the three original module identities. Registration
 does **not** establish full current verification. Every actual invocation runs
 the original complete content/path-set checks and checks the pinned sources
@@ -74,3 +74,18 @@ Required release acceptance includes the real approved image and whole current
 ROOT invocation under a managed cgroup, recorded container stop proof and
 actual daemon History/output identity. The small SYN/source-loader tests are
 engineering checks; they are not that acceptance or scientific qualification.
+
+## Registration V2 and Btrfs remounts
+
+V2 reads the filesystem UUID, subvolume UUID and tree ID through ioctls on the
+open ROOT directory. These, together with its inode, owner and mode, replace
+Btrfs's boot-local `st_dev`. A new device number on the same actual Btrfs object
+does not invalidate the registration; a different filesystem, subvolume, inode,
+owner, mode, source or content still does. Unsupported filesystems remain bound
+to the actual boot ID and device number. Failed identity probes are not defaults.
+
+A V1 registration contains no historic stable identity. It is never silently
+upgraded or accepted after a device mismatch. Preserve it and its activation
+record; use the existing operator registration/activation process to create and
+pin a new V2 binding. No original project file or scientific decision is changed.
+The three original audit programs and every source/content check are unchanged.
