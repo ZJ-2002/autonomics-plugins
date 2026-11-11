@@ -242,7 +242,9 @@ async fn run(tag: &str, operator: BoolOp, mask: u8, keywords: bool) {
     );
     let expected_query = if keywords {
         match operator {
-            BoolOp::And => "synthetic_alpha synthetic_beta",
+            // Bulk search explicitly supports + for AND; retain the wire contract.
+            // https://api.semanticscholar.org/graph/v1/swagger.json
+            BoolOp::And => "synthetic_alpha + synthetic_beta",
             BoolOp::Or => "synthetic_alpha | synthetic_beta",
             BoolOp::Not => "synthetic_alpha -synthetic_beta",
         }
