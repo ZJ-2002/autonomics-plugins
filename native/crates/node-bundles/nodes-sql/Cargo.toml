@@ -1,0 +1,30 @@
+[package]
+name = "nodes-sql"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+description = "SQL and echo DAG node bundle."
+
+[dependencies]
+dag-core = { path = "../../dag-core" }
+arrow-array.workspace = true
+arrow-cast.workspace = true
+arrow-schema.workspace = true
+arrow-select.workspace = true
+regex = "1"
+statrs = "0.18"
+async-trait.workspace = true
+schemars.workspace = true
+serde = { workspace = true, features = ["derive"] }
+serde_json = { workspace = true }
+thiserror.workspace = true
+datafusion.workspace = true
+futures.workspace = true
+
+[lints]
+workspace = true
+
+[dev-dependencies]
+arrow-schema.workspace = true
+tokio = { workspace = true }

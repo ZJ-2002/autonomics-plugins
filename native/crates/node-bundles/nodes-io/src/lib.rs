@@ -1,0 +1,921 @@
+//! DAG node bundle for file, DataFrame, and container I/O boundaries.
+
+pub mod archive_nodes;
+pub mod bundle_source;
+pub use dag_container::container_command;
+pub mod dataframe_preview;
+pub mod dataframe_to_file;
+pub mod file_decompress;
+pub mod file_download;
+pub mod file_reference;
+pub mod file_set_select;
+pub mod file_to_dataframe;
+pub mod file_transform;
+pub mod gmt_import;
+pub mod h5ad_obs_to_dataframe;
+pub mod http_fetch;
+pub mod http_head;
+pub mod image_registry;
+pub mod multiomic_concordance;
+pub mod net_policy;
+pub mod parquet_sql;
+pub mod radiomics;
+pub mod script_nodes;
+pub mod source_chembl;
+pub mod source_ensembl;
+pub mod source_kegg;
+pub mod source_openalex;
+pub mod source_opentargets;
+pub mod source_semantic_scholar;
+pub mod spreadsheet;
+pub use allen_brain::nodes::{
+    AllenBrainAreasNode, AllenBrainAreasNodeFactory, AllenBrainAreasSpec, AllenBrainGenesNode,
+    AllenBrainGenesNodeFactory, AllenBrainGenesSpec, AllenBrainTypesNode,
+    AllenBrainTypesNodeFactory, AllenBrainTypesSpec,
+};
+pub use alphafold::nodes::prediction::{AlphaFoldPredictionNode, AlphaFoldPredictionNodeFactory};
+pub use bib_base::nodes::bib_save::{
+    BibSaveCollectionSpec, BibSaveNode, BibSaveNodeFactory, BibSaveSpec,
+};
+pub use bib_base::nodes::evidence_export::{
+    EvidenceExportFormat, EvidenceExportNode, EvidenceExportNodeFactory, EvidenceExportSpec,
+};
+pub use bib_base::nodes::evidence_merge::{
+    EvidenceMergeNode, EvidenceMergeNodeFactory, EvidenceMergeSpec,
+};
+pub use bib_base::nodes::literature_citations::{
+    CitationDirection, LiteratureCitationsNode, LiteratureCitationsNodeFactory,
+    LiteratureCitationsSpec,
+};
+pub use bib_base::nodes::literature_fetch::{
+    LiteratureFetchNode, LiteratureFetchNodeFactory, LiteratureFetchSpec,
+};
+pub use bib_base::nodes::literature_fulltext::{
+    LiteratureFulltextNode, LiteratureFulltextNodeFactory, LiteratureFulltextSpec,
+};
+pub use bib_base::nodes::literature_search::{
+    LiteratureSearchNode, LiteratureSearchNodeFactory, LiteratureSearchSpec,
+};
+pub use bib_base::nodes::s2_recommendations::{
+    S2RecommendationsNode, S2RecommendationsNodeFactory, S2RecommendationsSpec,
+};
+pub use cellxgene::nodes::{
+    CellxgeneAssetsNode, CellxgeneAssetsNodeFactory, CellxgeneAssetsSpec, CellxgeneCollectionNode,
+    CellxgeneCollectionNodeFactory, CellxgeneCollectionSpec, CellxgeneCollectionsNode,
+    CellxgeneCollectionsNodeFactory, CellxgeneCollectionsSpec, CellxgeneDatasetsNode,
+    CellxgeneDatasetsNodeFactory, CellxgeneDatasetsSpec,
+};
+pub use clinicaltrials::nodes::study::{ClinicalTrialsStudyNode, ClinicalTrialsStudyNodeFactory};
+pub use crossref::nodes::works::{CrossrefWorksNode, CrossrefWorksNodeFactory};
+pub use enrichr_sdk::nodes::Plugin as EnrichrPlugin;
+pub use enrichr_sdk::nodes::{
+    EnrichrBackgroundEnrichmentNode, EnrichrBackgroundEnrichmentNodeFactory, EnrichrEnrichmentNode,
+    EnrichrEnrichmentNodeFactory, EnrichrGeneMapNode, EnrichrGeneMapNodeFactory,
+    EnrichrLibrariesNode, EnrichrLibrariesNodeFactory, EnrichrViewListNode,
+    EnrichrViewListNodeFactory,
+};
+pub use eutils::nodes::geo::{
+    GeoEGQueryNode, GeoEGQuerySpec, GeoEInfoNode, GeoEInfoSpec, GeoELinkNode, GeoELinkSpec,
+    GeoESearchNode, GeoESearchSpec, GeoESpellNode, GeoESpellSpec, GeoESummaryNode, GeoESummarySpec,
+};
+pub use eutils::nodes::geo::{
+    GeoEGQueryNodeFactory, GeoEInfoNodeFactory, GeoELinkNodeFactory, GeoESearchNodeFactory,
+    GeoESpellNodeFactory, GeoESummaryNodeFactory,
+};
+pub use gwascatalog_sdk::nodes::associations::{
+    AssociationsNode, AssociationsNodeFactory, StudyAssociationsNode, StudyAssociationsNodeFactory,
+};
+pub use gwascatalog_sdk::nodes::download::{DownloadNode, DownloadNodeFactory};
+pub use gwascatalog_sdk::nodes::efo_traits::{EfoTraitsNode, EfoTraitsNodeFactory};
+pub use gwascatalog_sdk::nodes::search::{SearchNode, SearchNodeFactory};
+pub use gwascatalog_sdk::nodes::snps::{SnpsNode, SnpsNodeFactory};
+pub use gwascatalog_sdk::nodes::studies::{StudiesNode, StudiesNodeFactory};
+pub use gwascatalog_sdk::nodes::summary_associations::{
+    SummaryAssociationsNode, SummaryAssociationsNodeFactory,
+};
+pub use gwascatalog_sdk::nodes::unpublished::{UnpublishedNode, UnpublishedNodeFactory};
+pub use hca::nodes::{
+    HcaFilesNode, HcaFilesNodeFactory, HcaFilesSpec, HcaProjectNode, HcaProjectNodeFactory,
+    HcaProjectSpec, HcaProjectsNode, HcaProjectsNodeFactory, HcaProjectsSpec, HcaSamplesNode,
+    HcaSamplesNodeFactory, HcaSamplesSpec,
+};
+pub use hcl::nodes::{
+    HclFilesNode, HclFilesNodeFactory, HclFilesSpec, HclReleaseNode, HclReleaseNodeFactory,
+    HclReleaseSpec, HclVersionsNode, HclVersionsNodeFactory, HclVersionsSpec,
+};
+pub use htan::nodes::{
+    HtanAtlasesNode, HtanAtlasesNodeFactory, HtanAtlasesSpec, HtanDatasetsNode,
+    HtanDatasetsNodeFactory, HtanDatasetsSpec, HtanFilesNode, HtanFilesNodeFactory, HtanFilesSpec,
+};
+pub use hubmap::nodes::{
+    HubmapDatasetNode, HubmapDatasetNodeFactory, HubmapDatasetSpec, HubmapFilesNode,
+    HubmapFilesNodeFactory, HubmapFilesSpec, HubmapGlobusNode, HubmapGlobusNodeFactory,
+    HubmapGlobusSpec, HubmapSearchNode, HubmapSearchNodeFactory, HubmapSearchSpec,
+};
+pub use interpro::nodes::entry::{InterProEntryNode, InterProEntryNodeFactory};
+pub use kpmp::nodes::{
+    KpmpDataTypesNode, KpmpDataTypesNodeFactory, KpmpDataTypesSpec, KpmpParticipantDatasetsNode,
+    KpmpParticipantDatasetsNodeFactory, KpmpParticipantDatasetsSpec, KpmpParticipantNode,
+    KpmpParticipantNodeFactory, KpmpParticipantRepositoryNode,
+    KpmpParticipantRepositoryNodeFactory, KpmpParticipantRepositorySpec, KpmpParticipantSpec,
+    KpmpRepositoryNode, KpmpRepositoryNodeFactory, KpmpRepositorySpec,
+};
+pub use nemo::nodes::{
+    NemoCollectionsNode, NemoCollectionsNodeFactory, NemoCollectionsSpec, NemoDatasetsNode,
+    NemoDatasetsNodeFactory, NemoDatasetsSpec, NemoMatricesNode, NemoMatricesNodeFactory,
+    NemoMatricesSpec,
+};
+pub use nhanes::nodes::download::{NhanesDownloadNode, NhanesDownloadNodeFactory};
+pub use nhanes::nodes::files::{NhanesFilesNode, NhanesFilesNodeFactory};
+pub use protocolio::nodes::materials::{ProtocolioMaterialsNode, ProtocolioMaterialsNodeFactory};
+pub use protocolio::nodes::pdf::{ProtocolioPdfNode, ProtocolioPdfNodeFactory};
+pub use protocolio::nodes::protocol::{ProtocolioProtocolNode, ProtocolioProtocolNodeFactory};
+pub use protocolio::nodes::reagents::{ProtocolioReagentsNode, ProtocolioReagentsNodeFactory};
+pub use protocolio::nodes::search::{ProtocolioSearchNode, ProtocolioSearchNodeFactory};
+pub use protocolio::nodes::steps::{ProtocolioStepsNode, ProtocolioStepsNodeFactory};
+pub use pubchem::nodes::compound::{PubChemCompoundNode, PubChemCompoundNodeFactory};
+pub use rcsb::nodes::assembly::{RcsbAssemblyNode, RcsbAssemblyNodeFactory};
+pub use rcsb::nodes::entry::{RcsbEntryNode, RcsbEntryNodeFactory};
+pub use rcsb::nodes::polymer_entity::{RcsbPolymerEntityNode, RcsbPolymerEntityNodeFactory};
+pub use rcsb::nodes::search::{RcsbSearchNode, RcsbSearchNodeFactory};
+pub use rcsb::nodes::structure::{RcsbStructureNode, RcsbStructureNodeFactory};
+pub use reactome::nodes::analysis::{ReactomeAnalysisNode, ReactomeAnalysisNodeFactory};
+pub use reactome::nodes::mapping::{ReactomeMappingNode, ReactomeMappingNodeFactory};
+pub use reactome::nodes::participants::{
+    ReactomeParticipantsNode, ReactomeParticipantsNodeFactory,
+};
+pub use reactome::nodes::pathways::{ReactomePathwaysNode, ReactomePathwaysNodeFactory};
+pub use scea::nodes::{
+    SceaExperimentNode, SceaExperimentNodeFactory, SceaExperimentSpec, SceaExperimentsNode,
+    SceaExperimentsNodeFactory, SceaExperimentsSpec, SceaMarkersNode, SceaMarkersNodeFactory,
+    SceaMarkersSpec,
+};
+pub use scp::nodes::{
+    ScpFilesNode, ScpFilesNodeFactory, ScpFilesSpec, ScpSearchNode, ScpSearchNodeFactory,
+    ScpSearchSpec, ScpStudiesNode, ScpStudiesNodeFactory, ScpStudiesSpec, ScpStudyNode,
+    ScpStudyNodeFactory, ScpStudySpec,
+};
+pub use script_nodes::builtin_script_images;
+pub use source_ensembl::{
+    EnsemblAssemblyNode, EnsemblAssemblyNodeFactory, EnsemblLookupNode, EnsemblLookupNodeFactory,
+    EnsemblOverlapNode, EnsemblOverlapNodeFactory, EnsemblSequenceNode, EnsemblSequenceNodeFactory,
+    EnsemblSpeciesNode, EnsemblSpeciesNodeFactory, EnsemblVariationNode,
+    EnsemblVariationNodeFactory, EnsemblVepNode, EnsemblVepNodeFactory, EnsemblXrefsNode,
+    EnsemblXrefsNodeFactory,
+};
+pub use string_sdk::nodes::{Plugin as StringPlugin, StringIdMapNode, StringIdMapNodeFactory};
+pub use string_sdk::nodes::{
+    StringEnrichmentNode, StringEnrichmentNodeFactory, StringNetworkNode, StringNetworkNodeFactory,
+};
+pub use string_sdk::nodes::{StringPpiEnrichmentNode, StringPpiEnrichmentNodeFactory};
+pub use tabula_sapiens::nodes::{
+    TabulaSapiensFilesNode, TabulaSapiensFilesNodeFactory, TabulaSapiensFilesSpec,
+    TabulaSapiensReleaseNode, TabulaSapiensReleaseNodeFactory, TabulaSapiensReleaseSpec,
+    TabulaSapiensVersionsNode, TabulaSapiensVersionsNodeFactory, TabulaSapiensVersionsSpec,
+};
+pub use tisch::nodes::{
+    TischAssetsNode, TischAssetsNodeFactory, TischAssetsSpec, TischCellTypesNode,
+    TischCellTypesNodeFactory, TischCellTypesSpec, TischDatasetsNode, TischDatasetsNodeFactory,
+    TischDatasetsSpec,
+};
+pub use uniprot::nodes::idmap::{UniprotIdmapNode, UniprotIdmapNodeFactory};
+pub use uniprot::nodes::search::{UniprotSearchNode, UniprotSearchNodeFactory};
+pub use uniprot::nodes::stream::{UniprotStreamNode, UniprotStreamNodeFactory};
+
+use dag_core::{NodePlugin, NodeRegistry};
+
+/// Container-backed nodes moved to manifest plugins; the io bundle is pure
+/// engine-side and carries no container infrastructure.
+#[derive(Default)]
+pub struct Plugin;
+
+impl Plugin {
+    pub fn new() -> Self {
+        Self
+    }
+}
+
+impl NodePlugin for Plugin {
+    fn name(&self) -> &'static str {
+        "io"
+    }
+    fn register(&self, registry: &mut NodeRegistry) {
+        registry.register(Box::new(bib_base::nodes::pdf_mineru::PdfMineruNodeFactory));
+        registry.register(Box::new(bundle_source::BundleSourceNodeFactory {}));
+        registry.register(Box::new(file_reference::FileReferenceNodeFactory {}));
+        registry.register(Box::new(file_decompress::FileDecompressNodeFactory));
+        registry.register(Box::new(file_to_dataframe::FileToDataFrameNodeFactory {}));
+        registry.register(Box::new(file_set_select::FileSetSelectNodeFactory));
+        registry.register(Box::new(archive_nodes::ArchiveInspectNodeFactory));
+        registry.register(Box::new(archive_nodes::ArchiveExtractNodeFactory));
+        registry.register(Box::new(http_fetch::HttpFetchNodeFactory));
+        registry.register(Box::new(http_head::HttpHeadNodeFactory));
+        registry.register(Box::new(file_download::FileDownloadNodeFactory));
+        registry.register(Box::new(
+            h5ad_obs_to_dataframe::H5adObsToDataFrameNodeFactory {},
+        ));
+        registry.register(Box::new(file_transform::FileTransformNodeFactory {}));
+        // `python_script` and `r_script` are intentionally NOT registered — they
+        // are removed from the DAG surface so the Agent cannot list or add them.
+        // The `script_nodes` module is retained for unit/integration tests of
+        // the underlying ScriptNodeFactory implementation; constructing one
+        // directly still works, but `NodeRegistry::build_node(...)` will return
+        // `Error::FactoryNotFound` for these kinds.
+        registry.register(Box::new(gmt_import::GmtImportNodeFactory {}));
+        registry.register(Box::new(dataframe_to_file::DataFrameToFileNodeFactory {}));
+        registry.register(Box::new(dataframe_preview::DataFramePreviewNodeFactory));
+        registry.register(Box::new(parquet_sql::DataFusionSqlNodeFactory {}));
+        registry.register(Box::new(radiomics::RadiomicsManifestNodeFactory));
+        registry.register(Box::new(radiomics::RadiomicsStageFileSetNodeFactory));
+        registry.register(Box::new(radiomics::RadiomicsDcmGlobNodeFactory));
+        registry.register(Box::new(radiomics::RadiomicsQcNodeFactory));
+        registry.register(Box::new(radiomics::RadiomicsFeatureSetAssembleNodeFactory));
+        // `ldsc_h2`, `ldsc_munge`, and `ldsc_rg`
+        // moved to the manifest plugin at `the installed ldsc package`;
+        // their kinds are registered by the plugin loader at startup.
+        // `magma_annotate`, `mrpresso`, `mvmr`, `coloc_abf`, `deseq2_de`,
+        // the four `gcta_*` variants, `pathway_gsea`, `plink2_clump`, and
+        // `visualization`, `single_cell_preprocessor`,
+        // the ten `h5ad_*` variants, the radiomics container variants, and
+        // the seven `pathology_*` variants likewise moved to manifest
+        // plugins under `the configured plugins root`.
+        // `limma_voom` and `wgcna` (bulk-rnaseq family) and `hyprcoloc`
+        // completed the sweep: every container-backed node now ships as a
+        // manifest plugin, and this registry holds only in-process nodes.
+        registry.register(Box::new(
+            multiomic_concordance::MultiomicConcordanceNodeFactory,
+        ));
+        registry.register(Box::new(
+            source_opentargets::OpentargetsAssociationsNodeFactory {},
+        ));
+        registry.register(Box::new(
+            source_opentargets::OpentargetsSearchNodeFactory {},
+        ));
+        registry.register(Box::new(
+            source_opentargets::OpentargetsAssociatedDiseasesNodeFactory,
+        ));
+        registry.register(Box::new(
+            source_opentargets::OpentargetsAssociatedTargetsNodeFactory,
+        ));
+        registry.register(Box::new(source_chembl::ChemblActivitiesNodeFactory));
+        registry.register(Box::new(source_chembl::ChemblMoleculesNodeFactory));
+        registry.register(Box::new(source_chembl::ChemblMechanismsNodeFactory));
+        registry.register(Box::new(source_chembl::ChemblIndicationsNodeFactory));
+        registry.register(Box::new(source_openalex::OpenAlexWorksNodeFactory {}));
+        registry.register(Box::new(source_kegg::KeggSearchNodeFactory));
+        registry.register(Box::new(source_kegg::KeggRelationsNodeFactory));
+        registry.register(Box::new(source_kegg::KeggGenePathwaysNodeFactory));
+        registry.register(Box::new(source_kegg::KeggDdiNodeFactory));
+        // Ensembl REST source nodes wrap the typed SDK directly; schemas are
+        // runtime-discovered because the API can add endpoint-specific fields.
+        registry.register(Box::new(source_ensembl::EnsemblSpeciesNodeFactory));
+        registry.register(Box::new(source_ensembl::EnsemblAssemblyNodeFactory));
+        registry.register(Box::new(source_ensembl::EnsemblLookupNodeFactory));
+        registry.register(Box::new(source_ensembl::EnsemblXrefsNodeFactory));
+        registry.register(Box::new(source_ensembl::EnsemblOverlapNodeFactory));
+        registry.register(Box::new(source_ensembl::EnsemblSequenceNodeFactory));
+        registry.register(Box::new(source_ensembl::EnsemblVepNodeFactory));
+        registry.register(Box::new(source_ensembl::EnsemblVariationNodeFactory));
+        registry.register(Box::new(source_openalex::OpenAlexGroupByNodeFactory {}));
+        registry.register(Box::new(
+            source_semantic_scholar::S2PaperSearchNodeFactory {},
+        ));
+        registry.register(Box::new(
+            source_semantic_scholar::S2AuthorSearchNodeFactory {},
+        ));
+        registry.register(Box::new(CrossrefWorksNodeFactory {}));
+        registry.register(Box::new(NhanesFilesNodeFactory {}));
+        registry.register(Box::new(NhanesDownloadNodeFactory {}));
+        registry.register(Box::new(AlphaFoldPredictionNodeFactory));
+        registry.register(Box::new(InterProEntryNodeFactory));
+        registry.register(Box::new(PubChemCompoundNodeFactory));
+        registry.register(Box::new(ProtocolioSearchNodeFactory));
+        registry.register(Box::new(ProtocolioProtocolNodeFactory));
+        registry.register(Box::new(ProtocolioStepsNodeFactory));
+        registry.register(Box::new(ProtocolioMaterialsNodeFactory));
+        registry.register(Box::new(ProtocolioReagentsNodeFactory));
+        registry.register(Box::new(ProtocolioPdfNodeFactory));
+        registry.register(Box::new(ClinicalTrialsStudyNodeFactory));
+        registry.register(Box::new(RcsbSearchNodeFactory {}));
+        registry.register(Box::new(RcsbEntryNodeFactory {}));
+        registry.register(Box::new(RcsbPolymerEntityNodeFactory {}));
+        registry.register(Box::new(RcsbAssemblyNodeFactory {}));
+        registry.register(Box::new(RcsbStructureNodeFactory {}));
+        registry.register(Box::new(UniprotSearchNodeFactory {}));
+        registry.register(Box::new(UniprotStreamNodeFactory {}));
+        registry.register(Box::new(UniprotIdmapNodeFactory {}));
+        registry.register(Box::new(ReactomePathwaysNodeFactory {}));
+        registry.register(Box::new(ReactomeMappingNodeFactory {}));
+        registry.register(Box::new(ReactomeAnalysisNodeFactory {}));
+        registry.register(Box::new(ReactomeParticipantsNodeFactory {}));
+        registry.register(Box::new(LiteratureSearchNodeFactory {}));
+        registry.register(Box::new(GeoEInfoNodeFactory));
+        registry.register(Box::new(GeoESearchNodeFactory));
+        registry.register(Box::new(GeoESummaryNodeFactory));
+        registry.register(Box::new(GeoELinkNodeFactory));
+        registry.register(Box::new(GeoEGQueryNodeFactory));
+        registry.register(Box::new(GeoESpellNodeFactory));
+        registry.register(Box::new(AllenBrainAreasNodeFactory));
+        registry.register(Box::new(AllenBrainGenesNodeFactory));
+        registry.register(Box::new(AllenBrainTypesNodeFactory));
+        registry.register(Box::new(NemoCollectionsNodeFactory));
+        registry.register(Box::new(NemoDatasetsNodeFactory));
+        registry.register(Box::new(NemoMatricesNodeFactory));
+        registry.register(Box::new(CellxgeneCollectionsNodeFactory));
+        registry.register(Box::new(CellxgeneCollectionNodeFactory));
+        registry.register(Box::new(CellxgeneDatasetsNodeFactory));
+        registry.register(Box::new(CellxgeneAssetsNodeFactory));
+        registry.register(Box::new(HcaProjectsNodeFactory));
+        registry.register(Box::new(HcaProjectNodeFactory));
+        registry.register(Box::new(HcaFilesNodeFactory));
+        registry.register(Box::new(HcaSamplesNodeFactory));
+        registry.register(Box::new(HclVersionsNodeFactory));
+        registry.register(Box::new(HclReleaseNodeFactory));
+        registry.register(Box::new(HclFilesNodeFactory));
+        registry.register(Box::new(SceaExperimentsNodeFactory));
+        registry.register(Box::new(SceaExperimentNodeFactory));
+        registry.register(Box::new(SceaMarkersNodeFactory));
+        registry.register(Box::new(ScpStudiesNodeFactory));
+        registry.register(Box::new(ScpSearchNodeFactory));
+        registry.register(Box::new(ScpStudyNodeFactory));
+        registry.register(Box::new(ScpFilesNodeFactory));
+        registry.register(Box::new(HubmapSearchNodeFactory));
+        registry.register(Box::new(HubmapDatasetNodeFactory));
+        registry.register(Box::new(HubmapFilesNodeFactory));
+        registry.register(Box::new(HubmapGlobusNodeFactory));
+        registry.register(Box::new(TabulaSapiensVersionsNodeFactory));
+        registry.register(Box::new(TabulaSapiensReleaseNodeFactory));
+        registry.register(Box::new(TabulaSapiensFilesNodeFactory));
+        registry.register(Box::new(TischDatasetsNodeFactory));
+        registry.register(Box::new(TischCellTypesNodeFactory));
+        registry.register(Box::new(TischAssetsNodeFactory));
+        registry.register(Box::new(HtanAtlasesNodeFactory));
+        registry.register(Box::new(HtanDatasetsNodeFactory));
+        registry.register(Box::new(HtanFilesNodeFactory));
+        registry.register(Box::new(KpmpDataTypesNodeFactory));
+        registry.register(Box::new(KpmpRepositoryNodeFactory));
+        registry.register(Box::new(KpmpParticipantNodeFactory));
+        registry.register(Box::new(KpmpParticipantDatasetsNodeFactory));
+        registry.register(Box::new(KpmpParticipantRepositoryNodeFactory));
+        registry.register(Box::new(LiteratureFetchNodeFactory {}));
+        registry.register(Box::new(BibSaveNodeFactory {}));
+        registry.register(Box::new(LiteratureFulltextNodeFactory {}));
+        registry.register(Box::new(LiteratureCitationsNodeFactory {}));
+        registry.register(Box::new(S2RecommendationsNodeFactory {}));
+        registry.register(Box::new(EvidenceMergeNodeFactory {}));
+        registry.register(Box::new(EvidenceExportNodeFactory {}));
+        registry.register_plugin(&StringPlugin);
+        registry.register_plugin(&EnrichrPlugin);
+        // GWAS Catalog source nodes (Solr search, REST catalog, summary
+        // statistics, full-file download) — the node half of the
+        // gwascatalog-sdk tool family.
+        registry.register(Box::new(gwascatalog_sdk::nodes::search::SearchNodeFactory));
+        registry.register(Box::new(
+            gwascatalog_sdk::nodes::studies::StudiesNodeFactory,
+        ));
+        registry.register(Box::new(
+            gwascatalog_sdk::nodes::associations::AssociationsNodeFactory,
+        ));
+        registry.register(Box::new(
+            gwascatalog_sdk::nodes::associations::StudyAssociationsNodeFactory,
+        ));
+        registry.register(Box::new(gwascatalog_sdk::nodes::snps::SnpsNodeFactory));
+        registry.register(Box::new(
+            gwascatalog_sdk::nodes::efo_traits::EfoTraitsNodeFactory,
+        ));
+        registry.register(Box::new(
+            gwascatalog_sdk::nodes::unpublished::UnpublishedNodeFactory,
+        ));
+        registry.register(Box::new(
+            gwascatalog_sdk::nodes::summary_associations::SummaryAssociationsNodeFactory,
+        ));
+        registry.register(Box::new(
+            gwascatalog_sdk::nodes::download::DownloadNodeFactory,
+        ));
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn mineru_pdf_node_is_registered_with_four_typed_outputs() {
+        let ctx = dag_core::registry::NodeCtx::new(
+            datafusion::prelude::SessionContext::new().runtime_env(),
+            None,
+        );
+        let mut registry = dag_core::NodeRegistry::new(ctx);
+        registry.register_plugin(&super::Plugin::new());
+        registry.assert_no_conflicts().unwrap();
+        let factory = registry.get_factory("core/pdf_mineru_extract").unwrap();
+        assert!(factory.desc().contains("vision"));
+        registry
+            .build_node(
+                "core/pdf_mineru_extract",
+                serde_json::json!({"output_dir":"/toy/outputs"}),
+            )
+            .unwrap();
+        let ports = registry.get_node_ports("core/pdf_mineru_extract").unwrap();
+        assert_eq!(ports.output_ports().len(), 4);
+    }
+    use super::*;
+
+    #[test]
+    fn plugin_registers_ensembl_source_nodes() {
+        let ctx = dag_core::registry::NodeCtx::new(
+            datafusion::prelude::SessionContext::new().runtime_env(),
+            None,
+        );
+        let mut registry = NodeRegistry::new(ctx);
+        registry.register_plugin(&Plugin::new());
+        let expected = [
+            "source_ensembl_species",
+            "source_ensembl_assembly",
+            "source_ensembl_lookup",
+            "source_ensembl_xrefs",
+            "source_ensembl_overlap",
+            "source_ensembl_sequence",
+            "source_ensembl_vep",
+            "source_ensembl_variation",
+        ];
+        for kind in expected {
+            let ports = registry
+                .get_node_ports(kind)
+                .unwrap_or_else(|error| panic!("{kind} must be registered: {error}"));
+            assert_eq!(ports.input_ports().len(), 0);
+            assert_eq!(ports.output_ports().len(), 1);
+        }
+    }
+
+    #[test]
+    fn plugin_registers_protocolio_source_nodes() {
+        let ctx = dag_core::registry::NodeCtx::new(
+            datafusion::prelude::SessionContext::new().runtime_env(),
+            None,
+        );
+        let mut registry = NodeRegistry::new(ctx);
+        registry.register_plugin(&Plugin::new());
+        let expected = [
+            "source_protocolio_protocols",
+            "source_protocolio_protocol",
+            "source_protocolio_steps",
+            "source_protocolio_materials",
+            "source_protocolio_reagents",
+            "source_protocolio_pdf",
+        ];
+        for kind in expected {
+            assert!(
+                registry.list_nodes().iter().any(|node| node.kind == kind),
+                "missing protocol.io node: {kind}"
+            );
+        }
+    }
+
+    #[test]
+    fn plugin_registers_geo_query_source_nodes() {
+        let ctx = dag_core::registry::NodeCtx::new(
+            datafusion::prelude::SessionContext::new().runtime_env(),
+            None,
+        );
+        let mut registry = NodeRegistry::new(ctx);
+        registry.register_plugin(&Plugin::new());
+        let expected = [
+            "source_geo_einfo",
+            "source_geo_esearch",
+            "source_geo_esummary",
+            "source_geo_elink",
+            "source_geo_egquery",
+            "source_geo_espell",
+        ];
+        for kind in expected {
+            assert!(
+                registry.list_nodes().iter().any(|node| node.kind == kind),
+                "missing GEO query node: {kind}"
+            );
+        }
+    }
+
+    #[test]
+    fn plugin_registers_cellxgene_query_source_nodes() {
+        let ctx = dag_core::registry::NodeCtx::new(
+            datafusion::prelude::SessionContext::new().runtime_env(),
+            None,
+        );
+        let mut registry = NodeRegistry::new(ctx);
+        registry.register_plugin(&Plugin::new());
+        let expected = [
+            "source_cellxgene_collections",
+            "source_cellxgene_collection",
+            "source_cellxgene_datasets",
+            "source_cellxgene_assets",
+        ];
+        for kind in expected {
+            assert!(
+                registry.list_nodes().iter().any(|node| node.kind == kind),
+                "missing CELLxGENE query node: {kind}"
+            );
+        }
+    }
+
+    #[test]
+    fn plugin_registers_hca_query_source_nodes() {
+        let ctx = dag_core::registry::NodeCtx::new(
+            datafusion::prelude::SessionContext::new().runtime_env(),
+            None,
+        );
+        let mut registry = NodeRegistry::new(ctx);
+        registry.register_plugin(&Plugin::new());
+        let expected = [
+            "source_hca_projects",
+            "source_hca_project",
+            "source_hca_files",
+            "source_hca_samples",
+        ];
+        for kind in expected {
+            assert!(
+                registry.list_nodes().iter().any(|node| node.kind == kind),
+                "missing HCA query node: {kind}"
+            );
+        }
+    }
+
+    #[test]
+    fn plugin_registers_scea_query_source_nodes() {
+        let ctx = dag_core::registry::NodeCtx::new(
+            datafusion::prelude::SessionContext::new().runtime_env(),
+            None,
+        );
+        let mut registry = NodeRegistry::new(ctx);
+        registry.register_plugin(&Plugin::new());
+        let expected = [
+            "source_scea_experiments",
+            "source_scea_experiment",
+            "source_scea_markers",
+        ];
+        for kind in expected {
+            assert!(
+                registry.list_nodes().iter().any(|node| node.kind == kind),
+                "missing SCEA query node: {kind}"
+            );
+        }
+    }
+
+    #[test]
+    fn plugin_registers_scp_query_source_nodes() {
+        let ctx = dag_core::registry::NodeCtx::new(
+            datafusion::prelude::SessionContext::new().runtime_env(),
+            None,
+        );
+        let mut registry = NodeRegistry::new(ctx);
+        registry.register_plugin(&Plugin::new());
+        let expected = [
+            "source_scp_studies",
+            "source_scp_search",
+            "source_scp_study",
+            "source_scp_files",
+        ];
+        for kind in expected {
+            assert!(
+                registry.list_nodes().iter().any(|node| node.kind == kind),
+                "missing Single Cell Portal query node: {kind}"
+            );
+        }
+    }
+
+    #[test]
+    fn plugin_registers_hubmap_query_source_nodes() {
+        let ctx = dag_core::registry::NodeCtx::new(
+            datafusion::prelude::SessionContext::new().runtime_env(),
+            None,
+        );
+        let mut registry = NodeRegistry::new(ctx);
+        registry.register_plugin(&Plugin::new());
+        let expected = [
+            "source_hubmap_search",
+            "source_hubmap_dataset",
+            "source_hubmap_files",
+            "source_hubmap_globus",
+        ];
+        for kind in expected {
+            assert!(
+                registry.list_nodes().iter().any(|node| node.kind == kind),
+                "missing HuBMAP query node: {kind}"
+            );
+        }
+    }
+
+    #[test]
+    fn plugin_registers_tabula_sapiens_query_source_nodes() {
+        let ctx = dag_core::registry::NodeCtx::new(
+            datafusion::prelude::SessionContext::new().runtime_env(),
+            None,
+        );
+        let mut registry = NodeRegistry::new(ctx);
+        registry.register_plugin(&Plugin::new());
+        let expected = [
+            "source_tabula_sapiens_versions",
+            "source_tabula_sapiens_release",
+            "source_tabula_sapiens_files",
+        ];
+        for kind in expected {
+            assert!(
+                registry.list_nodes().iter().any(|node| node.kind == kind),
+                "missing Tabula Sapiens query node: {kind}"
+            );
+        }
+    }
+
+    #[test]
+    fn plugin_registers_allen_brain_query_source_nodes() {
+        let ctx = dag_core::registry::NodeCtx::new(
+            datafusion::prelude::SessionContext::new().runtime_env(),
+            None,
+        );
+        let mut registry = NodeRegistry::new(ctx);
+        registry.register_plugin(&Plugin::new());
+        let expected = [
+            "source_allen_brain_areas",
+            "source_allen_brain_genes",
+            "source_allen_brain_types",
+        ];
+        for kind in expected {
+            assert!(
+                registry.list_nodes().iter().any(|node| node.kind == kind),
+                "missing Allen Brain query node: {kind}"
+            );
+        }
+    }
+
+    #[test]
+    fn plugin_registers_nemo_query_source_nodes() {
+        let ctx = dag_core::registry::NodeCtx::new(
+            datafusion::prelude::SessionContext::new().runtime_env(),
+            None,
+        );
+        let mut registry = NodeRegistry::new(ctx);
+        registry.register_plugin(&Plugin::new());
+        let expected = [
+            "source_nemo_collections",
+            "source_nemo_datasets",
+            "source_nemo_matrices",
+        ];
+        for kind in expected {
+            assert!(
+                registry.list_nodes().iter().any(|node| node.kind == kind),
+                "missing NeMO Analytics query node: {kind}"
+            );
+        }
+    }
+
+    #[test]
+    fn plugin_registers_tisch_query_source_nodes() {
+        let ctx = dag_core::registry::NodeCtx::new(
+            datafusion::prelude::SessionContext::new().runtime_env(),
+            None,
+        );
+        let mut registry = NodeRegistry::new(ctx);
+        registry.register_plugin(&Plugin::new());
+        let expected = [
+            "source_tisch_datasets",
+            "source_tisch_cell_types",
+            "source_tisch_assets",
+        ];
+        for kind in expected {
+            assert!(
+                registry.list_nodes().iter().any(|node| node.kind == kind),
+                "missing TISCH query node: {kind}"
+            );
+        }
+    }
+
+    #[test]
+    fn plugin_registers_htan_query_source_nodes() {
+        let ctx = dag_core::registry::NodeCtx::new(
+            datafusion::prelude::SessionContext::new().runtime_env(),
+            None,
+        );
+        let mut registry = NodeRegistry::new(ctx);
+        registry.register_plugin(&Plugin::new());
+        let expected = [
+            "source_htan_atlases",
+            "source_htan_datasets",
+            "source_htan_files",
+        ];
+        for kind in expected {
+            assert!(
+                registry.list_nodes().iter().any(|node| node.kind == kind),
+                "missing HTAN query node: {kind}"
+            );
+        }
+    }
+
+    #[test]
+    fn plugin_registers_hcl_query_source_nodes() {
+        let ctx = dag_core::registry::NodeCtx::new(
+            datafusion::prelude::SessionContext::new().runtime_env(),
+            None,
+        );
+        let mut registry = NodeRegistry::new(ctx);
+        registry.register_plugin(&Plugin::new());
+        let expected = [
+            "source_hcl_versions",
+            "source_hcl_release",
+            "source_hcl_files",
+        ];
+        for kind in expected {
+            assert!(
+                registry.list_nodes().iter().any(|node| node.kind == kind),
+                "missing HCL query node: {kind}"
+            );
+        }
+    }
+
+    #[test]
+    fn plugin_registers_kpmp_query_source_nodes() {
+        let ctx = dag_core::registry::NodeCtx::new(
+            datafusion::prelude::SessionContext::new().runtime_env(),
+            None,
+        );
+        let mut registry = NodeRegistry::new(ctx);
+        registry.register_plugin(&Plugin::new());
+        let expected = [
+            "source_kpmp_data_types",
+            "source_kpmp_repository",
+            "source_kpmp_participant",
+            "source_kpmp_participant_datasets",
+            "source_kpmp_participant_repository",
+        ];
+        for kind in expected {
+            assert!(
+                registry.list_nodes().iter().any(|node| node.kind == kind),
+                "missing KPMP query node: {kind}"
+            );
+        }
+    }
+
+    #[test]
+    fn plugin_registers_file_decompression_and_selection_nodes() {
+        let ctx = dag_core::registry::NodeCtx::new(
+            datafusion::prelude::SessionContext::new().runtime_env(),
+            None,
+        );
+        let mut registry = NodeRegistry::new(ctx);
+        registry.register_plugin(&Plugin::new());
+
+        let decompress = registry
+            .get_node_ports(file_decompress::FILE_DECOMPRESS_KIND)
+            .expect("file_decompress is registered");
+        assert_eq!(
+            decompress.input_port(0).unwrap().data_type,
+            dag_core::value::PortType::File
+        );
+        assert_eq!(
+            decompress.output_port(0).unwrap().data_type,
+            dag_core::value::PortType::File
+        );
+
+        let select = registry
+            .get_node_ports(file_set_select::FILE_SET_SELECT_KIND)
+            .expect("file_set_select is registered");
+        assert_eq!(
+            select.input_port(0).unwrap().data_type,
+            dag_core::value::PortType::FileSet
+        );
+        assert_eq!(
+            select.output_port(0).unwrap().data_type,
+            dag_core::value::PortType::File
+        );
+    }
+
+    #[test]
+    fn plugin_registers_archive_nodes() {
+        let ctx = dag_core::registry::NodeCtx::new(
+            datafusion::prelude::SessionContext::new().runtime_env(),
+            None,
+        );
+        let mut registry = NodeRegistry::new(ctx);
+        registry.register_plugin(&Plugin::new());
+
+        let inspect = registry
+            .get_node_ports(archive_nodes::ARCHIVE_INSPECT_KIND)
+            .expect("archive_inspect is registered");
+        assert_eq!(
+            inspect.output_port(0).unwrap().data_type,
+            dag_core::value::PortType::DataFrame
+        );
+        let extract = registry
+            .get_node_ports(archive_nodes::ARCHIVE_EXTRACT_KIND)
+            .expect("archive_extract is registered");
+        assert_eq!(
+            extract.output_port(0).unwrap().data_type,
+            dag_core::value::PortType::FileSet
+        );
+    }
+
+    #[test]
+    fn plugin_registers_evidence_channel_nodes() {
+        let ctx = dag_core::registry::NodeCtx::new(
+            datafusion::prelude::SessionContext::new().runtime_env(),
+            None,
+        );
+        let mut registry = NodeRegistry::new(ctx);
+        registry.register_plugin(&Plugin::new());
+
+        // All three kinds are registered with the evidence format contract
+        // on the right ports.
+        let merge = registry
+            .build_node("evidence_merge", serde_json::json!({"path": "/tmp/x.json"}))
+            .expect("evidence_merge builds");
+        let ports = merge.ports();
+        assert_eq!(
+            ports.input_port(0).unwrap().format.as_deref(),
+            Some("evidence")
+        );
+        assert_eq!(
+            ports.output_port(0).unwrap().format.as_deref(),
+            Some("evidence")
+        );
+        assert!(!ports.is_fixed_input(), "variadic input");
+
+        let source = registry
+            .build_node(
+                "source_literature",
+                serde_json::json!({"query": {}, "path": "/tmp/lit.json"}),
+            )
+            .expect("source_literature builds");
+        assert_eq!(
+            source.ports().output_port(0).unwrap().format.as_deref(),
+            Some("evidence")
+        );
+
+        let fulltext = registry
+            .build_node("literature_fulltext", serde_json::json!({}))
+            .expect("literature_fulltext builds");
+        let ft_ports = fulltext.ports();
+        assert_eq!(
+            ft_ports.input_port(0).unwrap().format.as_deref(),
+            Some("evidence")
+        );
+        assert!(ft_ports.output_port(0).unwrap().data_type == dag_core::value::PortType::FileSet);
+
+        let saved = registry
+            .build_node("bib_save", serde_json::json!({}))
+            .expect("bib_save builds");
+        let saved_ports = saved.ports();
+        assert_eq!(
+            saved_ports.input_port(0).unwrap().format.as_deref(),
+            Some("evidence")
+        );
+        assert!(
+            saved_ports.output_port(0).unwrap().data_type == dag_core::value::PortType::DataFrame
+        );
+
+        let citations = registry
+            .build_node(
+                "source_literature_citations",
+                serde_json::json!({"paper_id": "DOI:10.1/x", "path": "/tmp/c.json"}),
+            )
+            .expect("source_literature_citations builds");
+        assert_eq!(
+            citations.ports().output_port(0).unwrap().format.as_deref(),
+            Some("evidence")
+        );
+        let recs = registry
+            .build_node(
+                "source_s2_recommendations",
+                serde_json::json!({"paper_id": "DOI:10.1/x", "path": "/tmp/r.json"}),
+            )
+            .expect("source_s2_recommendations builds");
+        assert_eq!(
+            recs.ports().output_port(0).unwrap().format.as_deref(),
+            Some("evidence")
+        );
+
+        let fetch = registry
+            .build_node(
+                "source_literature_fetch",
+                serde_json::json!({"id_kind": "doi", "id_value": "10.1/x", "path": "/tmp/f.json"}),
+            )
+            .expect("source_literature_fetch builds");
+        assert_eq!(
+            fetch.ports().output_port(0).unwrap().format.as_deref(),
+            Some("evidence")
+        );
+
+        let export = registry
+            .build_node(
+                "evidence_export",
+                serde_json::json!({"format": "ris", "path": "/tmp/out.ris"}),
+            )
+            .expect("evidence_export builds");
+        // ports_for_spec: output contract follows the spec'd format.
+        let export_ports = export.ports();
+        assert_eq!(
+            export_ports.input_port(0).unwrap().format.as_deref(),
+            Some("evidence")
+        );
+        assert_eq!(
+            export_ports.output_port(0).unwrap().format.as_deref(),
+            Some("ris")
+        );
+    }
+}

@@ -1,0 +1,33 @@
+[package]
+name = "nodes-eutils"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+description = "Native DAG adapters for eutils"
+
+[dependencies]
+eutils = { path = "../../eutils" }
+bib-types = { path = "../../bib-types" }
+async-trait = { workspace = true }
+reqwest = { version = "0.13", features = ["json", "form", "query"] }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+httpdate = "1"
+tokio = { workspace = true, features = ["sync", "time"] }
+
+schemars.workspace = true
+# DAG node dependencies
+dag-core = { path = "../../dag-core" }
+arrow-array.workspace = true
+arrow-schema.workspace = true
+datafusion.workspace = true
+
+[dev-dependencies]
+tokio = { workspace = true, features = ["rt-multi-thread", "macros"] }
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+serial_test = "3"
+
+[lints]
+workspace = true

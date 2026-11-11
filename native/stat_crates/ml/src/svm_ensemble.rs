@@ -1,0 +1,464 @@
+//! SVM + Ensemble learning — SVM classification, AdaBoost.
+//!
+//! Uses [`linfa-svm`] for SVM and [`linfa-ensemble`] for AdaBoost.
+
+use faer::Mat;
+use thiserror::Error;
+
+use crate::dimred::faer_to_ndarray;
+
+#[derive(Debug, Error)]
+pub enum SvmEnsembleError {
+    #[error("empty input")]
+    Empty,
+    #[error("linfa error: {0}")]
+    Linfa(String),
+    #[error("{0}")]
+    Other(String),
+}
+
+pub type Result<T> = std::result::Result<T, SvmEnsembleError>;
+
+// ═══════════════════════════════════════════════════════════════════════
+// SVM Classification (linfa-svm)
+// ═══════════════════════════════════════════════════════════════════════
+
+pub struct SvmResult {
+    pub predictions: Vec<usize>,
+    pub probabilities: Vec<f64>,
+}
+
+/// Platt scaling: fit sigmoid `P(y=1|f) = 1/(1+exp(A*f+B))` to decision values.
+///
+/// Uses Newton-Raphson on the cross-entropy loss (same algorithm as libsvm).
+/// Returns coefficients `(A, B)`.
+fn platt_scale(decision_values: &[f64], labels: &[bool]) -> (f64, f64) {
+    let n_pos = labels.iter().filter(|&&l| l).count() as f64;
+    let n_neg = labels.iter().filter(|&&l| !l).count() as f64;
+    if n_pos == 0.0 {
+        return (1.0, 50.0); // always predict 0
+    }
+    if n_neg == 0.0 {
+        return (-1.0, 50.0); // always predict 1
+    }
+
+    let hi_target = (n_pos + 1.0) / (n_pos + 2.0);
+    let lo_target = 1.0 / (n_neg + 2.0);
+
+    let mut a = 0.0f64;
+    let mut b = ((n_neg + 1.0) / (n_pos + 1.0)).ln();
+
+    for _ in 0..100 {
+        let (mut h11, mut h22, mut h21) = (1e-3f64, 1e-3f64, 0.0f64);
+        let (mut g1, mut g2) = (0.0f64, 0.0f64);
+
+        for (&f, &label) in decision_values.iter().zip(labels) {
+            let t = if label { hi_target } else { lo_target };
+            let f_apb = f * a + b;
+            let (p, d2) = if f_apb >= 0.0 {
+                let e = (-f_apb).exp();
+                (e / (1.0 + e), e / (1.0 + e).powi(2))
+            } else {
+                let e = f_apb.exp();
+                (1.0 / (1.0 + e), e / (1.0 + e).powi(2))
+            };
+            h11 += f * f * d2;
+            h22 += d2;
+            h21 += f * d2;
+            g1 += f * (t - p);
+            g2 += t - p;
+        }
+
+        // Solve 2×2 Hessian system: H * d = g.
+        // Our sigmoid is the Platt form p = 1/(1+exp(A*f+B)), so g1 = dL/dA
+        // where L is the cross-entropy loss.  The Newton step for *minimising*
+        // L is θ ← θ − H⁻¹·g, hence the minus sign below.
+        let det = h11 * h22 - h21 * h21;
+        if det.abs() < 1e-300 {
+            break;
+        }
+        let da = (h22 * g1 - h21 * g2) / det;
+        let db = (-h21 * g1 + h11 * g2) / det;
+        a -= da;
+        b -= db;
+        if da.abs() < 1e-10 && db.abs() < 1e-10 {
+            break;
+        }
+    }
+    (a, b)
+}
+
+/// Numerically stable sigmoid `1 / (1 + exp(A*x + B))`.
+fn sigmoid(f: f64, a: f64, b: f64) -> f64 {
+    let f_apb = a * f + b;
+    if f_apb >= 0.0 {
+        (-f_apb).exp() / (1.0 + (-f_apb).exp())
+    } else {
+        1.0 / (1.0 + f_apb.exp())
+    }
+}
+
+pub fn svm_classify(
+    data: &Mat<f64>,
+    labels: &[usize],
+    kernel: &str,
+    c: f64,
+    gamma: Option<f64>,
+) -> Result<SvmResult> {
+    svm_fit_predict(data, labels, data, kernel, c, gamma)
+}
+
+/// Resolve the RBF width γ: `None` selects the "scale" heuristic
+/// `1 / (n_features · Var(X))` (sklearn's `gamma='scale'`), falling back to
+/// `1 / n_features` for constant features.
+fn resolve_gamma(gamma: Option<f64>, train_data: &Mat<f64>) -> f64 {
+    if let Some(g) = gamma {
+        return g;
+    }
+    let (nrows, ncols) = train_data.shape();
+    if nrows == 0 || ncols == 0 {
+        return 1.0;
+    }
+    let total: f64 = (0..nrows)
+        .map(|i| (0..ncols).map(|j| train_data[(i, j)]).sum::<f64>())
+        .sum();
+    let count = (nrows * ncols) as f64;
+    let mean = total / count;
+    let var: f64 = (0..nrows)
+        .map(|i| {
+            (0..ncols)
+                .map(|j| (train_data[(i, j)] - mean).powi(2))
+                .sum::<f64>()
+        })
+        .sum::<f64>()
+        / count;
+    if var > 0.0 {
+        1.0 / (ncols as f64 * var)
+    } else {
+        1.0 / ncols as f64
+    }
+}
+
+/// Train an SVM on `train_data`/`train_labels` and predict on `test_data`.
+/// Platt scaling coefficients are fit on the training decision values, then
+/// applied to test decision values.
+///
+/// `c` is the regularisation cost (linfa `pos_neg_weights`); `gamma` is the
+/// kernel coefficient, kept separate because they are unrelated
+/// hyperparameters (the previous code passed `c` as the RBF width).
+/// Labels must be binary 0/1 — linfa-svm only fits binary classifiers.
+pub fn svm_fit_predict(
+    train_data: &Mat<f64>,
+    train_labels: &[usize],
+    test_data: &Mat<f64>,
+    kernel: &str,
+    c: f64,
+    gamma: Option<f64>,
+) -> Result<SvmResult> {
+    use linfa::dataset::DatasetBase;
+    use linfa::traits::{Fit, Predict};
+    use linfa_svm::Svm;
+
+    let (nrows, _) = train_data.shape();
+    if nrows == 0 {
+        return Err(SvmEnsembleError::Empty);
+    }
+    if train_labels.len() != nrows {
+        return Err(SvmEnsembleError::Other(format!(
+            "label count {} does not match row count {nrows}",
+            train_labels.len()
+        )));
+    }
+    if let Some(&bad) = train_labels.iter().find(|&&l| l > 1) {
+        return Err(SvmEnsembleError::Other(format!(
+            "SVM classification is binary (labels 0/1); found label {bad}. \
+             Use multi-class labels with a different model kind."
+        )));
+    }
+
+    let gamma = resolve_gamma(gamma, train_data);
+
+    let x = faer_to_ndarray(train_data);
+    let y: Vec<bool> = train_labels.iter().map(|&l| l != 0).collect();
+    let dataset = DatasetBase::new(x, ndarray::Array1::from(y.clone()));
+
+    // `pos_neg_weights` carries the regularisation cost C (previously
+    // hardcoded to 1.0 while `c` was misused as the kernel parameter).
+    let mut params = Svm::<_, bool>::params().pos_neg_weights(c, c);
+    match kernel {
+        "linear" => {
+            params = params.linear_kernel();
+        }
+        "rbf" | "gaussian" => {
+            params = params.gaussian_kernel(gamma);
+        }
+        "poly" | "polynomial" => {
+            // linfa's polynomial kernel is (⟨x,x'⟩ + constant)^degree; the
+            // additive constant is 1.0 with cubic degree, γ only sets the
+            // RBF width above.
+            params = params.polynomial_kernel(1.0, 3.0);
+        }
+        other => {
+            return Err(SvmEnsembleError::Other(format!(
+                "unsupported SVM kernel `{other}` (expected linear, rbf, or poly)"
+            )));
+        }
+    }
+
+    let model = params
+        .fit(&dataset)
+        .map_err(|e| SvmEnsembleError::Linfa(e.to_string()))?;
+
+    // Fit Platt scaling on training decision values
+    let train_decision_values: Vec<f64> = dataset
+        .records()
+        .outer_iter()
+        .map(|row| model.weighted_sum(&row) - model.rho)
+        .collect();
+    let (pa, pb) = platt_scale(&train_decision_values, &y);
+
+    // Predict on test data
+    let x_test = faer_to_ndarray(test_data);
+    let predicted = model.predict(&x_test);
+    let predictions: Vec<usize> = predicted.iter().map(|&p| if p { 1 } else { 0 }).collect();
+
+    let test_decision_values: Vec<f64> = x_test
+        .outer_iter()
+        .map(|row| model.weighted_sum(&row) - model.rho)
+        .collect();
+    let probabilities: Vec<f64> = test_decision_values
+        .iter()
+        .map(|&f| sigmoid(f, pa, pb))
+        .collect();
+
+    Ok(SvmResult {
+        predictions,
+        probabilities,
+    })
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// AdaBoost (linfa-ensemble)
+// ═══════════════════════════════════════════════════════════════════════
+
+pub fn adaboost(
+    data: &Mat<f64>,
+    labels: &[usize],
+    n_estimators: usize,
+    learning_rate: f64,
+) -> Result<SvmResult> {
+    adaboost_fit_predict(data, labels, data, n_estimators, learning_rate)
+}
+
+/// Train AdaBoost on `train_data`/`train_labels` and predict on `test_data`.
+pub fn adaboost_fit_predict(
+    train_data: &Mat<f64>,
+    train_labels: &[usize],
+    test_data: &Mat<f64>,
+    n_estimators: usize,
+    learning_rate: f64,
+) -> Result<SvmResult> {
+    use rand::SeedableRng;
+    use rand_chacha::ChaCha8Rng;
+
+    let (nrows, ncols) = train_data.shape();
+    let (n_test, _) = test_data.shape();
+    if nrows == 0 {
+        return Err(SvmEnsembleError::Empty);
+    }
+
+    let _rng = ChaCha8Rng::seed_from_u64(42);
+    let y: Vec<f64> = train_labels
+        .iter()
+        .map(|&l| if l != 0 { 1.0 } else { -1.0 })
+        .collect();
+
+    // Initialize sample weights uniformly
+    let mut weights = vec![1.0 / nrows as f64; nrows];
+
+    // Store weak learners: (feature, threshold, direction, alpha)
+    let mut weak_learners: Vec<(usize, f64, f64, f64)> = Vec::new();
+
+    for _ in 0..n_estimators {
+        // Find best decision stump
+        let mut best_err = f64::INFINITY;
+        let mut best_stump = (0usize, 0.0, 1.0);
+
+        for j in 0..ncols {
+            let col: Vec<f64> = (0..nrows).map(|i| train_data[(i, j)]).collect();
+            let mut sorted = col.clone();
+            sorted.sort_by(|a, b| a.partial_cmp(b).unwrap_or(std::cmp::Ordering::Equal));
+            sorted.dedup();
+
+            for win in sorted.windows(2) {
+                let threshold = (win[0] + win[1]) / 2.0;
+                for &direction in &[1.0, -1.0] {
+                    let err: f64 = (0..nrows)
+                        .filter(|&i| {
+                            let pred = if col[i] * direction > threshold * direction {
+                                1.0
+                            } else {
+                                -1.0
+                            };
+                            pred != y[i]
+                        })
+                        .map(|i| weights[i])
+                        .sum();
+                    if err < best_err {
+                        best_err = err;
+                        best_stump = (j, threshold, direction);
+                    }
+                }
+            }
+        }
+
+        if best_err >= 0.5 {
+            break;
+        }
+
+        let eps = 1e-10;
+        let alpha = 0.5 * ((1.0 - best_err) / (best_err + eps)).ln();
+        weak_learners.push((best_stump.0, best_stump.1, best_stump.2, alpha));
+
+        // Update weights
+        let (feat, thresh, dir) = best_stump;
+        let col: Vec<f64> = (0..nrows).map(|i| train_data[(i, feat)]).collect();
+        for i in 0..nrows {
+            let pred = if col[i] * dir > thresh * dir {
+                1.0
+            } else {
+                -1.0
+            };
+            if pred != y[i] {
+                weights[i] *= (alpha).exp();
+            } else {
+                weights[i] *= (-alpha).exp();
+            }
+        }
+        // Normalize
+        let sum: f64 = weights.iter().sum();
+        for w in &mut weights {
+            *w /= sum;
+        }
+    }
+
+    // Predict on test data using weighted ensemble
+    let mut predictions = Vec::with_capacity(n_test);
+    let mut probabilities = Vec::with_capacity(n_test);
+    for i in 0..n_test {
+        let mut score = 0.0;
+        for &(feat, thresh, dir, alpha) in &weak_learners {
+            let val = test_data[(i, feat)];
+            let pred = if val * dir > thresh * dir { 1.0 } else { -1.0 };
+            score += alpha * pred;
+        }
+        predictions.push(if score > 0.0 { 1 } else { 0 });
+        // P(y=1|x) = 1/(1+exp(-score))
+        probabilities.push(sigmoid(score, -1.0, 0.0));
+    }
+
+    let _ = learning_rate; // TODO: apply learning_rate scaling
+    Ok(SvmResult {
+        predictions,
+        probabilities,
+    })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::cluster::mat_from_row_major;
+
+    #[test]
+    fn test_svm() {
+        let data = mat_from_row_major(
+            8,
+            2,
+            &[
+                0.0, 0.0, 0.5, 0.5, 0.1, 0.2, 0.3, 0.1, 5.0, 5.0, 5.5, 5.5, 5.1, 5.2, 5.3, 5.1,
+            ],
+        );
+        let labels = vec![0, 0, 0, 0, 1, 1, 1, 1];
+        let result = svm_classify(&data, &labels, "linear", 1.0, None).unwrap();
+        assert_eq!(result.predictions.len(), 8);
+        assert_eq!(result.probabilities.len(), 8);
+        assert!(
+            result
+                .probabilities
+                .iter()
+                .all(|&p| (0.0..=1.0).contains(&p))
+        );
+        // Verify probability direction: class-1 samples should have higher P
+        let mean_pos: f64 = result.probabilities[4..].iter().sum::<f64>() / 4.0;
+        let mean_neg: f64 = result.probabilities[..4].iter().sum::<f64>() / 4.0;
+        assert!(
+            mean_pos > mean_neg,
+            "P(class=1) should be higher for class-1 samples, got pos={mean_pos} neg={mean_neg}"
+        );
+    }
+
+    #[test]
+    fn test_adaboost() {
+        let data = mat_from_row_major(
+            8,
+            2,
+            &[
+                0.0, 0.0, 0.5, 0.5, 0.1, 0.2, 0.3, 0.1, 5.0, 5.0, 5.5, 5.5, 5.1, 5.2, 5.3, 5.1,
+            ],
+        );
+        let labels = vec![0, 0, 0, 0, 1, 1, 1, 1];
+        let result = adaboost(&data, &labels, 10, 1.0).unwrap();
+        assert_eq!(result.predictions.len(), 8);
+        assert_eq!(result.probabilities.len(), 8);
+        assert!(
+            result
+                .probabilities
+                .iter()
+                .all(|&p| (0.0..=1.0).contains(&p))
+        );
+        // Verify probability direction: class-1 samples should have higher P
+        let mean_pos: f64 = result.probabilities[4..].iter().sum::<f64>() / 4.0;
+        let mean_neg: f64 = result.probabilities[..4].iter().sum::<f64>() / 4.0;
+        assert!(
+            mean_pos > mean_neg,
+            "P(class=1) should be higher for class-1 samples, got pos={mean_pos} neg={mean_neg}"
+        );
+    }
+
+    #[test]
+    fn test_svm_fit_predict_separation() {
+        let train = mat_from_row_major(
+            8,
+            2,
+            &[
+                0.0, 0.0, 0.5, 0.5, 0.1, 0.2, 0.3, 0.1, 5.0, 5.0, 5.5, 5.5, 5.1, 5.2, 5.3, 5.1,
+            ],
+        );
+        let labels = vec![0, 0, 0, 0, 1, 1, 1, 1];
+        // Test data: novel points not in training set
+        let test = mat_from_row_major(2, 2, &[0.2, 0.3, 4.8, 5.2]);
+
+        let result = svm_fit_predict(&train, &labels, &test, "linear", 1.0, None).unwrap();
+        assert_eq!(result.predictions.len(), 2);
+        assert_eq!(result.probabilities.len(), 2);
+        assert_eq!(result.predictions, vec![0, 1]);
+    }
+
+    #[test]
+    fn test_adaboost_fit_predict_separation() {
+        let train = mat_from_row_major(
+            8,
+            2,
+            &[
+                0.0, 0.0, 0.5, 0.5, 0.1, 0.2, 0.3, 0.1, 5.0, 5.0, 5.5, 5.5, 5.1, 5.2, 5.3, 5.1,
+            ],
+        );
+        let labels = vec![0, 0, 0, 0, 1, 1, 1, 1];
+        let test = mat_from_row_major(2, 2, &[0.2, 0.3, 4.8, 5.2]);
+
+        let result = adaboost_fit_predict(&train, &labels, &test, 10, 1.0).unwrap();
+        assert_eq!(result.predictions.len(), 2);
+        assert_eq!(result.probabilities.len(), 2);
+        assert_eq!(result.predictions, vec![0, 1]);
+    }
+}

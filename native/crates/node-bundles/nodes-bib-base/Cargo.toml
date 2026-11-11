@@ -1,0 +1,71 @@
+[package]
+name = "nodes-bib-base"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+description = "Bibliography management: Turso storage + unified literature query gateway."
+
+[dependencies]
+bib-base = { path = "../../bib-base" }
+bib-types = { path = "../../bib-types" }
+text-embedding = { path = "../../text-embedding" }
+turso.workspace = true
+tantivy = "=0.26.2"
+ahash = { version = "=0.8.12", default-features = false, features = ["runtime-rng"] }
+jieba-rs = "=0.11.0"
+serde = { workspace = true }
+serde_json = { workspace = true, features = ["float_roundtrip"] }
+chrono = { workspace = true }
+thiserror.workspace = true
+tokio = { workspace = true, features = ["process"] }
+
+# Unified query layer
+eutils = { path = "../../eutils" }
+arxiv = { path = "../../arxiv" }
+futures = { workspace = true }
+async-trait.workspace = true
+tracing.workspace = true
+uuid = { version = "1.12", features = ["v4"] }
+reqwest = { version = "0.13", features = ["json"] }
+zip = { workspace = true }  # workspace pins deflate-only features
+opendal.workspace = true
+
+# Europe PMC open-access full-text auto-fetch
+europepmc = { path = "../../europepmc" }
+quick-xml = { version = "=0.41.0", features = ["serialize"] }
+
+# Additional literature sources integrated into the LiteratureGateway.
+openalex = { path = "../../openalex" }
+crossref = { path = "../../crossref" }
+semantic-scholar = { path = "../../semantic-scholar" }
+
+# Agent tools
+agentik-core = { path = "../../agentik-core" }
+agentik-proc = { path = "../../agentik-proc" }
+agentik-sdk = { path = "../../agentik-sdk" }
+schemars.workspace = true
+sha2 = "0.10"
+tempfile = "3"
+base64 = "0.22"
+image = { version = "0.25.9", default-features = false, features = ["png", "jpeg", "gif", "webp"] }
+vfs = { path = "../../vfs" }
+
+# DAG evidence-channel nodes (see `src/nodes/`); pulls no node-registry
+# features beyond the factory/node traits.
+dag-core = { path = "../../dag-core" }
+arrow-array.workspace = true
+arrow-schema.workspace = true
+
+[lints]
+workspace = true
+
+[features]
+# Enables live-API end-to-end tests (require network connectivity).
+e2e = []
+
+[dev-dependencies]
+bib-base = { path = "../../bib-base", features = ["test-fixtures"] }
+tokio = { workspace = true, features = ["net", "io-util"] }
+# Test-only: constructing a `NodeCtx` needs a DataFusion runtime env.
+datafusion.workspace = true

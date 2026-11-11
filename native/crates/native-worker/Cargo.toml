@@ -1,0 +1,42 @@
+[package]
+name = "autonomics-native-nodes"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+serde_json.workspace = true
+dag-core = { path = "../dag-core" }
+native-node-protocol = { path = "../native-node-protocol" }
+native-node-runtime = { path = "../native-node-runtime" }
+native-node-dag = { path = "../native-node-dag" }
+bib-base = { path = "../bib-base", features = ["native-service"] }
+nodes-bib-base = { path = "../node-bundles/nodes-bib-base" }
+datafusion.workspace = true
+tokio.workspace = true
+nodes-causal = { path = "../node-bundles/nodes-causal" }
+nodes-dl = { path = "../node-bundles/nodes-dl" }
+nodes-epi = { path = "../node-bundles/nodes-epi" }
+nodes-genetics = { path = "../node-bundles/nodes-genetics" }
+nodes-hypothesize = { path = "../node-bundles/nodes-hypothesize" }
+nodes-io = { path = "../node-bundles/nodes-io" }
+nodes-lcmm = { path = "../node-bundles/nodes-lcmm" }
+nodes-mice = { path = "../node-bundles/nodes-mice" }
+nodes-ml = { path = "../node-bundles/nodes-ml" }
+nodes-opengwas = { path = "../node-bundles/nodes-opengwas" }
+nodes-power = { path = "../node-bundles/nodes-power" }
+nodes-rd = { path = "../node-bundles/nodes-rd" }
+nodes-regression = { path = "../node-bundles/nodes-regression" }
+nodes-sql = { path = "../node-bundles/nodes-sql" }
+nodes-survey = { path = "../node-bundles/nodes-survey" }
+nodes-survival = { path = "../node-bundles/nodes-survival" }
+nodes-writing = { path = "../node-bundles/nodes-writing" }
+
+[build-dependencies]
+sha2.workspace = true
+serde = { workspace = true, features = ["derive"] }
+serde_json.workspace = true
+
+[lints]
+workspace = true

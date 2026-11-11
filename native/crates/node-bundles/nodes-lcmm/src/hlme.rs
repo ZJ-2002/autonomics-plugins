@@ -1,0 +1,3328 @@
+//! Latent class linear mixed model DAG nodes (`hlme`, `hlme_predict`, `hlme_compare`).
+//!
+//! Fits through the complete pinned official R `lcmm::hlme` implementation
+//! (Proust-Lima, Philipps, Liquet 2017, JSS 78(2)). The `hlme` function
+//! subsumes GBTM (group-based trajectory modeling), LCGA (latent class
+//! growth analysis), and LGMM (latent growth mixture modeling) as special cases.
+//! Rust prepares the original model and transports its four DataFrame ports;
+//! prediction and comparison retain their separate mean/arithmetic contracts.
+//!
+//! ## Nodes
+//!
+//! | Node | Kind | Description |
+//! |------|------|-------------|
+//! | **hlme** | `hlme` | Fit a latent class linear mixed model |
+//! | **hlme_predict** | `hlme_predict` | Predict class-conditional trajectories for new data |
+//! | **hlme_compare** | `hlme_compare` | Compare multiple fits via BIC/AIC |
+//!
+//! ## hlme outputs
+//!
+//! **Port 0 — summary** (1 row): loglik, AIC, BIC, convergence, class count, etc.
+//!
+//! **Port 1 — params** (1 row per parameter): section, index, estimate, std_error.
+//!
+//! **Port 2 — posterior** (1 row per subject): subject ID, assigned class, per-class
+//! posterior probabilities.
+//!
+//! **Port 3 — fitted** (1 row per observation): outcome, marginal fitted, subject-specific
+//! fitted, residuals.
+
+use std::collections::{BTreeMap, HashMap};
+use std::sync::Arc;
+
+use arrow_array::{Array, Float64Array, Int32Array, Int64Array, RecordBatch, StringArray};
+use arrow_schema::{DataType, Field, Schema, SchemaRef};
+use async_trait::async_trait;
+use lcmm::{HlmeFit, LongData, ModelSpec, ParamLayout, predict_y};
+use schemars::{JsonSchema, schema_for};
+use serde::{Deserialize, Serialize};
+use thiserror::Error;
+
+use crate::official_runtime::AuthorRuntime;
+use dag_core::arrow_util::{ColumnError, column_index, extract_numeric_lenient};
+use dag_core::node::{DagNode, NodeInput, NodePorts};
+use dag_core::{
+    dag::{DagError, graph::PortOutputs},
+    registry::{NodeCtx, NodeFactory},
+};
+
+// =====================================================================
+// Error
+// =====================================================================
+
+#[derive(Debug, Error)]
+pub enum HlmeNodeError {
+    #[error("lcmm fit failed: {0}")]
+    Lcmm(#[from] lcmm::LcmmError),
+    #[error("arrow error: {0}")]
+    Arrow(#[from] arrow_schema::ArrowError),
+    #[error("datafusion error: {0}")]
+    Df(#[from] datafusion::error::DataFusionError),
+    #[error("column error: {0}")]
+    Column(String),
+    #[error("invalid spec: {0}")]
+    Spec(String),
+    #[error("no input data")]
+    EmptyInput,
+}
+
+impl From<ColumnError> for HlmeNodeError {
+    fn from(e: ColumnError) -> Self {
+        Self::Column(e.to_string())
+    }
+}
+
+impl ::dag_core::dag::NodeError for HlmeNodeError {
+    fn node_type(&self) -> &str {
+        "hlme"
+    }
+}
+
+// =====================================================================
+// Term expansion — parse R-style formula terms
+// =====================================================================
+
+/// A single design-matrix term, which is either a raw column or an
+/// interaction product of multiple columns.
+#[derive(Clone, Debug)]
+struct Term {
+    /// Canonical name (e.g. `"Time"`, `"Time:X1"`).
+    name: String,
+    /// Source column names that are multiplied to form this term.
+    sources: Vec<String>,
+}
+
+/// Expand a list of formula term strings into [`Term`]s.
+///
+/// Supports:
+/// - `"A"` → `Term { name: "A", sources: ["A"] }`
+/// - `"A:B"` → `Term { name: "A:B", sources: ["A", "B"] }`
+/// - `"A*B"` → expands to three terms: `A`, `B`, `A:B`
+const MAX_EXPANDED_TERMS: usize = 8192;
+
+fn normalized_term(sources: Vec<String>) -> Result<Term, HlmeNodeError> {
+    if sources.iter().any(|source| source.is_empty()) {
+        return Err(HlmeNodeError::Spec(
+            "formula terms require nonempty operands".into(),
+        ));
+    }
+    let mut unique_sources = Vec::new();
+    for source in sources {
+        if !unique_sources.contains(&source) {
+            unique_sources.push(source);
+        }
+    }
+    let mut canonical_sources = unique_sources.clone();
+    canonical_sources.sort();
+    Ok(Term {
+        name: canonical_sources.join(":"),
+        sources: unique_sources,
+    })
+}
+
+fn expand_terms(terms: &[String]) -> Result<Vec<Term>, HlmeNodeError> {
+    let mut out = Vec::new();
+    for t in terms {
+        let t = t.trim();
+        if t.is_empty() {
+            continue;
+        }
+        if let Some(star_pos) = find_top_level(t, '*') {
+            let lhs = t[..star_pos].trim();
+            let rhs = t[star_pos + 1..].trim();
+            if lhs.is_empty() || rhs.is_empty() {
+                return Err(HlmeNodeError::Spec(
+                    "star expressions require two operands".into(),
+                ));
+            }
+            let left = expand_terms(&[lhs.to_string()])?;
+            let right = expand_terms(&[rhs.to_string()])?;
+            let mut source_order = Vec::new();
+            for source in left.iter().chain(&right).flat_map(|term| &term.sources) {
+                if !source_order.contains(source) {
+                    source_order.push(source.clone());
+                }
+            }
+            let mut expanded = Vec::new();
+            let mut seen = std::collections::HashSet::new();
+            for term in left.iter().chain(&right) {
+                if seen.insert(term.name.clone()) {
+                    expanded.push(term.clone());
+                }
+            }
+            for left_term in &left {
+                for right_term in &right {
+                    let term = normalized_term(
+                        left_term
+                            .sources
+                            .iter()
+                            .chain(&right_term.sources)
+                            .cloned()
+                            .collect(),
+                    )?;
+                    if seen.insert(term.name.clone()) {
+                        expanded.push(term);
+                    }
+                    if expanded.len() > MAX_EXPANDED_TERMS {
+                        return Err(HlmeNodeError::Spec("formula expansion exceeds the engineering term budget; no terms are truncated".into()));
+                    }
+                }
+            }
+            let ranks = |term: &Term| {
+                let mut values = term
+                    .sources
+                    .iter()
+                    .map(|source| {
+                        source_order
+                            .iter()
+                            .position(|candidate| candidate == source)
+                            .unwrap()
+                    })
+                    .collect::<Vec<_>>();
+                values.sort_unstable();
+                values.reverse();
+                values
+            };
+            expanded.sort_by(|left, right| {
+                left.sources
+                    .len()
+                    .cmp(&right.sources.len())
+                    .then_with(|| ranks(left).cmp(&ranks(right)))
+            });
+            out.extend(expanded);
+        } else if t.contains(':') {
+            let parts: Vec<&str> = t.split(':').map(|s| s.trim()).collect();
+            out.push(normalized_term(
+                parts.iter().map(|source| source.to_string()).collect(),
+            )?);
+        } else {
+            out.push(Term {
+                name: t.to_string(),
+                sources: vec![t.to_string()],
+            });
+        }
+        if out.len() > MAX_EXPANDED_TERMS {
+            return Err(HlmeNodeError::Spec(
+                "formula expansion exceeds the engineering term budget; no terms are truncated"
+                    .into(),
+            ));
+        }
+    }
+    Ok(out)
+}
+
+/// Find the position of `ch` in `s` at parenthesis depth 0.
+fn find_top_level(s: &str, ch: char) -> Option<usize> {
+    let mut depth = 0i32;
+    for (i, c) in s.char_indices() {
+        match c {
+            '(' | '[' | '{' => depth += 1,
+            ')' | ']' | '}' => depth -= 1,
+            _ if depth == 0 && c == ch => return Some(i),
+            _ => {}
+        }
+    }
+    None
+}
+
+// =====================================================================
+// Design matrix builder
+// =====================================================================
+
+/// Build the design matrix, indicator vectors, and packed long-format data
+/// from the input RecordBatch and the node spec.
+fn build_model_data(
+    batches: &[RecordBatch],
+    cfg: &HlmeConfig,
+) -> Result<(LongData, ModelSpec, Vec<String>, Vec<i64>), HlmeNodeError> {
+    if batches.is_empty() || batches.iter().map(|b| b.num_rows()).sum::<usize>() == 0 {
+        return Err(HlmeNodeError::EmptyInput);
+    }
+
+    // Parse and expand formula terms.
+    let fixed_terms = expand_terms(&cfg.fixed)?;
+    let mixture_terms = expand_terms(&cfg.mixture)?;
+    let random_terms = expand_terms(&cfg.random)?;
+    let classmb_terms = expand_terms(&cfg.classmb)?;
+
+    // Build the column ordering: intercept first, then all unique terms
+    // in order of first appearance (fixed, mixture, random, classmb).
+    let mut col_names: Vec<String> = Vec::new();
+    let mut col_seen: HashMap<String, usize> = HashMap::new();
+
+    let register =
+        |name: &str, col_names: &mut Vec<String>, col_seen: &mut HashMap<String, usize>| {
+            if let std::collections::hash_map::Entry::Vacant(e) = col_seen.entry(name.to_string()) {
+                e.insert(col_names.len());
+                col_names.push(name.to_string());
+            }
+        };
+
+    if cfg.intercept {
+        register("__intercept", &mut col_names, &mut col_seen);
+    }
+    for t in &fixed_terms {
+        register(&t.name, &mut col_names, &mut col_seen);
+    }
+    for t in &mixture_terms {
+        register(&t.name, &mut col_names, &mut col_seen);
+    }
+    for t in &random_terms {
+        register(&t.name, &mut col_names, &mut col_seen);
+    }
+    for t in &classmb_terms {
+        register(&t.name, &mut col_names, &mut col_seen);
+    }
+
+    let nv = col_names.len();
+    if nv == 0 {
+        return Err(HlmeNodeError::Spec(
+            "no design columns: specify at least one of fixed/mixture/random/classmb".into(),
+        ));
+    }
+
+    // Extract outcome column.
+    let y_all = extract_numeric_lenient(batches, &cfg.outcome)?;
+    let nobs = y_all.len();
+
+    // Extract subject IDs and build subject ordering.
+    let subject_ids = extract_subject_ids(batches, &cfg.subject)?;
+    debug_assert_eq!(subject_ids.len(), nobs);
+
+    // Sort observations by subject ID (stable sort preserves original time order).
+    let mut order: Vec<usize> = (0..nobs).collect();
+    order.sort_by(|&a, &b| subject_ids[a].cmp(&subject_ids[b]));
+
+    // Build nmes and offsets.
+    let mut unique_subjects: Vec<i64> = Vec::new();
+    let mut nmes: Vec<usize> = Vec::new();
+    for &idx in &order {
+        let sid = subject_ids[idx];
+        if unique_subjects.is_empty() || *unique_subjects.last().unwrap() != sid {
+            unique_subjects.push(sid);
+            nmes.push(1);
+        } else {
+            *nmes.last_mut().unwrap() += 1;
+        }
+    }
+    let _ns = unique_subjects.len();
+
+    // Build Y (sorted).
+    let y_sorted: Vec<f64> = order.iter().map(|&i| y_all[i]).collect();
+
+    // Extract each design column and compute interaction terms.
+    let mut col_data: Vec<Vec<f64>> = Vec::with_capacity(nv);
+    for (k, name) in col_names.iter().enumerate() {
+        if name == "__intercept" {
+            col_data.push(vec![1.0; nobs]);
+        } else {
+            let term = [&fixed_terms, &mixture_terms, &random_terms, &classmb_terms]
+                .into_iter()
+                .flatten()
+                .find(|t| &t.name == name)
+                .expect("term must exist in one of the effect lists");
+            let src_vals: Vec<Vec<f64>> = term
+                .sources
+                .iter()
+                .map(|s| extract_numeric_lenient(batches, s))
+                .collect::<Result<_, _>>()?;
+            let col: Vec<f64> = (0..nobs)
+                .map(|r| src_vals.iter().map(|v| v[r]).product())
+                .collect();
+            col_data.push(col);
+        }
+        let _ = k;
+    }
+
+    // Build packed X matrix (row-major nobs×nv, sorted by subject).
+    let mut x = vec![0.0_f64; nobs * nv];
+    for (out_row, &idx) in order.iter().enumerate() {
+        for k in 0..nv {
+            x[out_row * nv + k] = col_data[k][idx];
+        }
+    }
+
+    // Build indicator vectors.
+    let mut idprob = vec![0u8; nv];
+    let mut idea = vec![0u8; nv];
+    let mut idg = vec![0u8; nv];
+    let idcor = vec![0u8; nv];
+
+    // Intercept column assignment.
+    if cfg.intercept {
+        let k = *col_seen.get("__intercept").unwrap();
+        // Intercept enters class membership when ng>1.
+        if cfg.ng > 1 {
+            idprob[k] = 1;
+        }
+        // Intercept has random effect when random is specified.
+        if !random_terms.is_empty() {
+            idea[k] = 1;
+        }
+        // Intercept is class-specific when mixture is specified.
+        if !mixture_terms.is_empty() {
+            idg[k] = 2;
+        } else {
+            idg[k] = 1;
+        }
+    }
+
+    // Assign indicators for non-intercept columns.
+    for (k, name) in col_names.iter().enumerate() {
+        if name == "__intercept" {
+            continue;
+        }
+        // idg: mixture takes precedence over fixed.
+        if mixture_terms.iter().any(|t| &t.name == name) {
+            idg[k] = 2;
+        } else if fixed_terms.iter().any(|t| &t.name == name) {
+            idg[k] = 1;
+        }
+        // idea: random effects.
+        if random_terms.iter().any(|t| &t.name == name) {
+            idea[k] = 1;
+        }
+        // idprob: class membership covariates.
+        if classmb_terms.iter().any(|t| &t.name == name) {
+            idprob[k] = 1;
+        }
+    }
+
+    let data = LongData::new(y_sorted, x, nv, nmes, cfg.ng);
+    let spec = ModelSpec {
+        ng: cfg.ng,
+        idiag: cfg.idiag,
+        nwg: cfg.nwg,
+        ncor: 0, // TODO: support BM/AR correlation
+        idprob,
+        idea,
+        idg,
+        idcor,
+    };
+
+    // Build human-readable column labels (replacing __intercept with "intercept").
+    let labels: Vec<String> = col_names
+        .iter()
+        .map(|n| {
+            if n == "__intercept" {
+                "intercept".to_string()
+            } else {
+                n.clone()
+            }
+        })
+        .collect();
+
+    Ok((data, spec, labels, unique_subjects))
+}
+
+/// Extract subject IDs from a column, accepting integer and float types.
+///
+/// Floating identifiers must be finite, exactly integral and within Int64 bounds.
+/// Missing and unsupported identifiers are rejected, never mapped to subject zero.
+fn extract_subject_ids(batches: &[RecordBatch], name: &str) -> Result<Vec<i64>, HlmeNodeError> {
+    let idx = column_index(batches, name)?;
+    let mut ids = Vec::new();
+    for batch in batches {
+        let col = batch.column(idx);
+        extract_id_dispatch(col, &mut |value: i64| ids.push(value))?;
+    }
+    Ok(ids)
+}
+
+fn extract_id_dispatch(col: &dyn Array, emit: &mut impl FnMut(i64)) -> Result<(), HlmeNodeError> {
+    macro_rules! cast_int {
+        ($arr:expr, $T:ty) => {
+            if let Some(a) = $arr.as_any().downcast_ref::<$T>() {
+                for v in a.iter() {
+                    let value =
+                        v.ok_or_else(|| HlmeNodeError::Spec("subject IDs cannot be null".into()))?;
+                    let converted = i64::try_from(value).map_err(|_| {
+                        HlmeNodeError::Spec("subject ID is outside the Int64 output range".into())
+                    })?;
+                    emit(converted);
+                }
+                return Ok(());
+            }
+        };
+    }
+    cast_int!(col, arrow_array::Int8Array);
+    cast_int!(col, arrow_array::Int16Array);
+    cast_int!(col, arrow_array::Int32Array);
+    cast_int!(col, arrow_array::Int64Array);
+    cast_int!(col, arrow_array::UInt8Array);
+    cast_int!(col, arrow_array::UInt16Array);
+    cast_int!(col, arrow_array::UInt32Array);
+    cast_int!(col, arrow_array::UInt64Array);
+    // Float types: truncate to i64 (common when IDs are stored as Float64).
+    macro_rules! cast_float {
+        ($arr:expr, $T:ty) => {
+            if let Some(a) = $arr.as_any().downcast_ref::<$T>() {
+                for v in a.iter() {
+                    let value = v.ok_or_else(|| HlmeNodeError::Spec("subject IDs cannot be null".into()))? as f64;
+                    if !value.is_finite() || value.fract() != 0.0 || value < i64::MIN as f64 || value >= -(i64::MIN as f64) {
+                        return Err(HlmeNodeError::Spec("floating subject IDs must be finite exact integers in the Int64 output range; fractional IDs require an explicit external identity mapping".into()));
+                    }
+                    emit(value as i64);
+                }
+                return Ok(());
+            }
+        };
+    }
+    cast_float!(col, arrow_array::Float32Array);
+    cast_float!(col, arrow_array::Float64Array);
+    Err(HlmeNodeError::Spec("subject IDs must use a supported integer or exact-integer floating Arrow type; unsupported types are not mapped to zero".into()))
+}
+
+// =====================================================================
+// Initial parameter vector
+// =====================================================================
+
+/// Compute a default starting parameter vector for the optimizer.
+///
+/// Uses OLS estimates for fixed effects and residual-variance-based estimates
+/// for variance components. Starting fixed effects at 0 (the old behaviour)
+/// causes the finite-difference Hessian to be numerically degenerate —
+/// `step_size(0)=1e-7` produces second-difference numerators at the f64 noise
+/// floor (~5e-13 on loglik ~ ±2000), yielding a non-PD Hessian and an
+/// immediate `istop=3` (PartialH) with `niter=0`.
+///
+/// - NPROB: 0.0 (equal class probabilities)
+/// - NEF: OLS estimates from regressing Y on the fixed-effect design columns
+/// - NVC: Cholesky diagonal = sqrt(resid_var / 2), off-diagonal = 0.0
+/// - NW: 1.0 (no class scaling difference)
+/// - STDERR: sqrt(resid_var / 2)
+fn default_init_b(data: &LongData, spec: &ModelSpec) -> Vec<f64> {
+    let layout = spec.layout();
+    let mut b = vec![0.0_f64; layout.npm];
+
+    // --- OLS starting values for fixed effects ---
+    let fixed_cols: Vec<usize> = (0..layout.nv).filter(|&k| spec.idg[k] != 0).collect();
+    let p = fixed_cols.len();
+    let betas = if p > 0 {
+        compute_ols(data, &fixed_cols, layout.nv)
+    } else {
+        Vec::new()
+    };
+
+    // Fill NEF entries. idg=1 covariates get 1 slot; idg=2 get ng slots
+    // (all initialised to the same OLS estimate).
+    let mut idx = layout.i_nef;
+    let mut beta_idx = 0usize;
+    for k in 0..layout.nv {
+        match spec.idg[k] {
+            1 => {
+                if beta_idx < betas.len() {
+                    b[idx] = betas[beta_idx];
+                }
+                beta_idx += 1;
+                idx += 1;
+            }
+            2 => {
+                let beta = betas.get(beta_idx).copied().unwrap_or(0.0);
+                beta_idx += 1;
+                for _ in 0..layout.ng {
+                    b[idx] = beta;
+                    idx += 1;
+                }
+            }
+            _ => {}
+        }
+    }
+
+    // --- Residual variance from OLS (or total Y variance as fallback) ---
+    let resid_var = if !betas.is_empty() {
+        let mut rss = 0.0_f64;
+        for r in 0..data.nobs {
+            let pred: f64 = fixed_cols
+                .iter()
+                .enumerate()
+                .map(|(j, &k)| betas[j] * data.x[r * layout.nv + k])
+                .sum();
+            let resid = data.y[r] - pred;
+            rss += resid * resid;
+        }
+        let df = data.nobs.saturating_sub(p).max(1);
+        rss / df as f64
+    } else {
+        let y_mean = data.y.iter().sum::<f64>() / data.y.len().max(1) as f64;
+        data.y.iter().map(|y| (y - y_mean).powi(2)).sum::<f64>() / data.y.len().max(1) as f64
+    };
+
+    // Split residual variance equally between random effects and noise.
+    let vc_std = (resid_var / 2.0).sqrt().max(0.1);
+
+    // --- Variance-covariance Cholesky block ---
+    // Diagonal entries = vc_std; off-diagonal entries = small non-zero value
+    // (10% of vc_std). Starting off-diagonals at exactly 0.0 causes the same
+    // finite-difference noise floor issue as zero fixed effects, because
+    // step_size(0)=1e-7 produces Hessian second-differences at f64 precision.
+    if layout.nvc > 0 {
+        if spec.idiag {
+            for j in 0..layout.nea {
+                b[layout.i_nvc + j] = vc_std;
+            }
+        } else {
+            let off_diag = 0.1 * vc_std;
+            for i in 0..layout.nea {
+                for l in 0..=i {
+                    let idx = layout.i_nvc + l + i * (i + 1) / 2;
+                    b[idx] = if l == i { vc_std } else { off_diag };
+                }
+            }
+        }
+    }
+
+    // NW (class-specific RE scaling).
+    for k in 0..layout.nw {
+        b[layout.i_nw + k] = 1.0;
+    }
+
+    // Residual stderr.
+    b[layout.i_stderr] = vc_std;
+    b
+}
+
+/// Simple OLS via normal equations + Cholesky solve.
+///
+/// Returns coefficient vector for the `fixed_cols` design columns. Falls back
+/// to the Y mean for intercept-like (all-ones) columns when X'X is singular.
+fn compute_ols(data: &LongData, fixed_cols: &[usize], nv: usize) -> Vec<f64> {
+    let p = fixed_cols.len();
+    let n = data.nobs;
+    if p == 0 || n == 0 {
+        return vec![0.0; p];
+    }
+
+    // Build X'X (p×p) and X'y (p) in a single pass over observations.
+    let mut xtx = vec![0.0_f64; p * p];
+    let mut xty = vec![0.0_f64; p];
+    for r in 0..n {
+        // Extract row r of the fixed-effect design.
+        let xr: Vec<f64> = fixed_cols.iter().map(|&k| data.x[r * nv + k]).collect();
+        for i in 0..p {
+            xty[i] += xr[i] * data.y[r];
+            for j in i..p {
+                xtx[i * p + j] += xr[i] * xr[j];
+            }
+        }
+    }
+    // Symmetrize X'X (only upper triangle was filled).
+    for i in 0..p {
+        for j in 0..i {
+            xtx[i * p + j] = xtx[j * p + i];
+        }
+    }
+
+    match cholesky_solve(&xtx, &xty, p) {
+        Some(beta) => beta,
+        None => {
+            // X'X singular: use Y mean for intercept-like columns, 0 otherwise.
+            let y_mean = data.y.iter().sum::<f64>() / n.max(1) as f64;
+            (0..p)
+                .map(|j| {
+                    let is_intercept =
+                        (0..n).all(|r| (data.x[r * nv + fixed_cols[j]] - 1.0).abs() < 1e-8);
+                    if is_intercept { y_mean } else { 0.0 }
+                })
+                .collect()
+        }
+    }
+}
+
+/// Solve the SPD system `A x = rhs` via Cholesky factorisation. Returns `None`
+/// if `A` is not positive-definite.
+fn cholesky_solve(a: &[f64], rhs: &[f64], n: usize) -> Option<Vec<f64>> {
+    // Cholesky: L L' = A (lower-triangular L).
+    let mut l = vec![0.0_f64; n * n];
+    for j in 0..n {
+        let mut d = a[j * n + j];
+        for k in 0..j {
+            d -= l[j * n + k] * l[j * n + k];
+        }
+        if d <= 1e-30 {
+            return None;
+        }
+        let dj = d.sqrt();
+        l[j * n + j] = dj;
+        let inv = 1.0 / dj;
+        for i in (j + 1)..n {
+            let mut s = a[i * n + j];
+            for k in 0..j {
+                s -= l[i * n + k] * l[j * n + k];
+            }
+            l[i * n + j] = s * inv;
+        }
+    }
+    // Forward solve L y = rhs.
+    let mut y = vec![0.0; n];
+    for i in 0..n {
+        let mut s = rhs[i];
+        for k in 0..i {
+            s -= l[i * n + k] * y[k];
+        }
+        y[i] = s / l[i * n + i];
+    }
+    // Back solve L' x = y.
+    let mut x = vec![0.0; n];
+    for i in (0..n).rev() {
+        let mut s = y[i];
+        for k in (i + 1)..n {
+            s -= l[k * n + i] * x[k];
+        }
+        x[i] = s / l[i * n + i];
+    }
+    Some(x)
+}
+
+// =====================================================================
+// Output schemas
+// =====================================================================
+
+fn summary_schema() -> SchemaRef {
+    Arc::new(Schema::new(vec![
+        Field::new("loglik", DataType::Float64, false),
+        Field::new("aic", DataType::Float64, false),
+        Field::new("bic", DataType::Float64, false),
+        Field::new("niter", DataType::Int32, false),
+        Field::new("conv", DataType::Utf8, false),
+        Field::new("ng", DataType::Int32, false),
+        Field::new("npm", DataType::Int32, false),
+        Field::new("ns", DataType::Int32, false),
+        Field::new("nobs", DataType::Int32, false),
+        Field::new("n_param_eff", DataType::Int32, false),
+    ]))
+}
+
+fn params_schema() -> SchemaRef {
+    Arc::new(Schema::new(vec![
+        Field::new("section", DataType::Utf8, false),
+        Field::new("index", DataType::Int32, false),
+        Field::new("estimate", DataType::Float64, false),
+        Field::new("std_error", DataType::Float64, true),
+    ]))
+}
+
+fn posterior_schema(ng: usize) -> SchemaRef {
+    let mut fields = vec![
+        Field::new("subject", DataType::Int64, false),
+        Field::new("class", DataType::Int32, false),
+    ];
+    for g in 1..=ng {
+        fields.push(Field::new(format!("ppi_{g}"), DataType::Float64, false));
+    }
+    Arc::new(Schema::new(fields))
+}
+
+fn fitted_schema() -> SchemaRef {
+    Arc::new(Schema::new(vec![
+        Field::new("subject", DataType::Int64, false),
+        Field::new("outcome", DataType::Float64, false),
+        Field::new("pred_marginal", DataType::Float64, true),
+        Field::new("pred_subject", DataType::Float64, true),
+        Field::new("resid_marginal", DataType::Float64, true),
+        Field::new("resid_subject", DataType::Float64, true),
+    ]))
+}
+
+fn predict_schema() -> SchemaRef {
+    Arc::new(Schema::new(vec![
+        Field::new("row", DataType::Int32, false),
+        Field::new("class", DataType::Int32, false),
+        Field::new("predicted", DataType::Float64, false),
+    ]))
+}
+
+fn compare_schema() -> SchemaRef {
+    Arc::new(Schema::new(vec![
+        Field::new("model", DataType::Utf8, false),
+        Field::new("ng", DataType::Int32, false),
+        Field::new("npm", DataType::Int32, false),
+        Field::new("loglik", DataType::Float64, false),
+        Field::new("aic", DataType::Float64, false),
+        Field::new("bic", DataType::Float64, false),
+        Field::new("bic_delta", DataType::Float64, true),
+        Field::new("bic_prob", DataType::Float64, true),
+    ]))
+}
+
+// =====================================================================
+// Node 1: hlme — Fit a latent class linear mixed model
+// =====================================================================
+
+const HLME_NODE_KIND: &str = "hlme";
+
+/// Default values.
+fn default_ng() -> usize {
+    1
+}
+fn default_intercept() -> bool {
+    true
+}
+fn default_idiag() -> bool {
+    false
+}
+fn default_nwg() -> bool {
+    false
+}
+fn default_maxiter() -> usize {
+    500
+}
+
+/// Configuration for the `hlme` node.
+#[derive(Clone, Debug, Serialize, Deserialize, JsonSchema)]
+#[serde(rename_all = "snake_case")]
+pub enum InitBParameterization {
+    RCovariance,
+    LegacyCholesky,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize, JsonSchema)]
+pub struct HlmeConfig {
+    /// Column name for the subject/patient ID.
+    pub subject: String,
+    /// Column name for the outcome (continuous).
+    pub outcome: String,
+    /// Number of latent classes (≥1). Use 1 for a standard LMM.
+    #[serde(default = "default_ng")]
+    pub ng: usize,
+    /// Whether to include an intercept column in the design matrix.
+    #[serde(default = "default_intercept")]
+    pub intercept: bool,
+    /// Column names or formula terms for overall fixed effects (idg=1).
+    /// Supports R-style notation: `"Time*X1"` expands to Time + X1 + Time:X1.
+    #[serde(default)]
+    pub fixed: Vec<String>,
+    /// Column names for class-specific fixed effects (idg=2).
+    /// When non-empty, the intercept (if present) also becomes class-specific.
+    #[serde(default)]
+    pub mixture: Vec<String>,
+    /// Column names with random effects (idea=1).
+    /// When non-empty, the intercept (if present) also gets a random effect.
+    /// Leave empty for GBTM/LCGA (no random effects).
+    #[serde(default)]
+    pub random: Vec<String>,
+    /// Column names for class-membership covariates (idprob=1).
+    #[serde(default)]
+    pub classmb: Vec<String>,
+    /// Diagonal random-effect covariance (no off-diagonal correlations).
+    #[serde(default = "default_idiag")]
+    pub idiag: bool,
+    /// Class-specific random-effect covariance scaling (nwg).
+    #[serde(default = "default_nwg")]
+    pub nwg: bool,
+    /// Maximum optimizer iterations.
+    #[serde(default = "default_maxiter")]
+    pub maxiter: usize,
+    /// Optional explicit initial parameter vector (length = NPM).
+    /// Required for multiple classes. Its coordinate system must be explicit.
+    #[serde(default)]
+    pub init_b: Vec<f64>,
+    #[serde(default)]
+    pub init_b_parameterization: Option<InitBParameterization>,
+}
+
+impl HlmeConfig {
+    fn validate(&self) -> Result<(), HlmeNodeError> {
+        if self.ng == 0 || self.ng > i32::MAX as usize {
+            return Err(HlmeNodeError::Spec(
+                "ng must be a positive Int32 class count".into(),
+            ));
+        }
+        if self.init_b.iter().any(|value| !value.is_finite()) {
+            return Err(HlmeNodeError::Spec(
+                "init_b must contain only finite values".into(),
+            ));
+        }
+        if !self.init_b.is_empty() && self.init_b_parameterization.is_none() {
+            return Err(HlmeNodeError::Spec("explicit init_b requires init_b_parameterization: r_covariance for lcmm::hlme B/best, or legacy_cholesky for the old node's internal coordinates; the node does not silently reinterpret existing vectors".into()));
+        }
+        if self.ng > 1 && self.init_b.is_empty() {
+            return Err(HlmeNodeError::Spec("ng > 1 requires explicit initial values, matching lcmm 2.2.2; initialization/model selection is not chosen by this node".into()));
+        }
+        Ok(())
+    }
+}
+
+fn initial_to_optimization(
+    best: &[f64],
+    spec: &ModelSpec,
+    representation: &InitBParameterization,
+) -> Result<Vec<f64>, HlmeNodeError> {
+    let mut result = best.to_vec();
+    if matches!(representation, InitBParameterization::LegacyCholesky) {
+        return Ok(result);
+    }
+    let layout = spec.layout();
+    let size = layout.nea;
+    if spec.idiag {
+        for offset in 0..size {
+            let variance = best[layout.i_nvc + offset];
+            if variance < 0.0 {
+                return Err(HlmeNodeError::Spec(
+                    "r_covariance diagonal variances must be nonnegative".into(),
+                ));
+            }
+            result[layout.i_nvc + offset] = variance.sqrt();
+        }
+    } else {
+        let mut lower = vec![0.0; size * size];
+        for row in 0..size {
+            for column in 0..=row {
+                let value = best[layout.i_nvc + row * (row + 1) / 2 + column]
+                    - (0..column)
+                        .map(|index| lower[row * size + index] * lower[column * size + index])
+                        .sum::<f64>();
+                if row == column {
+                    if value <= 0.0 || !value.is_finite() {
+                        return Err(HlmeNodeError::Spec("r_covariance must be positive definite for full random-effect covariance, matching R chol".into()));
+                    }
+                    lower[row * size + column] = value.sqrt();
+                } else {
+                    lower[row * size + column] = value / lower[column * size + column];
+                }
+                result[layout.i_nvc + row * (row + 1) / 2 + column] = lower[row * size + column];
+            }
+        }
+    }
+    Ok(result)
+}
+
+fn physical_covariance(best: &[f64], layout: &ParamLayout, idiag: bool) -> Vec<f64> {
+    let lower = layout.cholesky_ut(best, idiag);
+    let mut covariance = Vec::with_capacity(layout.nvc);
+    for row in 0..layout.nea {
+        let first = if idiag { row } else { 0 };
+        for column in first..=row {
+            covariance.push(
+                (0..=column)
+                    .map(|index| {
+                        lower[row * layout.nea + index] * lower[column * layout.nea + index]
+                    })
+                    .sum(),
+            );
+        }
+    }
+    covariance
+}
+
+fn hlme_ports(ng: usize) -> NodePorts {
+    NodePorts::new()
+        .add_input_port(None)
+        .add_output_port(Some(summary_schema())) // 0: summary
+        .add_output_port(Some(params_schema())) // 1: params
+        .add_output_port(Some(posterior_schema(ng))) // 2: posterior
+        .add_output_port(Some(fitted_schema())) // 3: fitted
+}
+
+#[derive(Clone)]
+pub struct HlmeNode {
+    meta: NodePorts,
+    config: HlmeConfig,
+    runtime: Option<AuthorRuntime>,
+}
+
+impl HlmeNode {
+    pub fn new(config: HlmeConfig) -> Self {
+        let meta = hlme_ports(config.ng);
+        Self {
+            meta,
+            config,
+            runtime: None,
+        }
+    }
+}
+
+pub struct HlmeNodeFactory {}
+
+impl NodeFactory for HlmeNodeFactory {
+    fn kind(&self) -> &'static str {
+        HLME_NODE_KIND
+    }
+
+    fn desc(&self) -> &'static str {
+        "Latent class linear mixed model (lcmm::hlme): GBTM, LCGA, and LGMM."
+    }
+
+    fn doc(&self) -> &'static str {
+        "Complete official lcmm::hlme fit; requires a content-locked \
+        AUTONOMICS_LCMM_RUNTIME_PROFILE and never falls back to native estimation. \
+        Latent class linear mixed model (Proust-Lima et al. 2017, JSS 78(2)). \
+        Fits a mixture of linear mixed models with class-specific and/or overall \
+        fixed effects, optional random effects, and multinomial-logit class \
+        membership. Subsumes GBTM (no random effects), LCGA, and LGMM. \
+        Outputs: summary, parameter estimates, posterior class probabilities, \
+        and fitted values with residuals."
+    }
+
+    fn spec_schema(&self) -> schemars::Schema {
+        schema_for!(HlmeConfig)
+    }
+
+    fn ports(&self) -> NodePorts {
+        // Use ng=1 as default for the static port schema. The actual node
+        // instance adjusts the posterior port columns based on its ng.
+        hlme_ports(1)
+    }
+
+    fn ports_for_spec(
+        &self,
+        spec: serde_json::Value,
+    ) -> dag_core::registry::error::Result<NodePorts> {
+        let config: HlmeConfig = serde_json::from_value(spec)?;
+        config
+            .validate()
+            .map_err(|error| dag_core::registry::error::Error::Unknown(error.to_string()))?;
+        Ok(hlme_ports(config.ng))
+    }
+
+    fn build(
+        &self,
+        spec: serde_json::Value,
+        _node_ctx: NodeCtx,
+    ) -> dag_core::registry::error::Result<Box<dyn DagNode>> {
+        let config: HlmeConfig = serde_json::from_value(spec)?;
+        config
+            .validate()
+            .map_err(|error| dag_core::registry::error::Error::Unknown(error.to_string()))?;
+        let runtime =
+            AuthorRuntime::from_environment().map_err(dag_core::registry::error::Error::Unknown)?;
+        let mut node = HlmeNode::new(config);
+        node.runtime = Some(runtime);
+        Ok(Box::new(node))
+    }
+}
+
+#[async_trait]
+impl DagNode for HlmeNode {
+    async fn cache_dependency_state(
+        &self,
+        _ctx: &NodeCtx,
+        _inputs: &[NodeInput],
+    ) -> Result<Option<serde_json::Value>, DagError> {
+        let runtime = self
+            .runtime
+            .clone()
+            .map(Ok)
+            .unwrap_or_else(AuthorRuntime::from_environment)
+            .map_err(|message| DagError::NodeError {
+                node_type: HLME_NODE_KIND.into(),
+                msg: message,
+            })?;
+        runtime
+            .identity()
+            .await
+            .map(Some)
+            .map_err(|message| DagError::NodeError {
+                node_type: HLME_NODE_KIND.into(),
+                msg: message,
+            })
+    }
+
+    fn ports(&self) -> &NodePorts {
+        &self.meta
+    }
+
+    fn clone_box(&self) -> Box<dyn DagNode> {
+        Box::new((*self).clone())
+    }
+
+    fn kind(&self) -> &'static str {
+        HLME_NODE_KIND
+    }
+
+    fn as_any(&self) -> &dyn std::any::Any {
+        self
+    }
+
+    async fn execute(
+        &mut self,
+        node_ctx: &NodeCtx,
+        inputs: &[NodeInput],
+        reporter: &dag_core::dag::node_event::NodeReporter,
+    ) -> Result<PortOutputs, DagError> {
+        self.config.validate()?;
+        let input = inputs.first().ok_or(HlmeNodeError::EmptyInput)?;
+        let batches: Vec<RecordBatch> =
+            input
+                .dataframe()?
+                .clone()
+                .collect()
+                .await
+                .map_err(|e| DagError::NodeError {
+                    node_type: HLME_NODE_KIND.into(),
+                    msg: format!("collect failed: {e}"),
+                })?;
+
+        let cfg = &self.config;
+        cfg.validate()?;
+        let (data, spec, col_labels, original_subjects) = build_model_data(&batches, cfg)?;
+        if data
+            .y
+            .iter()
+            .chain(data.x.iter())
+            .any(|value| !value.is_finite())
+        {
+            return Err(HlmeNodeError::Spec("outcome and design values must be finite and nonmissing; this node does not silently omit observations".into()).into());
+        }
+        let layout = spec.layout();
+
+        if [data.ns, data.nobs, layout.npm, cfg.maxiter]
+            .iter()
+            .any(|value| *value > i32::MAX as usize)
+        {
+            return Err(HlmeNodeError::Spec(
+                "model/output dimensions must fit the original Int32 contract".into(),
+            )
+            .into());
+        }
+        let (initial, coordinates) = if cfg.init_b.is_empty() {
+            (default_init_b(&data, &spec), "legacy_cholesky")
+        } else if cfg.init_b.len() == layout.npm {
+            let coordinates = match cfg.init_b_parameterization.as_ref().unwrap() {
+                InitBParameterization::RCovariance => "r_covariance",
+                InitBParameterization::LegacyCholesky => "legacy_cholesky",
+            };
+            (cfg.init_b.clone(), coordinates)
+        } else {
+            return Err(HlmeNodeError::Spec(format!(
+                "init_b length {} != expected NPM {}",
+                cfg.init_b.len(),
+                layout.npm,
+            ))
+            .into());
+        };
+        let runtime = self
+            .runtime
+            .clone()
+            .map(Ok)
+            .unwrap_or_else(AuthorRuntime::from_environment)
+            .map_err(|message| DagError::NodeError {
+                node_type: HLME_NODE_KIND.into(),
+                msg: message,
+            })?;
+        let mut design = serde_json::json!({"rows": data.nobs, "binary": "design.f64le"});
+        if cfg.intercept {
+            design["intercept_column"] = serde_json::json!(0);
+        }
+        let request = serde_json::json!({
+            "operation": "fit", "design": design,
+            "outcome_binary": "outcome.f64le",
+            "initial_binary": "initial.f64le", "initial_parameterization": coordinates,
+            "subject_labels": original_subjects.iter().map(ToString::to_string).collect::<Vec<_>>(),
+            "nmes": data.nmes,
+            "model": {"ng": spec.ng, "idiag": spec.idiag, "nwg": spec.nwg, "maxiter": cfg.maxiter,
+                "idg": spec.idg, "idea": spec.idea, "idprob": spec.idprob, "idcor": spec.idcor},
+        });
+        let inputs = BTreeMap::from([
+            ("design.f64le".to_string(), data.x),
+            ("outcome.f64le".to_string(), data.y),
+            ("initial.f64le".to_string(), initial),
+        ]);
+        let schemas = vec![
+            summary_schema(),
+            params_schema(),
+            posterior_schema(cfg.ng),
+            fitted_schema(),
+        ];
+        let batches = runtime
+            .execute(request, inputs, schemas, reporter)
+            .await
+            .map_err(|message| DagError::NodeError {
+                node_type: HLME_NODE_KIND.into(),
+                msg: message,
+            })?;
+        let expected_rows = [
+            1,
+            layout.npm,
+            if cfg.maxiter == 0 { 0 } else { data.ns },
+            if cfg.maxiter == 0 { 0 } else { data.nobs },
+        ];
+        if batches
+            .iter()
+            .zip(expected_rows)
+            .any(|(batch, expected)| batch.num_rows() != expected)
+        {
+            return Err(HlmeNodeError::Spec(
+                "author output row axes disagree with the prepared model".into(),
+            )
+            .into());
+        }
+        let session = node_ctx.session();
+        let mut outputs = PortOutputs::new();
+        for (port, batch) in batches.into_iter().enumerate() {
+            outputs.insert(
+                port as u8,
+                session.read_batch(batch).map_err(HlmeNodeError::Df)?,
+            );
+        }
+        let _ = col_labels;
+        Ok(outputs)
+    }
+}
+
+// =====================================================================
+// Batch builders for hlme outputs
+// =====================================================================
+
+fn build_summary_batch(fit: &HlmeFit, nobs: usize) -> RecordBatch {
+    RecordBatch::try_new(
+        summary_schema(),
+        vec![
+            Arc::new(Float64Array::from(vec![fit.loglik])),
+            Arc::new(Float64Array::from(vec![fit.aic])),
+            Arc::new(Float64Array::from(vec![fit.bic])),
+            Arc::new(Int32Array::from(vec![fit.niter as i32])),
+            Arc::new(StringArray::from(vec![format!("{:?}", fit.conv)])),
+            Arc::new(Int32Array::from(vec![fit.ng as i32])),
+            Arc::new(Int32Array::from(vec![fit.npm() as i32])),
+            Arc::new(Int32Array::from(vec![fit.ns as i32])),
+            Arc::new(Int32Array::from(vec![nobs as i32])),
+            Arc::new(Int32Array::from(vec![fit.npm() as i32])),
+        ],
+    )
+    .expect("summary batch construction must not fail")
+}
+
+fn build_params_batch(fit: &HlmeFit, col_labels: &[String], idiag: bool) -> RecordBatch {
+    #[allow(non_snake_case)]
+    let L = &fit.layout;
+    let best = &fit.best;
+
+    // Extract diagonal std errors from the packed upper-tri V.
+    let se = if matches!(
+        fit.conv,
+        lcmm::ConvStatus::Converged | lcmm::ConvStatus::PartialH
+    ) {
+        packed_diag(&fit.v, L.npm)
+    } else {
+        vec![None; L.npm]
+    };
+    let covariance = physical_covariance(best, L, idiag);
+
+    let mut sections: Vec<String> = Vec::new();
+    let mut indices: Vec<i32> = Vec::new();
+    let mut estimates: Vec<f64> = Vec::new();
+    let mut std_errs: Vec<Option<f64>> = Vec::new();
+
+    let mut idx = 0usize;
+
+    // NPROB section.
+    if L.nprob > 0 {
+        for k in 0..L.nprob {
+            sections.push("class_membership".into());
+            indices.push(k as i32);
+            estimates.push(best[idx]);
+            std_errs.push(se[idx]);
+            idx += 1;
+        }
+    }
+
+    // NEF section.
+    let nef_end = L.i_nvc;
+    while idx < nef_end {
+        sections.push("fixed_effect".into());
+        indices.push((idx - L.i_nef) as i32);
+        estimates.push(best[idx]);
+        std_errs.push(se[idx]);
+        idx += 1;
+    }
+
+    // NVC section.
+    if L.nvc > 0 {
+        for k in 0..L.nvc {
+            sections.push("varcov".into());
+            indices.push(k as i32);
+            estimates.push(covariance[k]);
+            std_errs.push(None);
+            idx += 1;
+        }
+    }
+
+    // NW section.
+    if L.nw > 0 {
+        for k in 0..L.nw {
+            sections.push("nwg".into());
+            indices.push(k as i32);
+            estimates.push(best[idx]);
+            std_errs.push(se[idx]);
+            idx += 1;
+        }
+    }
+
+    // NCOR section.
+    if L.ncor > 0 {
+        for k in 0..L.ncor {
+            sections.push("correlation".into());
+            indices.push(k as i32);
+            estimates.push(best[idx]);
+            std_errs.push(se[idx]);
+            idx += 1;
+        }
+    }
+
+    // STDERR.
+    sections.push("stderr".into());
+    indices.push(0);
+    estimates.push(best[idx]);
+    std_errs.push(se[idx]);
+
+    let _ = col_labels; // TODO: enrich with term names
+
+    RecordBatch::try_new(
+        params_schema(),
+        vec![
+            Arc::new(StringArray::from(sections)),
+            Arc::new(Int32Array::from(indices)),
+            Arc::new(Float64Array::from(estimates)),
+            Arc::new(Float64Array::from(std_errs)),
+        ],
+    )
+    .expect("params batch construction must not fail")
+}
+
+fn build_posterior_batch(fit: &HlmeFit, data: &LongData, original_subjects: &[i64]) -> RecordBatch {
+    let ng = fit.ng;
+    let ns = data.ns;
+
+    let post = fit
+        .posterior
+        .as_ref()
+        .unwrap_or_else(|| panic!("posterior should be computed for conv {:?}", fit.conv));
+
+    // Subject IDs: preserve the sorted unique original identifiers.
+    // LongData doesn't store original IDs; we emit 0-based indices.
+    let subjects: Vec<i64> = original_subjects.to_vec();
+    let classes: Vec<i32> = post.class.iter().map(|&c| c as i32).collect();
+
+    let mut ppi_cols: Vec<Vec<f64>> = Vec::with_capacity(ng);
+    for g in 0..ng {
+        let col: Vec<f64> = (0..ns).map(|i| post.ppi[i * ng + g]).collect();
+        ppi_cols.push(col);
+    }
+
+    let mut arrays: Vec<Arc<dyn Array>> = Vec::with_capacity(2 + ng);
+    arrays.push(Arc::new(Int64Array::from(subjects)));
+    arrays.push(Arc::new(Int32Array::from(classes)));
+    for col in ppi_cols {
+        arrays.push(Arc::new(Float64Array::from(col)));
+    }
+
+    RecordBatch::try_new(posterior_schema(ng), arrays)
+        .expect("posterior batch construction must not fail")
+}
+
+fn build_fitted_batch(fit: &HlmeFit, data: &LongData, original_subjects: &[i64]) -> RecordBatch {
+    let post = fit.posterior.as_ref().unwrap();
+    let ng = fit.ng;
+
+    // Subject index for each observation (repeated nmes[i] times).
+    let mut subj_ids: Vec<i64> = Vec::with_capacity(data.nobs);
+    for i in 0..data.ns {
+        for _ in 0..data.nmes[i] {
+            subj_ids.push(i as i64);
+        }
+    }
+
+    // Marginal fitted: prior-weighted, consistent with the marginal residual.
+    let pred_marginal: Vec<f64> = (0..data.nobs)
+        .map(|row| data.y[row] - post.resid_m[row])
+        .collect();
+
+    // Subject-specific fitted: π-weighted.
+    let pred_subject: Vec<f64> = (0..data.nobs)
+        .map(|r| {
+            let s = subj_ids[r] as usize;
+            (0..ng)
+                .map(|g| {
+                    let pi = post.ppi[s * ng + g];
+                    pi * post.pred_ss_g[r * ng + g]
+                })
+                .sum::<f64>()
+        })
+        .collect();
+
+    RecordBatch::try_new(
+        fitted_schema(),
+        vec![
+            Arc::new(Int64Array::from(
+                subj_ids
+                    .iter()
+                    .map(|index| original_subjects[*index as usize])
+                    .collect::<Vec<_>>(),
+            )),
+            Arc::new(Float64Array::from(data.y.clone())),
+            Arc::new(Float64Array::from(pred_marginal)),
+            Arc::new(Float64Array::from(pred_subject)),
+            Arc::new(Float64Array::from(post.resid_m.clone())),
+            Arc::new(Float64Array::from(post.resid_ss.clone())),
+        ],
+    )
+    .expect("fitted batch construction must not fail")
+}
+
+/// Extract diagonal elements from a packed column-major upper-triangular matrix.
+fn packed_diag(v_packed: &[f64], n: usize) -> Vec<Option<f64>> {
+    let mut out = Vec::with_capacity(n);
+    for i in 0..n {
+        let packed_idx = i * (i + 1) / 2 + i;
+        let val = v_packed.get(packed_idx).copied().unwrap_or(f64::NAN);
+        if !val.is_finite() || val < 0.0 {
+            out.push(None);
+        } else {
+            out.push(Some(val.sqrt()));
+        }
+    }
+    out
+}
+
+// =====================================================================
+// Node 2: hlme_predict — Predict class-conditional trajectories
+// =====================================================================
+
+const HLME_PREDICT_NODE_KIND: &str = "hlme_predict";
+
+/// Configuration for the `hlme_predict` node.
+#[derive(Clone, Debug, Serialize, Deserialize, JsonSchema)]
+pub struct HlmePredictConfig {
+    /// Column names matching the original fit's design matrix ordering.
+    /// This explicit order takes precedence over supplemental term metadata.
+    /// For interaction terms, specify the source columns in order; the node
+    /// computes interactions automatically.
+    pub columns: Vec<String>,
+    /// Whether the original model included an intercept.
+    #[serde(default = "default_intercept")]
+    pub intercept: bool,
+    /// Number of latent classes.
+    pub ng: usize,
+    /// Full parameter vector (`best`) from the fitted model.
+    pub best: Vec<f64>,
+    /// Model spec indicators.
+    #[serde(default)]
+    pub idprob: Vec<u8>,
+    #[serde(default)]
+    pub idea: Vec<u8>,
+    pub idg: Vec<u8>,
+    #[serde(default)]
+    pub idcor: Vec<u8>,
+    /// Original fixed/mixture/classmb term names (for interaction expansion).
+    #[serde(default)]
+    pub fixed_terms: Vec<String>,
+    #[serde(default)]
+    pub mixture_terms: Vec<String>,
+    #[serde(default)]
+    pub classmb_terms: Vec<String>,
+}
+
+fn predict_ports() -> NodePorts {
+    NodePorts::new()
+        .add_input_port(None) // newdata
+        .add_output_port(Some(predict_schema()))
+}
+
+#[derive(Clone)]
+pub struct HlmePredictNode {
+    meta: NodePorts,
+    config: HlmePredictConfig,
+}
+
+impl HlmePredictNode {
+    pub fn new(config: HlmePredictConfig) -> Self {
+        Self {
+            meta: predict_ports(),
+            config,
+        }
+    }
+}
+
+pub struct HlmePredictNodeFactory {}
+
+impl NodeFactory for HlmePredictNodeFactory {
+    fn kind(&self) -> &'static str {
+        HLME_PREDICT_NODE_KIND
+    }
+
+    fn desc(&self) -> &'static str {
+        "Predict class-conditional trajectories from a fitted hlme model."
+    }
+
+    fn doc(&self) -> &'static str {
+        "Predicts class-conditional marginal mean trajectories for new data, \
+        using the parameter estimates from a previously fitted hlme model. \
+        Accepts a newdata DataFrame and produces predicted means for each class."
+    }
+
+    fn spec_schema(&self) -> schemars::Schema {
+        schema_for!(HlmePredictConfig)
+    }
+
+    fn ports(&self) -> NodePorts {
+        predict_ports()
+    }
+
+    fn build(
+        &self,
+        spec: serde_json::Value,
+        _node_ctx: NodeCtx,
+    ) -> dag_core::registry::error::Result<Box<dyn DagNode>> {
+        let config: HlmePredictConfig = serde_json::from_value(spec)?;
+        Ok(Box::new(HlmePredictNode::new(config)))
+    }
+}
+
+#[async_trait]
+impl DagNode for HlmePredictNode {
+    fn ports(&self) -> &NodePorts {
+        &self.meta
+    }
+
+    fn clone_box(&self) -> Box<dyn DagNode> {
+        Box::new((*self).clone())
+    }
+
+    fn kind(&self) -> &'static str {
+        HLME_PREDICT_NODE_KIND
+    }
+
+    fn as_any(&self) -> &dyn std::any::Any {
+        self
+    }
+
+    async fn execute(
+        &mut self,
+        node_ctx: &NodeCtx,
+        inputs: &[NodeInput],
+        _reporter: &dag_core::dag::node_event::NodeReporter,
+    ) -> Result<PortOutputs, DagError> {
+        let input = inputs.first().ok_or(HlmeNodeError::EmptyInput)?;
+        let batches: Vec<RecordBatch> =
+            input
+                .dataframe()?
+                .clone()
+                .collect()
+                .await
+                .map_err(|e| DagError::NodeError {
+                    node_type: HLME_PREDICT_NODE_KIND.into(),
+                    msg: format!("collect failed: {e}"),
+                })?;
+
+        if batches.is_empty() {
+            return Err(HlmeNodeError::EmptyInput.into());
+        }
+
+        let cfg = &self.config;
+
+        // Build the design matrix for newdata, matching the original fit's
+        // column ordering.
+        let column_terms = expand_terms(&cfg.columns)?;
+        let fixed_terms = expand_terms(&cfg.fixed_terms)?;
+        let mixture_terms = expand_terms(&cfg.mixture_terms)?;
+        let classmb_terms = expand_terms(&cfg.classmb_terms)?;
+
+        // Assemble column list in the same order as the original fit.
+        let mut col_names: Vec<String> = Vec::new();
+        let mut col_seen: HashMap<String, usize> = HashMap::new();
+        let register = |name: &str,
+                        col_names: &mut Vec<String>,
+                        col_seen: &mut HashMap<String, usize>| {
+            if let std::collections::hash_map::Entry::Vacant(e) = col_seen.entry(name.to_string()) {
+                e.insert(col_names.len());
+                col_names.push(name.to_string());
+            }
+        };
+        if cfg.intercept {
+            register("__intercept", &mut col_names, &mut col_seen);
+        }
+        for term in &column_terms {
+            register(&term.name, &mut col_names, &mut col_seen);
+        }
+        for t in &fixed_terms {
+            register(&t.name, &mut col_names, &mut col_seen);
+        }
+        for t in &mixture_terms {
+            register(&t.name, &mut col_names, &mut col_seen);
+        }
+        for t in &classmb_terms {
+            register(&t.name, &mut col_names, &mut col_seen);
+        }
+
+        let nv = col_names.len();
+        let nobs: usize = batches.iter().map(|b| b.num_rows()).sum();
+
+        // Build X matrix.
+        let mut x = vec![0.0_f64; nobs * nv];
+        for (k, name) in col_names.iter().enumerate() {
+            if name == "__intercept" {
+                for r in 0..nobs {
+                    x[r * nv + k] = 1.0;
+                }
+            } else {
+                let term = [&column_terms, &fixed_terms, &mixture_terms, &classmb_terms]
+                    .into_iter()
+                    .flatten()
+                    .find(|t| &t.name == name)
+                    .ok_or_else(|| HlmeNodeError::Spec(format!("term '{name}' not found")))?;
+                let src_vals: Vec<Vec<f64>> = term
+                    .sources
+                    .iter()
+                    .map(|s| extract_numeric_lenient(&batches, s))
+                    .collect::<Result<_, _>>()?;
+                for r in 0..nobs {
+                    x[r * nv + k] = src_vals.iter().map(|v| v[r]).product();
+                }
+            }
+        }
+
+        // Build spec for prediction.
+        let idg = if cfg.idg.is_empty() {
+            // Derive idg from term membership.
+            let mut idg = vec![0u8; nv];
+            if cfg.intercept {
+                idg[0] = if mixture_terms.is_empty() { 1 } else { 2 };
+            }
+            for (k, name) in col_names.iter().enumerate() {
+                if name == "__intercept" {
+                    continue;
+                }
+                if mixture_terms.iter().any(|t| &t.name == name) {
+                    idg[k] = 2;
+                } else if fixed_terms.iter().any(|t| &t.name == name) {
+                    idg[k] = 1;
+                }
+            }
+            idg
+        } else {
+            cfg.idg.clone()
+        };
+
+        let idprob = if cfg.idprob.is_empty() {
+            col_names
+                .iter()
+                .map(|name| {
+                    u8::from(
+                        cfg.ng > 1
+                            && ((cfg.intercept && name == "__intercept")
+                                || classmb_terms.iter().any(|term| &term.name == name)),
+                    )
+                })
+                .collect()
+        } else {
+            cfg.idprob.clone()
+        };
+        let idea = if cfg.idea.is_empty() {
+            vec![0u8; nv]
+        } else {
+            cfg.idea.clone()
+        };
+        let idcor = if cfg.idcor.is_empty() {
+            vec![0u8; nv]
+        } else {
+            cfg.idcor.clone()
+        };
+
+        let spec = ModelSpec {
+            ng: cfg.ng,
+            idiag: false,
+            nwg: false,
+            ncor: 0,
+            idprob,
+            idea,
+            idg,
+            idcor,
+        };
+
+        if cfg.ng == 0
+            || cfg.ng > i32::MAX as usize
+            || nobs == 0
+            || nobs > i32::MAX as usize
+            || nv == 0
+        {
+            return Err(HlmeNodeError::Spec(
+                "prediction requires nonempty design and positive Int32 class/row counts".into(),
+            )
+            .into());
+        }
+        for (name, indicators, maximum) in [
+            ("idg", &spec.idg, 2),
+            ("idprob", &spec.idprob, 1),
+            ("idea", &spec.idea, 1),
+            ("idcor", &spec.idcor, 1),
+        ] {
+            if indicators.len() != nv || indicators.iter().any(|value| *value > maximum) {
+                return Err(HlmeNodeError::Spec(format!(
+                    "{name} must have {nv} valid indicators in the declared design order"
+                ))
+                .into());
+            }
+        }
+        let layout = spec.layout();
+        if cfg.best.len() < layout.i_nvc
+            || cfg
+                .best
+                .iter()
+                .chain(x.iter())
+                .any(|value| !value.is_finite())
+        {
+            return Err(HlmeNodeError::Spec("best must include the complete finite class-membership and fixed-effect blocks; design must be finite and nonmissing".into()).into());
+        }
+
+        let preds = predict_y(&spec, &layout, &cfg.best, &x, nobs);
+        if preds.iter().any(|value| !value.is_finite()) {
+            return Err(
+                HlmeNodeError::Spec("nonfinite prediction cannot be published".into()).into(),
+            );
+        }
+
+        // Build output: one row per (observation, class).
+        let mut rows: Vec<i32> = Vec::with_capacity(nobs * cfg.ng);
+        let mut classes: Vec<i32> = Vec::with_capacity(nobs * cfg.ng);
+        let mut predicted: Vec<f64> = Vec::with_capacity(nobs * cfg.ng);
+        for r in 0..nobs {
+            for g in 1..=cfg.ng {
+                rows.push(r as i32);
+                classes.push(g as i32);
+                predicted.push(preds[(g - 1) * nobs + r]);
+            }
+        }
+
+        let batch = RecordBatch::try_new(
+            predict_schema(),
+            vec![
+                Arc::new(Int32Array::from(rows)),
+                Arc::new(Int32Array::from(classes)),
+                Arc::new(Float64Array::from(predicted)),
+            ],
+        )
+        .map_err(HlmeNodeError::Arrow)?;
+
+        let df = node_ctx
+            .session()
+            .read_batch(batch)
+            .map_err(HlmeNodeError::Df)?;
+        let mut res = PortOutputs::new();
+        res.insert(0, df);
+        Ok(res)
+    }
+}
+
+// =====================================================================
+// Node 3: hlme_compare — Compare multiple fits via BIC/AIC
+// =====================================================================
+
+const HLME_COMPARE_NODE_KIND: &str = "hlme_compare";
+
+/// One model entry for comparison.
+#[derive(Clone, Debug, Serialize, Deserialize, JsonSchema)]
+pub struct ModelEntry {
+    /// Human-readable name for this model.
+    pub name: String,
+    /// Number of latent classes.
+    pub ng: usize,
+    /// Number of estimated parameters.
+    pub npm: usize,
+    /// Log-likelihood at convergence.
+    pub loglik: f64,
+    /// Number of subjects.
+    pub ns: usize,
+}
+
+/// Configuration for the `hlme_compare` node.
+#[derive(Clone, Debug, Serialize, Deserialize, JsonSchema)]
+pub struct HlmeCompareConfig {
+    /// List of model fits to compare.
+    pub models: Vec<ModelEntry>,
+}
+
+fn compare_ports() -> NodePorts {
+    NodePorts::new().add_output_port(Some(compare_schema()))
+}
+
+#[derive(Clone)]
+pub struct HlmeCompareNode {
+    meta: NodePorts,
+    config: HlmeCompareConfig,
+}
+
+impl HlmeCompareNode {
+    pub fn new(config: HlmeCompareConfig) -> Self {
+        Self {
+            meta: compare_ports(),
+            config,
+        }
+    }
+}
+
+pub struct HlmeCompareNodeFactory {}
+
+impl NodeFactory for HlmeCompareNodeFactory {
+    fn kind(&self) -> &'static str {
+        HLME_COMPARE_NODE_KIND
+    }
+
+    fn desc(&self) -> &'static str {
+        "Tabulate hlme AIC/BIC and equal-prior BIC weights; not a model-eligibility decision."
+    }
+
+    fn doc(&self) -> &'static str {
+        "Computes AIC, BIC, BIC differences and normalized exp(-delta_BIC/2) \
+        weights in input order. Weights are an equal-prior arithmetic extension, \
+        not official posterior probabilities or an automatic model choice. \
+        Callers must independently establish convergence, identical analysis \
+        populations, outcomes and likelihood scales before scientific comparison."
+    }
+
+    fn spec_schema(&self) -> schemars::Schema {
+        schema_for!(HlmeCompareConfig)
+    }
+
+    fn ports(&self) -> NodePorts {
+        compare_ports()
+    }
+
+    fn build(
+        &self,
+        spec: serde_json::Value,
+        _node_ctx: NodeCtx,
+    ) -> dag_core::registry::error::Result<Box<dyn DagNode>> {
+        let config: HlmeCompareConfig = serde_json::from_value(spec)?;
+        Ok(Box::new(HlmeCompareNode::new(config)))
+    }
+}
+
+#[async_trait]
+impl DagNode for HlmeCompareNode {
+    fn ports(&self) -> &NodePorts {
+        &self.meta
+    }
+
+    fn clone_box(&self) -> Box<dyn DagNode> {
+        Box::new((*self).clone())
+    }
+
+    fn kind(&self) -> &'static str {
+        HLME_COMPARE_NODE_KIND
+    }
+
+    fn as_any(&self) -> &dyn std::any::Any {
+        self
+    }
+
+    async fn execute(
+        &mut self,
+        node_ctx: &NodeCtx,
+        _inputs: &[NodeInput],
+        _reporter: &dag_core::dag::node_event::NodeReporter,
+    ) -> Result<PortOutputs, DagError> {
+        let cfg = &self.config;
+
+        // Compute BIC and AIC for each model.
+        if cfg.models.is_empty() {
+            return Err(HlmeNodeError::Spec("models must not be empty".into()).into());
+        }
+        let mut names_seen = std::collections::HashSet::new();
+        for model in &cfg.models {
+            if model.name.trim().is_empty()
+                || !names_seen.insert(model.name.clone())
+                || model.ng == 0
+                || model.ng > i32::MAX as usize
+                || model.npm == 0
+                || model.npm > i32::MAX as usize
+                || model.ns == 0
+                || !model.loglik.is_finite()
+            {
+                return Err(HlmeNodeError::Spec("model entries require unique nonblank names, positive class/parameter/subject counts and finite loglik".into()).into());
+            }
+        }
+        let entries: Vec<(String, i32, i32, f64, f64, f64)> = cfg
+            .models
+            .iter()
+            .map(|m| {
+                let aic = -2.0 * m.loglik + 2.0 * (m.npm as f64);
+                let bic = -2.0 * m.loglik + (m.ns as f64).ln() * (m.npm as f64);
+                (
+                    m.name.clone(),
+                    m.ng as i32,
+                    m.npm as i32,
+                    m.loglik,
+                    aic,
+                    bic,
+                )
+            })
+            .collect();
+        if entries
+            .iter()
+            .any(|entry| !entry.4.is_finite() || !entry.5.is_finite())
+        {
+            return Err(HlmeNodeError::Spec(
+                "information criteria overflow cannot be published".into(),
+            )
+            .into());
+        }
+
+        // Find min BIC.
+        let min_bic = entries.iter().map(|e| e.5).fold(f64::INFINITY, f64::min);
+
+        // Compute BIC deltas and approximate posterior probabilities.
+        let bic_deltas: Vec<f64> = entries.iter().map(|e| e.5 - min_bic).collect();
+        if bic_deltas.iter().any(|value| !value.is_finite()) {
+            return Err(
+                HlmeNodeError::Spec("BIC difference overflow cannot be published".into()).into(),
+            );
+        }
+        let bic_weights_sum: f64 = bic_deltas.iter().map(|&d| (-0.5 * d).exp()).sum();
+        let bic_probs: Vec<f64> = bic_deltas
+            .iter()
+            .map(|&d| (-0.5 * d).exp() / bic_weights_sum)
+            .collect();
+
+        let names: Vec<String> = entries.iter().map(|e| e.0.clone()).collect();
+        let ngs: Vec<i32> = entries.iter().map(|e| e.1).collect();
+        let npms: Vec<i32> = entries.iter().map(|e| e.2).collect();
+        let logliks: Vec<f64> = entries.iter().map(|e| e.3).collect();
+        let aics: Vec<f64> = entries.iter().map(|e| e.4).collect();
+        let bics: Vec<f64> = entries.iter().map(|e| e.5).collect();
+
+        let batch = RecordBatch::try_new(
+            compare_schema(),
+            vec![
+                Arc::new(StringArray::from(names)),
+                Arc::new(Int32Array::from(ngs)),
+                Arc::new(Int32Array::from(npms)),
+                Arc::new(Float64Array::from(logliks)),
+                Arc::new(Float64Array::from(aics)),
+                Arc::new(Float64Array::from(bics)),
+                Arc::new(Float64Array::from(bic_deltas)),
+                Arc::new(Float64Array::from(bic_probs)),
+            ],
+        )
+        .map_err(HlmeNodeError::Arrow)?;
+
+        let df = node_ctx
+            .session()
+            .read_batch(batch)
+            .map_err(HlmeNodeError::Df)?;
+        let mut res = PortOutputs::new();
+        res.insert(0, df);
+        Ok(res)
+    }
+}
+
+// =====================================================================
+// Tests
+// =====================================================================
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn test_node_ctx() -> NodeCtx {
+        let session = datafusion::prelude::SessionContext::new();
+        NodeCtx::new(session.runtime_env(), None)
+    }
+
+    fn factory_rejection(spec: serde_json::Value, expected: &str) {
+        let result = HlmeNodeFactory {}.build(spec, test_node_ctx());
+        match result {
+            Err(error) => assert!(error.to_string().contains(expected), "{error}"),
+            Ok(_) => panic!("invalid hlme spec was accepted by the factory"),
+        }
+    }
+
+    #[test]
+    fn factory_rejects_zero_classes_before_schema_allocation() {
+        factory_rejection(
+            serde_json::json!({"subject":"id","outcome":"y","ng":0}),
+            "positive Int32 class count",
+        );
+    }
+
+    #[test]
+    fn factory_rejects_class_count_outside_int32_before_schema_allocation() {
+        factory_rejection(
+            serde_json::json!({"subject":"id","outcome":"y","ng":2147483648_u64}),
+            "positive Int32 class count",
+        );
+    }
+
+    #[test]
+    fn factory_rejects_missing_multiclass_initial_values() {
+        factory_rejection(
+            serde_json::json!({"subject":"id","outcome":"y","ng":2}),
+            "requires explicit initial values",
+        );
+    }
+
+    #[test]
+    fn factory_rejects_unlabelled_initial_coordinates() {
+        factory_rejection(
+            serde_json::json!({"subject":"id","outcome":"y","init_b":[0.0,1.0]}),
+            "init_b_parameterization",
+        );
+    }
+
+    #[test]
+    fn factory_rejects_non_numeric_initial_values() {
+        factory_rejection(
+            serde_json::json!({"subject":"id","outcome":"y","init_b":[null],"init_b_parameterization":"r_covariance"}),
+            "cannot deserialize node spec",
+        );
+    }
+
+    #[test]
+    fn factory_validates_finite_initial_values() {
+        for value in [f64::NAN, f64::INFINITY, f64::NEG_INFINITY] {
+            let mut config: HlmeConfig = serde_json::from_value(
+                serde_json::json!({"subject":"id","outcome":"y","init_b":[0.0],"init_b_parameterization":"r_covariance"}),
+            )
+            .unwrap();
+            config.init_b[0] = value;
+            assert!(
+                config
+                    .validate()
+                    .unwrap_err()
+                    .to_string()
+                    .contains("finite")
+            );
+        }
+    }
+
+    #[test]
+    fn factory_ports_accept_valid_one_class_and_explicit_multiclass_specs() {
+        let factory = HlmeNodeFactory {};
+        let single = factory.ports_for_spec(serde_json::json!({"subject":"id","outcome":"y"}));
+        assert!(single.is_ok());
+        for coordinate in ["r_covariance", "legacy_cholesky"] {
+            let multiple = factory.ports_for_spec(serde_json::json!({"subject":"id","outcome":"y","ng":2,"init_b":[0.0,0.0,0.0,1.0],"init_b_parameterization":coordinate}));
+            assert!(multiple.is_ok());
+        }
+    }
+
+    #[test]
+    fn explicit_initial_coordinates_are_required() {
+        let unlabelled: HlmeConfig = serde_json::from_value(
+            serde_json::json!({"subject":"id","outcome":"y","init_b":[0.0,1.0]}),
+        )
+        .unwrap();
+        assert!(
+            unlabelled
+                .validate()
+                .unwrap_err()
+                .to_string()
+                .contains("init_b_parameterization")
+        );
+        for coordinate in ["r_covariance", "legacy_cholesky"] {
+            let labelled: HlmeConfig = serde_json::from_value(serde_json::json!({"subject":"id","outcome":"y","init_b":[0.0,1.0],"init_b_parameterization":coordinate})).unwrap();
+            labelled.validate().unwrap();
+        }
+    }
+
+    #[test]
+    fn author_multiclass_requires_initial_values() {
+        let config: HlmeConfig =
+            serde_json::from_value(serde_json::json!({"subject":"id","outcome":"y","ng":2}))
+                .unwrap();
+        assert!(
+            config
+                .validate()
+                .unwrap_err()
+                .to_string()
+                .contains("requires explicit initial values")
+        );
+    }
+
+    #[test]
+    fn covariance_coordinates_roundtrip_and_se_mean_standard_deviation() {
+        let spec = ModelSpec {
+            ng: 1,
+            idiag: false,
+            nwg: false,
+            ncor: 0,
+            idprob: vec![0, 0],
+            idea: vec![1, 1],
+            idg: vec![1, 1],
+            idcor: vec![0, 0],
+        };
+        let layout = spec.layout();
+        let values = [2.0, 0.5, 4.0, 1.0, 2.0, 0.3];
+        let coordinates =
+            initial_to_optimization(&values, &spec, &InitBParameterization::RCovariance).unwrap();
+        assert_eq!(coordinates[layout.i_nvc], 2.0);
+        assert_eq!(coordinates[layout.i_nvc + 1], 0.5);
+        let covariance = physical_covariance(&coordinates, &layout, false);
+        for (actual, expected) in covariance.iter().zip([4.0, 1.0, 2.0]) {
+            assert!((actual - expected).abs() < 1e-14);
+        }
+        assert_eq!(packed_diag(&[4.0, 0.0, 9.0], 2), vec![Some(2.0), Some(3.0)]);
+        assert_eq!(packed_diag(&[-1.0], 1), vec![None]);
+    }
+
+    #[test]
+    fn fractional_missing_and_unsupported_subject_ids_are_rejected() {
+        let mut identifiers = Vec::new();
+        assert!(
+            extract_id_dispatch(&Float64Array::from(vec![Some(1.5)]), &mut |identifier| {
+                identifiers.push(identifier)
+            })
+            .is_err()
+        );
+        assert!(
+            extract_id_dispatch(&Float64Array::from(vec![None]), &mut |identifier| {
+                identifiers.push(identifier)
+            })
+            .is_err()
+        );
+        assert!(
+            extract_id_dispatch(&StringArray::from(vec!["subject-A"]), &mut |identifier| {
+                identifiers.push(identifier)
+            })
+            .is_err()
+        );
+        extract_id_dispatch(&Int64Array::from(vec![122, 513]), &mut |identifier| {
+            identifiers.push(identifier)
+        })
+        .unwrap();
+        assert_eq!(identifiers, vec![122, 513]);
+    }
+
+    #[test]
+    fn expand_simple_terms() {
+        let terms = expand_terms(&["A".into(), "B".into()]).unwrap();
+        assert_eq!(terms.len(), 2);
+        assert_eq!(terms[0].name, "A");
+        assert_eq!(terms[1].name, "B");
+    }
+
+    #[test]
+    fn expand_interaction() {
+        let terms = expand_terms(&["A:B".into()]).unwrap();
+        assert_eq!(terms.len(), 1);
+        assert_eq!(terms[0].name, "A:B");
+        assert_eq!(terms[0].sources, vec!["A", "B"]);
+    }
+
+    #[test]
+    fn expand_star_operator() {
+        let terms = expand_terms(&["A*B".into()]).unwrap();
+        assert_eq!(terms.len(), 3);
+        assert_eq!(terms[0].name, "A");
+        assert_eq!(terms[1].name, "B");
+        assert_eq!(terms[2].name, "A:B");
+    }
+
+    #[test]
+    fn expand_three_factor_star_in_r_model_matrix_order() {
+        let terms = expand_terms(&["A*B*C".into()]).unwrap();
+        assert_eq!(
+            terms
+                .iter()
+                .map(|term| term.name.as_str())
+                .collect::<Vec<_>>(),
+            vec!["A", "B", "C", "A:B", "A:C", "B:C", "A:B:C"]
+        );
+        assert_eq!(terms[6].sources, vec!["A", "B", "C"]);
+    }
+
+    #[test]
+    fn equivalent_interaction_orders_have_identical_role_keys() {
+        let first = expand_terms(&["Time:Group".into()]).unwrap();
+        let second = expand_terms(&["Group:Time".into()]).unwrap();
+        assert_eq!(first[0].name, second[0].name);
+        assert_eq!(first[0].sources, vec!["Time", "Group"]);
+        assert_eq!(second[0].sources, vec!["Group", "Time"]);
+    }
+
+    #[test]
+    fn expand_four_factor_star_in_r_model_matrix_order() {
+        let terms = expand_terms(&["A*B*C*D".into()]).unwrap();
+        assert_eq!(
+            terms
+                .iter()
+                .map(|term| term.name.as_str())
+                .collect::<Vec<_>>(),
+            vec![
+                "A", "B", "C", "D", "A:B", "A:C", "B:C", "A:D", "B:D", "C:D", "A:B:C", "A:B:D",
+                "A:C:D", "B:C:D", "A:B:C:D"
+            ]
+        );
+    }
+
+    #[test]
+    fn interaction_products_preserve_formula_operand_order() {
+        let terms = expand_terms(&["c:a:b".into()]).unwrap();
+        assert_eq!(terms[0].name, "a:b:c");
+        assert_eq!(terms[0].sources, vec!["c", "a", "b"]);
+        let values = std::collections::HashMap::from([
+            ("c", 1e-200_f64),
+            ("a", 1e200_f64),
+            ("b", 1e200_f64),
+        ]);
+        let product = terms[0]
+            .sources
+            .iter()
+            .fold(1.0, |product, source| product * values[source.as_str()]);
+        assert!(product.is_finite());
+        assert_eq!(product, 1e200);
+    }
+
+    #[test]
+    fn repeated_formula_factors_do_not_become_numeric_squares() {
+        for formula in ["Time*Time", "Time:Time"] {
+            let terms = expand_terms(&[formula.into()]).unwrap();
+            assert_eq!(terms.len(), 1);
+            assert_eq!(terms[0].name, "Time");
+            assert_eq!(terms[0].sources, vec!["Time"]);
+        }
+    }
+
+    #[test]
+    fn malformed_formula_operands_are_rejected() {
+        for formula in ["Time*", "*Time", "Time:", ":Time"] {
+            assert!(expand_terms(&[formula.into()]).is_err());
+        }
+    }
+
+    #[test]
+    fn exponential_formula_budget_exhaustion_is_not_silent_truncation() {
+        let formula = (0..14)
+            .map(|index| format!("variable_{index}"))
+            .collect::<Vec<_>>()
+            .join("*");
+        assert!(
+            expand_terms(&[formula])
+                .unwrap_err()
+                .to_string()
+                .contains("engineering term budget")
+        );
+    }
+
+    #[test]
+    fn default_init_b_gbtm() {
+        // GBTM: ng=2, no random, no nwg.
+        let spec = ModelSpec {
+            ng: 2,
+            idiag: false,
+            nwg: false,
+            ncor: 0,
+            idprob: vec![1, 0],
+            idea: vec![0, 0],
+            idg: vec![2, 2],
+            idcor: vec![0, 0],
+        };
+        let layout = spec.layout();
+        // NPROB=1 (intercept × (ng-1)), NEF=4 (2×2), NVC=0, NW=0, STDERR=1 → NPM=6
+        assert_eq!(layout.npm, 6);
+
+        let data = LongData::new(
+            vec![1.0, 2.0, 3.0, 4.0],
+            vec![1.0, 0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 2.0], // 2 nv × 4 obs
+            2,
+            vec![2, 2],
+            2,
+        );
+        let b = default_init_b(&data, &spec);
+        assert_eq!(b.len(), 6);
+        // NPROB = 0 (class membership always starts at 0).
+        assert_eq!(b[0], 0.0);
+        // NEF slots should now hold OLS estimates (non-zero for intercept).
+        // STDERR > 0.
+        assert!(b[5] > 0.0);
+    }
+
+    #[test]
+    fn default_init_b_with_random() {
+        // m1: ng=1, random intercept + Time slope.
+        let spec = ModelSpec {
+            ng: 1,
+            idiag: false,
+            nwg: false,
+            ncor: 0,
+            idprob: vec![0, 0, 0, 0],
+            idea: vec![1, 1, 0, 0],
+            idg: vec![1, 1, 1, 1],
+            idcor: vec![0, 0, 0, 0],
+        };
+        let layout = spec.layout();
+        // NEF=4, NVC=3 (2×3/2), STDERR=1 → NPM=8
+        assert_eq!(layout.npm, 8);
+
+        let data = LongData::new(
+            vec![1.0, 2.0],
+            vec![1.0, 0.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0],
+            4,
+            vec![2],
+            1,
+        );
+        let b = default_init_b(&data, &spec);
+        assert_eq!(b.len(), 8);
+        // Cholesky diagonal entries should be derived from residual variance.
+        // i_nvc=4: diag at indices 4 and 6. Both should be > 0.
+        assert!(b[4] > 0.0); // i_nvc + 0 = 4
+        assert!(b[6] > 0.0); // i_nvc + 2 = 6 (diag of 2×2 upper-tri)
+    }
+}
+
+// =====================================================================
+// Cross-validation against R lcmm golden fixtures
+// =====================================================================
+//
+// Golden fixtures: `stat_crates/lcmm/tests/fixtures/{data_hlme.csv, hlme_golden.json}`
+// Restore: `rclone copy aliyun:autonomics-data/lcmm/test-data/ stat_crates/lcmm/tests/`
+
+#[cfg(test)]
+mod cross_validation {
+    use super::*;
+    use dag_core::dag::node_event::NodeReporter;
+    use dag_core::registry::NodeCtx;
+    use datafusion::prelude::SessionContext;
+
+    const TOL_LL: f64 = 1e-8;
+
+    // ---- Path helpers --------------------------------------------------
+
+    fn fixtures_dir() -> std::path::PathBuf {
+        std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("../../../stat_crates/lcmm/tests/fixtures")
+    }
+
+    // ---- CSV → RecordBatch ---------------------------------------------
+
+    fn load_data_batch() -> RecordBatch {
+        let path = fixtures_dir().join("data_hlme.csv");
+        let text = std::fs::read_to_string(&path).unwrap_or_else(|e| {
+            panic!(
+                "Failed to read {}: {}. Restore: rclone copy aliyun:autonomics-data/lcmm/test-data/ stat_crates/lcmm/tests/",
+                path.display(), e
+            )
+        });
+
+        let mut ids = Vec::new();
+        let mut ys = Vec::new();
+        let mut times = Vec::new();
+        let mut x1s = Vec::new();
+        let mut x2s = Vec::new();
+        let mut x3s = Vec::new();
+
+        for (i, line) in text.lines().enumerate() {
+            if i == 0 {
+                continue;
+            }
+            let f: Vec<&str> = line.split(',').collect();
+            if f.len() < 6 {
+                continue;
+            }
+            ids.push(f[0].parse::<i64>().unwrap());
+            ys.push(f[1].parse::<f64>().unwrap());
+            times.push(f[2].parse::<f64>().unwrap());
+            x1s.push(f[3].parse::<f64>().unwrap());
+            x2s.push(f[4].parse::<f64>().unwrap());
+            x3s.push(f[5].parse::<f64>().unwrap());
+        }
+
+        let schema = Arc::new(Schema::new(vec![
+            Field::new("ID", DataType::Int64, false),
+            Field::new("Y", DataType::Float64, false),
+            Field::new("Time", DataType::Float64, false),
+            Field::new("X1", DataType::Float64, false),
+            Field::new("X2", DataType::Float64, false),
+            Field::new("X3", DataType::Float64, false),
+        ]));
+
+        RecordBatch::try_new(
+            schema,
+            vec![
+                Arc::new(Int64Array::from(ids)),
+                Arc::new(Float64Array::from(ys)),
+                Arc::new(Float64Array::from(times)),
+                Arc::new(Float64Array::from(x1s)),
+                Arc::new(Float64Array::from(x2s)),
+                Arc::new(Float64Array::from(x3s)),
+            ],
+        )
+        .unwrap()
+    }
+
+    // ---- Golden JSON ---------------------------------------------------
+
+    fn load_golden() -> serde_json::Value {
+        let path = fixtures_dir().join("hlme_golden.json");
+        let text = std::fs::read_to_string(&path).unwrap_or_else(|e| {
+            panic!(
+                "Failed to read {}: {}. Restore: rclone copy aliyun:autonomics-data/lcmm/test-data/ stat_crates/lcmm/tests/",
+                path.display(), e
+            )
+        });
+        serde_json::from_str(&text).expect("Failed to parse golden JSON")
+    }
+
+    fn golden_fit<'a>(golden: &'a serde_json::Value, tag: &str) -> &'a serde_json::Value {
+        golden["fits"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .find(|f| f["tag"].as_str() == Some(tag))
+            .unwrap_or_else(|| panic!("golden fit '{tag}' not found"))
+    }
+
+    fn json_to_f64_array(v: &serde_json::Value) -> Vec<f64> {
+        v.as_array()
+            .unwrap()
+            .iter()
+            .map(|x| x.as_f64().unwrap())
+            .collect()
+    }
+
+    /// Convert golden `best` from R's post-processed form (varcov entries hold
+    /// B=U'U) back to Fortran optimization form (Cholesky factor entries).
+    fn convert_golden_best(
+        best: &[f64],
+        cholesky: &[f64],
+        layout: &ParamLayout,
+        idiag: bool,
+    ) -> Vec<f64> {
+        let mut b = best.to_vec();
+        let nvc = layout.nvc;
+        let i_nvc = layout.i_nvc;
+        if !idiag && nvc > 0 {
+            for k in 0..nvc {
+                b[i_nvc + k] = cholesky[k];
+            }
+        } else if idiag && nvc > 0 {
+            let nea = layout.nea;
+            for j in 0..nea {
+                b[i_nvc + j] = cholesky[j * (j + 1) / 2 + j];
+            }
+        }
+        b
+    }
+
+    // ---- Design matrix verification ------------------------------------
+    // Verifies that build_model_data() produces the same ModelSpec as the
+    // manually-constructed specs in the lcmm crate's cross-validation tests.
+
+    fn check_spec(
+        test_name: &str,
+        spec: &ModelSpec,
+        ng: usize,
+        idiag: bool,
+        nwg: bool,
+        idprob: &[u8],
+        idea: &[u8],
+        idg: &[u8],
+    ) {
+        assert_eq!(spec.ng, ng, "{test_name}: ng mismatch");
+        assert_eq!(spec.idiag, idiag, "{test_name}: idiag mismatch");
+        assert_eq!(spec.nwg, nwg, "{test_name}: nwg mismatch");
+        assert_eq!(
+            spec.idprob, idprob,
+            "{test_name}: idprob mismatch: got {:?}, want {:?}",
+            spec.idprob, idprob
+        );
+        assert_eq!(
+            spec.idea, idea,
+            "{test_name}: idea mismatch: got {:?}, want {:?}",
+            spec.idea, idea
+        );
+        assert_eq!(
+            spec.idg, idg,
+            "{test_name}: idg mismatch: got {:?}, want {:?}",
+            spec.idg, idg
+        );
+        eprintln!("PASS design_matrix {test_name}");
+    }
+
+    #[test]
+    fn design_matrix_gbtm1() {
+        let batch = load_data_batch();
+        let batches = vec![batch];
+        let cfg = HlmeConfig {
+            subject: "ID".into(),
+            outcome: "Y".into(),
+            ng: 1,
+            intercept: true,
+            fixed: vec!["Time".into()],
+            mixture: vec![],
+            random: vec![],
+            classmb: vec![],
+            idiag: false,
+            nwg: false,
+            maxiter: 500,
+            init_b: vec![],
+            init_b_parameterization: None,
+        };
+        let (data, spec, _, _) = build_model_data(&batches, &cfg).unwrap();
+        // gbtm1: X0 = [intercept, Time], idg=[1,1], idea=[0,0]
+        assert_eq!(spec.idg.len(), 2, "nv should be 2");
+        check_spec("gbtm1", &spec, 1, false, false, &[0, 0], &[0, 0], &[1, 1]);
+        // Verify data dimensions
+        assert_eq!(data.ns, 100, "gbtm1: ns should be 100");
+    }
+
+    #[test]
+    fn design_matrix_gbtm2() {
+        let batch = load_data_batch();
+        let batches = vec![batch];
+        let cfg = HlmeConfig {
+            subject: "ID".into(),
+            outcome: "Y".into(),
+            ng: 2,
+            intercept: true,
+            fixed: vec!["Time".into()],
+            mixture: vec!["Time".into()],
+            random: vec![],
+            classmb: vec![],
+            idiag: false,
+            nwg: false,
+            maxiter: 500,
+            init_b: vec![],
+            init_b_parameterization: None,
+        };
+        let (_data, spec, _, _) = build_model_data(&batches, &cfg).unwrap();
+        // gbtm2: X0 = [intercept, Time], idg=[2,2], idea=[0,0], idprob=[1,0]
+        assert_eq!(spec.idg.len(), 2);
+        check_spec("gbtm2", &spec, 2, false, false, &[1, 0], &[0, 0], &[2, 2]);
+    }
+
+    #[test]
+    fn design_matrix_m1() {
+        let batch = load_data_batch();
+        let batches = vec![batch];
+        let cfg = HlmeConfig {
+            subject: "ID".into(),
+            outcome: "Y".into(),
+            ng: 1,
+            intercept: true,
+            fixed: vec!["Time*X1".into()],
+            mixture: vec![],
+            random: vec!["Time".into()],
+            classmb: vec![],
+            idiag: false,
+            nwg: false,
+            maxiter: 500,
+            init_b: vec![],
+            init_b_parameterization: None,
+        };
+        let (_data, spec, _, _) = build_model_data(&batches, &cfg).unwrap();
+        // m1: X0 = [intercept, Time, X1, Time:X1]
+        // idg=[1,1,1,1], idea=[1,1,0,0]
+        assert_eq!(
+            spec.idg.len(),
+            4,
+            "m1: nv should be 4 (intercept + Time + X1 + Time:X1)"
+        );
+        check_spec(
+            "m1",
+            &spec,
+            1,
+            false,
+            false,
+            &[0, 0, 0, 0],
+            &[1, 1, 0, 0],
+            &[1, 1, 1, 1],
+        );
+    }
+
+    #[test]
+    fn design_matrix_m2a() {
+        let batch = load_data_batch();
+        let batches = vec![batch];
+        let cfg = HlmeConfig {
+            subject: "ID".into(),
+            outcome: "Y".into(),
+            ng: 2,
+            intercept: true,
+            fixed: vec!["Time*X1".into()],
+            mixture: vec!["Time".into()],
+            random: vec!["Time".into()],
+            classmb: vec!["X2".into(), "X3".into()],
+            idiag: false,
+            nwg: false,
+            maxiter: 500,
+            init_b: vec![],
+            init_b_parameterization: None,
+        };
+        let (_data, spec, _, _) = build_model_data(&batches, &cfg).unwrap();
+        // m2a: X0 = [intercept, Time, X1, Time:X1, X2, X3]
+        // idprob=[1,0,0,0,1,1], idea=[1,1,0,0,0,0], idg=[2,2,1,1,0,0]
+        assert_eq!(spec.idg.len(), 6, "m2a: nv should be 6");
+        check_spec(
+            "m2a",
+            &spec,
+            2,
+            false,
+            false,
+            &[1, 0, 0, 0, 1, 1],
+            &[1, 1, 0, 0, 0, 0],
+            &[2, 2, 1, 1, 0, 0],
+        );
+    }
+
+    #[test]
+    fn design_matrix_m1_idiag() {
+        let batch = load_data_batch();
+        let batches = vec![batch];
+        let cfg = HlmeConfig {
+            subject: "ID".into(),
+            outcome: "Y".into(),
+            ng: 1,
+            intercept: true,
+            fixed: vec!["Time*X1".into()],
+            mixture: vec![],
+            random: vec!["Time".into()],
+            classmb: vec![],
+            idiag: true,
+            nwg: false,
+            maxiter: 500,
+            init_b: vec![],
+            init_b_parameterization: None,
+        };
+        let (_data, spec, _, _) = build_model_data(&batches, &cfg).unwrap();
+        assert!(spec.idiag, "m1_idiag: idiag should be true");
+        check_spec(
+            "m1_idiag",
+            &spec,
+            1,
+            true,
+            false,
+            &[0, 0, 0, 0],
+            &[1, 1, 0, 0],
+            &[1, 1, 1, 1],
+        );
+    }
+
+    // ---- Loglik cross-validation ---------------------------------------
+    // Evaluates loglik at the golden best parameter vector and compares
+    // against R lcmm's reported loglik.
+
+    fn check_loglik(test_name: &str, cfg: &HlmeConfig, golden_tag: &str) {
+        let batch = load_data_batch();
+        let batches = vec![batch];
+        let (data, spec, _, _) = build_model_data(&batches, cfg).unwrap();
+        let layout = spec.layout();
+
+        let golden = load_golden();
+        let gf = golden_fit(&golden, golden_tag);
+
+        // Validate NPM.
+        let golden_best = json_to_f64_array(&gf["best"]);
+        assert_eq!(
+            golden_best.len(),
+            layout.npm,
+            "{test_name}: golden NPM={} != Rust NPM={}",
+            golden_best.len(),
+            layout.npm,
+        );
+
+        // Convert golden best from R post-processed form.
+        let golden_chol = json_to_f64_array(&gf["cholesky"]);
+        let golden_idiag = gf["idiag"].as_i64().unwrap_or(0) == 1;
+        let best = convert_golden_best(&golden_best, &golden_chol, &layout, golden_idiag);
+
+        // Evaluate loglik.
+        let ll = lcmm::loglik_hlme(&best, &data, &spec);
+        let golden_ll = gf["loglik"].as_f64().unwrap();
+        let rel = (ll - golden_ll).abs() / golden_ll.abs().max(1e-10);
+        assert!(
+            rel < TOL_LL,
+            "{test_name}: loglik mismatch. Rust={ll:.10}, R={golden_ll:.10}, rel={rel:.3e}"
+        );
+        eprintln!("PASS loglik {test_name}: Rust={ll:.6} R={golden_ll:.6} rel={rel:.2e}");
+    }
+
+    #[test]
+    fn loglik_gbtm1() {
+        check_loglik(
+            "gbtm1",
+            &HlmeConfig {
+                subject: "ID".into(),
+                outcome: "Y".into(),
+                ng: 1,
+                intercept: true,
+                fixed: vec!["Time".into()],
+                mixture: vec![],
+                random: vec![],
+                classmb: vec![],
+                idiag: false,
+                nwg: false,
+                maxiter: 500,
+                init_b: vec![],
+                init_b_parameterization: None,
+            },
+            "gbtm1",
+        );
+    }
+
+    #[test]
+    fn loglik_gbtm2() {
+        check_loglik(
+            "gbtm2",
+            &HlmeConfig {
+                subject: "ID".into(),
+                outcome: "Y".into(),
+                ng: 2,
+                intercept: true,
+                fixed: vec!["Time".into()],
+                mixture: vec!["Time".into()],
+                random: vec![],
+                classmb: vec![],
+                idiag: false,
+                nwg: false,
+                maxiter: 500,
+                init_b: vec![],
+                init_b_parameterization: None,
+            },
+            "gbtm2",
+        );
+    }
+
+    #[test]
+    fn loglik_gbtm3() {
+        check_loglik(
+            "gbtm3",
+            &HlmeConfig {
+                subject: "ID".into(),
+                outcome: "Y".into(),
+                ng: 3,
+                intercept: true,
+                fixed: vec!["Time".into()],
+                mixture: vec!["Time".into()],
+                random: vec![],
+                classmb: vec![],
+                idiag: false,
+                nwg: false,
+                maxiter: 500,
+                init_b: vec![],
+                init_b_parameterization: None,
+            },
+            "gbtm3",
+        );
+    }
+
+    #[test]
+    fn loglik_m1() {
+        check_loglik(
+            "m1",
+            &HlmeConfig {
+                subject: "ID".into(),
+                outcome: "Y".into(),
+                ng: 1,
+                intercept: true,
+                fixed: vec!["Time*X1".into()],
+                mixture: vec![],
+                random: vec!["Time".into()],
+                classmb: vec![],
+                idiag: false,
+                nwg: false,
+                maxiter: 500,
+                init_b: vec![],
+                init_b_parameterization: None,
+            },
+            "m1",
+        );
+    }
+
+    #[test]
+    fn loglik_m1_idiag() {
+        check_loglik(
+            "m1_idiag",
+            &HlmeConfig {
+                subject: "ID".into(),
+                outcome: "Y".into(),
+                ng: 1,
+                intercept: true,
+                fixed: vec!["Time*X1".into()],
+                mixture: vec![],
+                random: vec!["Time".into()],
+                classmb: vec![],
+                idiag: true,
+                nwg: false,
+                maxiter: 500,
+                init_b: vec![],
+                init_b_parameterization: None,
+            },
+            "m1_idiag",
+        );
+    }
+
+    #[test]
+    fn loglik_m2a() {
+        check_loglik(
+            "m2a",
+            &HlmeConfig {
+                subject: "ID".into(),
+                outcome: "Y".into(),
+                ng: 2,
+                intercept: true,
+                fixed: vec!["Time*X1".into()],
+                mixture: vec!["Time".into()],
+                random: vec!["Time".into()],
+                classmb: vec!["X2".into(), "X3".into()],
+                idiag: false,
+                nwg: false,
+                maxiter: 500,
+                init_b: vec![],
+                init_b_parameterization: None,
+            },
+            "m2a",
+        );
+    }
+
+    #[test]
+    fn loglik_m2a_nwg() {
+        check_loglik(
+            "m2a_nwg",
+            &HlmeConfig {
+                subject: "ID".into(),
+                outcome: "Y".into(),
+                ng: 2,
+                intercept: true,
+                fixed: vec!["Time*X1".into()],
+                mixture: vec!["Time".into()],
+                random: vec!["Time".into()],
+                classmb: vec!["X2".into(), "X3".into()],
+                idiag: false,
+                nwg: true,
+                maxiter: 500,
+                init_b: vec![],
+                init_b_parameterization: None,
+            },
+            "m2a_nwg",
+        );
+    }
+
+    // ---- End-to-end node execution test --------------------------------
+
+    fn test_node_ctx() -> NodeCtx {
+        let ctx = SessionContext::new();
+        NodeCtx::new(ctx.runtime_env(), None)
+    }
+
+    /// Full pipeline: RecordBatch → node execute → output port 0 (summary).
+    /// Uses maxiter=0 with golden best to isolate the design matrix + loglik
+    /// evaluation from optimizer convergence issues.
+    #[tokio::test]
+    async fn node_execute_gbtm1_loglik() {
+        let batch = load_data_batch();
+        let golden = load_golden();
+        let gf = golden_fit(&golden, "gbtm1");
+
+        // First, build model data to get the layout for golden best conversion.
+        let batches = vec![batch.clone()];
+        let cfg_layout = HlmeConfig {
+            subject: "ID".into(),
+            outcome: "Y".into(),
+            ng: 1,
+            intercept: true,
+            fixed: vec!["Time".into()],
+            mixture: vec![],
+            random: vec![],
+            classmb: vec![],
+            idiag: false,
+            nwg: false,
+            maxiter: 500,
+            init_b: vec![],
+            init_b_parameterization: None,
+        };
+        let (data, spec, _, _) = build_model_data(&batches, &cfg_layout).unwrap();
+        let layout = spec.layout();
+
+        // Convert golden best.
+        let golden_best = json_to_f64_array(&gf["best"]);
+        let golden_chol = json_to_f64_array(&gf["cholesky"]);
+        let best = convert_golden_best(&golden_best, &golden_chol, &layout, false);
+
+        // Execute node with maxiter=0.
+        let mut node = HlmeNode::new(HlmeConfig {
+            subject: "ID".into(),
+            outcome: "Y".into(),
+            ng: 1,
+            intercept: true,
+            fixed: vec!["Time".into()],
+            mixture: vec![],
+            random: vec![],
+            classmb: vec![],
+            idiag: false,
+            nwg: false,
+            maxiter: 0,
+            init_b: best,
+            init_b_parameterization: Some(InitBParameterization::LegacyCholesky),
+        });
+
+        let df = SessionContext::new().read_batch(batch).unwrap();
+        let input = NodeInput::new_dataframe(0, df);
+
+        let res = node
+            .execute(&test_node_ctx(), &[input], &NodeReporter::noop())
+            .await
+            .expect("node execute should succeed");
+
+        // Check port 0 (summary).
+        let summary_df = res.dataframe(0).unwrap().clone();
+        let summary = summary_df
+            .collect()
+            .await
+            .unwrap()
+            .into_iter()
+            .next()
+            .unwrap();
+
+        let loglik = summary
+            .column_by_name("loglik")
+            .unwrap()
+            .as_any()
+            .downcast_ref::<Float64Array>()
+            .unwrap()
+            .value(0);
+
+        let golden_ll = gf["loglik"].as_f64().unwrap();
+        let rel = (loglik - golden_ll).abs() / golden_ll.abs().max(1e-10);
+        assert!(
+            rel < TOL_LL,
+            "node_execute gbtm1: loglik mismatch. Node={loglik:.10}, R={golden_ll:.10}, rel={rel:.3e}"
+        );
+        eprintln!("PASS node_execute_gbtm1: loglik={loglik:.6} R={golden_ll:.6} rel={rel:.2e}");
+
+        // Also verify AIC and BIC.
+        let aic = summary
+            .column_by_name("aic")
+            .unwrap()
+            .as_any()
+            .downcast_ref::<Float64Array>()
+            .unwrap()
+            .value(0);
+        let bic = summary
+            .column_by_name("bic")
+            .unwrap()
+            .as_any()
+            .downcast_ref::<Float64Array>()
+            .unwrap()
+            .value(0);
+        let golden_aic = gf["AIC"].as_f64().unwrap();
+        let golden_bic = gf["BIC"].as_f64().unwrap();
+        let rel_aic = (aic - golden_aic).abs() / golden_aic.abs().max(1e-10);
+        let rel_bic = (bic - golden_bic).abs() / golden_bic.abs().max(1e-10);
+        assert!(rel_aic < TOL_LL, "AIC mismatch: Node={aic}, R={golden_aic}");
+        assert!(rel_bic < TOL_LL, "BIC mismatch: Node={bic}, R={golden_bic}");
+
+        // Verify port 1 (params) has the right number of rows.
+        let params_df = res.dataframe(1).unwrap().clone();
+        let params = params_df
+            .collect()
+            .await
+            .unwrap()
+            .into_iter()
+            .next()
+            .unwrap();
+        assert_eq!(
+            params.num_rows(),
+            layout.npm,
+            "params port should have NPM={} rows, got {}",
+            layout.npm,
+            params.num_rows(),
+        );
+
+        // Verify port 2 (posterior) is absent for maxiter=0 (no posterior computation).
+        // With maxiter=0, the fit returns early with posterior=None.
+        // So port 2 should still exist but may have 0 rows or error.
+        // Actually, build_posterior_batch panics if posterior is None.
+        // Since maxiter=0 returns early with posterior=None, the node would
+        // panic. Let's just verify port 0 and 1 are correct.
+        let _ = data;
+    }
+
+    /// End-to-end with ng=2 GBTM: verifies loglik + empty posterior port
+    /// when maxiter=0 (posterior is not computed).
+    #[tokio::test]
+    async fn node_execute_gbtm2_loglik() {
+        let batch = load_data_batch();
+        let golden = load_golden();
+        let gf = golden_fit(&golden, "gbtm2");
+
+        // Build model data for layout.
+        let batches = vec![batch.clone()];
+        let cfg_layout = HlmeConfig {
+            subject: "ID".into(),
+            outcome: "Y".into(),
+            ng: 2,
+            intercept: true,
+            fixed: vec!["Time".into()],
+            mixture: vec!["Time".into()],
+            random: vec![],
+            classmb: vec![],
+            idiag: false,
+            nwg: false,
+            maxiter: 500,
+            init_b: vec![],
+            init_b_parameterization: None,
+        };
+        let (_data, spec, _, _) = build_model_data(&batches, &cfg_layout).unwrap();
+        let layout = spec.layout();
+
+        // Convert golden best.
+        let golden_best = json_to_f64_array(&gf["best"]);
+        let golden_chol = json_to_f64_array(&gf["cholesky"]);
+        let best = convert_golden_best(&golden_best, &golden_chol, &layout, false);
+
+        // Execute with maxiter=0.
+        let mut node = HlmeNode::new(HlmeConfig {
+            subject: "ID".into(),
+            outcome: "Y".into(),
+            ng: 2,
+            intercept: true,
+            fixed: vec!["Time".into()],
+            mixture: vec!["Time".into()],
+            random: vec![],
+            classmb: vec![],
+            idiag: false,
+            nwg: false,
+            maxiter: 0,
+            init_b: best,
+            init_b_parameterization: Some(InitBParameterization::LegacyCholesky),
+        });
+
+        let df = SessionContext::new().read_batch(batch).unwrap();
+        let input = NodeInput::new_dataframe(0, df);
+
+        let res = node
+            .execute(&test_node_ctx(), &[input], &NodeReporter::noop())
+            .await
+            .expect("node execute should succeed");
+
+        // Verify loglik from port 0.
+        let summary_df = res.dataframe(0).unwrap().clone();
+        let summary = summary_df
+            .collect()
+            .await
+            .unwrap()
+            .into_iter()
+            .next()
+            .unwrap();
+        let loglik = summary
+            .column_by_name("loglik")
+            .unwrap()
+            .as_any()
+            .downcast_ref::<Float64Array>()
+            .unwrap()
+            .value(0);
+        let golden_ll = gf["loglik"].as_f64().unwrap();
+        let rel = (loglik - golden_ll).abs() / golden_ll.abs().max(1e-10);
+        assert!(
+            rel < TOL_LL,
+            "node_execute gbtm2: loglik mismatch. Node={loglik:.10}, R={golden_ll:.10}, rel={rel:.3e}"
+        );
+        eprintln!("PASS node_execute_gbtm2: loglik={loglik:.6} R={golden_ll:.6} rel={rel:.2e}");
+
+        // With maxiter=0, posterior is None → port 2 should be an empty batch.
+        let posterior_df = res.dataframe(2).unwrap().clone();
+        let posterior = posterior_df
+            .collect()
+            .await
+            .unwrap()
+            .into_iter()
+            .next()
+            .unwrap();
+        assert_eq!(
+            posterior.num_rows(),
+            0,
+            "posterior port should be empty with maxiter=0"
+        );
+    }
+
+    // ---- Full optimization convergence tests ---------------------------
+    // These exercise the complete pipeline: default OLS init → Marquardt-
+    // Levenberg optimization → convergence → posterior computation.
+    // They verify that the node's default initialization (OLS-based, not
+    // zero-based) produces a well-conditioned finite-difference Hessian
+    // and the optimizer actually iterates to convergence.
+
+    /// Helper: run the hlme node with default init (no explicit init_b) and
+    /// return (loglik, niter, conv, ng, posterior_rows).
+    async fn run_full_opt(cfg: HlmeConfig) -> (f64, i32, String, usize, usize) {
+        let batch = load_data_batch();
+        let df = SessionContext::new().read_batch(batch).unwrap();
+        let input = NodeInput::new_dataframe(0, df);
+
+        let mut node = HlmeNode::new(cfg);
+        let res = node
+            .execute(&test_node_ctx(), &[input], &NodeReporter::noop())
+            .await
+            .expect("node execute should succeed");
+
+        let summary_df = res.dataframe(0).unwrap().clone();
+        let summary = summary_df
+            .collect()
+            .await
+            .unwrap()
+            .into_iter()
+            .next()
+            .unwrap();
+
+        let loglik = summary
+            .column_by_name("loglik")
+            .unwrap()
+            .as_any()
+            .downcast_ref::<Float64Array>()
+            .unwrap()
+            .value(0);
+        let niter = summary
+            .column_by_name("niter")
+            .unwrap()
+            .as_any()
+            .downcast_ref::<Int32Array>()
+            .unwrap()
+            .value(0);
+        let conv = summary
+            .column_by_name("conv")
+            .unwrap()
+            .as_any()
+            .downcast_ref::<StringArray>()
+            .unwrap()
+            .value(0)
+            .to_string();
+        let ng = summary
+            .column_by_name("ng")
+            .unwrap()
+            .as_any()
+            .downcast_ref::<Int32Array>()
+            .unwrap()
+            .value(0) as usize;
+
+        // Count posterior rows.
+        let posterior_df = res.dataframe(2).unwrap().clone();
+        let posterior = posterior_df
+            .collect()
+            .await
+            .unwrap()
+            .into_iter()
+            .next()
+            .unwrap();
+        let posterior_rows = posterior.num_rows();
+
+        (loglik, niter, conv, ng, posterior_rows)
+    }
+
+    /// GBTM ng=1 full optimization: the optimizer must iterate (>0) and
+    /// converge to the R golden loglik.
+    #[tokio::test]
+    async fn optimize_gbtm1_default_init() {
+        let golden = load_golden();
+        let gf = golden_fit(&golden, "gbtm1");
+        let golden_ll = gf["loglik"].as_f64().unwrap();
+
+        let (loglik, niter, conv, ng, posterior_rows) = run_full_opt(HlmeConfig {
+            subject: "ID".into(),
+            outcome: "Y".into(),
+            ng: 1,
+            intercept: true,
+            fixed: vec!["Time".into()],
+            mixture: vec![],
+            random: vec![],
+            classmb: vec![],
+            idiag: false,
+            nwg: false,
+            maxiter: 500,
+            init_b: vec![],
+            init_b_parameterization: None,
+        })
+        .await;
+
+        // Must have iterated (the old zero-init bug gave niter=0).
+        assert!(
+            niter > 0,
+            "gbtm1: optimizer did not iterate (niter=0), conv={conv}"
+        );
+        // Must converge (not PartialH or Failed).
+        assert!(
+            conv == "Converged" || conv == "MaxIter",
+            "gbtm1: bad convergence status: {conv}"
+        );
+        // Loglik must match R golden.
+        let rel = (loglik - golden_ll).abs() / golden_ll.abs().max(1e-10);
+        assert!(
+            rel < 1e-6,
+            "gbtm1 opt loglik mismatch: Rust={loglik:.8}, R={golden_ll:.8}, rel={rel:.3e}"
+        );
+        // Posterior port should have ns rows (100 subjects).
+        assert_eq!(ng, 1);
+        assert_eq!(posterior_rows, 100, "posterior should have 100 subjects");
+        eprintln!(
+            "PASS optimize_gbtm1_default_init: loglik={loglik:.6} R={golden_ll:.6} niter={niter} conv={conv}"
+        );
+    }
+
+    /// LMM ng=1 with random effects (m1 model): Y ~ Time*X1, random=~Time.
+    /// This exercises the OLS init for a model with random intercept+slope.
+    #[tokio::test]
+    async fn optimize_m1_default_init() {
+        let golden = load_golden();
+        let gf = golden_fit(&golden, "m1");
+        let golden_ll = gf["loglik"].as_f64().unwrap();
+
+        let (loglik, niter, conv, ng, posterior_rows) = run_full_opt(HlmeConfig {
+            subject: "ID".into(),
+            outcome: "Y".into(),
+            ng: 1,
+            intercept: true,
+            fixed: vec!["Time*X1".into()],
+            mixture: vec![],
+            random: vec!["Time".into()],
+            classmb: vec![],
+            idiag: false,
+            nwg: false,
+            maxiter: 500,
+            init_b: vec![],
+            init_b_parameterization: None,
+        })
+        .await;
+
+        assert!(
+            niter > 0,
+            "m1: optimizer did not iterate (niter=0), conv={conv}"
+        );
+        assert!(
+            conv == "Converged" || conv == "MaxIter",
+            "m1: bad convergence status: {conv}"
+        );
+        let rel = (loglik - golden_ll).abs() / golden_ll.abs().max(1e-10);
+        assert!(
+            rel < 1e-6,
+            "m1 opt loglik mismatch: Rust={loglik:.8}, R={golden_ll:.8}, rel={rel:.3e}"
+        );
+        assert_eq!(ng, 1);
+        assert_eq!(posterior_rows, 100);
+        eprintln!(
+            "PASS optimize_m1_default_init: loglik={loglik:.6} R={golden_ll:.6} niter={niter} conv={conv}"
+        );
+    }
+
+    // ---- Float64 subject ID tests -------------------------------------
+    // Verifies the OOM fix: Float64 subject IDs must be correctly parsed.
+
+    /// Build a RecordBatch where the ID column is Float64 (simulating real
+    /// datasets that store integer IDs as doubles).
+    fn load_data_batch_float64_id() -> RecordBatch {
+        let path = fixtures_dir().join("data_hlme.csv");
+        let text = std::fs::read_to_string(&path).unwrap_or_else(|_e| {
+            panic!(
+                "Failed to read {}: Restore: rclone copy aliyun:autonomics-data/lcmm/test-data/ stat_crates/lcmm/tests/",
+                path.display()
+            )
+        });
+
+        let mut ids = Vec::new();
+        let mut ys = Vec::new();
+        let mut times = Vec::new();
+        let mut x1s = Vec::new();
+        let mut x2s = Vec::new();
+        let mut x3s = Vec::new();
+
+        for (i, line) in text.lines().enumerate() {
+            if i == 0 {
+                continue;
+            }
+            let f: Vec<&str> = line.split(',').collect();
+            if f.len() < 6 {
+                continue;
+            }
+            ids.push(f[0].parse::<f64>().unwrap());
+            ys.push(f[1].parse::<f64>().unwrap());
+            times.push(f[2].parse::<f64>().unwrap());
+            x1s.push(f[3].parse::<f64>().unwrap());
+            x2s.push(f[4].parse::<f64>().unwrap());
+            x3s.push(f[5].parse::<f64>().unwrap());
+        }
+
+        let schema = Arc::new(Schema::new(vec![
+            Field::new("ID", DataType::Float64, false), // ← Float64, not Int64
+            Field::new("Y", DataType::Float64, false),
+            Field::new("Time", DataType::Float64, false),
+            Field::new("X1", DataType::Float64, false),
+            Field::new("X2", DataType::Float64, false),
+            Field::new("X3", DataType::Float64, false),
+        ]));
+
+        RecordBatch::try_new(
+            schema,
+            vec![
+                Arc::new(Float64Array::from(ids)),
+                Arc::new(Float64Array::from(ys)),
+                Arc::new(Float64Array::from(times)),
+                Arc::new(Float64Array::from(x1s)),
+                Arc::new(Float64Array::from(x2s)),
+                Arc::new(Float64Array::from(x3s)),
+            ],
+        )
+        .unwrap()
+    }
+
+    /// Verify that Float64 ID columns produce the same subject count and
+    /// loglik as Int64 ID columns.
+    #[tokio::test]
+    async fn float64_id_same_as_int64() {
+        let golden = load_golden();
+        let gf = golden_fit(&golden, "gbtm1");
+        let golden_ll = gf["loglik"].as_f64().unwrap();
+
+        let batch = load_data_batch_float64_id();
+        let df = SessionContext::new().read_batch(batch).unwrap();
+        let input = NodeInput::new_dataframe(0, df);
+
+        let mut node = HlmeNode::new(HlmeConfig {
+            subject: "ID".into(),
+            outcome: "Y".into(),
+            ng: 1,
+            intercept: true,
+            fixed: vec!["Time".into()],
+            mixture: vec![],
+            random: vec![],
+            classmb: vec![],
+            idiag: false,
+            nwg: false,
+            maxiter: 500,
+            init_b: vec![],
+            init_b_parameterization: None,
+        });
+
+        let res = node
+            .execute(&test_node_ctx(), &[input], &NodeReporter::noop())
+            .await
+            .expect("node execute with Float64 ID should succeed");
+
+        let summary = res
+            .dataframe(0)
+            .unwrap()
+            .clone()
+            .collect()
+            .await
+            .unwrap()
+            .into_iter()
+            .next()
+            .unwrap();
+
+        let ns = summary
+            .column_by_name("ns")
+            .unwrap()
+            .as_any()
+            .downcast_ref::<Int32Array>()
+            .unwrap()
+            .value(0);
+        let loglik = summary
+            .column_by_name("loglik")
+            .unwrap()
+            .as_any()
+            .downcast_ref::<Float64Array>()
+            .unwrap()
+            .value(0);
+
+        // ns must be 100 (not 1 — the old bug collapsed all obs to one subject).
+        assert_eq!(
+            ns, 100,
+            "Float64 ID: expected 100 subjects, got {ns} (Float64 ID parsing bug)"
+        );
+        // Loglik should match the golden gbtm1 value (which uses Int64 IDs).
+        let rel = (loglik - golden_ll).abs() / golden_ll.abs().max(1e-10);
+        assert!(
+            rel < 1e-6,
+            "Float64 ID loglik mismatch: Rust={loglik:.8}, R={golden_ll:.8}, rel={rel:.3e}"
+        );
+        eprintln!("PASS float64_id_same_as_int64: ns={ns}, loglik={loglik:.6} R={golden_ll:.6}");
+    }
+}

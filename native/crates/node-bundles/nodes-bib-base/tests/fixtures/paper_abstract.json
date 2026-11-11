@@ -1,0 +1,12 @@
+{
+  "paperId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "title": "Synthetic abstract field fixture, not research evidence",
+  "abstract": "Synthetic résumé — 示例文本; line one.\nLine two retains punctuation and whitespace.  ",
+  "year": 2022,
+  "authors": [
+    {
+      "authorId": "fixture-author",
+      "name": "Fixture Author"
+    }
+  ]
+}

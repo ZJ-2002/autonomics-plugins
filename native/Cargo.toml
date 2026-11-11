@@ -1,0 +1,187 @@
+[workspace]
+resolver = "3"
+members = [
+    "crates/node-bundles/nodes-bib-base",
+    "crates/node-bundles/nodes-enrichr-sdk",
+    "crates/node-bundles/nodes-string-sdk",
+    "crates/node-bundles/nodes-crossref",
+    "crates/node-bundles/nodes-eutils",
+    "crates/node-bundles/nodes-allen-brain",
+    "crates/node-bundles/nodes-cellxgene",
+    "crates/node-bundles/nodes-hca",
+    "crates/node-bundles/nodes-hcl",
+    "crates/node-bundles/nodes-scea",
+    "crates/node-bundles/nodes-scp",
+    "crates/node-bundles/nodes-hubmap",
+    "crates/node-bundles/nodes-tabula-sapiens",
+    "crates/node-bundles/nodes-tisch",
+    "crates/node-bundles/nodes-htan",
+    "crates/node-bundles/nodes-kpmp",
+    "crates/node-bundles/nodes-nemo",
+    "crates/node-bundles/nodes-nhanes",
+    "crates/node-bundles/nodes-uniprot",
+    "crates/node-bundles/nodes-reactome",
+    "crates/node-bundles/nodes-rcsb",
+    "crates/node-bundles/nodes-alphafold",
+    "crates/node-bundles/nodes-interpro",
+    "crates/node-bundles/nodes-pubchem",
+    "crates/node-bundles/nodes-protocolio",
+    "crates/node-bundles/nodes-clinicaltrials",
+    "crates/node-bundles/nodes-gwascatalog-sdk",
+  "crates/node-bundles/nodes-causal",
+  "crates/node-bundles/nodes-dl",
+  "crates/node-bundles/nodes-epi",
+  "crates/node-bundles/nodes-genetics",
+  "crates/node-bundles/nodes-hypothesize",
+  "crates/node-bundles/nodes-io",
+  "crates/node-bundles/nodes-lcmm",
+  "crates/node-bundles/nodes-mice",
+  "crates/node-bundles/nodes-ml",
+  "crates/node-bundles/nodes-opengwas",
+  "crates/node-bundles/nodes-power",
+  "crates/node-bundles/nodes-rd",
+  "crates/node-bundles/nodes-regression",
+  "crates/node-bundles/nodes-sql",
+  "crates/node-bundles/nodes-survey",
+  "crates/node-bundles/nodes-survival",
+  "crates/node-bundles/nodes-writing",
+  "stat_crates/cmprsk",
+  "stat_crates/crrkit",
+  "stat_crates/dl",
+  "stat_crates/epi",
+  "stat_crates/evalue",
+  "stat_crates/hierint",
+  "stat_crates/hypothesize",
+  "stat_crates/lcmm",
+  "stat_crates/mice",
+  "stat_crates/ml",
+  "stat_crates/rddensity",
+  "stat_crates/rdlocrand",
+  "stat_crates/rdmulti",
+  "stat_crates/rdpower",
+  "stat_crates/rdrobust",
+  "stat_crates/statkit",
+  "stat_crates/survey",
+  "crates/native-worker",
+]
+
+[workspace.package]
+edition = "2024"
+license = "MIT"
+rust-version = "1.85"
+
+[workspace.dependencies]
+turso = "0.7.2"
+bollard = "0.21.0"
+
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+thiserror = "2.0"
+opendal = { version = "0.57", features = [
+  "services-fs",
+  "services-s3",
+  "services-oss",
+  # in-memory backend: exercises the file_download object-store claim
+  # election in tests (no runtime usage)
+  "services-memory",
+] }
+sha2 = "0.10"
+sas_xport = "0.4.1"
+clap = { version = "4.6", features = ["derive"] }
+tar = "0.4"
+# default-features off: the default set pulls xz2, whose lzma-sys conflicts
+# with datafusion's liblzma-sys (`links = "lzma"` clash). These features cover
+# the common ZIP compression methods without adding that conflicting backend.
+zip = { version = "8.6.0", default-features = false, features = [
+  "deflate",
+  "deflate64",
+  "bzip2",
+] }
+toml = "1"
+uuid = "1.24"
+tokio = { version = "1", features = [
+  "rt-multi-thread",
+  "macros",
+  "sync",
+  "process",
+] }
+chrono = { version = "0.4", features = ["serde"] }
+tracing = "0.1"
+async-trait = "0.1"
+derive_more = { version = "2.1.1", features = ["from"] }
+rayon = "1.12.0"
+futures = "0.3"
+schemars = "1.2.1"
+num-traits = "0.2"
+arc-swap = "1.9.2"
+unicode-width = "0.2"
+
+arrow = { version = "58.3.0", features = ["prettyprint"] }
+arrow-array = "58.3.0"
+arrow-buffer = "58.3.0"
+arrow-cast = "58.3.0"
+arrow-schema = "58.3.0"
+arrow-csv = "58.3.0"
+arrow-select = "58.3.0"
+arrow-ord = "58.3.0"
+parquet = "58.3.0"
+datafusion = { version = "53" }
+noodles = { version = "0.107.0", features = ["vcf"] }
+oxbow = { git = "https://github.com/wjixiang/oxbow.git" }
+
+faer = "0.24.4"
+hf-hub = "1.0.0"
+
+mockall = "0.15.0"
+
+chromiumoxide = "0.9.1"
+# Suppress unused-warnings for the public-API workspace.dependencies that
+# the umbrella doesn't directly import. Keep this list as a hint for
+# future members; do not delete entries just because a single member
+# doesn't use them.
+[workspace.lints.rust]
+unused_imports = "allow"
+
+[workspace.lints.clippy]
+# The statistical and DAG code deliberately uses index-heavy loops and wide
+# parameter sets that mirror established numerical APIs.
+needless_range_loop = "allow"
+too_many_arguments = "allow"
+type_complexity = "allow"
+should_implement_trait = "allow"
+manual_clamp = "allow"
+manual_checked_ops = "allow"
+manual_memcpy = "allow"
+if_same_then_else = "allow"
+field_reassign_with_default = "allow"
+unnecessary_unwrap = "allow"
+same_item_push = "allow"
+unnecessary_sort_by = "allow"
+doc_overindented_list_items = "allow"
+doc_lazy_continuation = "allow"
+single_range_in_vec_init = "allow"
+manual_strip = "allow"
+while_let_loop = "allow"
+needless_update = "allow"
+empty_line_after_doc_comments = "allow"
+missing_safety_doc = "allow"
+incompatible_msrv = "allow"
+neg_cmp_op_on_partial_ord = "allow"
+module_inception = "allow"
+format_in_format_args = "allow"
+arc_with_non_send_sync = "allow"
+ptr_arg = "allow"
+large_enum_variant = "allow"
+match_like_matches_macro = "allow"
+unnecessary_cast = "allow"
+inconsistent_digit_grouping = "allow"
+unnecessary_literal_unwrap = "allow"
+
+[profile.dev.package.faer]
+opt-level = 3
+
+[profile.release]
+# lto = "fat"
+# codegen-units = 1
+opt-level = 3
+# strip = "symbols"

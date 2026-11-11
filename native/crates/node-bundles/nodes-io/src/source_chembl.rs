@@ -1,0 +1,1179 @@
+//! ChEMBL source nodes for structured bioactivity and compound tables.
+//!
+//! - [`ChemblActivitiesNode`] (`source_chembl_activities`) - standardized
+//!   activity measurements for a molecule, target, assay, or document.
+//! - [`ChemblMoleculesNode`] (`source_chembl_molecules`) - molecule search
+//!   hits with structural and physicochemical properties.
+
+use std::sync::Arc;
+
+use arrow_array::{Array, BooleanArray, Float64Array, Int64Array, RecordBatch, StringArray};
+use arrow_schema::{DataType, Field, Schema};
+use async_trait::async_trait;
+use datafusion::dataframe::DataFrame;
+use datafusion::prelude::SessionContext;
+use schemars::{JsonSchema, schema_for};
+use serde::Deserialize;
+
+use chembl::{Activity, ChEMBLClient, Molecule, ResourceQuery};
+use dag_core::dag::{DagError, DagNode, NodePorts, graph::PortOutputs};
+use dag_core::registry::{NodeCtx, NodeFactory};
+
+const ACTIVITY_ONLY: [&str; 20] = [
+    "activity_id",
+    "assay_chembl_id",
+    "assay_description",
+    "assay_type",
+    "document_chembl_id",
+    "molecule_chembl_id",
+    "molecule_pref_name",
+    "parent_molecule_chembl_id",
+    "pchembl_value",
+    "relation",
+    "standard_flag",
+    "standard_relation",
+    "standard_type",
+    "standard_units",
+    "standard_value",
+    "standard_upper_value",
+    "target_chembl_id",
+    "target_organism",
+    "target_pref_name",
+    "target_tax_id",
+];
+
+const MOLECULE_ONLY: [&str; 12] = [
+    "molecule_chembl_id",
+    "pref_name",
+    "molecule_type",
+    "max_phase",
+    "first_approval",
+    "withdrawn_flag",
+    "molecule_properties",
+    "molecule_structures",
+    "atc_classifications",
+    "oral",
+    "parenteral",
+    "topical",
+];
+
+fn str_array(rows: Vec<Option<String>>) -> Arc<dyn Array> {
+    let refs: Vec<Option<&str>> = rows.iter().map(|value| value.as_deref()).collect();
+    Arc::new(StringArray::from(refs))
+}
+
+fn f64_array(rows: Vec<Option<f64>>) -> Arc<dyn Array> {
+    Arc::new(Float64Array::from(rows))
+}
+
+fn i64_array(rows: Vec<Option<i64>>) -> Arc<dyn Array> {
+    Arc::new(Int64Array::from(rows))
+}
+
+fn bool_array(rows: Vec<Option<bool>>) -> Arc<dyn Array> {
+    Arc::new(BooleanArray::from(rows))
+}
+
+fn text_field(name: &str) -> Field {
+    Field::new(name, DataType::Utf8, true)
+}
+
+fn float_field(name: &str) -> Field {
+    Field::new(name, DataType::Float64, true)
+}
+
+fn batch_to_df(ctx: &SessionContext, batch: RecordBatch) -> Result<DataFrame, DagError> {
+    ctx.read_batch(batch)
+        .map_err(|error| DagError::Schedule(format!("failed to read ChEMBL batch: {error}")))
+}
+
+fn client_from_endpoint(endpoint: &Option<String>) -> ChEMBLClient {
+    match endpoint {
+        Some(url) => ChEMBLClient::with_endpoint(url),
+        None => ChEMBLClient::new(),
+    }
+}
+
+fn request_error(error: chembl::ChemblError) -> DagError {
+    DagError::Schedule(format!("ChEMBL request failed: {error}"))
+}
+
+fn optional_filter(query: ResourceQuery, field: &str, value: &Option<String>) -> ResourceQuery {
+    match value.as_deref() {
+        Some(value) if !value.is_empty() => query.filter(field, value),
+        _ => query,
+    }
+}
+
+// ===========================================================================
+// Activities
+// ===========================================================================
+
+#[derive(Debug, Clone, JsonSchema, Deserialize, serde::Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct ChemblActivitiesSpec {
+    /// ChEMBL molecule ID, e.g. `CHEMBL25`.
+    #[serde(default)]
+    pub molecule_chembl_id: Option<String>,
+    /// ChEMBL target ID, e.g. `CHEMBL2094253`.
+    #[serde(default)]
+    pub target_chembl_id: Option<String>,
+    /// ChEMBL assay ID, e.g. `CHEMBL663853`.
+    #[serde(default)]
+    pub assay_chembl_id: Option<String>,
+    /// ChEMBL document ID, e.g. `CHEMBL1137930`.
+    #[serde(default)]
+    pub document_chembl_id: Option<String>,
+    /// Exact standardized endpoint type, e.g. `IC50`.
+    #[serde(default)]
+    pub standard_type: Option<String>,
+    /// Drop rows whose pChEMBL is lower than this value.
+    #[serde(default)]
+    pub min_pchembl: Option<f64>,
+    /// Fetch every matching page, up to `max_records`.
+    #[serde(default)]
+    pub fetch_all: Option<bool>,
+    /// Maximum rows retained when `fetch_all=true` (default 10000).
+    #[serde(default)]
+    pub max_records: Option<u32>,
+    /// Page size when `fetch_all=false` (default 1000, max 1000).
+    #[serde(default)]
+    pub size: Option<u32>,
+    /// Zero-based offset when `fetch_all=false`.
+    #[serde(default)]
+    pub offset: Option<u32>,
+    /// Override the ChEMBL REST endpoint (tests / mirrors).
+    #[serde(default)]
+    pub endpoint: Option<String>,
+    #[serde(default)]
+    pub audit_path: Option<String>,
+}
+
+#[derive(Clone)]
+pub struct ChemblActivitiesNode {
+    meta: NodePorts,
+    spec: ChemblActivitiesSpec,
+    client: Option<ChEMBLClient>,
+}
+
+pub struct ChemblActivitiesNodeFactory;
+
+fn source_ports() -> NodePorts {
+    NodePorts::new().add_output_port(None)
+}
+
+impl NodeFactory for ChemblActivitiesNodeFactory {
+    fn kind(&self) -> &'static str {
+        "source_chembl_activities"
+    }
+
+    fn desc(&self) -> &'static str {
+        "Fetches standardized ChEMBL bioactivities as a typed table."
+    }
+
+    fn doc(&self) -> &'static str {
+        "A source node that fetches standardized ChEMBL activity measurements and emits \
+        a DataFrame. Provide at least one filter: molecule_chembl_id, target_chembl_id, \
+        assay_chembl_id, or document_chembl_id.\n\n\
+        Output schema: activity_id, molecule_id, target_id, assay_id, document_id, \
+        assay_description, standard_type, standard_relation, standard_value, \
+        standard_units, pchembl_value, target_name, target_organism.\n\n\
+        By default this retrieves up to 10000 rows across pages. Pipe the output into \
+        `sql_node`, statistics nodes, or `dataframe_to_file`. Optional audit_path \
+        stores received UTF8 response bodies and request identities before table construction; \
+        this sidecar is not an output port, node completion or live source certification."
+    }
+
+    fn spec_schema(&self) -> schemars::Schema {
+        schema_for!(ChemblActivitiesSpec)
+    }
+
+    fn ports(&self) -> NodePorts {
+        source_ports()
+    }
+
+    fn build(
+        &self,
+        spec: serde_json::Value,
+        _node_ctx: NodeCtx,
+    ) -> dag_core::registry::error::Result<Box<dyn DagNode>> {
+        let spec: ChemblActivitiesSpec = serde_json::from_value(spec)?;
+        Ok(Box::new(ChemblActivitiesNode::node(spec)))
+    }
+}
+
+impl ChemblActivitiesNode {
+    pub fn node(spec: ChemblActivitiesSpec) -> Self {
+        Self {
+            meta: source_ports(),
+            spec,
+            client: None,
+        }
+    }
+    pub fn with_client(spec: ChemblActivitiesSpec, client: ChEMBLClient) -> Self {
+        let mut node = Self::node(spec);
+        node.client = Some(client);
+        node
+    }
+}
+
+#[async_trait]
+impl DagNode for ChemblActivitiesNode {
+    fn ports(&self) -> &NodePorts {
+        &self.meta
+    }
+
+    fn clone_box(&self) -> Box<dyn DagNode> {
+        Box::new((*self).clone())
+    }
+
+    fn kind(&self) -> &'static str {
+        "source_chembl_activities"
+    }
+
+    fn as_any(&self) -> &dyn std::any::Any {
+        self
+    }
+
+    async fn execute(
+        &mut self,
+        ctx: &NodeCtx,
+        inputs: &[dag_core::dag::NodeInput],
+        _reporter: &dag_core::dag::node_event::NodeReporter,
+    ) -> Result<PortOutputs, DagError> {
+        let spec = &self.spec;
+        if !inputs.is_empty() {
+            return Err(DagError::Schedule(
+                "ChEMBL activity source has no input ports".into(),
+            ));
+        }
+        if spec.min_pchembl.is_some_and(|value| !value.is_finite()) {
+            return Err(DagError::Schedule("min_pchembl must be finite".into()));
+        }
+        for value in [
+            &spec.molecule_chembl_id,
+            &spec.target_chembl_id,
+            &spec.assay_chembl_id,
+            &spec.document_chembl_id,
+            &spec.standard_type,
+        ]
+        .into_iter()
+        .flatten()
+        {
+            if value.trim().is_empty() || value.chars().any(char::is_control) {
+                return Err(DagError::Schedule(
+                    "ChEMBL filter must be nonempty and contain no control characters".into(),
+                ));
+            }
+        }
+        if spec.size == Some(0) || spec.max_records == Some(0) {
+            return Err(DagError::Schedule(
+                "ChEMBL size/max_records must be positive".into(),
+            ));
+        }
+        if let Some(path) = &spec.audit_path {
+            publication::validate_output_path(path)?;
+        }
+        let has_filter = [
+            &spec.molecule_chembl_id,
+            &spec.target_chembl_id,
+            &spec.assay_chembl_id,
+            &spec.document_chembl_id,
+        ]
+        .iter()
+        .any(|value| value.as_deref().is_some_and(|value| !value.is_empty()));
+        if !has_filter {
+            return Err(DagError::Schedule(
+                "source_chembl_activities requires molecule_chembl_id, target_chembl_id, \
+                 assay_chembl_id, or document_chembl_id"
+                    .to_string(),
+            ));
+        }
+
+        let client = self
+            .client
+            .clone()
+            .unwrap_or_else(|| client_from_endpoint(&spec.endpoint))
+            .for_run();
+        let base = ResourceQuery::new().only(ACTIVITY_ONLY);
+        let base = optional_filter(base, "molecule_chembl_id", &spec.molecule_chembl_id);
+        let base = optional_filter(base, "target_chembl_id", &spec.target_chembl_id);
+        let base = optional_filter(base, "assay_chembl_id", &spec.assay_chembl_id);
+        let base = optional_filter(base, "document_chembl_id", &spec.document_chembl_id);
+        let base = optional_filter(base, "standard_type", &spec.standard_type);
+
+        let lookup: Result<Vec<Activity>, DagError> = async {
+            Ok(if spec.fetch_all.unwrap_or(true) {
+                let mut result = Vec::new();
+                let mut offset = 0_u32;
+                let limit = 1000_u32;
+                loop {
+                    let query = base.clone().limit(limit).offset(offset);
+                    let page: chembl::Page<Activity> = client
+                        .list("activity", &query)
+                        .await
+                        .map_err(request_error)?;
+                    let returned = page.records.len();
+                    result.extend(page.records);
+                    if returned == 0
+                        || page.page_meta.next.is_none()
+                        || result.len() >= spec.max_records.unwrap_or(10_000).max(1) as usize
+                    {
+                        break;
+                    }
+                    offset = chembl::page_guard::next_offset(&page.page_meta)
+                        .map_err(request_error)?
+                        .ok_or_else(|| DagError::Schedule("missing next offset".into()))?;
+                }
+                result
+            } else {
+                let query = base
+                    .limit(spec.size.unwrap_or(1000).min(1000))
+                    .offset(spec.offset.unwrap_or(0));
+                let page: chembl::Page<Activity> = client
+                    .list("activity", &query)
+                    .await
+                    .map_err(request_error)?;
+                page.records
+            })
+        }
+        .await;
+        audit::save(ctx,&spec.audit_path,&client,serde_json::json!({"kind":"activity","spec":spec,"rows_received":lookup.as_ref().ok().map(Vec::len),"error":lookup.as_ref().err().map(ToString::to_string)})).await?;
+        let mut rows = lookup?;
+
+        if let Some(minimum) = spec.min_pchembl {
+            rows.retain(|activity| activity.pchembl_value.is_some_and(|value| value >= minimum));
+        }
+        let maximum = spec.max_records.unwrap_or(10_000).max(1) as usize;
+        if spec.fetch_all.unwrap_or(true) {
+            rows.truncate(maximum);
+        }
+
+        let batch = build_activity_batch(rows)?;
+        let dataframe = batch_to_df(&ctx.session(), batch)?;
+        let mut outputs = PortOutputs::new();
+        outputs.insert(0, dataframe);
+        Ok(outputs)
+    }
+}
+
+#[allow(clippy::too_many_lines)]
+fn build_activity_batch(rows: Vec<Activity>) -> Result<RecordBatch, DagError> {
+    let ids: Vec<Option<i64>> = rows
+        .iter()
+        .map(|row| {
+            i64::try_from(row.activity_id).map(Some).map_err(|_| {
+                DagError::Schedule("activity_id exceeds Arrow Int64 domain; no truncation".into())
+            })
+        })
+        .collect::<Result<_, _>>()?;
+    let molecule_ids: Vec<Option<String>> = rows
+        .iter()
+        .map(|row| Some(row.molecule_chembl_id.clone()))
+        .collect();
+    let target_ids: Vec<Option<String>> = rows
+        .iter()
+        .map(|row| Some(row.target_chembl_id.clone()))
+        .collect();
+    let assay_ids: Vec<Option<String>> = rows
+        .iter()
+        .map(|row| Some(row.assay_chembl_id.clone()))
+        .collect();
+    let document_ids: Vec<Option<String>> = rows
+        .iter()
+        .map(|row| row.document_chembl_id.clone())
+        .collect();
+    let assay_descriptions: Vec<Option<String>> = rows
+        .iter()
+        .map(|row| row.assay_description.clone())
+        .collect();
+    let standard_types: Vec<Option<String>> =
+        rows.iter().map(|row| row.standard_type.clone()).collect();
+    let standard_relations: Vec<Option<String>> = rows
+        .iter()
+        .map(|row| row.standard_relation.clone())
+        .collect();
+    let standard_values: Vec<Option<f64>> = rows.iter().map(|row| row.standard_value).collect();
+    let standard_units: Vec<Option<String>> =
+        rows.iter().map(|row| row.standard_units.clone()).collect();
+    let pchembl_values: Vec<Option<f64>> = rows.iter().map(|row| row.pchembl_value).collect();
+    let target_names: Vec<Option<String>> = rows
+        .iter()
+        .map(|row| row.target_pref_name.clone())
+        .collect();
+    let target_organisms: Vec<Option<String>> =
+        rows.iter().map(|row| row.target_organism.clone()).collect();
+
+    let schema = Arc::new(Schema::new(vec![
+        Field::new("activity_id", DataType::Int64, true),
+        text_field("molecule_id"),
+        text_field("target_id"),
+        text_field("assay_id"),
+        text_field("document_id"),
+        text_field("assay_description"),
+        text_field("standard_type"),
+        text_field("standard_relation"),
+        float_field("standard_value"),
+        text_field("standard_units"),
+        float_field("pchembl_value"),
+        text_field("target_name"),
+        text_field("target_organism"),
+    ]));
+    RecordBatch::try_new(
+        schema,
+        vec![
+            i64_array(ids),
+            str_array(molecule_ids),
+            str_array(target_ids),
+            str_array(assay_ids),
+            str_array(document_ids),
+            str_array(assay_descriptions),
+            str_array(standard_types),
+            str_array(standard_relations),
+            f64_array(standard_values),
+            str_array(standard_units),
+            f64_array(pchembl_values),
+            str_array(target_names),
+            str_array(target_organisms),
+        ],
+    )
+    .map_err(|error| DagError::Schedule(format!("failed to build ChEMBL activity batch: {error}")))
+}
+
+// ===========================================================================
+// Molecule search
+// ===========================================================================
+
+#[derive(Debug, Clone, JsonSchema, Deserialize, serde::Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct ChemblMoleculesSpec {
+    /// Search term, typically a preferred name, synonym, or research code.
+    pub query: String,
+    /// Fetch every search page, up to `max_records`.
+    #[serde(default)]
+    pub fetch_all: Option<bool>,
+    /// Maximum rows retained when `fetch_all=true` (default 10000).
+    #[serde(default)]
+    pub max_records: Option<u32>,
+    /// Page size when `fetch_all=false` (default 100, max 1000).
+    #[serde(default)]
+    pub size: Option<u32>,
+    /// Zero-based offset when `fetch_all=false`.
+    #[serde(default)]
+    pub offset: Option<u32>,
+    /// Override the ChEMBL REST endpoint (tests / mirrors).
+    #[serde(default)]
+    pub endpoint: Option<String>,
+    #[serde(default)]
+    pub audit_path: Option<String>,
+}
+
+#[derive(Clone)]
+pub struct ChemblMoleculesNode {
+    meta: NodePorts,
+    spec: ChemblMoleculesSpec,
+    client: Option<ChEMBLClient>,
+}
+
+pub struct ChemblMoleculesNodeFactory;
+
+impl NodeFactory for ChemblMoleculesNodeFactory {
+    fn kind(&self) -> &'static str {
+        "source_chembl_molecules"
+    }
+
+    fn desc(&self) -> &'static str {
+        "Searches ChEMBL molecules and emits compound metadata as a table."
+    }
+
+    fn doc(&self) -> &'static str {
+        "A source node that searches ChEMBL molecules and emits a stable compound table. \
+        Use it to resolve names or research codes to molecule IDs before activity joins.\n\n\
+        Output schema: molecule_id, pref_name, molecule_type, max_phase, first_approval, \
+        molecular_weight, formula, canonical_smiles, inchi_key, withdrawn.\n\n\
+        The default page size is 100. Set fetch_all=true to walk search pages, capped by \
+        max_records. Optional audit_path stores received UTF8 response bodies and request \
+        identities before table construction; this sidecar is not an output port, node \
+        completion or live source certification. Missing withdrawal status remains null."
+    }
+
+    fn spec_schema(&self) -> schemars::Schema {
+        schema_for!(ChemblMoleculesSpec)
+    }
+
+    fn ports(&self) -> NodePorts {
+        source_ports()
+    }
+
+    fn build(
+        &self,
+        spec: serde_json::Value,
+        _node_ctx: NodeCtx,
+    ) -> dag_core::registry::error::Result<Box<dyn DagNode>> {
+        let spec: ChemblMoleculesSpec = serde_json::from_value(spec)?;
+        Ok(Box::new(ChemblMoleculesNode::node(spec)))
+    }
+}
+
+impl ChemblMoleculesNode {
+    pub fn node(spec: ChemblMoleculesSpec) -> Self {
+        Self {
+            meta: source_ports(),
+            spec,
+            client: None,
+        }
+    }
+    pub fn with_client(spec: ChemblMoleculesSpec, client: ChEMBLClient) -> Self {
+        let mut node = Self::node(spec);
+        node.client = Some(client);
+        node
+    }
+}
+
+#[async_trait]
+impl DagNode for ChemblMoleculesNode {
+    fn ports(&self) -> &NodePorts {
+        &self.meta
+    }
+
+    fn clone_box(&self) -> Box<dyn DagNode> {
+        Box::new((*self).clone())
+    }
+
+    fn kind(&self) -> &'static str {
+        "source_chembl_molecules"
+    }
+
+    fn as_any(&self) -> &dyn std::any::Any {
+        self
+    }
+
+    async fn execute(
+        &mut self,
+        ctx: &NodeCtx,
+        inputs: &[dag_core::dag::NodeInput],
+        _reporter: &dag_core::dag::node_event::NodeReporter,
+    ) -> Result<PortOutputs, DagError> {
+        if !inputs.is_empty() {
+            return Err(DagError::Schedule(
+                "ChEMBL molecule source has no input ports".into(),
+            ));
+        }
+        if self.spec.query.trim().is_empty() || self.spec.query.chars().any(char::is_control) {
+            return Err(DagError::Schedule(
+                "ChEMBL search must be nonempty and contain no control characters".into(),
+            ));
+        }
+        if self.spec.size == Some(0) || self.spec.max_records == Some(0) {
+            return Err(DagError::Schedule(
+                "ChEMBL size/max_records must be positive".into(),
+            ));
+        }
+        if let Some(path) = &self.spec.audit_path {
+            publication::validate_output_path(path)?;
+        }
+        let client = self
+            .client
+            .clone()
+            .unwrap_or_else(|| client_from_endpoint(&self.spec.endpoint))
+            .for_run();
+        let query = ResourceQuery::new().only(MOLECULE_ONLY);
+        let maximum = self.spec.max_records.unwrap_or(10_000).max(1) as usize;
+        let lookup: Result<Vec<Molecule>, DagError> = async {
+            Ok(if self.spec.fetch_all.unwrap_or(false) {
+                let mut result = Vec::new();
+                let mut offset = 0_u32;
+                loop {
+                    let page = client
+                        .molecules_by_name(
+                            &self.spec.query,
+                            &query.clone().limit(1000).offset(offset),
+                        )
+                        .await
+                        .map_err(request_error)?;
+                    let returned = page.records.len();
+                    result.extend(page.records);
+                    if returned == 0 || page.page_meta.next.is_none() || result.len() >= maximum {
+                        break;
+                    }
+                    offset = chembl::page_guard::next_offset(&page.page_meta)
+                        .map_err(request_error)?
+                        .ok_or_else(|| DagError::Schedule("missing next offset".into()))?;
+                }
+                result
+            } else {
+                client
+                    .molecules_by_name(
+                        &self.spec.query,
+                        &query
+                            .limit(self.spec.size.unwrap_or(100).min(1000))
+                            .offset(self.spec.offset.unwrap_or(0)),
+                    )
+                    .await
+                    .map_err(request_error)?
+                    .records
+            })
+        }
+        .await;
+        audit::save(ctx,&self.spec.audit_path,&client,serde_json::json!({"kind":"molecule","spec":self.spec,"rows_received":lookup.as_ref().ok().map(Vec::len),"error":lookup.as_ref().err().map(ToString::to_string)})).await?;
+        let mut rows = lookup?;
+        if self.spec.fetch_all.unwrap_or(false) {
+            rows.truncate(maximum);
+        }
+
+        let batch = build_molecule_batch(rows)?;
+        let dataframe = batch_to_df(&ctx.session(), batch)?;
+        let mut outputs = PortOutputs::new();
+        outputs.insert(0, dataframe);
+        Ok(outputs)
+    }
+}
+
+fn build_molecule_batch(rows: Vec<Molecule>) -> Result<RecordBatch, DagError> {
+    let ids: Vec<Option<String>> = rows
+        .iter()
+        .map(|row| Some(row.molecule_chembl_id.clone()))
+        .collect();
+    let names: Vec<Option<String>> = rows.iter().map(|row| row.pref_name.clone()).collect();
+    let types: Vec<Option<String>> = rows.iter().map(|row| row.molecule_type.clone()).collect();
+    let max_phases: Vec<Option<f64>> = rows.iter().map(|row| row.max_phase).collect();
+    let first_approvals: Vec<Option<f64>> = rows.iter().map(|row| row.first_approval).collect();
+    let molecular_weights: Vec<Option<f64>> = rows
+        .iter()
+        .map(|row| row.molecule_properties.as_ref().and_then(|p| p.full_mwt))
+        .collect();
+    let formulas: Vec<Option<String>> = rows
+        .iter()
+        .map(|row| {
+            row.molecule_properties
+                .as_ref()
+                .and_then(|p| p.full_molformula.clone())
+        })
+        .collect();
+    let smiles: Vec<Option<String>> = rows
+        .iter()
+        .map(|row| {
+            row.molecule_structures
+                .as_ref()
+                .and_then(|s| s.canonical_smiles.clone())
+        })
+        .collect();
+    let inchi_keys: Vec<Option<String>> = rows
+        .iter()
+        .map(|row| {
+            row.molecule_structures
+                .as_ref()
+                .and_then(|s| s.standard_inchi_key.clone())
+        })
+        .collect();
+    let withdrawn: Vec<Option<bool>> = rows.iter().map(|row| row.withdrawn_flag).collect();
+
+    let schema = Arc::new(Schema::new(vec![
+        text_field("molecule_id"),
+        text_field("pref_name"),
+        text_field("molecule_type"),
+        float_field("max_phase"),
+        float_field("first_approval"),
+        float_field("molecular_weight"),
+        text_field("formula"),
+        text_field("canonical_smiles"),
+        text_field("inchi_key"),
+        Field::new("withdrawn", DataType::Boolean, true),
+    ]));
+    RecordBatch::try_new(
+        schema,
+        vec![
+            str_array(ids),
+            str_array(names),
+            str_array(types),
+            f64_array(max_phases),
+            f64_array(first_approvals),
+            f64_array(molecular_weights),
+            str_array(formulas),
+            str_array(smiles),
+            str_array(inchi_keys),
+            bool_array(withdrawn),
+        ],
+    )
+    .map_err(|error| DagError::Schedule(format!("failed to build ChEMBL molecule batch: {error}")))
+}
+
+// ===========================================================================
+// Mechanisms of action
+// ===========================================================================
+
+const MECHANISM_ONLY: [&str; 9] = [
+    "mec_id",
+    "molecule_chembl_id",
+    "target_chembl_id",
+    "mechanism_of_action",
+    "action_type",
+    "direct_interaction",
+    "molecular_mechanism",
+    "disease_efficacy",
+    "max_phase",
+];
+
+/// Spec for [`ChemblMechanismsNode`].
+#[derive(Debug, Clone, JsonSchema, Deserialize)]
+pub struct ChemblMechanismsSpec {
+    /// ChEMBL molecule ID, e.g. `CHEMBL25`.
+    pub molecule_chembl_id: String,
+    /// Fetch every matching page, up to `max_records`.
+    #[serde(default)]
+    pub fetch_all: Option<bool>,
+    /// Maximum rows retained when `fetch_all=true` (default 1000).
+    #[serde(default)]
+    pub max_records: Option<u32>,
+    /// Page size when `fetch_all=false` (default 100, max 1000).
+    #[serde(default)]
+    pub size: Option<u32>,
+    /// Zero-based offset when `fetch_all=false`.
+    #[serde(default)]
+    pub offset: Option<u32>,
+    /// Override the ChEMBL REST endpoint (tests / mirrors).
+    #[serde(default)]
+    pub endpoint: Option<String>,
+}
+
+/// Source node emitting a molecule's mechanisms of action as a table.
+#[derive(Clone)]
+pub struct ChemblMechanismsNode {
+    meta: NodePorts,
+    spec: ChemblMechanismsSpec,
+}
+
+pub struct ChemblMechanismsNodeFactory;
+
+impl NodeFactory for ChemblMechanismsNodeFactory {
+    fn kind(&self) -> &'static str {
+        "source_chembl_mechanisms"
+    }
+
+    fn desc(&self) -> &'static str {
+        "Fetches a molecule's ChEMBL mechanisms of action as a typed table."
+    }
+
+    fn doc(&self) -> &'static str {
+        "A source node over the ChEMBL `mechanism` resource, filtered to one \
+         molecule. This is the pipeline form of the `chembl_mechanisms` \
+         tool: target, action type, development phase, and the \
+         direct-interaction / molecular-mechanism / disease-efficacy flags \
+         as typed columns.\n\n\
+         Output schema: `mec_id, molecule_chembl_id, target_chembl_id, \
+         mechanism_of_action, action_type, direct_interaction, \
+         molecular_mechanism, disease_efficacy, max_phase`.\n\n\
+         Pipe into `sql` to join with `source_chembl_activities` or \
+         `source_chembl_indications` on `molecule_chembl_id`."
+    }
+
+    fn spec_schema(&self) -> schemars::Schema {
+        schema_for!(ChemblMechanismsSpec)
+    }
+
+    fn ports(&self) -> NodePorts {
+        source_ports()
+    }
+
+    fn build(
+        &self,
+        spec: serde_json::Value,
+        _node_ctx: NodeCtx,
+    ) -> dag_core::registry::error::Result<Box<dyn DagNode>> {
+        let spec: ChemblMechanismsSpec = serde_json::from_value(spec)?;
+        Ok(Box::new(ChemblMechanismsNode {
+            meta: source_ports(),
+            spec,
+        }))
+    }
+}
+
+#[async_trait]
+impl DagNode for ChemblMechanismsNode {
+    fn ports(&self) -> &NodePorts {
+        &self.meta
+    }
+
+    fn clone_box(&self) -> Box<dyn DagNode> {
+        Box::new(self.clone())
+    }
+
+    fn kind(&self) -> &'static str {
+        "source_chembl_mechanisms"
+    }
+
+    fn as_any(&self) -> &dyn std::any::Any {
+        self
+    }
+
+    async fn execute(
+        &mut self,
+        ctx: &NodeCtx,
+        _inputs: &[dag_core::dag::NodeInput],
+        _reporter: &dag_core::dag::node_event::NodeReporter,
+    ) -> Result<PortOutputs, DagError> {
+        let spec = &self.spec;
+        let chembl_id = spec.molecule_chembl_id.trim();
+        if chembl_id.is_empty() {
+            return Err(DagError::Schedule(
+                "source_chembl_mechanisms requires `molecule_chembl_id`".into(),
+            ));
+        }
+        let client = client_from_endpoint(&spec.endpoint);
+        let base = ResourceQuery::new()
+            .only(MECHANISM_ONLY)
+            .filter("molecule_chembl_id", chembl_id);
+        let mut rows = if spec.fetch_all.unwrap_or(true) {
+            let mut result = Vec::new();
+            let mut offset = 0_u32;
+            loop {
+                let query = base.clone().limit(1000).offset(offset);
+                let page: chembl::Page<chembl::Mechanism> = client
+                    .list("mechanism", &query)
+                    .await
+                    .map_err(request_error)?;
+                let returned = page.records.len();
+                result.extend(page.records);
+                if returned == 0
+                    || page.page_meta.next.is_none()
+                    || result.len() >= spec.max_records.unwrap_or(1000).max(1) as usize
+                {
+                    break;
+                }
+                offset += returned as u32;
+            }
+            result
+        } else {
+            let query = base
+                .limit(spec.size.unwrap_or(100).min(1000))
+                .offset(spec.offset.unwrap_or(0));
+            let page: chembl::Page<chembl::Mechanism> = client
+                .list("mechanism", &query)
+                .await
+                .map_err(request_error)?;
+            page.records
+        };
+        rows.truncate(spec.max_records.unwrap_or(1000).max(1) as usize);
+
+        let batch = build_mechanism_batch(rows)?;
+        let dataframe = batch_to_df(&ctx.session(), batch)?;
+        let mut outputs = PortOutputs::new();
+        outputs.insert(0, dataframe);
+        Ok(outputs)
+    }
+}
+
+fn build_mechanism_batch(rows: Vec<chembl::Mechanism>) -> Result<RecordBatch, DagError> {
+    let schema = Arc::new(Schema::new(vec![
+        Field::new("mec_id", DataType::Int64, true),
+        text_field("molecule_chembl_id"),
+        text_field("target_chembl_id"),
+        text_field("mechanism_of_action"),
+        text_field("action_type"),
+        Field::new("direct_interaction", DataType::Boolean, true),
+        Field::new("molecular_mechanism", DataType::Boolean, true),
+        Field::new("disease_efficacy", DataType::Boolean, true),
+        float_field("max_phase"),
+    ]));
+    RecordBatch::try_new(
+        schema,
+        vec![
+            i64_array(rows.iter().map(|r| Some(r.mec_id as i64)).collect()),
+            str_array(
+                rows.iter()
+                    .map(|r| Some(r.molecule_chembl_id.clone()))
+                    .collect(),
+            ),
+            str_array(
+                rows.iter()
+                    .map(|r| Some(r.target_chembl_id.clone()))
+                    .collect(),
+            ),
+            str_array(rows.iter().map(|r| r.mechanism_of_action.clone()).collect()),
+            str_array(rows.iter().map(|r| r.action_type.clone()).collect()),
+            bool_array(
+                rows.iter()
+                    .map(|r| r.direct_interaction.map(|v| v != 0))
+                    .collect(),
+            ),
+            bool_array(
+                rows.iter()
+                    .map(|r| r.molecular_mechanism.map(|v| v != 0))
+                    .collect(),
+            ),
+            bool_array(
+                rows.iter()
+                    .map(|r| r.disease_efficacy.map(|v| v != 0))
+                    .collect(),
+            ),
+            f64_array(rows.iter().map(|r| r.max_phase).collect()),
+        ],
+    )
+    .map_err(|error| DagError::Schedule(format!("failed to build ChEMBL mechanism batch: {error}")))
+}
+
+// ===========================================================================
+// Drug indications
+// ===========================================================================
+
+const INDICATION_ONLY: [&str; 7] = [
+    "drugind_id",
+    "molecule_chembl_id",
+    "efo_id",
+    "efo_term",
+    "mesh_id",
+    "mesh_heading",
+    "max_phase_for_ind",
+];
+
+/// Spec for [`ChemblIndicationsNode`].
+#[derive(Debug, Clone, JsonSchema, Deserialize)]
+pub struct ChemblIndicationsSpec {
+    /// ChEMBL molecule ID, e.g. `CHEMBL25`.
+    pub molecule_chembl_id: String,
+    /// Fetch every matching page, up to `max_records`.
+    #[serde(default)]
+    pub fetch_all: Option<bool>,
+    /// Maximum rows retained when `fetch_all=true` (default 1000).
+    #[serde(default)]
+    pub max_records: Option<u32>,
+    /// Page size when `fetch_all=false` (default 100, max 1000).
+    #[serde(default)]
+    pub size: Option<u32>,
+    /// Zero-based offset when `fetch_all=false`.
+    #[serde(default)]
+    pub offset: Option<u32>,
+    /// Override the ChEMBL REST endpoint (tests / mirrors).
+    #[serde(default)]
+    pub endpoint: Option<String>,
+}
+
+/// Source node emitting a molecule's drug indications as a table.
+#[derive(Clone)]
+pub struct ChemblIndicationsNode {
+    meta: NodePorts,
+    spec: ChemblIndicationsSpec,
+}
+
+pub struct ChemblIndicationsNodeFactory;
+
+impl NodeFactory for ChemblIndicationsNodeFactory {
+    fn kind(&self) -> &'static str {
+        "source_chembl_indications"
+    }
+
+    fn desc(&self) -> &'static str {
+        "Fetches a molecule's ChEMBL drug indications (EFO/Mesh) as a typed table."
+    }
+
+    fn doc(&self) -> &'static str {
+        "A source node over the ChEMBL `drug_indication` resource, filtered \
+         to one molecule — the pipeline form of the `chembl_indications` \
+         tool: EFO and Mesh terminology rows plus the indication's maximum \
+         development phase.\n\n\
+         Output schema: `drugind_id, molecule_chembl_id, efo_id, efo_term, \
+         mesh_id, mesh_heading, max_phase_for_ind`.\n\n\
+         Join with `source_chembl_mechanisms` on `molecule_chembl_id` to \
+         pair what a drug does with what it treats."
+    }
+
+    fn spec_schema(&self) -> schemars::Schema {
+        schema_for!(ChemblIndicationsSpec)
+    }
+
+    fn ports(&self) -> NodePorts {
+        source_ports()
+    }
+
+    fn build(
+        &self,
+        spec: serde_json::Value,
+        _node_ctx: NodeCtx,
+    ) -> dag_core::registry::error::Result<Box<dyn DagNode>> {
+        let spec: ChemblIndicationsSpec = serde_json::from_value(spec)?;
+        Ok(Box::new(ChemblIndicationsNode {
+            meta: source_ports(),
+            spec,
+        }))
+    }
+}
+
+#[async_trait]
+impl DagNode for ChemblIndicationsNode {
+    fn ports(&self) -> &NodePorts {
+        &self.meta
+    }
+
+    fn clone_box(&self) -> Box<dyn DagNode> {
+        Box::new(self.clone())
+    }
+
+    fn kind(&self) -> &'static str {
+        "source_chembl_indications"
+    }
+
+    fn as_any(&self) -> &dyn std::any::Any {
+        self
+    }
+
+    async fn execute(
+        &mut self,
+        ctx: &NodeCtx,
+        _inputs: &[dag_core::dag::NodeInput],
+        _reporter: &dag_core::dag::node_event::NodeReporter,
+    ) -> Result<PortOutputs, DagError> {
+        let spec = &self.spec;
+        let chembl_id = spec.molecule_chembl_id.trim();
+        if chembl_id.is_empty() {
+            return Err(DagError::Schedule(
+                "source_chembl_indications requires `molecule_chembl_id`".into(),
+            ));
+        }
+        let client = client_from_endpoint(&spec.endpoint);
+        let base = ResourceQuery::new()
+            .only(INDICATION_ONLY)
+            .filter("molecule_chembl_id", chembl_id);
+        let mut rows = if spec.fetch_all.unwrap_or(true) {
+            let mut result = Vec::new();
+            let mut offset = 0_u32;
+            loop {
+                let query = base.clone().limit(1000).offset(offset);
+                let page: chembl::Page<chembl::DrugIndication> = client
+                    .list("drug_indication", &query)
+                    .await
+                    .map_err(request_error)?;
+                let returned = page.records.len();
+                result.extend(page.records);
+                if returned == 0
+                    || page.page_meta.next.is_none()
+                    || result.len() >= spec.max_records.unwrap_or(1000).max(1) as usize
+                {
+                    break;
+                }
+                offset += returned as u32;
+            }
+            result
+        } else {
+            let query = base
+                .limit(spec.size.unwrap_or(100).min(1000))
+                .offset(spec.offset.unwrap_or(0));
+            let page: chembl::Page<chembl::DrugIndication> = client
+                .list("drug_indication", &query)
+                .await
+                .map_err(request_error)?;
+            page.records
+        };
+        rows.truncate(spec.max_records.unwrap_or(1000).max(1) as usize);
+
+        let batch = build_indication_batch(rows)?;
+        let dataframe = batch_to_df(&ctx.session(), batch)?;
+        let mut outputs = PortOutputs::new();
+        outputs.insert(0, dataframe);
+        Ok(outputs)
+    }
+}
+
+fn build_indication_batch(rows: Vec<chembl::DrugIndication>) -> Result<RecordBatch, DagError> {
+    let schema = Arc::new(Schema::new(vec![
+        Field::new("drugind_id", DataType::Int64, true),
+        text_field("molecule_chembl_id"),
+        text_field("efo_id"),
+        text_field("efo_term"),
+        text_field("mesh_id"),
+        text_field("mesh_heading"),
+        float_field("max_phase_for_ind"),
+    ]));
+    RecordBatch::try_new(
+        schema,
+        vec![
+            i64_array(rows.iter().map(|r| Some(r.drugind_id as i64)).collect()),
+            str_array(
+                rows.iter()
+                    .map(|r| Some(r.molecule_chembl_id.clone()))
+                    .collect(),
+            ),
+            str_array(rows.iter().map(|r| r.efo_id.clone()).collect()),
+            str_array(rows.iter().map(|r| r.efo_term.clone()).collect()),
+            str_array(rows.iter().map(|r| r.mesh_id.clone()).collect()),
+            str_array(rows.iter().map(|r| r.mesh_heading.clone()).collect()),
+            f64_array(rows.iter().map(|r| r.max_phase_for_ind).collect()),
+        ],
+    )
+    .map_err(|error| {
+        DagError::Schedule(format!("failed to build ChEMBL indication batch: {error}"))
+    })
+}
+
+#[cfg(test)]
+mod mechanism_indication_tests {
+    use super::*;
+
+    fn mechanism() -> chembl::Mechanism {
+        serde_json::from_value(serde_json::json!({
+            "mec_id": 1361,
+            "molecule_chembl_id": "CHEMBL25",
+            "target_chembl_id": "CHEMBL2094253",
+            "mechanism_of_action": "Mu opioid receptor agonist",
+            "action_type": "AGONIST",
+            "direct_interaction": 1,
+            "molecular_mechanism": 0,
+            "disease_efficacy": 1,
+            "max_phase": 4.0
+        }))
+        .unwrap()
+    }
+
+    #[test]
+    fn mechanism_batch_types_flags_and_phase() {
+        let batch = build_mechanism_batch(vec![mechanism()]).unwrap();
+        assert_eq!(batch.num_rows(), 1);
+        assert_eq!(batch.num_columns(), 9);
+        let flags = batch
+            .column(5)
+            .as_any()
+            .downcast_ref::<BooleanArray>()
+            .unwrap();
+        assert!(flags.value(0));
+        let phase = batch
+            .column(8)
+            .as_any()
+            .downcast_ref::<Float64Array>()
+            .unwrap();
+        assert!((phase.value(0) - 4.0).abs() < 1e-12);
+    }
+
+    #[test]
+    fn indication_batch_roundtrips_terms() {
+        let indication: chembl::DrugIndication = serde_json::from_value(serde_json::json!({
+            "drugind_id": 7065,
+            "molecule_chembl_id": "CHEMBL25",
+            "efo_id": "EFO_0004263",
+            "efo_term": "pain",
+            "mesh_id": "D010146",
+            "mesh_heading": "Pain",
+            "max_phase_for_ind": 4.0
+        }))
+        .unwrap();
+        let batch = build_indication_batch(vec![indication]).unwrap();
+        assert_eq!(batch.num_columns(), 7);
+        let term = batch
+            .column(3)
+            .as_any()
+            .downcast_ref::<StringArray>()
+            .unwrap();
+        assert_eq!(term.value(0), "pain");
+    }
+}
+
+#[cfg(test)]
+#[path = "source_chembl_contract_tests.rs"]
+mod counterexamples;
+
+#[cfg(test)]
+#[path = "source_chembl_regression_tests.rs"]
+mod regressions;
+
+#[path = "source_chembl_audit.rs"]
+mod audit;
+#[path = "source_kegg_publication.rs"]
+mod publication;
