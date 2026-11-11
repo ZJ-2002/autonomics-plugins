@@ -11,9 +11,9 @@ use dag_core::dag::{DAG, DagNode};
 use datafusion::prelude::SessionContext;
 use serde_json::{Value, json};
 
-#[path = "../../arxiv/tests/common/feed_integrity_fixture.rs"]
+#[path = "../../../arxiv/tests/common/feed_integrity_fixture.rs"]
 mod fixture_data;
-#[path = "../../arxiv/tests/common/atom_http_fixture.rs"]
+#[path = "../../../arxiv/tests/common/atom_http_fixture.rs"]
 mod transport;
 
 const NOTE: &str = "Synthetic arXiv feed integrity fixture, not live research evidence";

@@ -13,7 +13,7 @@ use dag_core::dag::{DAG, DagNode};
 use datafusion::prelude::SessionContext;
 use serde_json::{Value, json};
 
-#[path = "../../arxiv/tests/common/api_error_fixture.rs"]
+#[path = "../../../arxiv/tests/common/api_error_fixture.rs"]
 mod fixture_data;
 
 const NOTE: &str = "Synthetic arXiv protocol fixture, not official live research evidence";
