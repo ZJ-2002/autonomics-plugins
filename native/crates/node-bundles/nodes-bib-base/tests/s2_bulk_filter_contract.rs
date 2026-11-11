@@ -323,6 +323,7 @@ async fn raw_relevance_all_filters_control() {
     let fixture = Fixture::new();
     let filter = PaperSearchFilter {
         year: Some("2020-2024".into()),
+        publication_date_or_year: None,
         venue: Some("Nature".into()),
         publication_types: Some("Review".into()),
         fields_of_study: Some("Medicine".into()),
